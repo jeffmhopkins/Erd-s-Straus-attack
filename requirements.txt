@@ -1,0 +1,3 @@
+# Runtime dependencies for the Erdős–Straus attack harness.
+# For development also install the package in editable mode:  pip install -e ".[dev]"
+sympy>=1.12
