@@ -105,7 +105,12 @@ minimum in 97.9 % of failures. **Drafted** (THEORY.md §2.10):
 Theorem L₀ — the rigorous fixed-length ladder chain (dimension 1/2
 per rung via Theorem S, p-adapted residuals); Hypothesis B — the
 falsifiable per-rung counting inequality the census measures
-(survival factor 0.86–0.95 per rung, no drift); Theorem L₁ — under
+(survival factor 0.86–0.95 per rung, no drift); **Theorem B₁ proved**: B's first rung — for every fixed $q$ the
+selected-rung failing fraction is $\ll_q (\log x)^{-1/\varphi(4q)}
+\to 0$ (Prop 2.2's universal class + Fundamental Lemma), uniformly
+for $q \ll \log\log x$; mechanism exact in data (0 violations /
+11 816 failures) and 25.5 % of primes get the closed-form
+$k = q p^2$. Theorem L₁ — under
 B, all but $O(x e^{-\delta J(x)})$ hard primes have
 $R_{\min}(p) \le (\log x)^{2+o(1)} J(x)$; calibrations from
 $J = (\log\log x)^2$ (past the entire chain) to
