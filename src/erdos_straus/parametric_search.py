@@ -3,8 +3,7 @@
 Search for parametric families in hard classes by fixing residual R and solving the resulting conditions.
 """
 
-from erdos_straus.solver import is_solution, hard_residue
-import sympy as sp
+from erdos_straus.solver import is_solution
 from typing import List, Tuple, Optional
 
 def try_fixed_residual(n: int, R: int) -> Optional[Tuple[int, int, int]]:
@@ -16,11 +15,9 @@ def try_fixed_residual(n: int, R: int) -> Optional[Tuple[int, int, int]]:
         return None
     m = n * a
     d = R
-    # Find divisor k of m**2 such that (k + m) % d == 0, k > 0, b = (k+m)//d > 0, c = (m**2//k + m)//d >= b
-    # For moderate n, we can factor m**2 if small, or iterate possible k = d*j - m for j that make k >0 and divide.
-    # Iterate possible b starting from a, but limited.
-    # Better: since d fixed small, iterate possible k = d * t - m for t = a, a+1, ... until k >0 and k | m**2
-    # t = b.
+    # A certificate is k | m**2 with (k + m) % d == 0; writing k = d*t - m,
+    # the scan below iterates t = b upward from a and keeps the first t with
+    # d*t - m > 0 dividing m**2.
     max_tries = 10000
     for t in range(a, a + max_tries):
         k = d * t - m

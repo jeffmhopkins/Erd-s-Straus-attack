@@ -18,8 +18,10 @@ proves the model faithful to the integers:
   `m²`, then explicit positive integers `k ∣ m²`, `b`, `c` exist with
   `R·b = k + m`, `R·c = m²/k + m`, and the Erdős–Straus identity
   `4abc = p(bc + ac + ab)` — i.e. reach membership at the target
-  produces a genuine certificate. The converse direction is
-  `certificate_reach`;
+  produces a genuine certificate. `certificate_reach` is the
+  divisor-to-reach direction (every divisor class is reached), so
+  reach membership of a class is equivalent to the existence of a
+  divisor of `m²` in that class;
 * budget consolidation (`step_step_same`, `reach_merge`,
   `reach_subperm`, `reach_two_eq_doubled`) — the glue between
   configuration shapes;
@@ -194,10 +196,14 @@ theorem certificate_reach {R : ℕ} (N : ℕ) (hN : N ≠ 0) (k : ℕ)
 prime-factor list of `m²`, then a genuine residual certificate exists:
 a divisor `k ∣ m²` and positive integers `b, c` with `R·b = k + m`,
 `R·c = m²/k + m`, satisfying the Erdős–Straus identity
-`4abc = p(bc + ca + ab)`. Combined with `certificate_reach`,
-solvability of residual `R` at `p` is *equivalent* to reach
-membership of the target — the reduction behind every finite
-enumeration in this development. Coprimality of `R` and `m` is
+`4abc = p(bc + ca + ab)`. Combined with `certificate_reach`
+(divisors ⟶ reach), reach membership of a class is equivalent to the
+existence of a divisor of `m²` in that class, and reach membership of
+the target produces the explicit certificate — the reduction behind
+every finite enumeration in this development. (The remaining step,
+that any solution of the equation yields such a divisor, is the
+elementary completeness argument of the paper's §1.1 and is not
+formalized.) Coprimality of `R` and `m` is
 automatic in the application (`p` prime, `p > R`, `gcd(a, R) = 1`
 from `4a = p + R`); it is a hypothesis here. -/
 theorem reach_certificate (R p a : ℕ) (hR : 0 < R) (hp : 0 < p)

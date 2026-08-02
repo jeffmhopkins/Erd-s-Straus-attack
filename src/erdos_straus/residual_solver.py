@@ -18,20 +18,16 @@ def solve_residual(n: int, R: int) -> Optional[Tuple[int, int, int]]:
     m = n * a
     d = R
     M2 = m * m
-    try:
-        # sympy.divisors is efficient for numbers with not too many factors
-        divs = sp.divisors(M2)
-        for k in divs:
-            if (k + m) % d == 0:
-                b = (k + m) // d
-                if b >= 1:
-                    ck = M2 // k
-                    if (ck + m) % d == 0:
-                        c = (ck + m) // d
-                        if c >= b and is_solution(n, a, b, c):
-                            return (a, b, c)
-    except Exception:
-        return None
+    # sympy.divisors is efficient for numbers with not too many factors
+    for k in sp.divisors(M2):
+        if (k + m) % d == 0:
+            b = (k + m) // d
+            if b >= 1:
+                ck = M2 // k
+                if (ck + m) % d == 0:
+                    c = (ck + m) // d
+                    if c >= b and is_solution(n, a, b, c):
+                        return (a, b, c)
     return None
 
 def find_solution_by_residuals(n: int, max_R: int = 200) -> Optional[Tuple[int, int, int, int]]:

@@ -1,11 +1,17 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
-**Date:** 2026-08-02 (current through PR #30).
-**Status:** Proved: Theorems A, A′, A″ (exact criteria; A′/A″ by
-machine-verified finite case analysis), the meta-theorem, Propositions 1
-and 3, Theorem E and the chain F/G/G′/H (exponents 2 … 17/2, via Lemma S
-verified for every prime residual 19…107), Theorem I (aggregate
-families, → 19/2), Theorem J (reciprocity structure), and Theorem D
+**Date:** 2026-08-02 (current through PR #31; this revision adds
+Theorem S and Theorem A‴).  
+**Status:** Proved: Theorems A, A′, A″, A‴ (exact criteria for
+R = 3, 7, 11, and now the first composite residual R = 15; A′/A″/A‴ by
+machine-verified finite case analysis), the meta-theorem (now including
+composite R), Propositions 1 (now in composite/Jacobi form) and 3,
+Theorem E and the chain F/G/G′/H, **Theorem S** — the support bound
+(formerly "Lemma S") proved unconditionally for EVERY residual via
+Kneser's addition theorem, with no upper limit and composite residuals
+included, upgrading the chain to arbitrary finite residual lists
+(exponent 31/2 for the full 27-residual list ≤ 107) — Theorem I
+(aggregate families), Theorem J (reciprocity structure), and Theorem D
 (full proof in the paper). Theorem K is a conditional sketch under
 Dickson's conjecture. Section 6 is heuristic, validated against the
 complete solvability data below 10⁹ and the 10¹⁰/10¹¹ minimal-R data.
@@ -28,16 +34,18 @@ The dictionary (paper labels in parentheses):
 | Proposition 1 (character obstruction) | Proposition 2.1 (`prop:char`) |
 | Proposition 3 (guaranteed success) | Proposition 2.2 (`prop:succ`) |
 | Theorem A / A′ / A″ | Theorems 1.2 / 1.4 / 1.5 |
+| Theorem A‴ (R = 15, composite) | Theorem 1.6 (`thm:R15`) |
 | meta-theorem | Theorem 1.3 (`thm:meta`) |
-| Theorem B (finite covering reduction) | Remark 4.3 (unlabeled in source) |
+| Theorem B (finite covering reduction) | Remark 4.4 (unlabeled in source) |
 | Theorem C | not carried into the paper |
-| Theorem D (density reduction) | Theorem 1.11 (`thm:D`) |
-| Theorems E/F/G/G′/H (the chain) | the single Theorem 1.9 (`thm:FG`) |
-| Theorem I (aggregate families) | Proposition 1.10 (`prop:agg`) |
-| Theorem J (reciprocity) | Theorem 1.7 (`thm:J`) |
+| Theorem D (density reduction) | Theorem 1.13 (`thm:D`) |
+| Theorems E/F/G/G′/H (the chain) | the single Theorem 1.11 (`thm:FG`) |
+| Theorem I (aggregate families) | Proposition 1.12 (`prop:agg`) |
+| Theorem J (reciprocity) | Theorem 1.8 (`thm:J`) |
 | Corollaries J1/J2 | Corollary 2.3(i)/(ii) (`cor:J`) |
 | Theorem K (conditional) | sketch inside Open Problem 5 |
-| Lemma S (support bound) | Lemma 1.8 (`lem:S`) |
+| Lemma S (support bound) | Lemma 1.9 (`lem:S`) |
+| Theorem S (unconditional support bound, Kneser) | Theorem 1.10 (`thm:S`) |
 | monotonicity reduction | Lemma 4.1 (`lem:mono`) |
 
 ---
@@ -212,7 +220,7 @@ hypothesis in Theorem B.
 
 ---
 
-## 2.5 Theorem E ({3,7} covering, unconditional): full proof
+### 2.5 Theorem E ({3,7} covering, unconditional): full proof
 
 **Theorem E.** *The number of hard primes p ≤ x for which residual 3 and
 residual 7 both fail is O(x/(log x)²). Consequently all but a proportion
@@ -292,9 +300,9 @@ unconditionally (Theorem D). Theorem E is the fully-worked two-form case.
 
 ---
 
-## 2.6 The meta-theorem and the exact criterion for R = 11
+### 2.6 The meta-theorem and the exact criteria for R = 11 and 15
 
-### Meta-theorem (finite-state exact criteria)
+#### Meta-theorem (finite-state exact criteria)
 
 *For every fixed prime R ≡ 3 (mod 4), success of residual R at a hard prime
 p depends only on (i) the multiset of classes mod R of the prime factors of
@@ -318,7 +326,7 @@ compresses each R's configuration space to a handful of equivalence states:
 R = 7 with the forced even factor has 4 reachable states (3 success /
 1 all-even-fail — Theorem A′ re-derived), R = 11 has 25.
 
-### Theorem A″ (exact criterion for R = 11, hard primes)
+#### Theorem A″ (exact criterion for R = 11, hard primes)
 
 Note first that for every hard prime, at R = 11: **3 | a** (from p ≡ 1 mod 3,
 11 ≡ 2 mod 3), a is odd, and 7 ∤ a. The quadratic residues mod 11 are
@@ -365,9 +373,63 @@ the sieve dimension rises to 1 + ½ + ½ + ½ = 5/2 (up to the negligible
 (b)-part):  hard primes needing R > 11 number O(x/(log x)^{5/2}), all but
 O((log x)^{−3/2}) proportionally.
 
+#### Theorem A‴ (exact criterion for R = 15 — the first composite residual)
+
+For composite R the certificate condition k ≡ −m (mod R) couples the
+prime-power components of R through CRT, and the divisor-class group is
+the (generally non-cyclic) unit group (Z/R)\*. The meta-theorem holds
+verbatim with (Z/R)\* in place of the cyclic group
+(`theory.solvable_exact_general` — validated against ground truth on
+**every** composite residual in the 10⁹ masks, 7 938 sampled primes per
+residual, zero disagreements). Two structural facts single out R = 15:
+
+- **(Jacobi obstruction — Proposition 1, composite form.)** m ≡ (2⁻¹p)²
+  (mod R) is the square of a unit, so the *Jacobi* symbol (m|R) = +1;
+  and (−1|R) = −1 for every R ≡ 3 (mod 4). Hence (−m|R) = −1: if every
+  prime factor of m has (q|R) = +1, every divisor of m² has Jacobi
+  symbol +1 and residual R fails. For composite R this is strictly
+  stronger than Prop. 1 at a single prime r | R.
+- For hard primes at R = 15: p mod 15 ∈ {1, 4} (from p ≡ 1 mod 3,
+  p ≡ ±1 mod 5), **2 | a** (p ≡ 1 mod 8 ⟹ 8 | p+15), the target is
+  −m ≡ 11 (mod 15) for both p-classes, and consistency reads
+  ∏(classes) ≡ 4p (mod 15).
+
+*Theorem A‴. Let p be a hard prime, a = (p+15)/4. Residual 15 succeeds
+⟺ a has a prime factor q with (q|15) = −1, i.e. q ≡ 7, 11, 13, or 14
+(mod 15).*
+
+**Proof.** Necessity is the Jacobi obstruction: the residue classes
+{1, 2, 4, 8} = ⟨2⟩ mod 15 are exactly the units with (q|15) = +1, a
+subgroup containing p's class; if all factors lie in it, so does every
+divisor of m², missing 11. Sufficiency is a machine-verified finite case
+analysis (`theory.verify_R15_finite`): of the **349 920** consistent
+configurations, **349 380 succeed and 540 fail — and every failing
+configuration is all-residue**. There are **zero budget failures**, in
+contrast to R = 11: the consistency relation forces χ₁₅(a) = χ₁₅(4p) =
++1, so non-residue factors occur with *even* total multiplicity, and any
+two non-residue units (or one squared), combined with the forced powers
+of 2, reach the target. ∎
+
+Validated against ground truth for **158 759 out of 158 759** hard
+primes below 10⁹ (every 10th): zero disagreements.
+
+**Remark (a cleaner dichotomy than R = 11).** The first composite
+residual turns out to be *simpler* than the last prime one: a pure
+character dichotomy — with the quadratic character mod r replaced by the
+Jacobi character mod 15 — and no exponent-budget edge cases at all. The
+failure condition "no factor in 4 of the 8 unit classes" is a single
+sifting branch of dimension exactly ½ on the form (p+15)/4 = n + 3.
+
+**Consequence for the chain.** With A/A′/A″/A‴, joint failure of
+{3, 7, 11, 15} is an explicit multiplicative condition on **four
+consecutive integers** n, n+1, n+2, n+3 (n = (p+3)/4), a five-form
+sieve problem of dimension 1 + 4·(1/2) = 3: hard primes with
+R_min > 15 number O(x/(log x)³) — exponent 3 already at B = 15,
+which previously required B = 19.
+
 ---
 
-## 2.7 Theorems F and G: exponents 5/2 and 3
+### 2.7 The chain: Theorem S, Theorems F/G/G′/H, Theorem I (exponents 5/2 … 19/2)
 
 The exponent bookkeeping to keep straight: each residual with an
 exact-criterion-grade handle contributes sifting density **½** (its failure
@@ -376,30 +438,92 @@ p = 4n − 3 contributes 1. Three residuals therefore give dimension 5/2 —
 **not 3**; exponent 3 requires a fourth residual. Both theorems below are
 now fully proven.
 
-### Lemma S (support bound; machine-verified for every prime residual 19…107; Lean-certified at R = 19, 23, 31)
+#### Theorem S (the support bound, proved unconditionally for EVERY residual — the Kneser/Olson route)
 
-*Let R be one of the twelve primes 19, 23, 31, 43, 47, 59, 67, 71, 79,
-83, 103, 107. Every configuration for which residual R fails at a
-hard prime has at most (R−3)/2 nonzero factor-class support; equivalently,
-the prime factors of (p+R)/4 lie in at most (R−1)/2 of the R−1 unit
-classes mod R. Hence failure at R forbids at least half the classes, and
-the failing configurations fall into finitely many maximal-support
-branches, each a sifting condition of dimension ≥ ½ on (p+R)/4.*
+What was "Lemma S" — machine-verified one residual at a time, stalled at
+R = 107 by DP state growth — is in fact a theorem of additive
+combinatorics, valid for every residual at once. This is precisely the
+"Olson-type" input anticipated in §2.9(i); the tool is **Kneser's
+addition theorem**.
 
 Note the check deliberately ignores the consistency relation
 ∏(classes) ≡ 4⁻¹p: it examines a *superset* of the realizable
 configurations and can only overstate the failing supports — the lemma
-is conservative (paper, proof of Lemma 1.8).
+is conservative (paper, proof of Lemma 1.9).
 
-**Proof.** Reachability of the target class is monotone in both the
-support and the multiplicities. It therefore suffices to check that for
-every support of size (R−1)/2 over the nonzero logs and every class of p,
-the target is reachable already at minimal multiplicities. Exhaustive
-check (`theory.verify_support_bound`): **437,580** pairs at R = 19 and
-**7,759,752** pairs at R = 23 — zero failures. The bound is tight: Type-I
-(all-QR) configurations occupy exactly (R−3)/2 nonzero classes. ∎
+*Theorem S. Let d ≥ 4 be even and S ⊆ Z/d ∖ {0}. If the bounded
+subset-sum set*
 
-### Theorem F ({3,7,11}; exponent 5/2)
+    M(S) = { Σ_{v∈S} e_v·v  :  e_v ∈ {0, 1, 2} }
+
+*is not all of Z/d, then |S| ≤ d/2 − 1.*
+
+**Proof.** Write M = A₁ + ⋯ + A_k with A_i = {0, v_i, 2v_i}, k = |S|,
+and let H = Stab(M) = {h : M + h = M}. Kneser's theorem gives
+
+    |M| ≥ Σ_i |A_i + H| − (k − 1)|H|.
+
+*Case H = {0}.* |A_i| = 3 for every v_i except v_i = d/2 (where
+2v_i = 0 and |A_i| = 2), and at most one element of S equals d/2. So
+|M| ≥ (3k − 1) − (k − 1) = 2k. Since M ≠ Z/d, 2k ≤ d − 1, and d even
+forces k ≤ d/2 − 1.
+
+*Case |H| = h > 1.* M is a union of H-cosets and M ≠ Z/d, so
+|M| ≤ d − h. Split S: k₀ = |S ∩ H| ≤ h − 1 (distinct nonzero elements
+of H) and k₁ = k − k₀. For v ∈ H, |A_v + H| = h; for v ∉ H,
+A_v + H ⊇ H ∪ (v + H), so |A_v + H| ≥ 2h. Kneser gives
+
+    d − h ≥ |M| ≥ h·(k₀ + 2k₁ − k + 1) = h·(k₁ + 1),
+
+so k₁ ≤ d/h − 2 and k ≤ (h − 1) + (d/h − 2) = h + d/h − 3. For every
+divisor h with 2 ≤ h ≤ d/2 the quadratic h² − (d/2 + 2)h + d ≤ 0 (roots
+2 and d/2), i.e. h + d/h − 3 ≤ d/2 − 1. ∎
+
+The bound is **tight**: S = the even classes (the Type-I/all-QR
+configurations) has |S| = d/2 − 1 and M(S) = the even subgroup.
+
+**Corollary (Lemma S for every prime R ≡ 3 mod 4 — no upper limit).**
+In discrete-log coordinates the divisor classes of m² contain exactly
+such an M(S) (multiplicities ≥ 1 only enlarge the exponent budgets —
+monotonicity), so if the nonzero factor-class support of (p+R)/4 has
+size ≥ (R−1)/2, *every* class mod R is a divisor class of m² — in
+particular −m — and residual R **succeeds**, for every class of p and
+without invoking the p-powers. Failure therefore forces support
+≤ (R−3)/2, i.e. the factors of (p+R)/4 lie in at most (R−1)/2 of the
+R−1 unit classes: at least half the classes are forbidden, in finitely
+many maximal-support branches, each a sifting condition of dimension
+≥ ½. The twelve machine-verified instances 19 ≤ R ≤ 107 (below) are
+special cases; "Lemma S past 107" is closed for **all** R at once.
+
+**General abelian form (composite residuals).** The proof never used
+cyclicity. In any finite abelian group G of even order g (multiplicative
+notation, M(S) = ∏_{v∈S}{1, v, v²}): if M(S) ≠ G then
+
+    |S| ≤ max( ⌊(g + t − 2)/2⌋ , h + g/h − 3 ) ≤ g/2   whenever t ≤ 3,
+
+where t = #involutions of G (in the H-trivial case each involution in S
+has |{1, v, v²}| = 2, losing one unit) and h ranges over proper subgroup
+orders. For G = (Z/R)\* with ω(R) ≤ 2 distinct prime factors —
+**every** composite admissible R ≤ 107 — t = 2^ω − 1 ≤ 3, so failure at
+R forbids at least φ(R)/2 unit classes: **the composite residuals join
+the chain on equal footing, dimension ≥ ½ each.** Numerical
+confirmation (`theory.kneser_support_general`): the maximum support of a
+proper product-set is *exactly* g/2 − 1 for every composite admissible
+R ≤ 107 (e.g. R = 15: g = 8, max 3; R = 91: g = 72, max 35; R = 95:
+g = 72, max 35 — DP over 427 266 resp. 583 455 realizable product-sets).
+
+**Independent machine confirmation (the former proof).** Reachability is
+monotone in support and multiplicities, so checking all supports of size
+(R−1)/2 at minimal multiplicities suffices; exhaustive check
+(`theory.verify_support_bound`): 437 580 pairs at R = 19, 7 759 752 at
+R = 23 — zero failures; and the strong (Kneser) form — every mask
+realized by ≥ (R−1)/2 nonzero classes is full, `theory.verify_support_bound_strong` —
+holds with the observed maximum non-full support exactly (R−3)/2 at
+every prime residual checked. The check ignores the consistency relation
+∏(classes) ≡ 4⁻¹p: it examines a superset of realizable configurations,
+so it (and Theorem S) are conservative.
+
+#### Theorem F ({3,7,11}; exponent 5/2)
 
 *The number of hard primes p ≤ x failing residuals 3, 7 and 11
 simultaneously (in particular, with R_min(p) > 11) is
@@ -417,9 +541,9 @@ mod 11 (density 3/5). Each branch is a four-form sieve problem
 O(x/(log x)^{5/2}) and branch (b) by O(x/(log x)^{13/5}) = o(the former).
 Sum over the two branches and the six hard classes. ∎ (At {3,7,11,19}
 the paper's proof also carries the Type-II cross-branch at exponent
-31/10; see the proof of Theorem 1.9 there.)
+31/10; see the proof of Theorem 1.11 there.)
 
-### Theorem G ({3,7,11,19}; exponent 3)
+#### Theorem G ({3,7,11,19}; exponent 3)
 
 *The number of hard primes p ≤ x failing residuals 3, 7, 11 and 19
 simultaneously (in particular, with R_min(p) > 19) is O(x/(log x)³);
@@ -435,20 +559,23 @@ pairwise distinct for q > 19; smaller primes are absorbed into the fixed
 congruence class of n.) The Fundamental Lemma bounds each branch by
 O(x/(log x)³); sum over the finitely many branches. ∎
 
-### Theorem G′ ({3,7,11,19,23}; exponent 7/2)
+#### Theorem G′ ({3,7,11,19,23}; exponent 7/2)
 
 *Identically, with Lemma S at R = 23 and the form (p+23)/4 = n+5:
 the joint exceptional set of {3, 7, 11, 19, 23} is O(x/(log x)^{7/2}).*
 
-**The chain — completed to R = 107.** Every further prime residual
-R ≡ 3 (mod 4) whose support-bound lemma is verified adds ½ to the
-exponent. The naive verification cost is C(R−2, (R−1)/2) reachability
-checks, which explodes past R = 31; but a **subset dynamic program**
-(`theory.verify_support_bound_dp`) folds all supports into a table
-mapping each reachability mask to the maximal support size achieving it
-(valid because failure at any multiplicities implies failure at
-multiplicity 1, by monotonicity). Realized masks are heavily structured,
-so the state count stays tractable:
+**The chain — no longer capped at R = 107.** Every residual with a
+support bound adds ½ to the exponent, and Theorem S now supplies the
+bound for every admissible R at once — the chain extends to arbitrary
+finite residual lists, primes and composites alike. Historically the
+bound was verified one residual at a time: naive cost is
+C(R−2, (R−1)/2) reachability checks, which explodes past R = 31; the
+**subset dynamic program** (`theory.verify_support_bound_dp`) folds all
+supports into a table mapping each reachability mask to the maximal
+support size achieving it (valid because failure at any multiplicities
+implies failure at multiplicity 1, by monotonicity). Realized masks are
+heavily structured, so the state count stays tractable — these runs now
+stand as independent confirmations of Theorem S:
 
 | R | states | time | violations |
 |---:|---:|---:|---:|
@@ -465,19 +592,30 @@ so the state count stays tractable:
 | 103 | 12 998 639 | 220 s | 0 |
 | 107 | 19 530 971 | 331 s | 0 |
 
-**Theorem H (the full prime chain).** *Let
-P = {3, 7, 11, 19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103, 107} — all
-fifteen primes ≡ 3 (mod 4) up to 107. The number of hard primes p ≤ x
-failing every residual in P is O(x/(log x)^{17/2}); all but a proportion
-O((log x)^{−15/2}) of hard primes are solved within P.*
+**Theorem H (the chain, upgraded by Theorem S).** *(i) For every finite
+set P of admissible residuals R ≡ 3 (mod 4) — prime or composite (with
+ω(R) ≤ 2 for the composites) — the number of hard primes p ≤ x failing
+every residual in P is O_P(x/(log x)^{1+|P|/2}). (ii) In particular,
+for P = all fifteen primes ≡ 3 (mod 4) up to 107 the exponent is 17/2,
+and for the full 27-residual admissible list ≤ 107 (primes and
+composites) it is 29/2.*
 
 Proof: identical to Theorem G — the forms (p+R)/4 = n + (R−3)/4 are
-distinct integer shifts of n; Theorems A/A′/A″ handle 3, 7, 11 and
-Lemma S (now verified for the twelve remaining primes in P) handles the
-rest; each contributes dimension ≥ ½ through finitely many
-maximal-support branches, plus 1 for primality: total ≥ 1 + 15/2. ∎
+distinct integer shifts of n; Theorems A/A′/A″/A‴ handle 3, 7, 11, 15
+and Theorem S handles every other residual (prime via the corollary,
+composite via the general abelian form); each contributes dimension ≥ ½
+through finitely many maximal-support branches, plus 1 for primality:
+total ≥ 1 + |P|/2. The Fundamental Lemma applies to each of the
+finitely many combined branches (the forbidden residue classes of the
+distinct forms are pairwise distinct for q > max P; smaller primes are
+absorbed into the fixed congruence class of n). ∎
 
-### Theorem I (aggregate identity families) and the 19/2 upgrade
+The exponent is now bounded only by the *number of residuals used* —
+the constants O_P blow up with |P| (branch counts and the
+(log x)^{#forms} remainder of the Fundamental Lemma), which is exactly
+the growing-list wall of §2.8, Attempt 2.
+
+#### Theorem I (aggregate identity families) and the 19/2 upgrade
 
 *Let p ≡ 1 (mod 4) be prime and R ≡ 3 (mod 4). If R | p+1, then k = a·p²
 is a certificate for residual R; if R | p+4, then k = a²·p is. Hence any
@@ -503,7 +641,8 @@ each. (The certifying shapes k = a^j p^i are the only a-independent
 ones with j, i ≤ 2.) Added
 to Theorem H: *the number of hard primes p ≤ x failing all fifteen prime
 residuals up to 107 **and** both aggregate families is
-O(x/(log x)^{19/2}).*
+O(x/(log x)^{19/2}); with the full 27-residual admissible list ≤ 107
+(Theorem S general form) the exponent is **31/2**.*
 
 **Context (known bounds).** For calibration: Vaughan's classical
 mean-value bound gives an exceptional set ≪ x·exp(−c(log x)^{2/3}) for
@@ -523,13 +662,13 @@ probably **false**; the correctly-posed target is a slowly growing bound
 R_min(p) ≪ f(p), which requires existence (lower-bound) technology
 beyond upper-bound sieves.
 
-## 2.8 Two attempts at totality, and their walls
+### 2.8 Two attempts at totality, and their walls
 
 Both attempts below were executed; each yields something real, and each
 hits a wall that is now *precisely characterized* rather than merely
 suspected.
 
-### Attempt 1 (constructive): aggregate families
+#### Attempt 1 (constructive): aggregate families
 
 Outcome: Theorem I above — the complete list of a-independent divisor
 identities is {p+1, p+4}; they cover 74 % of hard primes and add +1 to
@@ -539,7 +678,7 @@ has density ~(log x)^{−1/2} — positive at every finite level. The four
 critical primes already escape both families. Constructive families
 thicken the almost-all coverage but structurally cannot reach totality.
 
-### Attempt 2 (analytic): growing lists and the larger sieve
+#### Attempt 2 (analytic): growing lists and the larger sieve
 
 Idea: let the residual list grow with p (B ≈ C log p), so the sieve
 dimension grows and the count bound x/(log x)^{κ(B)} could in principle
@@ -578,12 +717,12 @@ x·exp(−c(log x)^{2/3}). The wall is not technical laziness: it is the
 collapse of the p-independent forbidden structure to a single class,
 measured exactly by the AF computation.
 
-## 2.9 The reciprocity structure theorem: joint failure explained
+### 2.9 The reciprocity structure theorem: joint failure explained
 
 The open problem "explain the record prime" is now substantially
 resolved by a clean structural identity.
 
-### Theorem J (reciprocity structure)
+#### Theorem J (reciprocity structure)
 
 *Let p be a hard prime, R ≡ 3 (mod 4) prime, and q an odd prime factor
 of a_R = (p+R)/4 (necessarily q ≠ R). Then*
@@ -610,7 +749,7 @@ residual R ≤ B simultaneously ⟺ (p|R) = +1 for each such R and
 values (p+R)/4, R ≤ B.** One condition per *distinct* prime q, shared
 across every residual q divides.
 
-### The record prime, explained quantitatively
+#### The record prime, explained quantitatively
 
 Corollary J2 identifies the correct "coins": joint failure requires a
 positive fluctuation in the independent-looking signs (p|q) over the
@@ -633,7 +772,7 @@ mixed Type I/II record sits above this, Type-II escapes absorbing a few
 −1 coins — the record's 8 negative coins are exactly its 14 Type-II
 failures' worth of luck).
 
-### Theorem K (conditional falsity of the finite covering hypothesis)
+#### Theorem K (conditional falsity of the finite covering hypothesis)
 
 *Assume Dickson's conjecture (prime k-tuples). Then for every B there
 are infinitely many hard primes p with R_min(p) > B.*
@@ -657,7 +796,7 @@ calibrated model. Unconditional falsity appears out of reach: already
 statement (a₃ and 4a₃−3 simultaneously prime in classes), i.e. is
 twin-prime-hard.
 
-### Verdict
+#### Verdict
 
 Upper-bound counting — fixed lists, growing lists, aggregate families,
 in any combination available to us — bounds the exceptional set but
@@ -666,9 +805,18 @@ statement (some R ≤ f(p) works for *every* p), which no upper-bound
 sieve can deliver. Candidate genuinely-new inputs, in increasing order
 of speculation: (i) additive-combinatorial theorems (Olson-type bounded
 subset sums in cyclic groups) proving failing supports at every R are
-either small or subgroup-trapped — this would enlarge the *provable*
-forbidden structure and could push the conditional bound past Vaughan;
-(ii) bilinear/dispersion estimates treating p and the factors of p+R
+either small or subgroup-trapped — **now done at the fixed-R level:
+Theorem S (§2.7) proves via Kneser's theorem that failing supports are
+small (≤ (R−3)/2), and its proof shows the extremal ones are
+subgroup-trapped (the stabilizer H is nontrivial and S concentrates on
+H up to ≤ d/h − 2 outliers)**. What the fixed-R statement does *not* by
+itself deliver is the growing-list aggregation: the per-branch forbidden
+classes remain p-dependent and the branch count per residual, though
+finite, grows — walls 1 and 2 of §2.8 stand. Passing Vaughan would
+require the subgroup-trapped structure to be exploited *uniformly in R*
+(fewer, p-independent branches), which is now a well-posed additive-
+combinatorics question rather than a computation; (ii)
+bilinear/dispersion estimates treating p and the factors of p+R
 symmetrically; (iii) a mean-value treatment of the certificate count
 itself (the Vaughan route) upgraded with the residual structure.
 
@@ -720,6 +868,10 @@ by class misses alone.
 
 Minimal-R distribution at 10⁹: R=3 covers 49.1 %, {3,7,11} covers 91.3 %,
 R ≤ 23 covers 99.3 %. Full histogram in `data/analysis/dist_1e9.json`.
+
+*(The gap discussed below was subsequently filled between 10¹⁰ and
+10¹¹ exactly as the model predicted — see §6. This section keeps the
+10⁹-era analysis that made the prediction.)*
 
 **The gap needs no modular explanation.** Under the independence model
 (Section 6), expected counts of primes with minimal R = 87, 91, 95, 99, 103
@@ -824,14 +976,18 @@ sampling plus full tail checks; exhaustive below 10⁹):**
    A but cannot reach emptiness. By completeness (R_min ≤ 2p ⟺ ESC), any
    unconditional bound on R_min is the conjecture itself.
 2. **More exact criteria / longer chains.** ~~R = 11.~~ **Done** (A″,
-   §2.6). ~~Lemma S at 19, 23.~~ ~~At 31…107.~~ **Done** — the subset-DP
-   verifies every prime residual to 107 (§2.7); chain exponent 17/2, and
-   19/2 with the aggregate families (Theorem I). Next: composite residuals
-   (R = 15 first: coupled conditions mod 3 and mod 5, meta-theorem
-   componentwise), Lemma S past 107 (DP state count grows ≈2.8× per
-   residual), and Olson-type additive combinatorics to enlarge the
-   provable forbidden structure — the one route that could conditionally
-   pass Vaughan (§2.8).
+   §2.6). ~~Lemma S at 19, 23.~~ ~~At 31…107.~~ **Done** (subset-DP,
+   §2.7). ~~Composite residuals (R = 15 first).~~ **Done** — Theorem A‴
+   (§2.6): a clean Jacobi-character dichotomy, no budget cases; general
+   engine `solvable_exact_general` exact on every composite residual
+   tested. ~~Lemma S past 107.~~ ~~Olson-type additive combinatorics.~~
+   **Both done at once** — Theorem S (§2.7): Kneser's addition theorem
+   proves the support bound for every residual unconditionally; the
+   chain reaches exponent 1 + |P|/2 for arbitrary finite admissible
+   lists (31/2 for the 27-residual list ≤ 107 with the aggregate
+   families). Remaining on this axis: exploit the subgroup-trapped
+   structure *uniformly in R* (p-independent branches) — the residue of
+   the route that could conditionally pass Vaughan (§2.8, §2.9).
 3. ~~**Understand deep-tail correlation.**~~ **Done** — Theorem J (§2.9):
    joint Type-I failure is controlled by one Legendre coin (p|q) per
    distinct prime of the interval factorizations; smoothness = fewer
@@ -849,4 +1005,18 @@ python -m erdos_straus.theory --masks data/analysis/residual_masks_1e9.json.gz
 
 # Theorem A' finite verification alone (fast)
 python -c "from erdos_straus.theory import verify_R7_finite; print(verify_R7_finite())"
+
+# Theorem A''' (R = 15): finite enumeration, then validation vs ground truth
+python -c "from erdos_straus.theory import verify_R15_finite; print(verify_R15_finite())"
+python - <<'EOF'
+import gzip, json
+from erdos_straus.theory import validate_R15_criterion
+with gzip.open("data/analysis/residual_masks_1e9.json.gz", "rt") as f:
+    masks = {int(k): int(v) for k, v in json.load(f).items()}
+print(validate_R15_criterion(masks))
+EOF
+
+# Theorem S: strong (Kneser) support bound, cyclic + general abelian forms
+python -c "from erdos_straus.theory import verify_support_bound_strong as v; print(v(31))"
+python -c "from erdos_straus.theory import kneser_support_general as k; print(k(15)); print(k(35))"
 ```

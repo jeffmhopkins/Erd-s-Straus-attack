@@ -1,5 +1,5 @@
 /-
-Proposition 1.10 of the paper (aggregate identity families; "Theorem I"
+Proposition 1.12 of the paper (aggregate identity families; "Theorem I"
 in the development notes) and the hard-class local facts. The two
 family theorems are corollaries of `certificate_sound`; the hard-class
 facts are direct finite checks.
@@ -8,7 +8,7 @@ import ErdosStraus.Basic
 
 namespace ErdosStraus
 
-/-- **Aggregate identities, first family** (Proposition 1.10). If `R ∣ p + 1` (with the usual residual
+/-- **Aggregate identities, first family** (Proposition 1.12). If `R ∣ p + 1` (with the usual residual
 setup), then `k = a·p²` certifies: explicit `b, c` exist with the
 Erdős–Straus identity. -/
 theorem family_p_plus_one
@@ -29,7 +29,7 @@ theorem family_p_plus_one
     certificate_sound p R a m (a * p ^ 2) a b c hR ha hm
       (by rw [hm]; ring) hb'.symm hc'.symm⟩
 
-/-- **Aggregate identities, second family** (Proposition 1.10). If `R ∣ p + 4` and `R` is odd, then
+/-- **Aggregate identities, second family** (Proposition 1.12). If `R ∣ p + 4` and `R` is odd, then
 `k = a²·p` certifies. -/
 theorem family_p_plus_four
     (p R a m : ℤ) (hR : R ≠ 0) (hRodd : Odd R)
@@ -62,7 +62,7 @@ theorem family_p_plus_four
     certificate_sound p R a m (a ^ 2 * p) p b c hR ha hm
       (by rw [hm]; ring) hb'.symm hc'.symm⟩
 
-/-- The six hard classes are exactly the squares of units mod 840
+/-- Each of the six hard classes is the square of a unit mod 840
 (witnesses: 1², 11², 13², 17², 19², 23²). -/
 theorem hard_classes_are_squares :
     ∀ h ∈ [1, 121, 169, 289, 361, 529],

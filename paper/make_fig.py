@@ -2,8 +2,13 @@
 
 Log-scale histogram of the minimal-residual distribution over all
 128,671,219 hard primes below 10^11, from the distribution of
-Table 1 (data/hard_primes_1e11_minimalR.*). Fonts are set to match
-the paper's Computer Modern serif.
+Table 1 (data/hard_primes_1e11_minimalR.*). The figure is built at
+its final printed size (6.3 in = the paper's text width, included at
+width=\\linewidth), so font sizes below are true on-page sizes, and
+fonts are embedded as vector outlines (pdf.fonttype 42), matching the
+paper's Latin Modern text.
+
+Requires matplotlib (pip install -e ".[fig]").
 
 Usage:  python make_fig.py   (from paper/)
 """
@@ -20,7 +25,8 @@ plt.rcParams.update(
         "mathtext.fontset": "cm",
         "axes.formatter.use_mathtext": True,
         "axes.unicode_minus": False,
-        "font.size": 11,
+        "font.size": 10,
+        "pdf.fonttype": 42,
     }
 )
 
@@ -33,25 +39,26 @@ DIST = {
     95: 5, 99: 1, 103: 1, 107: 1,
 }
 
-fig, ax = plt.subplots(figsize=(8.4, 4.2))
+fig, ax = plt.subplots(figsize=(6.3, 3.4))
 xs = list(DIST.keys())
 ys = [DIST[r] for r in xs]
 # The band 87-103 was empty below 10^10 (Section 5.1 of the paper).
 ax.axvspan(85, 105, color="0.88", zorder=0)
-ax.text(95, 5e6, "band empty\nbelow $10^{10}$", ha="center",
-        fontsize=8.5, color="0.35")
+ax.text(95, 6e6, "band empty\nbelow $10^{10}$", ha="center",
+        fontsize=8, color="0.35")
 ax.bar(xs, ys, width=3.0, color="#3b5b92", edgecolor="black",
        linewidth=0.4, log=True, zorder=2)
 ax.set_xlabel(r"minimal residual $R_{\min}$")
 ax.set_ylabel("hard primes (log scale)")
 ax.set_xticks(xs)
-ax.set_xticklabels([str(r) for r in xs], fontsize=8)
+ax.set_xticklabels([str(r) for r in xs], fontsize=7)
+ax.tick_params(axis="y", labelsize=8)
 ax.set_ylim(0.5, 2e8)
 ax.annotate(
     r"record: unique prime $p = 8{,}803{,}369$",
-    xy=(107, 1), xytext=(80, 3e3),
+    xy=(107, 1), xytext=(72, 2e3),
     arrowprops=dict(arrowstyle="->", lw=0.8),
-    fontsize=9,
+    fontsize=8,
 )
 ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)

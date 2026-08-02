@@ -287,6 +287,78 @@ def test_support_bound_dp_holds_through_R43():
         assert res["status"] == "OK" and res["lemma_holds"], (R, res)
 
 
+def test_theorem_Atriple_R15_finite_enumeration():
+    """Theorem A''' (R=15): the exhaustive configuration enumeration has
+    no violations — success iff a Jacobi non-residue factor class occurs,
+    with zero budget failures (the consistency relation kills them)."""
+    from erdos_straus.theory import verify_R15_finite
+
+    r = verify_R15_finite()
+    assert r["theorem_holds"], r["violations"][:3]
+    assert r["configs"] == 349_920
+    assert r["fail"] == 540 and r["fail_with_nonresidue"] == 0
+
+
+def test_theorem_Atriple_R15_criterion_matches_solver():
+    """Theorem A''': R=15 works iff (p+15)/4 has a prime factor
+    ≡ 7, 11, 13, 14 (mod 15) — i.e. with Jacobi (q|15) = −1."""
+    from erdos_straus.bulk_generate import _init_small_primes, solve_residual
+    from erdos_straus.theory import criterion_R15
+    from erdos_straus.solver import generate_hard_primes
+
+    _init_small_primes()
+    for p in generate_hard_primes(200000):
+        assert criterion_R15(p) == (solve_residual(p, 15) is not None), p
+
+
+def test_solvable_exact_general_composites_match_solver():
+    """The general (composite-R) exact engine agrees with the divisor
+    search on the first composite residuals."""
+    from erdos_straus.bulk_generate import _init_small_primes, solve_residual
+    from erdos_straus.theory import solvable_exact_general
+    from erdos_straus.solver import generate_hard_primes
+
+    _init_small_primes()
+    for p in generate_hard_primes(60000):
+        for R in [15, 27, 35, 39]:
+            assert solvable_exact_general(p, R) == (
+                solve_residual(p, R) is not None), (p, R)
+
+
+def test_solvable_exact_general_agrees_with_prime_engine():
+    """On prime R the general engine reduces to the cyclic one."""
+    from erdos_straus.bulk_generate import _init_small_primes
+    from erdos_straus.theory import solvable_exact, solvable_exact_general
+    from erdos_straus.solver import generate_hard_primes
+
+    _init_small_primes()
+    for p in generate_hard_primes(60000):
+        for R in [11, 19]:
+            assert solvable_exact_general(p, R) == solvable_exact(p, R), (p, R)
+
+
+def test_kneser_strong_support_bound_cyclic():
+    """Theorem S (Kneser): the maximum support of a non-full subset-sum
+    mask in Z/(R-1) is exactly (R-3)/2 — the strong form of Lemma S."""
+    from erdos_straus.theory import verify_support_bound_strong
+
+    for R in [19, 23, 31]:
+        r = verify_support_bound_strong(R)
+        assert r["status"] == "OK" and r["strong_holds"], r
+        assert r["max_nonfull_support"] == (R - 3) // 2
+
+
+def test_kneser_support_bound_general_abelian():
+    """The general-abelian (composite R) support bound: failure forbids
+    at least half of the phi(R) unit classes."""
+    from erdos_straus.theory import kneser_support_general
+
+    for R in [15, 27, 35]:
+        r = kneser_support_general(R)
+        assert r["holds"] and r["half_forbidden"], r
+        assert r["max_nonfull_support"] == r["g"] // 2 - 1
+
+
 def test_reciprocity_structure_theorem():
     """Theorem J: (q|R) = (p|q) for odd primes q | (p+R)/4, R prime."""
     from erdos_straus.bulk_generate import _init_small_primes, factorize
@@ -309,7 +381,7 @@ def test_reciprocity_structure_theorem():
 
 
 def test_aggregate_identity_families():
-    """Aggregate identity families (paper Prop. 1.10): p+1 / p+4 divisor identities give valid certificates,
+    """Aggregate identity families (paper Prop. 1.12): p+1 / p+4 divisor identities give valid certificates,
     and the certificate's R genuinely divides p+1 or p+4."""
     from erdos_straus.theory import aggregate_identity_certificate
     from erdos_straus.solver import generate_hard_primes
