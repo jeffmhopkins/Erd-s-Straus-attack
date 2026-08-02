@@ -78,14 +78,14 @@ every prime outside the six residue classes
 \]
 the squares of units modulo $840$ (Mordell \cite{Mordell}). We call primes
 in these classes \emph{hard primes}. Direct verification has confirmed the
-conjecture far beyond any range considered here (to $10^{14}$ by Swett, to
-$10^{17}$ by Salez \cite{Salez}, and further in recent work%
-\footnote{Verification to $10^{18}$ is reported in recent literature; the
-present paper is logically independent of that bound. % TODO: cite the
-% 2025 verification and the 2026 residual-certificate notes when finalizing.
-}); the structure of the solution count was analyzed by Elsholtz and Tao
-\cite{ElsholtzTao}. Verification, however, exhibits no mechanism; the aim
-here is a quantitative structural reduction.
+conjecture far beyond any range considered here: to $10^{14}$ by Swett
+\cite{Swett}, to $10^{17}$ by Salez \cite{Salez}, and to $10^{18}$ by
+Mihnea and Dumitru \cite{MihneaDumitru}; the present paper is logically
+independent of those bounds. The residual-certificate framework studied
+here appears in recent technical notes \cite{Notes2026}; the structure of
+the solution count was analyzed by Elsholtz and Tao \cite{ElsholtzTao}.
+Verification, however, exhibits no mechanism; the aim here is a
+quantitative structural reduction.
 
 \subsection{The residual method}
 
@@ -615,11 +615,24 @@ $\varphi(R)$ grows harder while the character dichotomy stays binary.
 
 \section{Verification details}\label{app:verif}
 
-Each computer-assisted component below is a deterministic, exhaustive
-enumeration of a finite space whose sufficiency is established in the
-text; all arithmetic is exact integer arithmetic, each run completes in
-seconds on commodity hardware, and the entry points named are in the
-module \texttt{erdos\_straus.theory} of the accompanying repository.
+This appendix documents every computer-assisted claim of the paper: the
+finite enumerations that are \emph{proof components}
+(Appendix~\ref{app:proof-components}), the large-scale certificate
+computations behind Section~\ref{sec:comp} and how each dataset is
+verified (Appendix~\ref{app:datasets}), and the commands that reproduce
+all of it (Appendix~\ref{app:repro}). All code is in the accompanying
+repository; every check is deterministic and uses exact integer
+arithmetic only.
+
+\subsection{Proof components}\label{app:proof-components}
+
+Each component below is an exhaustive enumeration of a finite space whose
+sufficiency is established in the text (Theorem~\ref{thm:meta} for the
+exact criteria; for Lemma~\ref{lem:S}, monotonicity of the
+reachability of the target in support and multiplicities, checked at
+minimal exponents).
+Each run completes in seconds on commodity hardware; the entry points
+named are in the module \texttt{erdos\_straus.theory}.
 
 \begin{center}
 \small
@@ -634,7 +647,7 @@ Thm.~\ref{thm:App} ($R=11$) &
 dynamic program over $(\mathbb{Z}/11)^*$ with the forced factor $3$;
 collapses to equivalence states ($16$ succeed, $6$ fail by character,
 $3$ by budget) & $25$ states &
-\texttt{finite\_criterion\_dp} \\ \hline
+\texttt{finite\_criterion}\newline\texttt{\_dp} \\ \hline
 Lem.~\ref{lem:S} ($R=19$) &
 all supports of size $9$ over the nonzero logs $\times$ all classes of
 $p$, at minimal multiplicities & $437{,}580$ &
@@ -651,6 +664,81 @@ divisor search on the complete solvability data below $10^9$: agreement
 in $1{,}587{,}581/1{,}587{,}581$ cases for $R = 3$ and
 $158{,}759/158{,}759$ sampled cases for $R = 11$, with zero
 discrepancies.
+
+\subsection{Certificate datasets and their verification}\label{app:datasets}
+
+The computational claims of Section~\ref{sec:comp} rest on the following
+datasets, all archived in the repository under \texttt{data/}. A
+certificate $(R, a, b, c)$ for $p$ is \emph{accepted} only if
+$4abc = p(bc + ac + ab)$ holds in exact integer arithmetic and
+$R = 4a - p$; for the compact minimal-$R$ maps, the verifier
+\emph{reconstructs} the triple from $(p, R)$ by the divisor search of
+\eqref{eq:cert} and then applies the same exact check, so a map entry is
+verified as a genuine certificate, not taken on faith.
+
+\begin{center}
+\small
+\begin{tabular}{p{3.7cm}|r|p{6.8cm}}
+dataset & entries & verification performed \\ \hline
+explicit triples, $p < 1.2 \times 10^8$ &
+$213{,}131$ &
+every triple checked exactly \\ \hline
+minimal-$R$ map, $p < 10^9$ &
+$1{,}587{,}581$ &
+\emph{exhaustive}: every entry reconstructed and checked exactly \\ \hline
+minimal-$R$ map, $p < 10^{10}$ &
+$14{,}215{,}707$ &
+$143{,}000$ systematically sampled entries reconstructed and checked;
+additionally \emph{all} $842$ tail entries ($R \ge 51$) checked with full
+minimality (no smaller admissible $R$ succeeds) \\ \hline
+solvability masks, $p < 10^9$ &
+$27 \times 1{,}587{,}581$ &
+per-prime solvability of every admissible $R \le 107$ by full divisor-class
+computation; consistency with the minimal-$R$ map \\
+\end{tabular}
+\end{center}
+
+The masks table is the basis for the covering-set statements (the
+$18$-residual cover, the lower bound $12$, the four critical primes), the
+failure taxonomy, and the calibration of Section~\ref{sec:comp}; the
+minimal-$R$ maps are the basis for the distribution table, the record,
+and the gap analysis.
+
+\subsection{Reproduction}\label{app:repro}
+
+With the repository installed (\texttt{pip install -e .}), the following
+commands regenerate and re-verify everything above. Generation of the
+full $10^{10}$ map takes about $11$ minutes on four cores; every other
+command runs in seconds to minutes.
+
+\begin{center}
+\small
+\begin{tabular}{p{5.2cm}|p{7.6cm}}
+claim & command \\ \hline
+Thm.~\ref{thm:Ap} finite check &
+\texttt{python -c "from erdos\_straus.theory} \newline
+\texttt{import verify\_R7\_finite;} \newline
+\texttt{print(verify\_R7\_finite())"} \\ \hline
+Thm.~\ref{thm:App} enumeration &
+\texttt{finite\_criterion\_dp(11, ...)} as in the test suite
+(\texttt{tests/test\_solver.py}) \\ \hline
+Lem.~\ref{lem:S} at $R = 19, 23$ &
+\texttt{verify\_support\_bound(19)}, \texttt{(23)} \\ \hline
+generate the $10^{10}$ map &
+\texttt{python -m erdos\_straus.bulk\_generate} \newline
+\texttt{--max 10000000000 --segmented --store rmap} \\ \hline
+verify a dataset exhaustively &
+\texttt{python -m erdos\_straus.verify} \texttt{data/<file>} \\ \hline
+distribution / covering / taxonomy &
+\texttt{python -m erdos\_straus.analyze} \{\texttt{dist},
+\texttt{cover}, \texttt{tail}\}; \texttt{python -m erdos\_straus.theory}
+\\
+\end{tabular}
+\end{center}
+
+The full test suite (\texttt{python -m pytest}; $43$ tests) exercises the
+proof-component checks, the exact criteria against ground truth, and
+sampled dataset validation on every run.
 
 \begin{thebibliography}{9}
 
@@ -670,10 +758,21 @@ H.~Halberstam and H.-E.~Richert,
 \emph{Sieve Methods},
 Academic Press, London, 1974.
 
+\bibitem{MihneaDumitru}
+Mihnea and Dumitru,
+\emph{Verification of the Erd\H{o}s--Straus conjecture up to $10^{18}$},
+2025. \emph{[Full bibliographic details --- author initials and venue ---
+to be confirmed before submission.]}
+
 \bibitem{Mordell}
 L.~J.~Mordell,
 \emph{Diophantine Equations},
 Academic Press, London, 1969, Chapter~30.
+
+\bibitem{Notes2026}
+\emph{Residual certificates for the Erd\H{o}s--Straus equation},
+technical notes, 2026. \emph{[Author(s) and venue to be confirmed before
+submission.]}
 
 \bibitem{Salez}
 S.~E.~Salez,
@@ -681,8 +780,11 @@ S.~E.~Salez,
 checking up to $N = 10^{17}$},
 preprint, arXiv:1406.6307, 2014.
 
-% TODO before submission: add the 2025 verification-to-10^18 reference and
-% the 2026 residual-certificate notes; confirm the Swett 10^14 citation.
+\bibitem{Swett}
+A.~Swett,
+\emph{The Erd\H{o}s--Straus conjecture},
+online verification record to $10^{14}$,
+\url{http://math.uindy.edu/swett/esc.htm}, 1999.
 
 \end{thebibliography}
 
