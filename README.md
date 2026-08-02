@@ -61,9 +61,10 @@ data/
                                    residual masks, high-R tail, and
                                    theory-validation reports
 tests/
-  test_solver.py       46 tests: units, certificates, theorem checks
+  test_solver.py       52 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (19 pp.)
+  erdos_straus_residuals.tex/.pdf   the manuscript (23 pp.)
+  make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
 lean/
   ErdosStraus/         Lean 4 + mathlib formalization (7 modules: Basic,
                        Families, TheoremA, Enumerations, Bridges,
@@ -77,8 +78,9 @@ THEORY.md              theoretical development with proofs
 
 All **128,671,219** hard primes below **10¹¹** have verified solutions:
 full explicit triples up to 1.2 × 10⁸, compact minimal-R maps to 10¹⁰, and
-the R-sequence dataset at 10¹¹ (triples reconstruct deterministically and
-are re-derived and exactly checked — never taken on faith). The maximal
+the R-sequence dataset at 10¹¹ (triples reconstruct deterministically;
+verification is exhaustive below 10⁹ and by systematic sampling plus
+full tail checks beyond). The maximal
 minimal residual is **R = 107**, attained at a *single* prime
 (8,803,369 < 10⁷) — unchanged from 5×10⁷ to 10¹¹. At 10¹¹, `R = 3` covers
 54 % of hard primes and `R ∈ {3, 7, 11}` covers 94 % (49 % and 91 % at
@@ -117,11 +119,11 @@ produces the explicit positive certificate (the meta-theorem's
 reduction, fully symbolic). On top: the composed corollary (nine
 prime factors of (p+19)/4 in distinct nontrivial classes mod 19 ⟹
 explicit solution, end to end) and Lemma S at R = 31 by certified
-dynamic programming (77.5M supports covered through 3,001 states via
-a machine-checked soundness induction — never enumerated). Every
-declaration is sorry-free and
-axiom-audited via `#print axioms` (see [lean/README.md](lean/README.md) for the trust
-base).
+dynamic programming (77.6M supports covered through 3,001 states via
+a machine-checked soundness induction — never enumerated). The
+development is sorry-free; every main theorem is audited via
+`#print axioms`, with helper lemmas covered transitively (see
+[lean/README.md](lean/README.md) for the trust base).
 
 ## Setup
 
@@ -215,12 +217,13 @@ verified via `erdos_straus.verify.verify_npz` after regenerating the
 prime/R arrays (`bulk_generate --store rseq`); its meta.json pins the
 prime array by sha256, and the generation pipeline is validated
 byte-for-byte against the exhaustively verified 10⁹ map. Compact minimal-R maps are
-verified by *reconstructing* each triple from $(n, R)$ — never taken on
-faith.
+verified by *reconstructing* triples from $(n, R)$ and re-checking them
+exactly — exhaustively at 10⁹, by systematic sampling plus full tail
+minimality beyond.
 
 ## Scope & prior work
 
-Documented verification rules out counterexamples to $10^{14}$ (Swett) and
+Documented verification rules out counterexamples to $10^{14}$ (Swett), and beyond — $10^{17}$ (Salez), $10^{18}$ (Mihnea–Bogdan) — and
 $10^{17}$ (Salez), and Vaughan (1970) bounds the exceptional set by
 $x\exp(-c(\log x)^{2/3})$ — stronger in density than any fixed power of
 $\log x$. This project does not compete on either axis: it contributes the

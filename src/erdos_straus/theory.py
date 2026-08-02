@@ -628,7 +628,7 @@ def verify_support_bound_dp(R: int, time_budget: float = 900.0) -> Dict:
     achieving it. The lemma holds iff no mask realized by >= (R-1)/2
     nonzero classes misses the target for some class of p. Realized masks
     are heavily structured, so the state count stays small (e.g. 3,001
-    states at R=31 vs 77.5M supports; 13.0M states at R=103).
+    states at R=31 vs 77.6M supports; 13.0M states at R=103).
     """
     d = R - 1
     _, LOG = _dlog_table(R)

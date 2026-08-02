@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{graphicx}
 \usepackage{array}
@@ -106,7 +107,8 @@ independent of those bounds. The structure of
 the solution count was analyzed by Elsholtz and Tao~\cite{ElsholtzTao}.
 Verification, however, carries no structural information; the aim here
 is a quantitative structural reduction. For calibration: the first
-density bounds on the exceptional set are due to Webb~\cite{Webb}, and
+density bounds on the exceptional set are due to Webb~\cite{Webb},
+sieve bounds were advanced by Sander~\cite{Sander}, and
 Vaughan's classical
 mean-value bound~\cite{Vaughan} gives an exceptional set
 $\ll x \exp(-c(\log x)^{2/3})$ for \eqref{eq:es} --- asymptotically
@@ -202,16 +204,17 @@ elementary congruences drive everything below. From $4a = p + R$,
 \begin{equation}\label{eq:star}
   a \equiv 4^{-1}p, \qquad m \equiv 4^{-1}p^2 \pmod R,
 \end{equation}
-and since $\gcd(p, R) = 1$ (as $p > R$ is prime), also
+and since $\gcd(p, R) = 1$ (as $p$ is prime and $R \ne p$,
+$R \equiv 3 \not\equiv p \pmod 4$), also
 $\gcd(a, R) = \gcd(m, R) = 1$: the setting is always a unit computation
 modulo $R$. By \eqref{eq:star}, $m$ is a \emph{square} modulo every prime
 $r \mid R$; hence for every prime $r \mid R$ with $r \equiv 3 \pmod 4$
 (at least one exists, since $R \equiv 3 \pmod 4$),
 \begin{equation}\label{eq:target}
   \legendre{-m}{r} \;=\; \legendre{-1}{r}
-  \;=\; -1:
+  \;=\; -1
 \end{equation}
-\emph{the target class $-m$ is a quadratic non-residue mod $r$.}
+--- \emph{the target class $-m$ is a quadratic non-residue mod $r$.}
 
 \paragraph{A worked example.} Take the hard prime $p = 1009$
 ($\equiv 169 \pmod{840}$) and the smallest admissible residual $R = 3$.
@@ -323,10 +326,13 @@ exponents). The checks are short (seconds each, up to $331$\,s for the largest,
 $R = 107$), involve only exact integer arithmetic, and the code is
 available in the
 accompanying repository; Table~\ref{tab:components} records the exact
-configuration counts and entry points. The enumerations are
+configuration counts and entry points. The enumerations at
+$R = 7, 11$ and the $R = 19, 23, 31$ cases of Lemma~\ref{lem:S} are
 additionally formalized in Lean~4, with the reductions they rely on
-proved as theorems rather than trusted; Appendix~\ref{app:verif}
-gives the inventory and the exact trust base.
+proved as theorems rather than trusted (the $R = 15$ enumeration and
+the remaining cases of Lemma~\ref{lem:S} run in the Python layer
+only); Appendix~\ref{app:verif} gives the inventory and the exact
+trust base.
 \end{remark}
 
 The obstruction framework of Section~\ref{sec:obstruction} yields a
@@ -415,8 +421,8 @@ Let $p \equiv 1 \pmod 4$ be prime and $R \equiv 3 \pmod 4$. If
 $R \mid p+1$, then $k = a p^2$ is a certificate for residual $R$; if
 $R \mid p+4$, then $k = a^2 p$ is. Hence any prime factor
 $\equiv 3 \pmod 4$ of $p+1$ or of $p+4$ yields an explicit solution,
-and these are the only $a$-independent divisor shapes $k = a^j p^i$ with
-this property. Adding the two corresponding linear forms to
+and no divisor shape $k = a^j p^i$ yields a further $p$-only
+condition. Adding the two corresponding linear forms to
 Theorem~\ref{thm:FG}: the number of hard primes $p \le x$ failing every
 prime residual up to $107$ and both families is
 $O(x/(\log x)^{19/2})$; with the full $27$-element admissible list the
@@ -682,9 +688,7 @@ failures at all: the consistency relation forces
 $\prod \legendre{q}{15}^{\mu_q} = \legendre{4p}{15} = +1$, so
 non-residue factors occur with even total multiplicity, and the
 enumeration confirms that any two non-residue units (or one squared),
-together with the forced powers of $2$, always reach the target. The
-criterion agrees with ground-truth divisor search for $158{,}759$ of
-$158{,}759$ hard primes tested below $10^9$.
+together with the forced powers of $2$, always reach the target.
 \end{proof}
 
 \begin{remark}
@@ -746,7 +750,9 @@ distinct for $q \nmid 21$. By Dirichlet, $\omega$ has average $\kappa =
 \tfrac12 + \tfrac12 + 1 = 2$ in the Halberstam--Richert sense
 $\sum_{q \le w} \omega(q) \log q / q = \kappa \log w + O(1)$. The
 Fundamental Lemma of sieve theory (see~\cite[Thm.~2.5]{HalberstamRichert}
-and~\cite[Lem.~6.3]{FriedlanderIwaniec}) with $z = x^{1/10}$ gives
+and~\cite[Lem.~6.8]{FriedlanderIwaniec}) with $z = x^{1/10}$ bounds
+the exceptional set $E(x)$ of hard primes $p \le x$ failing both
+residuals:
 \[
   \#E(x) \;\ll\; x \prod_{7 < q \le z} \Bigl(1 - \frac{\omega(q)}{q}\Bigr)
   \;\asymp\; x \,(\log z)^{-1} (\log z)^{-1/2} (\log z)^{-1/2}
@@ -765,7 +771,8 @@ which we isolate for scrutiny.
 For a class multiset $C$ (classes $v$ with multiplicities $\mu_v$) let
 $D(C) = \{\sum_v e_v v : 0 \le e_v \le 2\mu_v\}$ denote the set of
 attainable divisor logs (before the $p$-shifts). If $\mu_v \le \mu'_v$
-for all $v$, then $D(C) \subseteq D(C')$; likewise enlarging the support
+for all $v$, then $D(C) \subseteq D(C')$, where $C'$ carries
+multiplicities $\mu'_v$ on the same classes; likewise enlarging the support
 enlarges $D$. Consequently a support $S$ carries \emph{some} failing
 configuration (any multiplicities $\ge 1$ on $S$) if and only if the
 all-multiplicity-one configuration on $S$ fails.
@@ -790,7 +797,8 @@ The check deliberately ignores the consistency relation
 $\prod(\text{classes}) \equiv 4^{-1}p$: it therefore examines a
 \emph{superset} of the realizable configurations, and can only
 overstate the failing supports --- the lemma is conservative. For $R = 19, 23$ a
-direct enumeration of all $\binom{R-2}{(R-1)/2}$ supports suffices
+direct enumeration of all $(R-1)\binom{R-2}{(R-1)/2}$
+(support, class of $p$) pairs suffices
 ($437{,}580$ resp.\ $7{,}759{,}752$ pairs; code:
 \texttt{theory.verify\_support\_bound}). For the larger residuals the
 binomial count explodes, and the check is instead performed by a subset
@@ -799,7 +807,7 @@ supports into a table mapping each reachability mask to the maximal
 support size achieving it --- valid because, by the same monotonicity,
 failure at any multiplicities implies failure at multiplicity one. The
 realized masks are heavily structured, so the state count stays
-tractable ($3{,}001$ states at $R = 31$ against $77.5$~million supports;
+tractable ($3{,}001$ states at $R = 31$ against $77.6$~million supports;
 $19{,}530{,}971$ states at $R = 107$, $331$ seconds). All twelve
 residuals verify with zero violations; exact state counts are tabulated
 in Table~\ref{tab:components}. The bound is tight: the all-residue
@@ -971,7 +979,8 @@ $M = 840 \cdot \prod_{R \in S(A)} R$.
 
 Write $n = (p+3)/4$ as before, so $(p+R)/4 = n + (R-3)/4$ for each
 $R \in S(A)$: a family of $|S(A)|$ integer linear forms in $n$ with
-pairwise distinct shifts, together with the form $4n - 3 = p$. Fix a
+pairwise distinct shifts, together with the form $4n - 3 = p$. Set
+$z = x^{1/10}$ and discard the $O(z)$ primes $p \le z$. Fix a
 residue class $n \equiv n_0 \pmod M$ compatible with $p$ hard; there are
 finitely many, and it suffices to bound each. Within such a class, for
 every $R \in S(A)$ the quantities $t \equiv -4^{-1}p^2$ and
@@ -981,11 +990,11 @@ Proposition~\ref{prop:succ} is a fixed nonempty set of
 $t_R = t_R(n_0) \in \{1, 2, 3\}$ classes. By the contrapositive of
 Proposition~\ref{prop:succ}, if every residual in $S(A)$ fails at $p$,
 then for each $R \in S(A)$ the form $n + (R-3)/4$ has \emph{no} prime
-factor in $S_R(p)$; and $4n - 3$, being prime and $> z$, has no prime
-factor $\le z$.
+factor in $S_R(p)$; and $4n - 3$, being prime and greater than $z$,
+has no prime factor $\le z$.
 
 Sift the class $\{n \le (x+3)/4 : n \equiv n_0 \ (M)\}$ by the primes
-$q \le z = x^{1/10}$, $q \nmid M$. A prime $q$ forbids: the class
+$q \le z$, $q \nmid M$. A prime $q$ forbids: the class
 $n \equiv 3 \cdot 4^{-1} \pmod q$ (from the primality of $4n - 3$), and,
 for each $R \in S(A)$ with $q \bmod R \in S_R(p)$, the single class
 $n \equiv -\tfrac{R-3}{4} \pmod q$ (a prime factor $q$ of the form
@@ -1063,11 +1072,12 @@ Figure~\ref{fig:hist}).}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=.92\linewidth]{fig_minR_hist}
+\includegraphics[width=\linewidth]{fig_minR_hist}
 \caption{The data of Table~\ref{tab:dist} on a logarithmic count
 scale. The head is dominated by $R = 3, 7, 11$; the tail thins
 geometrically; the shaded band $87$--$103$ was empty below $10^{10}$
-(its late population is analyzed below); the record $R = 107$ is
+and its late population matched the calibrated prediction
+(Section~\ref{sec:comp}); the record $R = 107$ is
 attained by a single prime below $10^7$.}
 \label{fig:hist}
 \end{figure}
@@ -1079,11 +1089,18 @@ Three features of the distribution deserve comment.\nopagebreak
   language of Corollary~\ref{cor:J}: its $27$ shifted values contain
   only $43$ distinct odd primes (typical: $45$--$52$), and $81\%$ of
   them satisfy $\smash{\legendre{p}{q}} = +1$ (typical: $44$--$60\%$)
-  --- a $\approx 4\sigma$ fluctuation in the statistic that
+  --- a $\approx 4\sigma$ fluctuation ($z = 4.1$ against the
+  binomial null of independent unit signs) in the statistic that
   Theorem~\ref{thm:J} identifies as governing joint failure.
-\item \textbf{A confirmed prediction.} Below $10^{10}$ no prime had
-  minimal $R \in \{87, 91, 95, 99, 103\}$; the calibrated independence
-  model attributed this gap to small-number statistics (expected counts
+\item \textbf{A confirmed prediction.} The \emph{calibrated
+  independence model} treats the per-residual failure events as
+  independent across $R$, with per-residual failure rates fitted from
+  the complete $10^9$ solvability masks and a single deep-tail
+  correlation factor calibrated on the $R > 83$ counts; it is a
+  heuristic, not a theorem, and its role is to make falsifiable
+  predictions. Below $10^{10}$ no prime had
+  minimal $R \in \{87, 91, 95, 99, 103\}$; the model
+  attributed this gap to small-number statistics (expected counts
   $\le 0.12$ per value at $10^9$) and predicted that deep-tail primes
   (failing every $R \le 83$) land at $87, 91, 95, 99, 103, \ge 107$
   with probabilities $0.53, 0.11, 0.22, 0.03, 0.05, 0.06$ (the last
@@ -1106,20 +1123,20 @@ Three features of the distribution deserve comment.\nopagebreak
 \subsection{Calibration of the base case of Theorem~\ref{thm:FG}}
 
 The proportion of hard primes failing both $R = 3$ and $R = 7$, multiplied
-by $\log x$, is constant to within $2\%$ across three decades of the
+by $\log x$, is constant to within $1\%$ across three decades of the
 $10^9$ data (Table~\ref{tab:calib}).
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{cccccc}
+\begin{tabular}{lccccc}
 \toprule
 bin ($p \sim$) & $10^6$ & $10^7$ & $6 \times 10^7$ & $2.5 \times 10^8$ & $10^9$ \\ \midrule
 density $\times \log x$ & 5.14 & 5.19 & 5.18 & 5.17 & 5.16 \\
 \bottomrule
 \end{tabular}
 \caption{The proportion of hard primes near $x$ that fail both
-$R = 3$ and $R = 7$, multiplied by $\log x$, in five logarithmically
-spaced bins of the $10^9$ data. Constancy of the product is the decay
+$R = 3$ and $R = 7$, multiplied by $\log x$, in five bins spanning three decades
+of the $10^9$ data ($x$ is the bin's representative value). Constancy of the product is the decay
 rate predicted by the base case of Theorem~\ref{thm:FG}.}
 \label{tab:calib}
 \end{table}
@@ -1130,9 +1147,11 @@ right, and $5.17$
 estimates the (conjectural) Selberg--Delange constant. The exceptional
 set is density zero but decays slowly: $26.5\%$ of hard primes below
 $10^9$ fail both residuals; all are settled by deeper residuals of the
-list. The fitted per-residual decay exponents likewise match the sieve
-prediction $\kappa = \tfrac12$ where exact criteria exist (e.g.\
-$\hat\kappa = 0.539$ for $R = 7$).
+list. The fitted per-residual decay exponents are consistent with the
+sieve prediction $\kappa = \tfrac12$ where exact criteria exist:
+$\hat\kappa = 0.539$ for $R = 7$, and $\hat\kappa = 0.387$ for
+$R = 3$, where the short fitting range and Selberg--Delange lower-order
+terms bias the exponent downward.
 
 \subsection{Failure taxonomy}
 
@@ -1261,8 +1280,8 @@ seconds (the largest, the $R = 107$ dynamic program, in
 afternoon's work, and we would welcome one.
 
 Fourth, much of the development is formalized in the accompanying
-repository (\texttt{lean/}) in Lean~4 with its mathematical library
-mathlib. For readers unfamiliar with proof assistants: Lean is a
+repository (\texttt{lean/}) in Lean~4~\cite{Lean4} with its
+mathematical library mathlib~\cite{mathlib}. For readers unfamiliar with proof assistants: Lean is a
 language in which theorem statements and proofs are written formally
 and every proof is checked by a small trusted \emph{kernel}, so a
 theorem accepted by the kernel is correct relative to its formal
@@ -1309,12 +1328,17 @@ ultimately uses. The formalization comprises:
   $R = 31$ by \emph{certified dynamic programming} --- the
   $\binom{29}{15} = 77{,}558{,}760$ supports are never enumerated; a
   machine-checked induction shows the dynamic program covers every
-  support, and the evaluator's only task is the final check that
-  every state realized by $\ge 15$ classes hits all $30$ targets
-  ($3{,}001$ states in the run).
+  support, and the compiled evaluator runs the dynamic program itself
+  together with the final check that every state realized by $\ge 15$
+  classes hits all $30$ targets ($3{,}001$ states in the run) --- the
+  program's \emph{correctness} is proved; its evaluation is what
+  \texttt{native\_decide} trusts.
 \end{itemize}
 Every main theorem is audited with \texttt{\#print axioms}, and
-helper lemmas are covered transitively through them. For these
+helper lemmas are covered transitively through them. (Not formalized:
+Theorem~\ref{thm:R15}, Theorem~\ref{thm:S}, and the analytic sieve
+arguments of Section~\ref{sec:sieve} --- these rest on the Python
+layer and the hand proofs alone.) For these
 enumerations the sixty-line trust base above is thus replaced by the
 Lean toolchain evaluating a formally stated proposition --- and the
 Python and Lean implementations, written independently against the
@@ -1325,7 +1349,7 @@ documentation includes the dictionary.)
 \begin{table}[ht]
 \centering
 \small
-\begin{tabular}{>{\raggedright\arraybackslash}p{2.7cm}>{\raggedright\arraybackslash}p{5.0cm}r>{\raggedright\arraybackslash}p{3.4cm}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{4.4cm}r>{\raggedright\arraybackslash}p{4.4cm}}
 \toprule
 component & configuration space & count & entry point \\ \midrule
 Thm.~\ref{thm:Ap} ($R=7$) &
@@ -1337,7 +1361,7 @@ Thm.~\ref{thm:App} ($R=11$) &
 dynamic program over $(\mathbb{Z}/11)^*$ with the forced factor $3$;
 collapses to $25$ equivalence states ($16$ succeed, $6$ fail by
 character, $3$ by budget) & $25$ &
-\texttt{finite\_\allowbreak criterion\_dp} \\ \addlinespace
+\texttt{finite\_criterion\_dp} \\ \addlinespace
 Thm.~\ref{thm:R15} ($R=15$) &
 class multisets in $(\mathbb{Z}/15)^*$, multiplicities $\le 5$, with the
 forced even factor, $p \bmod 15 \in \{1, 4\}$, and the consistency
@@ -1347,16 +1371,16 @@ failures) & $349{,}920$ &
 Lem.~\ref{lem:S} ($R=19$) &
 all supports of size $9$ over the nonzero logs $\times$ all classes of
 $p$, at minimal multiplicities & $437{,}580$ &
-\texttt{verify\_\allowbreak support\_bound} \\ \addlinespace
+\texttt{verify\_support\_bound} \\ \addlinespace
 Lem.~\ref{lem:S} ($R=23$) &
 all supports of size $11$, likewise & $7{,}759{,}752$ &
-\texttt{verify\_\allowbreak support\_bound} \\ \addlinespace
+\texttt{verify\_support\_bound} \\ \addlinespace
 Lem.~\ref{lem:S} ($R = 19$--$107$, all twelve primes) &
 subset dynamic program over reachability-mask states; state counts
 $271$ ($R{=}19$), $3{,}001$ ($R{=}31$), $2{,}414{,}145$ ($R{=}83$),
 $19{,}530{,}971$ ($R{=}107$); zero violations throughout &
 $\approx 19.5$M &
-\texttt{verify\_\allowbreak support\_bound\_dp} \\
+\texttt{verify\_support\_bound\_dp} \\
 \bottomrule
 \end{tabular}
 \caption{Machine-verified proof components: enumerated configuration
@@ -1453,15 +1477,15 @@ Thm.~\ref{thm:Ap} finite check &
 \texttt{\ \ print(verify\_R7\_finite())"} \\ \addlinespace
 Thm.~\ref{thm:App} enumeration &
 \texttt{finite\_criterion\_dp(11,} \newline
-\texttt{\ \ forced\_logs=[\_dlog\_table(11)[3]])} from
+\texttt{\ \ forced\_logs=[\_dlog\_table(11)[1][3]])} from
 \texttt{erdos\_straus.theory} (as in the test suite,
 \texttt{tests/test\_solver.py}) \\ \addlinespace
 Lem.~\ref{lem:S} at $R = 19, 23$ &
 \texttt{verify\_support\_bound(19)}, \texttt{(23)} \\ \addlinespace
 Thm.~\ref{thm:R15} finite check &
-\texttt{python -c 'from erdos\_straus.theory \textbackslash} \newline
+\texttt{python -c "from erdos\_straus.theory \textbackslash} \newline
 \texttt{\ \ import verify\_R15\_finite; \textbackslash} \newline
-\texttt{\ \ print(verify\_R15\_finite())'} \\ \addlinespace
+\texttt{\ \ print(verify\_R15\_finite())"} \\ \addlinespace
 Thm.~\ref{thm:S} numerical confirmation &
 \texttt{verify\_support\_bound\_strong(31)},
 \texttt{kneser\_support\_general(15)} \\ \addlinespace
@@ -1491,6 +1515,7 @@ proof-component checks, the exact criteria against ground truth, and
 sampled dataset validation on every run.
 
 \subsection*{Data and code availability}
+\phantomsection\addcontentsline{toc}{subsection}{Data and code availability}
 
 All code, all datasets of Table~\ref{tab:datasets}, and the Lean
 development are openly available in the repository
@@ -1499,6 +1524,13 @@ development are openly available in the repository
 \clearpage
 
 \begin{thebibliography}{99}
+
+\bibitem{Lean4}
+L.~de~Moura and S.~Ullrich,
+\emph{The Lean 4 theorem prover and programming language},
+in: Automated Deduction -- CADE 28,
+Lecture Notes in Computer Science, vol.~12699,
+Springer, Cham, 2021, pp.~625--635.
 
 \bibitem{ElsholtzTao}
 C.~Elsholtz and T.~Tao,
@@ -1530,6 +1562,13 @@ M.~Kneser,
 \emph{Absch\"atzung der asymptotischen Dichte von Summenmengen},
 Math.\ Z.\ \textbf{58} (1953), 459--484.
 
+\bibitem{mathlib}
+The mathlib Community,
+\emph{The Lean mathematical library},
+in: Proceedings of the 9th ACM SIGPLAN International Conference on
+Certified Programs and Proofs (CPP 2020),
+ACM, New York, 2020, pp.~367--381.
+
 \bibitem{MihneaBogdan}
 S.~Mihnea and D.~C.~Bogdan,
 \emph{Further verification and empirical evidence for the
@@ -1544,8 +1583,13 @@ Academic Press, London, 1969.
 \bibitem{Salez}
 S.~E.~Salez,
 \emph{The Erd\H{o}s--Straus conjecture: new modular equations and
-checking up to $N = 10^{17}$},
+checking up to \mbox{$N = 10^{17}$}},
 preprint, arXiv:\href{https://arxiv.org/abs/1406.6307}{1406.6307} [math.NT], 2014.
+
+\bibitem{Sander}
+J.~W.~Sander,
+\emph{On $4/n = 1/x + 1/y + 1/z$ and Rosser's sieve},
+Acta Arith.\ \textbf{59} (1991), 183--204.
 
 \bibitem{Swett}
 A.~Swett,
@@ -1563,7 +1607,7 @@ Cambridge University Press, Cambridge, 2006.
 \bibitem{Vaughan}
 R.~C.~Vaughan,
 \emph{On a problem of Erd\H{o}s, Straus and Schinzel},
-Mathematika \textbf{17} (1970), 193--198.
+Mathematika \textbf{17} (1970), \mbox{193--198}.
 
 \bibitem{Webb}
 W.~A.~Webb,

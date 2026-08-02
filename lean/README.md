@@ -13,8 +13,8 @@ residual framework from the companion paper.
 | `theoremA_necessity` | Theorem A (⇒): all prime factors of a ≡ 1 (mod 3) blocks every divisor k of (pa)² from the class −pa (mod 3) |
 | `theoremA_sufficiency` | Theorem A (⇐): a divisor q ≡ 2 (mod 3) of a yields positive b, c with the identity (k = q) |
 | `divisor_one_mod_three` | the multiplicative-closure lemma behind necessity |
-| `family_p_plus_one` | Proposition 1.10 (Theorem I in the notes): R ∣ p+1 certifies via k = a·p² |
-| `family_p_plus_four` | Proposition 1.10: R ∣ p+4 (R odd) certifies via k = a²·p |
+| `family_p_plus_one` | Proposition 1.12 (Theorem I in the notes): R ∣ p+1 certifies via k = a·p² |
+| `family_p_plus_four` | Proposition 1.12: R ∣ p+4 (R odd) certifies via k = a²·p |
 | `hard_classes_are_squares` | the six Mordell classes are squares of units mod 840 (explicit witnesses 1², 11², 13², 17², 19², 23²) |
 | `hard_classes_local` | Corollary 2.3(i)'s arithmetic core: hard classes ≡ 1 (mod 8), ≡ 1 (mod 3), QR mod 5 and mod 7 |
 | `reach` / `powers` / `step` | the meta-theorem's finite model: divisor-class reachability from (class, exponent-budget) pairs, computably, in ZMod R |
@@ -31,11 +31,11 @@ residual framework from the companion paper.
 | `IsSubprod` / `mem_reach_iff_subprod` (DivisorBridge.lean) | `reach` computes exactly the classes of bounded-exponent integer subproducts |
 | `isSubprod_primes_iff_dvd` | subproducts of a prime list (budget 1 per occurrence) are exactly the divisors of its product — the fundamental theorem of arithmetic in the form the model needs |
 | `mem_reach_iff_dvd` / `divisorConfig` | **the divisor bridge**: c ∈ reach(factor configuration of N) ⟺ ∃ k ∣ N with class c |
-| `reach_certificate` / `certificate_reach` | **the meta-theorem's reduction, capstone**: reach membership of the target −m (m = p·a, 4a = p+R) yields explicit positive k ∣ m², b, c with R·b = k+m, R·c = m²/k+m and 4abc = p(bc+ca+ab) — and conversely every divisor class is reached. Solvability ⟺ model reachability, machine-checked |
+| `reach_certificate` / `certificate_reach` | **the meta-theorem's reduction, capstone**: reach membership of the target −m (m = p·a, 4a = p+R) yields explicit positive k ∣ m², b, c with R·b = k+m, R·c = m²/k+m and 4abc = p(bc+ca+ab) — and conversely every divisor class is reached. Reach membership of a class ⟺ existence of a divisor of m² in that class, machine-checked; reach membership of the target yields the explicit certificate |
 | `reach_merge` / `reach_subperm` / `reach_two_eq_doubled` | budget consolidation: equal-class entries merge with summed budgets, reach is monotone under sub-permutations, budget-2 = doubled budget-1 |
 | `lemmaS_R19_certificate` | **the composed corollary**: if `(p+19)/4` has nine prime factors in pairwise-distinct unit classes ≠ 1 mod 19, an explicit Erdős–Straus certificate exists at p — enumeration + both bridges + consolidation, end to end |
 | `R31.dedupMax_dominates` / `R31.dp_sound_aux` (LemmaS31.lean) | **verified dynamic programming**: the DP round carries every state and adds every extension; the soundness induction shows every support `S ⊆ {1..29}` is represented with count ≥ min(\|S\|, 15) — standard axioms only |
-| `R31.lemmaS_finite_R31` | **Lemma S at R = 31**: the C(29,15) = 77,558,760 supports are *never enumerated* — the DP covers them through 3,001 states, and the only computation is the final 3,001 × 30 target check (`native_decide`) |
+| `R31.lemmaS_finite_R31` | **Lemma S at R = 31**: the C(29,15) = 77,558,760 supports are *never enumerated* — the DP covers them through 3,001 states; the compiled evaluator runs the DP and the final 3,001 × 30 target check (`native_decide`), while the DP's correctness is proved, not trusted |
 
 Together these verify the elementary layer of the paper end to end —
 certificates are sound and integral, Theorem A is exact in both
@@ -98,7 +98,7 @@ against the same finite spaces, with identical results.
   R = 83), eventually needing a compacter state representation.
 - Composed corollaries at R = 11, 23, 31 analogous to
   `lemmaS_R19_certificate` (same recipe).
-- The analytic sieve bounds (the chain of Theorem 1.9 and the density
+- The analytic sieve bounds (the chain of Theorem 1.11 and the density
   reduction) and the large-scale computations of the paper's §5 are out
   of scope by design (see the paper's trusted-computing-base
   discussion): they remain independently reproducible software with
@@ -109,7 +109,7 @@ against the same finite spaces, with identical results.
 | File | Contents |
 |---|---|
 | `Basic.lean` | certificate soundness/integrality, Theorem J (reciprocity) |
-| `Families.lean` | the aggregate identity families (Proposition 1.10), hard-class lemmas |
+| `Families.lean` | the aggregate identity families (Proposition 1.12), hard-class lemmas |
 | `TheoremA.lean` | Theorem A (R = 3), both directions, with positivity |
 | `Enumerations.lean` | the `reach` model, monotonicity lemmas, and the four `native_decide` finite checks (R = 7, 11, 19, 23) |
 | `Bridges.lean` | the parametric discrete-log bridge and the three `_mult` multiplicative restatements |
@@ -121,5 +121,5 @@ against the same finite spaces, with identical results.
 ```bash
 cd lean/ErdosStraus
 lake exe cache get   # fetch mathlib binaries
-lake build           # ~seconds after cache; audits axioms via #print
+lake build           # ~minutes after cache; audits axioms via #print
 ```

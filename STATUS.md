@@ -44,7 +44,7 @@ at $10^{11}$ scale).
 | $< 5 \times 10^7$ | ~93k     | Yes         | 107               | — |
 | $< 1.2 \times 10^8$ | 213 131 | Yes | 107               | Full explicit solutions saved (gzip) |
 | $< 10^9$     | 1 587 581 | Yes | 107               | Minimal-$R$ map saved (gzip) |
-| $< 10^{10}$  | **14 215 707** | **Yes** | **107**      | Minimal-$R$ map saved (gzip); current verified bound |
+| $< 10^{10}$  | 14 215 707 | Yes | 107      | Minimal-$R$ map saved (gzip) |
 | $< 10^{11}$  | **128 671 219** | **Yes** | **107**     | R-sequence format (gzip uint8 + explicit tail); current verified bound |
 
 The $1.2 \times 10^8$ pass was produced by `erdos_straus.bulk_generate`
@@ -183,7 +183,7 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 - `data/hard_primes_1e11_minimalR.{rvals.u8.gz, meta.json, tail.json}` — R-sequence dataset for all 128 671 219 hard primes $< 10^{11}$ (uint8 minimal-$R$ values in ascending-prime order + sha256-pinned metadata + explicit verified tail $R \ge 43$)
 - `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
 - `tests/test_solver.py` — 52 tests: unit, certificate validation, theorem checks (A/A′/A″/A‴/J/meta incl. composite R), support-bound lemmas (DP + strong Kneser form, cyclic and general abelian), aggregate identities
-- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 19 pp.
+- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 23 pp.
 - `lean/ErdosStraus/` — Lean 4 + mathlib formalization, elementary layer + finite enumerations (`lake exe cache get && lake build`)
 - `THEORY.md` — full theoretical development; `STATUS.md` — this document
 
@@ -192,7 +192,7 @@ All 1 803 722 certificates in the `es-verify` defaults pass exhaustively
 full tail minimality.
 
 ## Comparison with Published Work
-- **Verification** (Swett $10^{14}$, Salez $10^{17}$) rules out
+- **Verification** (Swett $10^{14}$, Salez $10^{17}$, Mihnea–Bogdan $10^{18}$) rules out
   counterexamples far beyond our range but exhibits no mechanism.
 - **Vaughan (1970)**: exceptional set $\ll x\exp(-c(\log x)^{2/3})$ —
   asymptotically stronger than any fixed power of $\log x$; our chain's
@@ -278,10 +278,12 @@ full tail minimality.
   only — plus budget-consolidation glue and the composed corollary
   `lemmaS_R19_certificate` (nine distinct nontrivial factor classes
   of (p+19)/4 mod 19 ⟹ explicit solution), and Lemma S at R = 31 via
-  certified dynamic programming (`LemmaS31.lean`): the 77.5M supports
+  certified dynamic programming (`LemmaS31.lean`): the 77.6M supports
   covered through 3,001 states by a machine-checked soundness
-  induction, only the final 3,001 × 30 check computed. All
-  declarations sorry-free and axiom-audited; see `lean/README.md`.
+  induction; the evaluator runs the DP plus the final 3,001 × 30
+  check, with the DP's correctness proved, not trusted. Sorry-free;
+  every main theorem axiom-audited, helpers covered transitively; see
+  `lean/README.md`.
   Remaining formal roadmap: extend the DP to R = 43+ (state counts
   grow), composed corollaries at other residuals.
 

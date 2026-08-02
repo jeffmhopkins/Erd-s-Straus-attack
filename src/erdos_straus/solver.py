@@ -42,7 +42,6 @@ def solve_for_fixed_a(n: int, a: int) -> Optional[Tuple[int, int]]:
     m = n * a
     # Scan b upward from the smallest value making c positive (naive fallback;
     # see the docstring NOTE).
-    target = m * m
     min_b = (m // d) + 1
     max_b = (2 * m) // d   # rough for b <= c
     if max_b - min_b > 100000:  # window too large for the naive scan

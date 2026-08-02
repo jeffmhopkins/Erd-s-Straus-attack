@@ -22,6 +22,10 @@ Homepage = "https://github.com/jeffmhopkins/Erd-s-Straus-attack"
 gen = [
     "numpy>=1.24",
 ]
+# Regenerating the paper's Figure 1 (paper/make_fig.py) needs matplotlib.
+fig = [
+    "matplotlib>=3.5",
+]
 dev = [
     "pytest>=7.0",
     "numpy>=1.24",

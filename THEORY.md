@@ -1,7 +1,7 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
 **Date:** 2026-08-02 (current through PR #31; this revision adds
-Theorem S and Theorem A‴).
+Theorem S and Theorem A‴).  
 **Status:** Proved: Theorems A, A′, A″, A‴ (exact criteria for
 R = 3, 7, 11, and now the first composite residual R = 15; A′/A″/A‴ by
 machine-verified finite case analysis), the meta-theorem (now including
@@ -220,7 +220,7 @@ hypothesis in Theorem B.
 
 ---
 
-## 2.5 Theorem E ({3,7} covering, unconditional): full proof
+### 2.5 Theorem E ({3,7} covering, unconditional): full proof
 
 **Theorem E.** *The number of hard primes p ≤ x for which residual 3 and
 residual 7 both fail is O(x/(log x)²). Consequently all but a proportion
@@ -300,9 +300,9 @@ unconditionally (Theorem D). Theorem E is the fully-worked two-form case.
 
 ---
 
-## 2.6 The meta-theorem and the exact criterion for R = 11
+### 2.6 The meta-theorem and the exact criteria for R = 11 and 15
 
-### Meta-theorem (finite-state exact criteria)
+#### Meta-theorem (finite-state exact criteria)
 
 *For every fixed prime R ≡ 3 (mod 4), success of residual R at a hard prime
 p depends only on (i) the multiset of classes mod R of the prime factors of
@@ -326,7 +326,7 @@ compresses each R's configuration space to a handful of equivalence states:
 R = 7 with the forced even factor has 4 reachable states (3 success /
 1 all-even-fail — Theorem A′ re-derived), R = 11 has 25.
 
-### Theorem A″ (exact criterion for R = 11, hard primes)
+#### Theorem A″ (exact criterion for R = 11, hard primes)
 
 Note first that for every hard prime, at R = 11: **3 | a** (from p ≡ 1 mod 3,
 11 ≡ 2 mod 3), a is odd, and 7 ∤ a. The quadratic residues mod 11 are
@@ -373,7 +373,7 @@ the sieve dimension rises to 1 + ½ + ½ + ½ = 5/2 (up to the negligible
 (b)-part):  hard primes needing R > 11 number O(x/(log x)^{5/2}), all but
 O((log x)^{−3/2}) proportionally.
 
-### Theorem A‴ (exact criterion for R = 15 — the first composite residual)
+#### Theorem A‴ (exact criterion for R = 15 — the first composite residual)
 
 For composite R the certificate condition k ≡ −m (mod R) couples the
 prime-power components of R through CRT, and the divisor-class group is
@@ -429,7 +429,7 @@ which previously required B = 19.
 
 ---
 
-## 2.7 Theorems F and G: exponents 5/2 and 3
+### 2.7 The chain: Theorem S, Theorems F/G/G′/H, Theorem I (exponents 5/2 … 19/2)
 
 The exponent bookkeeping to keep straight: each residual with an
 exact-criterion-grade handle contributes sifting density **½** (its failure
@@ -438,7 +438,7 @@ p = 4n − 3 contributes 1. Three residuals therefore give dimension 5/2 —
 **not 3**; exponent 3 requires a fourth residual. Both theorems below are
 now fully proven.
 
-### Theorem S (the support bound, proved unconditionally for EVERY residual — the Kneser/Olson route)
+#### Theorem S (the support bound, proved unconditionally for EVERY residual — the Kneser/Olson route)
 
 What was "Lemma S" — machine-verified one residual at a time, stalled at
 R = 107 by DP state growth — is in fact a theorem of additive
@@ -523,7 +523,7 @@ every prime residual checked. The check ignores the consistency relation
 ∏(classes) ≡ 4⁻¹p: it examines a superset of realizable configurations,
 so it (and Theorem S) are conservative.
 
-### Theorem F ({3,7,11}; exponent 5/2)
+#### Theorem F ({3,7,11}; exponent 5/2)
 
 *The number of hard primes p ≤ x failing residuals 3, 7 and 11
 simultaneously (in particular, with R_min(p) > 11) is
@@ -543,7 +543,7 @@ Sum over the two branches and the six hard classes. ∎ (At {3,7,11,19}
 the paper's proof also carries the Type-II cross-branch at exponent
 31/10; see the proof of Theorem 1.11 there.)
 
-### Theorem G ({3,7,11,19}; exponent 3)
+#### Theorem G ({3,7,11,19}; exponent 3)
 
 *The number of hard primes p ≤ x failing residuals 3, 7, 11 and 19
 simultaneously (in particular, with R_min(p) > 19) is O(x/(log x)³);
@@ -559,7 +559,7 @@ pairwise distinct for q > 19; smaller primes are absorbed into the fixed
 congruence class of n.) The Fundamental Lemma bounds each branch by
 O(x/(log x)³); sum over the finitely many branches. ∎
 
-### Theorem G′ ({3,7,11,19,23}; exponent 7/2)
+#### Theorem G′ ({3,7,11,19,23}; exponent 7/2)
 
 *Identically, with Lemma S at R = 23 and the form (p+23)/4 = n+5:
 the joint exceptional set of {3, 7, 11, 19, 23} is O(x/(log x)^{7/2}).*
@@ -615,7 +615,7 @@ the constants O_P blow up with |P| (branch counts and the
 (log x)^{#forms} remainder of the Fundamental Lemma), which is exactly
 the growing-list wall of §2.8, Attempt 2.
 
-### Theorem I (aggregate identity families) and the 19/2 upgrade
+#### Theorem I (aggregate identity families) and the 19/2 upgrade
 
 *Let p ≡ 1 (mod 4) be prime and R ≡ 3 (mod 4). If R | p+1, then k = a·p²
 is a certificate for residual R; if R | p+4, then k = a²·p is. Hence any
@@ -662,13 +662,13 @@ probably **false**; the correctly-posed target is a slowly growing bound
 R_min(p) ≪ f(p), which requires existence (lower-bound) technology
 beyond upper-bound sieves.
 
-## 2.8 Two attempts at totality, and their walls
+### 2.8 Two attempts at totality, and their walls
 
 Both attempts below were executed; each yields something real, and each
 hits a wall that is now *precisely characterized* rather than merely
 suspected.
 
-### Attempt 1 (constructive): aggregate families
+#### Attempt 1 (constructive): aggregate families
 
 Outcome: Theorem I above — the complete list of a-independent divisor
 identities is {p+1, p+4}; they cover 74 % of hard primes and add +1 to
@@ -678,7 +678,7 @@ has density ~(log x)^{−1/2} — positive at every finite level. The four
 critical primes already escape both families. Constructive families
 thicken the almost-all coverage but structurally cannot reach totality.
 
-### Attempt 2 (analytic): growing lists and the larger sieve
+#### Attempt 2 (analytic): growing lists and the larger sieve
 
 Idea: let the residual list grow with p (B ≈ C log p), so the sieve
 dimension grows and the count bound x/(log x)^{κ(B)} could in principle
@@ -717,12 +717,12 @@ x·exp(−c(log x)^{2/3}). The wall is not technical laziness: it is the
 collapse of the p-independent forbidden structure to a single class,
 measured exactly by the AF computation.
 
-## 2.9 The reciprocity structure theorem: joint failure explained
+### 2.9 The reciprocity structure theorem: joint failure explained
 
 The open problem "explain the record prime" is now substantially
 resolved by a clean structural identity.
 
-### Theorem J (reciprocity structure)
+#### Theorem J (reciprocity structure)
 
 *Let p be a hard prime, R ≡ 3 (mod 4) prime, and q an odd prime factor
 of a_R = (p+R)/4 (necessarily q ≠ R). Then*
@@ -749,7 +749,7 @@ residual R ≤ B simultaneously ⟺ (p|R) = +1 for each such R and
 values (p+R)/4, R ≤ B.** One condition per *distinct* prime q, shared
 across every residual q divides.
 
-### The record prime, explained quantitatively
+#### The record prime, explained quantitatively
 
 Corollary J2 identifies the correct "coins": joint failure requires a
 positive fluctuation in the independent-looking signs (p|q) over the
@@ -772,7 +772,7 @@ mixed Type I/II record sits above this, Type-II escapes absorbing a few
 −1 coins — the record's 8 negative coins are exactly its 14 Type-II
 failures' worth of luck).
 
-### Theorem K (conditional falsity of the finite covering hypothesis)
+#### Theorem K (conditional falsity of the finite covering hypothesis)
 
 *Assume Dickson's conjecture (prime k-tuples). Then for every B there
 are infinitely many hard primes p with R_min(p) > B.*
@@ -796,7 +796,7 @@ calibrated model. Unconditional falsity appears out of reach: already
 statement (a₃ and 4a₃−3 simultaneously prime in classes), i.e. is
 twin-prime-hard.
 
-### Verdict
+#### Verdict
 
 Upper-bound counting — fixed lists, growing lists, aggregate families,
 in any combination available to us — bounds the exceptional set but
@@ -868,6 +868,10 @@ by class misses alone.
 
 Minimal-R distribution at 10⁹: R=3 covers 49.1 %, {3,7,11} covers 91.3 %,
 R ≤ 23 covers 99.3 %. Full histogram in `data/analysis/dist_1e9.json`.
+
+*(The gap discussed below was subsequently filled between 10¹⁰ and
+10¹¹ exactly as the model predicted — see §6. This section keeps the
+10⁹-era analysis that made the prediction.)*
 
 **The gap needs no modular explanation.** Under the independence model
 (Section 6), expected counts of primes with minimal R = 87, 91, 95, 99, 103

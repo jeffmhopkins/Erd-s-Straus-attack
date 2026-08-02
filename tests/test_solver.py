@@ -381,7 +381,7 @@ def test_reciprocity_structure_theorem():
 
 
 def test_aggregate_identity_families():
-    """Aggregate identity families (paper Prop. 1.10): p+1 / p+4 divisor identities give valid certificates,
+    """Aggregate identity families (paper Prop. 1.12): p+1 / p+4 divisor identities give valid certificates,
     and the certificate's R genuinely divides p+1 or p+4."""
     from erdos_straus.theory import aggregate_identity_certificate
     from erdos_straus.solver import generate_hard_primes
