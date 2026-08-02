@@ -55,7 +55,11 @@ residual among those fifteen is $O\!\left(x/(\log x)^{17/2}\right)$;
 (iv)~a general
 density reduction: for every $A$ there is a finite residual list whose
 joint exceptional set has relative density $O((\log x)^{-A})$ among hard
-primes. Computationally, we exhibit verified residual certificates for all
+primes. These densities are deliberately not the point: Vaughan's
+classical bound $\ll x\exp(-c(\log x)^{2/3})$ is asymptotically far
+stronger. What the chain contributes is \emph{mechanism} --- each bound
+is explicit, produces verifiable certificates, and rests on exact
+criteria and machine-checked lemmas rather than mean-value estimates. Computationally, we exhibit verified residual certificates for all
 $14{,}215{,}707$ hard primes below $10^{10}$: the maximal minimal residual
 is $107$, attained at the single prime $8{,}803{,}369$ and unchanged from
 $5\times 10^{7}$ to $10^{10}$; a fixed list of $18$ residuals covers every
@@ -80,10 +84,8 @@ every prime outside the six residue classes
 the squares of units modulo $840$ (Mordell \cite{Mordell}). We call primes
 in these classes \emph{hard primes}. Direct verification has confirmed the
 conjecture far beyond any range considered here: to $10^{14}$ by Swett
-\cite{Swett}, to $10^{17}$ by Salez \cite{Salez}, and to $10^{18}$ by
-Mihnea and Dumitru \cite{MihneaDumitru}; the present paper is logically
-independent of those bounds. The residual-certificate framework studied
-here appears in recent technical notes \cite{Notes2026}; the structure of
+\cite{Swett} and to $10^{17}$ by Salez \cite{Salez}; the present paper
+is logically independent of those bounds. The structure of
 the solution count was analyzed by Elsholtz and Tao \cite{ElsholtzTao}.
 Verification, however, exhibits no mechanism; the aim here is a
 quantitative structural reduction. For calibration, Vaughan's classical
@@ -247,6 +249,18 @@ For every $A > 0$ there is a finite admissible set $S(A)$ such that the
 number of hard primes $p \le x$ for which every residual in $S(A)$ fails
 is $O_A\!\left(x/(\log x)^{1+A}\right)$.
 \end{theorem}
+
+\begin{remark}[relation to Vaughan's bound]\label{rem:vaughan}
+Theorem~\ref{thm:D} and the chain of Theorem~\ref{thm:FG} are
+\emph{weaker in density} than Vaughan's bound
+$\ll x \exp(-c(\log x)^{2/3})$ \cite{Vaughan}, which already exceeds
+every fixed power of $\log x$. Their interest is orthogonal: the
+exceptional sets here are cut out by finitely many \emph{explicit}
+multiplicative conditions on shifted forms, each failure of which is
+constructively certified by an exhibited divisor $k$, and the underlying
+lemmas are exact or machine-verified. Vaughan's method counts solutions
+on average and exhibits neither certificates nor criteria.
+\end{remark}
 
 Computations (Section~\ref{sec:comp}) provide verified certificates for
 all hard primes below $10^{10}$ and calibrate every constant in sight.
@@ -422,13 +436,39 @@ six classes preserves the bound.
 
 \end{proof}
 
+The verification behind Lemma~\ref{lem:S} reduces to finitely many
+checks through the following elementary but load-bearing observation,
+which we isolate for scrutiny.
+
+\begin{lemma}[monotonicity reduction]\label{lem:mono}
+For a class multiset $C$ (classes $v$ with multiplicities $\mu_v$) let
+$D(C) = \{\sum_v e_v v : 0 \le e_v \le 2\mu_v\}$ denote the set of
+attainable divisor logs (before the $p$-shifts). If $\mu_v \le \mu'_v$
+for all $v$, then $D(C) \subseteq D(C')$; likewise enlarging the support
+enlarges $D$. Consequently a support $S$ carries \emph{some} failing
+configuration (any multiplicities $\ge 1$ on $S$) if and only if the
+all-multiplicity-one configuration on $S$ fails.
+\end{lemma}
+
+\begin{proof}
+Any admissible exponent vector for $C$ is admissible for $C'$, giving
+the inclusions. If a configuration on $S$ with multiplicities
+$\mu_v \ge 1$ fails, the target lies outside $D(C)$, hence outside the
+subset $D(C_1)$ attained at multiplicities one --- so $C_1$ fails too;
+the converse inclusion is trivial. The same argument applies verbatim
+after adjoining the $p$-shifts.
+\end{proof}
+
 \begin{proof}[Proof of Lemma \ref{lem:S}]
-Reachability of the target class by a bounded-exponent subproduct is
-monotone in both the support and the multiplicities of the factor-class
-configuration. It therefore suffices to check that for every support of
+By Lemma~\ref{lem:mono} it suffices to check that for every support of
 size $(R-1)/2$ over the nonzero discrete logs and every class of
 $p$ mod $R$, the target is reachable already at minimal multiplicities
-(exponent budget $2$ per class, $p$-budget $2$). For $R = 19, 23$ a
+(exponent budget $2$ per class, $p$-budget $2$); success there kills
+every configuration on every superset support at any multiplicities.
+The check deliberately ignores the consistency relation
+$\prod(\text{classes}) \equiv 4^{-1}p$: it therefore examines a
+\emph{superset} of the realizable configurations, and can only
+overstate the failing supports --- the lemma is conservative. For $R = 19, 23$ a
 direct enumeration of all $\binom{R-2}{(R-1)/2}$ supports suffices
 ($437{,}580$ resp.\ $7{,}759{,}752$ pairs; code:
 \texttt{theory.verify\_support\_bound}). For the larger residuals the
@@ -838,21 +878,10 @@ H.~Halberstam and H.-E.~Richert,
 \emph{Sieve Methods},
 Academic Press, London, 1974.
 
-\bibitem{MihneaDumitru}
-Mihnea and Dumitru,
-\emph{Verification of the Erd\H{o}s--Straus conjecture up to $10^{18}$},
-2025. \emph{[Full bibliographic details --- author initials and venue ---
-to be confirmed before submission.]}
-
 \bibitem{Mordell}
 L.~J.~Mordell,
 \emph{Diophantine Equations},
 Academic Press, London, 1969, Chapter~30.
-
-\bibitem{Notes2026}
-\emph{Residual certificates for the Erd\H{o}s--Straus equation},
-technical notes, 2026. \emph{[Author(s) and venue to be confirmed before
-submission.]}
 
 \bibitem{Salez}
 S.~E.~Salez,
