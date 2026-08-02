@@ -1216,6 +1216,66 @@ parity-flavored, and this is now the program's single unproved
 ingredient: L₀ ✓, B₁ ✓, B₂ ✓, B ⟸ P, L₁ ⟸ B. Everything above P is
 proved; everything below P is measured.
 
+#### Theorem P₁ (half-dimensional failure lower bound — the Selberg–Delange attack on P)
+
+A direct lower bound on true failures hits the classical wall: every
+explicit failure family is an "all prime factors of a shifted prime in
+a prescribed set" condition, and for general set-densities such counts
+have no unconditional lower bounds (large prime factors are invisible
+to sieves). The exception is sifting dimension exactly **1/2**, where
+Iwaniec's half-dimensional sieve closes the large-factor gap (sifting
+limit β(1/2) = 1 allows z near the Bombieri–Vinogradov level x^{1/2},
+leaving at most one unsifted factor, removed by a switching argument).
+The ladder has a natural half-dimensional failure family:
+
+*Call a class c (fixing q and R₀) **half-dimensionally admissible** if
+R₀ is composite with a prime factor r₁ ≡ 3 (mod 4) such that
+(q|r₁) = +1 and, when 2 | a, (2|r₁) = +1.*
+
+**Theorem P₁.** *For every half-dimensionally admissible class,*
+
+    #E₀(x; c)  ≥  #{p ≡ c ≤ x : every prime factor of (p+R₀)/4
+                    is a QR mod r₁}  ≫  x/(log x)^{3/2}.
+
+**Proof sketch.** Membership implies failure by Prop 2.1 at r₁: all
+factors of a are QRs mod r₁ (q by admissibility, the rest by
+definition), whence (a|r₁) = +1 and, by consistency
+a ≡ 4⁻¹p (mod r₁), also (p|r₁) = +1 *for free* — so every prime
+factor of m = pa is a QR mod r₁, every divisor of m² is a QR, and the
+target has (−m|r₁) = (−1|r₁) = −1. The count: sift
+{(p+R₀)/4 : p ≡ c prime} at the (r₁−1)/2 non-residue classes mod r₁
+— sifting dimension 1/2, level x^{1/2−ε} by Bombieri–Vinogradov —
+and apply the half-dimensional sieve (Iwaniec, *The half dimensional
+sieve*, Acta Arith. 29 (1976); Friedlander–Iwaniec, Opera de Cribro,
+half-dimensional chapter) exactly as for "p + a has no prime factor
+≡ 3 (mod 4)": the lower bound of order x/(log x)^{1+1/2} survives the
+single possible large non-residue factor. ∎
+
+**Availability and exemplars** (measured): 6.6 % of first rungs are
+half-dimensionally admissible (5,278 of 79,380 sampled ladders), and
+every all-QR member found in the data fails as the theorem demands
+(16/16 mask-checkable, zero violations). Smallest exemplars:
+p = 5,505,361 (q = 37, R₀ = 91, r₁ = 7, a = 37·37199) and
+p = 5,544,361 (q = 31, R₀ = 51, r₁ = 3, a = 31·61·733 — all factors
+≡ 1 mod 3), both failing.
+
+**What P₁ buys, and what it does not.** This is the program's first
+unconditional *lower* bound on true ladder failures — rung failures
+are provably ≫ x/(log x)^{3/2}-frequent on admissible classes,
+complementing B₁'s "almost all succeed". Against Hypothesis P it
+gives the two-sided bracket
+
+    (log x)^{−(1/2 − 1/φ(R₀))}  ≪  #E₀/#Ẽ₀  ≤  1,
+
+since Ẽ₀ ≍ x/(log x)^{1+1/φ(R₀)} (Theorem B₂). The remaining content
+of P is exactly the closing of this (log x)^{1/2−1/φ} gap: failures
+must be as common as *avoidance*, not merely as common as the
+half-dimensional family. Dimension 1/2 is the unique point where the
+large-factor wall opens; widening the crack to dimension
+1 − 1/φ(R₀) is the parity obstruction in its sharpest local form —
+and it is the single statement separating the measured c_P ≈ 0.1
+from a theorem.
+
 #### The Ladder Hypothesis, and what it would give
 
 **Hypothesis L.** There is an absolute C such that for every hard
