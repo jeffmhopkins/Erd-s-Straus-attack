@@ -24,7 +24,7 @@
 exact solvability criteria, a sieve bound,\\
 and computations to $10^{11}$}
 
-\author{Jeff M.\ Hopkins\thanks{\texttt{jeff.m.hopkins@gmail.com}.
+\author{J.~M.\ Hopkins\thanks{\texttt{jeff.m.hopkins@gmail.com}.
 Computations and computer-assisted case analyses were carried out with the
 code repository accompanying this paper
 (\url{https://github.com/jeffmhopkins/Erd-s-Straus-attack}).}}
@@ -118,7 +118,8 @@ machine-verified structure, together with the exact criteria.
   divisor-class reachability model with its monotonicity reductions
   (Lemma~\ref{lem:mono}), the full finite verifications of
   Theorems~\ref{thm:Ap} and~\ref{thm:App}, the support-bound
-  checks of Lemma~\ref{lem:S} at $R = 19$ and $23$, the proved
+  checks of Lemma~\ref{lem:S} at $R = 19$ and $23$ (and at $R = 31$
+  by certified dynamic programming), the proved
   discrete-log bridges carrying each enumeration into the
   multiplicative model, and the reduction of Theorem~\ref{thm:meta}
   itself (reachability in the model is equivalent to the existence of
@@ -1020,8 +1021,20 @@ arithmetic --- and yields the explicit positive certificate
 $(k, b, c)$ with the identity of \eqref{eq:es}; this closes the loop
 between the abstract model that the enumerations check and the
 integer certificates the conjecture asks for, with no computational
-content to trust. Every declaration
-is audited with \texttt{\#print axioms}. For these enumerations the
+content to trust. Two further layers are formalized on top. First,
+the composed corollary: if $(p+19)/4$ has nine prime factors in
+pairwise-distinct unit classes other than $1$ modulo $19$, an
+explicit solution of \eqref{eq:es} at $p$ exists ---
+Lemma~\ref{lem:S} applied end to end, machine-checked through the
+enumeration, both bridges, and the budget-consolidation lemmas.
+Second, the $R = 31$ case of Lemma~\ref{lem:S} is verified by
+\emph{certified dynamic programming}: the
+$\binom{29}{15} = 77{,}558{,}760$ supports are never enumerated ---
+a machine-checked soundness induction shows the subset dynamic
+program of \texttt{verify\_support\_bound\_dp} covers them all
+through $3{,}001$ states, and the only computation trusted to the
+evaluator is the final $3{,}001 \times 30$ target check. Every
+declaration is audited with \texttt{\#print axioms}. For these enumerations the
 sixty-line trust base above is thus replaced by the Lean toolchain
 evaluating a formally stated proposition --- and the Python and Lean
 implementations, written independently against the same statements,

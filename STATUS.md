@@ -249,10 +249,15 @@ full tail minimality.
   reachability ⟺ ∃ divisor of m² in the class (FTA), and
   `reach_certificate` produces the explicit positive (k, b, c) with
   the ES identity — the meta-theorem's reduction, standard axioms
-  only. All declarations sorry-free and axiom-audited; see
-  `lean/README.md` for the trust base. Remaining formal roadmap:
-  Lemma S past 23 (needs the DP form) and budget-consolidation
-  glue between `divisorConfig` and the enumeration configurations.
+  only — plus budget-consolidation glue and the composed corollary
+  `lemmaS_R19_certificate` (nine distinct nontrivial factor classes
+  of (p+19)/4 mod 19 ⟹ explicit solution), and Lemma S at R = 31 via
+  certified dynamic programming (`LemmaS31.lean`): the 77.5M supports
+  covered through 3,001 states by a machine-checked soundness
+  induction, only the final 3,001 × 30 check computed. All
+  declarations sorry-free and axiom-audited; see `lean/README.md`.
+  Remaining formal roadmap: extend the DP to R = 43+ (state counts
+  grow), composed corollaries at other residuals.
 
 ## Current Assessment
 - No counterexample; all 128 671 219 hard primes below \(10^{11}\) have

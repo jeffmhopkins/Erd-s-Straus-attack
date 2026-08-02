@@ -108,7 +108,12 @@ multiplicative reach model with no coordinate caveat, and the
 reach ⟺ divisor-certificate bridge: reachability of the target class
 is equivalent to the existence of a divisor k | m² in that class and
 produces the explicit positive certificate (the meta-theorem's
-reduction, fully symbolic). Every declaration is sorry-free and
+reduction, fully symbolic). On top: the composed corollary (nine
+prime factors of (p+19)/4 in distinct nontrivial classes mod 19 ⟹
+explicit solution, end to end) and Lemma S at R = 31 by certified
+dynamic programming (77.5M supports covered through 3,001 states via
+a machine-checked soundness induction — never enumerated). Every
+declaration is sorry-free and
 axiom-audited via `#print axioms` (see `lean/README.md` for the trust
 base).
 
