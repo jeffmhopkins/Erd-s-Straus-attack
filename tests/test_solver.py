@@ -1,4 +1,5 @@
-"""Tests for the core solver utilities and the residual engine."""
+"""Tests for the solver utilities, the residual engine, the
+theory-layer finite checks, and the shipped certificate datasets."""
 
 import json
 from pathlib import Path
@@ -92,7 +93,7 @@ def test_find_solution_by_residuals_small_hard_primes():
         assert 4 * a - p == R
 
 
-def test_find_any_solution_matches_brute_force_small():
+def test_find_any_solution_returns_valid_triple():
     for n in [5, 6, 7, 9, 13]:
         sol = find_any_solution(n, max_a_factor=5.0)
         assert sol is not None
@@ -276,8 +277,8 @@ def test_support_bound_lemma_R19_R23():
         assert res["lemma_holds"], (R, res["failures"][:3])
 
 
-def test_support_bound_dp_agrees_and_extends():
-    """The DP verifier agrees with the combinatorial one and extends the
+def test_support_bound_dp_holds_through_R43():
+    """The DP verifier confirms the support bound and extends the
     lemma to larger residuals (Theorem H chain)."""
     from erdos_straus.theory import verify_support_bound_dp
 
@@ -308,7 +309,7 @@ def test_reciprocity_structure_theorem():
 
 
 def test_aggregate_identity_families():
-    """Theorem I: p+1 / p+4 divisor identities give valid certificates,
+    """Aggregate identity families (paper Prop. 1.9): p+1 / p+4 divisor identities give valid certificates,
     and the certificate's R genuinely divides p+1 or p+4."""
     from erdos_straus.theory import aggregate_identity_certificate
     from erdos_straus.solver import generate_hard_primes

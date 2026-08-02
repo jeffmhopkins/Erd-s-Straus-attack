@@ -45,6 +45,9 @@ src/erdos_straus/
   parametric_search.py fixed-residual parametric experiments per hard class
   verify.py            independent verification (JSON, minimal-R maps, npz)
 data/
+  hard_primes_1e11_minimalR.*          R-sequence dataset for all 128,671,219
+                                       hard primes < 10^11 (rvals.u8.gz +
+                                       meta.json + tail.json; sha256-pinned)
   hard_primes_1e10_minimalR.json.gz    minimal-R map for all 14,215,707 hard
                                        primes < 10^10 (triples reconstruct)
   hard_primes_1e9_minimalR.json.gz     minimal-R map for all 1,587,581 hard
@@ -55,16 +58,17 @@ data/
   hard_primes_2e5_solutions.json   smaller explicit set
   high_R_primes_5e6.json           primes that needed larger residuals
   analysis/                        distribution, covering-set, per-prime
-                                   residual masks, and high-R tail reports
+                                   residual masks, high-R tail, and
+                                   theory-validation reports
 tests/
   test_solver.py       46 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (16 pp.)
+  erdos_straus_residuals.tex/.pdf   the manuscript (18 pp.)
 lean/
-  ErdosStraus/         Lean 4 + mathlib formalization: sorry-free,
-                       axiom-audited declarations covering the paper's
-                       elementary layer and the finite-enumeration
-                       layer (see lean/README.md)
+  ErdosStraus/         Lean 4 + mathlib formalization (7 modules: Basic,
+                       Families, TheoremA, Enumerations, Bridges,
+                       DivisorBridge, LemmaS31) — sorry-free,
+                       axiom-audited; see lean/README.md
 STATUS.md              full status of the attack
 THEORY.md              theoretical development with proofs
 ```
@@ -76,19 +80,21 @@ full explicit triples up to 1.2 × 10⁸, compact minimal-R maps to 10¹⁰, and
 the R-sequence dataset at 10¹¹ (triples reconstruct deterministically and
 are re-derived and exactly checked — never taken on faith). The maximal
 minimal residual is **R = 107**, attained at a *single* prime
-(8,803,369 < 10⁷) — unchanged from 5×10⁷ to 10¹¹. `R = 3` covers 49 % of
-hard primes and `R ∈ {3, 7, 11}` covers 91 %. The once-conspicuous gap
+(8,803,369 < 10⁷) — unchanged from 5×10⁷ to 10¹¹. At 10¹¹, `R = 3` covers
+54 % of hard primes and `R ∈ {3, 7, 11}` covers 94 % (49 % and 91 % at
+10⁹). The once-conspicuous gap
 (no minimal R in {87…103} below 10¹⁰) **filled at 10¹¹ exactly as the
 calibrated model predicted** — 18 new deep-tail primes, none passing 103.
 
-**Theory** (see `THEORY.md` and `paper/`): exact solvability criteria are
+**Theory** (see [THEORY.md](THEORY.md) and `paper/`): exact solvability criteria are
 proved for R = 3, 7, and 11 (the latter two by machine-verified finite case
 analysis, with a meta-theorem making every fixed R decidable); a chain of
 sieve bounds reaches exponent 19/2 via the support-bound lemma (verified
 for every prime residual to 107) and two aggregate identity families
 (R | p+1 or R | p+4 always certifies); the reciprocity structure theorem
 (q|R) = (p|q) explains joint failure and the static record; and under
-Dickson's conjecture no fixed finite residual list suffices — the
+Dickson's conjecture no fixed finite residual list suffices (Theorem K of
+`THEORY.md`) — the
 correctly-posed open problem, by completeness of the residual formulation,
 is the conjecture itself. Densities are calibrated against Vaughan's
 classical bound; the contribution is mechanism, not raw density.
@@ -114,7 +120,7 @@ explicit solution, end to end) and Lemma S at R = 31 by certified
 dynamic programming (77.5M supports covered through 3,001 states via
 a machine-checked soundness induction — never enumerated). Every
 declaration is sorry-free and
-axiom-audited via `#print axioms` (see `lean/README.md` for the trust
+axiom-audited via `#print axioms` (see [lean/README.md](lean/README.md) for the trust
 base).
 
 ## Setup
@@ -202,7 +208,13 @@ Each data file maps a prime (as a string key) to its certificate:
 A certificate is valid iff $4abc = n(bc + ac + ab)$ (checked exactly, no
 floats) and $R = 4a - n$. All 1,803,722 certificates in the `es-verify`
 defaults pass exhaustively; the $10^{10}$ map is verified by sampled
-reconstruction plus full tail minimality. Compact minimal-R maps are
+reconstruction plus full tail minimality by default (an exhaustive
+re-verification takes about 2.5 h: `python -m erdos_straus.verify
+data/hard_primes_1e10_minimalR.json.gz`). The 10¹¹ R-sequence dataset is
+verified via `erdos_straus.verify.verify_npz` after regenerating the
+prime/R arrays (`bulk_generate --store rseq`); its meta.json pins the
+prime array by sha256, and the generation pipeline is validated
+byte-for-byte against the exhaustively verified 10⁹ map. Compact minimal-R maps are
 verified by *reconstructing* each triple from $(n, R)$ — never taken on
 faith.
 
@@ -215,6 +227,7 @@ $\log x$. This project does not compete on either axis: it contributes the
 **mechanism** — explicit verified certificates at the largest scale
 computed, exact solvability criteria, machine-verified sieve lemmas, and
 the reciprocity structure theory of joint failure. The fixed-finite-list
-reduction is conditionally false (Theorem K); by completeness of the
+reduction is conditionally false (Theorem K of `THEORY.md`; Open
+Problem 5 in the paper); by completeness of the
 residual formulation, an unconditional bound on the minimal residual is
 equivalent to the conjecture itself.

@@ -3,7 +3,11 @@
 
 This is an optimized, dependency-light re-implementation of the residual
 method used in :mod:`erdos_straus.residual_solver`, written for scale
-(hundreds of thousands of hard primes up to and past 10^8).
+(it drives the full 10^11 run: 128,671,219 hard primes). Three output
+formats via --store: ``full`` (explicit R,a,b,c records), ``rmap``
+(compact minimal-R map), and ``rseq`` (streaming uint8 R-sequence with
+sha256-pinned metadata: ``{prefix}.rvals.u8.gz`` + ``.meta.json`` +
+``.tail.json``, the format of the 10^11 dataset).
 
 Key differences from ``residual_solver.solve_residual``:
 
@@ -25,7 +29,7 @@ For a hard prime ``n ≡ 1 (mod 4)`` (all six hard residues mod 840 are
 Run as a script::
 
     python -m erdos_straus.bulk_generate --max 120000000 \
-        --out data/hard_primes_1.2e8_solutions.json
+        --out data/hard_primes_1.2e8_solutions.json.gz
 """
 
 from __future__ import annotations

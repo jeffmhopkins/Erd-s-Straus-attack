@@ -5,7 +5,7 @@ structure of high-R primes.
 Three sub-commands::
 
     python -m erdos_straus.analyze dist  --rmap data/hard_primes_1e9_minimalR.json.gz
-    python -m erdos_straus.analyze cover --rmap ... --out data/coverage_1e9.json.gz
+    python -m erdos_straus.analyze cover --rmap ... --out data/analysis/cover_1e9.json
     python -m erdos_straus.analyze tail  --rmap ... [--min-R 51] [--max-R 400]
 
 ``dist``

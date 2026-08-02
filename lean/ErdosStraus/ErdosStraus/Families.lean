@@ -1,12 +1,14 @@
 /-
-Theorem I (aggregate identity families) and the hard-class local facts,
-formalized as corollaries of `certificate_sound`.
+Proposition 1.9 of the paper (aggregate identity families; "Theorem I"
+in the development notes) and the hard-class local facts. The two
+family theorems are corollaries of `certificate_sound`; the hard-class
+facts are direct finite checks.
 -/
 import ErdosStraus.Basic
 
 namespace ErdosStraus
 
-/-- **Theorem I, first family.** If `R ∣ p + 1` (with the usual residual
+/-- **Aggregate identities, first family** (Proposition 1.9). If `R ∣ p + 1` (with the usual residual
 setup), then `k = a·p²` certifies: explicit `b, c` exist with the
 Erdős–Straus identity. -/
 theorem family_p_plus_one
@@ -27,7 +29,7 @@ theorem family_p_plus_one
     certificate_sound p R a m (a * p ^ 2) a b c hR ha hm
       (by rw [hm]; ring) hb'.symm hc'.symm⟩
 
-/-- **Theorem I, second family.** If `R ∣ p + 4` and `R` is odd, then
+/-- **Aggregate identities, second family** (Proposition 1.9). If `R ∣ p + 4` and `R` is odd, then
 `k = a²·p` certifies. -/
 theorem family_p_plus_four
     (p R a m : ℤ) (hR : R ≠ 0) (hRodd : Odd R)

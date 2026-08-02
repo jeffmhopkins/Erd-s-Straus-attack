@@ -15,8 +15,16 @@ residual_solver
     The residual method R = 4a - n with sympy-based divisor factoring.
 parametric_search
     Fixed-residual parametric experiments over the hard residue classes.
+bulk_generate
+    Fast integer-only solver, segmented sieve, and parallel driver
+    (full / rmap / rseq output; the 10^11 dataset's generator).
+analyze
+    Distribution/CDF, covering-set, and high-R tail analyses.
+theory
+    Obstruction theory: exact-criteria engines, support-bound verifiers,
+    aggregate identities, calibrated models.
 verify
-    Independent verification of the JSON solution certificates in ``data/``.
+    Independent verification of the certificate datasets in ``data/``.
 """
 
 from erdos_straus.solver import (

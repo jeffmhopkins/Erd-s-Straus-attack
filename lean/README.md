@@ -13,13 +13,13 @@ residual framework from the companion paper.
 | `theoremA_necessity` | Theorem A (⇒): all prime factors of a ≡ 1 (mod 3) blocks every divisor k of (pa)² from the class −pa (mod 3) |
 | `theoremA_sufficiency` | Theorem A (⇐): a divisor q ≡ 2 (mod 3) of a yields positive b, c with the identity (k = q) |
 | `divisor_one_mod_three` | the multiplicative-closure lemma behind necessity |
-| `family_p_plus_one` | Theorem I: R ∣ p+1 certifies via k = a·p² |
-| `family_p_plus_four` | Theorem I: R ∣ p+4 (R odd) certifies via k = a²·p |
+| `family_p_plus_one` | Proposition 1.9 (Theorem I in the notes): R ∣ p+1 certifies via k = a·p² |
+| `family_p_plus_four` | Proposition 1.9: R ∣ p+4 (R odd) certifies via k = a²·p |
 | `hard_classes_are_squares` | the six Mordell classes are squares of units mod 840 (explicit witnesses 1², 11², 13², 17², 19², 23²) |
-| `hard_classes_local` | Corollary J1's arithmetic core: hard classes ≡ 1 (mod 8), ≡ 1 (mod 3), QR mod 5 and mod 7 |
+| `hard_classes_local` | Corollary 2.3(i)'s arithmetic core: hard classes ≡ 1 (mod 8), ≡ 1 (mod 3), QR mod 5 and mod 7 |
 | `reach` / `powers` / `step` | the meta-theorem's finite model: divisor-class reachability from (class, exponent-budget) pairs, computably, in ZMod R |
-| `reach_mono` | Lemma 3.2 (monotonicity reduction), budget half: entrywise larger exponent budgets enlarge the reachable set |
-| `reach_sublist` | Lemma 3.2, support half: dropping factor classes shrinks the reachable set |
+| `reach_mono` | Lemma 4.1 (monotonicity reduction), budget half: entrywise larger exponent budgets enlarge the reachable set |
+| `reach_sublist` | Lemma 4.1, support half: dropping factor classes shrinks the reachable set |
 | `theoremA'_finite_R7` | Theorem A′'s finite verification: all 1,536 consistent hard-prime configurations at R = 7 (384 after collapsing the neutral class), stated in the multiplicative `reach` model — target −m reachable ⟺ a non-residue class is present (`native_decide`) |
 | `rot18` / `lemmaS_finite_R19` | Lemma S at R = 19: every 9-class support reaches the target at minimal multiplicities, for every class of p — C(17,9) = 24,310 supports × 18 = 437,580 checks, stated in the discrete-log coordinates of the proof (`native_decide`) |
 | `rot10` / `theoremA''_finite_R11` | Theorem A″'s finite verification: all 497,664 consistent capped configurations at R = 11 — target reachable ⟺ neither failure shape (all-QR, or the three exact budget patterns), in discrete-log coordinates (`native_decide`) |
@@ -64,10 +64,11 @@ reduction itself, fully symbolic, standard axioms only.
 
 ### Trust base
 
-Every declaration is audited by `#print axioms`. The model and the
+Every main theorem is audited by `#print axioms` (helper lemmas are
+covered transitively through the audited theorems). The model and the
 monotonicity lemmas report only the three standard axioms (`propext`,
-`Classical.choice`, `Quot.sound`). The four finite checks use
-`native_decide` and so additionally report a `…native_decide.ax_1_1`
+`Classical.choice`, `Quot.sound`). The five finite checks (four enumerations plus the R = 31
+`dp_check`) use `native_decide` and so additionally report a `…native_decide.ax_1_1`
 axiom (the `Lean.ofReduceBool` mechanism) — trust in the Lean
 compiler and its evaluator, not just the kernel. Two engineering
 notes, learned the hard way: kernel `decide` on `Finset`/`Multiset`
@@ -84,7 +85,8 @@ multiplicative `_mult` forms, each of which reports exactly its
 enumeration's single `native_decide` axiom and nothing else.
 Mitigation for the evaluator trust: every enumeration is checked by
 independent Python implementations (`theory.verify_R7_finite`,
-`theory.finite_criterion_dp`, `theory.verify_support_bound`) written
+`theory.finite_criterion_dp`, `theory.verify_support_bound`,
+`theory.verify_support_bound_dp`) written
 against the same finite spaces, with identical results.
 
 ## Roadmap (not yet formalized)
@@ -99,9 +101,21 @@ against the same finite spaces, with identical results.
   trusted-computing-base paragraph): the large-scale computations remain
   independently reproducible software with deterministic verification.
 
+## Modules
+
+| File | Contents |
+|---|---|
+| `Basic.lean` | certificate soundness/integrality, Theorem J (reciprocity) |
+| `Families.lean` | the aggregate identity families (Proposition 1.9), hard-class lemmas |
+| `TheoremA.lean` | Theorem A (R = 3), both directions, with positivity |
+| `Enumerations.lean` | the `reach` model, monotonicity lemmas, and the four `native_decide` finite checks (R = 7, 11, 19, 23) |
+| `Bridges.lean` | the parametric discrete-log bridge and the three `_mult` multiplicative restatements |
+| `DivisorBridge.lean` | reach ⟺ divisor certificates (FTA), budget consolidation, the composed corollary |
+| `LemmaS31.lean` | Lemma S at R = 31 by certified dynamic programming |
+
 ## Build
 
-```
+```bash
 cd lean/ErdosStraus
 lake exe cache get   # fetch mathlib binaries
 lake build           # ~seconds after cache; audits axioms via #print

@@ -29,7 +29,12 @@ def solve_for_fixed_a(n: int, a: int) -> Optional[Tuple[int, int]]:
     Add m^2 / d : multiply by d: d^2 b c - m d b - m d c = 0
     (d b - m)(d c - m) = m^2
     So let k = d b - m, then k | m^2, k > 0, and b = (k + m)/d must be integer.
-    This is efficient if we factor m^2 or iterate possible k up to sqrt(m^2).
+
+    NOTE: this helper is the naive fallback -- it scans b over a bounded
+    window rather than factoring m^2, and returns None both when no
+    solution exists in the window and when the window exceeds its size
+    cap. The real implementations are residual_solver (sympy divisors)
+    and bulk_generate (integer-only, at scale).
     """
     if a <= n // 4:
         return None
@@ -40,12 +45,9 @@ def solve_for_fixed_a(n: int, a: int) -> Optional[Tuple[int, int]]:
     # We need positive divisors k of m*m such that (k + m) % d == 0 and b = (k + m)//d >= a (or 1)
     # Then c = (m^2 / k + m) // d
     target = m * m
-    # To avoid full factoring for speed in loop, we can iterate possible k that make b integer in reasonable range.
-    # But for small searches, iterate possible b is fine; for larger use factor.
-    # Hybrid: for small d or small range use loop; else try.
     min_b = (m // d) + 1
     max_b = (2 * m) // d   # rough for b <= c
-    if max_b - min_b > 100000:  # too large, skip or use factor method later
+    if max_b - min_b > 100000:  # window too large for the naive scan
         return None
     for b in range(max(min_b, a), max_b + 1):
         denom = b * d - m
@@ -78,18 +80,11 @@ def known_easy_solutions(n: int) -> Optional[Tuple[int, int, int]]:
     """
     Apply classical identities for easy residue classes.
     """
-    # n even: 4/n = 1/(n/2) + 1/n + 1/n   wait no: 1/(n/2)=2/n, too big.
-    # Standard: if n ≡ 0 mod 4, n=4k, 4/(4k)=1/k = 1/(k+1) + 1/(k(k+1)) but that's two terms.
-    # For three: many known.
-    if n % 4 == 0:
-        k = n // 4
-        # 4/n = 1/(k) but need three. One common: a=b=c=3k/ something? Wait.
-        # Simple: 4/(4k) = 1/(2k) + 1/(2k) + 1/(2k)  yes! 3/(2k) = 1.5 /k = 6/(4k) too much? No:
-        # 1/(2k)+1/(2k)+1/(2k) = 3/(2k) = 3/(n/2) = 6/n > 4/n. Wrong.
-        # Correct for multiples of 4: 4/(4k) = 1/(k+1) + 1/(k(k+1)) + 1/(k(k+1)/ something? Better look up standard.
-        pass  # implement carefully later
-    # Classic for n ≡ 3 mod 4: n=4k+3, a = k+1, then remainder 4/n - 1/(k+1) = (4(k+1) - n)/(n(k+1)) = (4k+4 -4k-3)/(...) = 1/(n(k+1))
-    # Then split 1/m = 1/(m+1) + 1/(m(m+1)) with m = n(k+1)
+    # n ≡ 0 (mod 4) reduces multiplicatively to 4/k with k = n/4, so no
+    # dedicated identity is needed here; callers handle composite n via
+    # their smallest prime factor. The classical identity below covers
+    # n ≡ 3 (mod 4): with n = 4k+3 and a = k+1, the remainder
+    # 4/n - 1/a equals 1/(na), which splits as 1/(na+1) + 1/(na(na+1)).
     if n % 4 == 3:
         k = (n - 3) // 4
         a = k + 1
@@ -98,7 +93,6 @@ def known_easy_solutions(n: int) -> Optional[Tuple[int, int, int]]:
         c = m * (m + 1)
         if is_solution(n, a, b, c):
             return normalize(a, b, c)
-    # Other easy cases can be added.
     return None
 
 def hard_residue(n: int) -> bool:

@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """Verify the explicit solution certificates stored in ``data/``.
 
-Each JSON file maps a prime ``n`` to a record ``{R, a, b, c}``. A record is a
+Three on-disk shapes are handled: full JSON records (``{R, a, b, c}``
+per prime), bare minimal-R maps (``n -> R``; the triple is
+reconstructed by divisor search and checked), and the 10^11 uint8
+R-sequence artifacts (checked via :func:`verify_npz` after
+regenerating the arrays with ``bulk_generate --store rseq``). A full
+record is a
 valid certificate when
 
     4/n = 1/a + 1/b + 1/c    with a, b, c positive integers,
