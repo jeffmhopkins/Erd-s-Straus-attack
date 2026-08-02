@@ -266,6 +266,16 @@ def test_R7_dp_reproduces_theorem_Aprime():
     assert set(r["tally"]) == {"success", "fail_all_even"}
 
 
+def test_support_bound_lemma_R19_R23():
+    """Lemma S: no failing configuration at R=19 or R=23 has d/2 or more
+    nonzero support classes (the sieve input for Theorems G and G')."""
+    from erdos_straus.theory import verify_support_bound
+
+    for R in [19, 23]:
+        res = verify_support_bound(R)
+        assert res["lemma_holds"], (R, res["failures"][:3])
+
+
 def test_bulk_generate_matches_stored_minimal_R():
     """The fast bulk solver reproduces the minimal R of stored certificates."""
     from erdos_straus.bulk_generate import _init_small_primes, minimal_certificate

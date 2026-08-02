@@ -327,7 +327,77 @@ O((log x)^{−3/2}) proportionally.
 
 ---
 
-## 3. Empirical validation at 10⁹
+## 2.7 Theorems F and G: exponents 5/2 and 3
+
+The exponent bookkeeping to keep straight: each residual with an
+exact-criterion-grade handle contributes sifting density **½** (its failure
+forbids half the unit classes on its shifted form), and primality of
+p = 4n − 3 contributes 1. Three residuals therefore give dimension 5/2 —
+**not 3**; exponent 3 requires a fourth residual. Both theorems below are
+now fully proven.
+
+### Lemma S (support bound; machine-verified for R = 19, 23)
+
+*Let R ∈ {19, 23}. Every configuration for which residual R fails at a
+hard prime has at most (R−3)/2 nonzero factor-class support; equivalently,
+the prime factors of (p+R)/4 lie in at most (R−1)/2 of the R−1 unit
+classes mod R. Hence failure at R forbids at least half the classes, and
+the failing configurations fall into finitely many maximal-support
+branches, each a sifting condition of dimension ≥ ½ on (p+R)/4.*
+
+**Proof.** Reachability of the target class is monotone in both the
+support and the multiplicities. It therefore suffices to check that for
+every support of size (R−1)/2 over the nonzero logs and every class of p,
+the target is reachable already at minimal multiplicities. Exhaustive
+check (`theory.verify_support_bound`): **437,580** pairs at R = 19 and
+**7,759,752** pairs at R = 23 — zero failures. The bound is tight: Type-I
+(all-QR) configurations occupy exactly (R−3)/2 nonzero classes. ∎
+
+### Theorem F ({3,7,11}; exponent 5/2)
+
+*The number of hard primes p ≤ x failing residuals 3, 7 and 11
+simultaneously (in particular, with R_min(p) > 11) is
+O(x/(log x)^{5/2}); all but a proportion O((log x)^{−3/2}) of hard primes
+are solved within {3, 7, 11}.*
+
+**Proof.** With n = (p+3)/4, the three shifted forms are n, n+1, n+2. By
+Theorems A, A′, and A″, joint failure implies: n free of primes
+≡ 2 (mod 3); n+1 free of non-residues mod 7; and, splitting by A″'s two
+cases: **branch (a)** — n+2 free of the five non-residue classes mod 11
+(density ½); **branch (b)** — n+2 free of the six classes {4,5,7,8,9,10}
+mod 11 (density 3/5). Each branch is a four-form sieve problem
+(n, n+1, n+2, 4n−3) as in Theorem E, of dimension 1+½+½+½ = 5/2, resp.
+1+½+½+3/5 = 13/5. The Fundamental Lemma bounds branch (a) by
+O(x/(log x)^{5/2}) and branch (b) by O(x/(log x)^{13/5}) = o(the former).
+Sum over the two branches and the six hard classes. ∎
+
+### Theorem G ({3,7,11,19}; exponent 3)
+
+*The number of hard primes p ≤ x failing residuals 3, 7, 11 and 19
+simultaneously (in particular, with R_min(p) > 19) is O(x/(log x)³);
+all but O((log x)^{−2}) of hard primes are solved within {3, 7, 11, 19}.*
+
+**Proof.** Add the form (p+19)/4 = n+4. By Lemma S at R = 19, failure at
+19 splits into finitely many branches, each forbidding an explicit set of
+≥ 9 of the 18 unit classes mod 19 on n+4 — dimension ≥ ½. Crossing with
+the (a)/(b) branches at 11 gives finitely many combined branches, each a
+five-form sieve problem (n, n+1, n+2, n+4, 4n−3) of dimension
+≥ 1+½+½+½+½ = 3. (The forbidden residue classes of the five forms are
+pairwise distinct for q > 19; smaller primes are absorbed into the fixed
+congruence class of n.) The Fundamental Lemma bounds each branch by
+O(x/(log x)³); sum over the finitely many branches. ∎
+
+### Theorem G′ ({3,7,11,19,23}; exponent 7/2)
+
+*Identically, with Lemma S at R = 23 and the form (p+23)/4 = n+5:
+the joint exceptional set of {3, 7, 11, 19, 23} is O(x/(log x)^{7/2}).*
+
+**The chain.** Every further prime residual R ≡ 3 (mod 4) whose
+support-bound lemma is verified adds ½ to the exponent. The verification
+cost is C(R−2, (R−1)/2) reachability checks — trivial through R = 23,
+feasible with bit-parallel code to R ≈ 31–43. The exceptional-set
+exponent is thus pushable to any fixed level by finite computation, a
+concrete instantiation of Theorem D with explicit, verified constants.
 
 All statements tested against the complete per-prime solvability masks
 (27 residuals × 1 587 581 hard primes).
@@ -456,14 +526,13 @@ them directly.
 1. **Finite covering (Theorem B hypothesis).** Prove some finite S works for
    all hard primes. The sieve (Theorem D) gives density-(log x)^{−A}
    exceptional sets for every A but cannot reach emptiness.
-2. **More exact criteria.** ~~R = 11 as the first Type-II case.~~ **Done**
-   (Theorem A″, §2.6) — and the meta-theorem makes every fixed R decidable
-   by finite enumeration, with `solvable_exact` as the generic
-   implementation. The natural continuation is R = 15 (first composite:
-   two coupled character conditions mod 3 and mod 5) and R = 19, 23,
-   turning ever more of S₀ into explicit sieve conditions and raising the
-   proven exponent in Theorem E's extension chain (already 5/2 with
-   {3, 7, 11}).
+2. **More exact criteria / longer chains.** ~~R = 11 as the first Type-II
+   case.~~ **Done** (Theorem A″, §2.6). ~~Sieve-grade handles on 19, 23.~~
+   **Done** (Lemma S, §2.7) — note the support-bound lemma suffices for
+   the sieve without the full exact criterion. Proven exponents: 5/2
+   ({3,7,11}), 3 ({3,7,11,19}), 7/2 (adding 23). Next: bit-parallel
+   verification of Lemma S at R = 31, 43, 47 (exponents 4, 9/2, 5), and
+   the first composite criterion R = 15 (coupled conditions mod 3, mod 5).
 3. **Understand deep-tail correlation.** The ×30 calibration factor says
    smooth-shift primes fail *jointly*. A quantitative model of
    P(fail at R | a_R smooth) would turn the record forecast into a theorem-

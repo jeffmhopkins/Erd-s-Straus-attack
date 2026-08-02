@@ -553,6 +553,60 @@ def finite_criterion_dp(R: int, forced_logs: Optional[List[int]] = None,
             "budget_examples": examples.get("fail_budget", [])}
 
 
+# --- Support-bound lemma: the sieve input for Theorems F/G -----------------
+
+def verify_support_bound(R: int) -> Dict:
+    """Machine verification of the support-bound lemma for prime R ≡ 3 (4).
+
+    LEMMA. Every configuration for which residual R fails at a hard prime
+    has at most (R-3)/2 NONZERO factor-class support (in discrete-log
+    coordinates on (Z/R)* ≅ Z/(R-1)) — equivalently, counting the always-
+    neutral class 1, the prime factors of (p+R)/4 lie in at most (R-1)/2
+    of the R-1 unit classes, so failure forbids at least HALF the classes.
+
+    Verification: reachability of the target is monotone in both support
+    and multiplicities, so it suffices that for every support S of size
+    d/2 (d = R-1) over the nonzero logs and every class of p, the target
+    is reachable already at minimal multiplicities (budget 2 per class,
+    p-budget 2). Type-I (all-QR) configurations have exactly d/2 - 1
+    nonzero classes, so the bound is tight.
+
+    Consequence (used in Theorems F/G): failure at R implies (p+R)/4 has
+    no prime factor in an explicit set of ≥ d/2 classes, a sifting
+    condition of dimension ≥ 1/2 — and there are finitely many maximal
+    failing supports, so the exceptional count splits into finitely many
+    branches each of sieve dimension ≥ 1/2 in the mod-R coordinate.
+    """
+    from itertools import combinations
+
+    d = R - 1
+    _, LOG = _dlog_table(R)
+    inv4_log = LOG[pow(4, -1, R)]
+    FULL = (1 << d) - 1
+
+    def rot(mask: int, s: int) -> int:
+        s %= d
+        return ((mask << s) | (mask >> (d - s))) & FULL
+
+    checked = 0
+    failures: List[Tuple] = []
+    for S in combinations(range(1, d), d // 2):
+        base = 1
+        for v in S:
+            base = base | rot(base, v) | rot(base, 2 * v)
+        if base == FULL:
+            checked += d
+            continue
+        for p_log in range(d):
+            reach = base | rot(base, p_log) | rot(base, 2 * p_log)
+            t = (d // 2 + 2 * p_log + inv4_log) % d
+            checked += 1
+            if not (reach >> t) & 1:
+                failures.append((S, p_log))
+    return {"R": R, "checked": checked, "failures": failures,
+            "lemma_holds": not failures}
+
+
 # --- the four critical primes ---------------------------------------------
 
 CRITICAL = [8803369, 142361209, 287567281, 794037841]
