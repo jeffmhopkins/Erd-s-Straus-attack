@@ -267,6 +267,21 @@ power laws f_R(x) = C_R (log x)^{−κ_R}:
 Both are sharp, falsifiable predictions of the model; the 10¹⁰ run tests
 them directly.
 
+**Outcome (10¹⁰ run, 14 215 707 hard primes, all solved):**
+
+- **Record: HELD.** Max minimal R remains 107, still uniquely at 8 803 369.
+  The coin flip resolved "no new record" — consistent with the independence
+  estimate (0.038) and mildly against the ×30-corrected one (~1), suggesting
+  the deep-tail correlation is driven by *per-prime* structure (smooth
+  shifted values at one p), which becomes rarer as p grows, rather than by
+  a persistent enhancement of the tail rate.
+- **Gap: PERSISTS.** Minimal R ∈ {87, …, 103} still unpopulated.
+- Moderate tail as predicted: minimal R ∈ {75, 79, 83} grew 2, 1, 2 →
+  3, 11, 5 (14 new primes; the model expected a handful).
+- The four critical primes remain the only primes with a unique working
+  residual ≤ 107 in the 10⁹ mask data; no prime below 10¹⁰ requires
+  R > 107.
+
 ---
 
 ## 7. Covering sets at 10⁹

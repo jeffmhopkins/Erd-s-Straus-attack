@@ -42,8 +42,10 @@ src/erdos_straus/
   parametric_search.py fixed-residual parametric experiments per hard class
   verify.py            independent verification of the JSON certificates
 data/
+  hard_primes_1e10_minimalR.json.gz    minimal-R map for all 14,215,707 hard
+                                       primes < 10^10 (triples reconstruct)
   hard_primes_1e9_minimalR.json.gz     minimal-R map for all 1,587,581 hard
-                                       primes < 10^9 (triples reconstruct)
+                                       primes < 10^9
   hard_primes_1.2e8_solutions.json.gz  explicit (R,a,b,c) for all 213,131
                                        hard primes < 1.2*10^8 (gzip-compressed)
   hard_primes_1e6_solutions.json   explicit (R,a,b,c) for all hard primes < 10^6
@@ -58,14 +60,20 @@ STATUS.md              full status of the attack
 
 ## Current results
 
-All **1,587,581** hard primes below **10⁹** have verified solutions: full
-explicit triples up to 1.2 × 10⁸, and a compact minimal-R map (`n → R`) up to
-10⁹ from which triples reconstruct deterministically (and are re-derived and
+All **14,215,707** hard primes below **10¹⁰** have verified solutions: full
+explicit triples up to 1.2 × 10⁸, and compact minimal-R maps (`n → R`) up to
+10⁹ and 10¹⁰ from which triples reconstruct deterministically (re-derived and
 exactly checked by `es-verify`). The maximal minimal residual is **R = 107**,
-attained at a *single* prime (8,803,369 < 10⁷) — a 20× extension of the bound
-produced no new record. `R = 3` covers 49 % of hard primes, `R ∈ {3, 7, 11}`
-covers 91.3 %, and no prime has minimal R in {87, 91, 95, 99, 103}: the
+attained at a *single* prime (8,803,369 < 10⁷) — unchanged across **three
+orders of magnitude**. `R = 3` covers 49 % of hard primes, `R ∈ {3, 7, 11}`
+covers 91 %, and no prime has minimal R in {87, 91, 95, 99, 103}: the
 distribution jumps from 83 straight to 107.
+
+**Theory** (see `THEORY.md`): exact solvability criteria are proved for
+R = 3 and (for hard primes, via machine-verified finite case analysis) R = 7;
+a quadratic character obstruction explains why residuals fail; and a
+sieve-theoretic reduction shows a finite residual list captures all hard
+primes outside a set of relative density O((log x)⁻ᴬ) for every A.
 
 ## Setup
 

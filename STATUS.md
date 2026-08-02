@@ -36,7 +36,8 @@ This is implemented in `residual_solver.py` (factoring via sympy) and supported 
 | \(< 3 \times 10^7\) | ~57k     | Yes         | 107               | — |
 | \(< 5 \times 10^7\) | ~93k     | Yes         | 107               | — |
 | \(< 1.2 \times 10^8\) | 213 131 | Yes | 107               | Full explicit solutions saved (gzip) |
-| \(< 10^9\)     | **1 587 581** | **Yes** | **107**       | Minimal-\(R\) map saved (gzip); current verified bound |
+| \(< 10^9\)     | 1 587 581 | Yes | 107               | Minimal-\(R\) map saved (gzip) |
+| \(< 10^{10}\)  | **14 215 707** | **Yes** | **107**      | Minimal-\(R\) map saved (gzip); current verified bound |
 
 The \(1.2 \times 10^8\) pass was produced by `erdos_straus.bulk_generate`
 (integer-only trial-division solver, numpy sieve, 4-way parallel) in **≈9 s**
@@ -62,6 +63,25 @@ triple, so the map is a full certificate set, not a summary.
 | 31 | 4 820   | 0.30 % | 99.87 %| | 71 | 6 |
 | 35 | 708     | 0.045 %| 99.91 %| | 79 | 1 |
 | 39 | 755     | 0.048 %| 99.96 %| | 107 | 1 (\(p=8\,803\,369\)) |
+
+### \(10^{10}\) update (prediction test)
+
+The \(10^{10}\) run (segmented sieve, 656 s on 4 cores; 143 000 sampled
+certificates plus **all** tail entries \(R \ge 51\) re-verified with full
+minimality checks — zero errors) resolved the two falsifiable forecasts made
+at \(10^9\) (see `THEORY.md` §6):
+
+- **The record held.** Max minimal \(R\) is *still* 107, still uniquely at
+  \(p = 8\,803\,369 < 10^7\) — now unchanged across **three orders of
+  magnitude** (the model called this a coin flip; independence alone gave 4 %).
+- **The gap persists.** Still no prime with minimal
+  \(R \in \{87, 91, 95, 99, 103\}\) among 14.2 M primes.
+- The tail thickened exactly as the model predicts at moderate depth:
+  minimal \(R \in \{75, 79, 83\}\) went from 2, 1, 2 primes to 3, 11, 5 —
+  but no prime crossed 83. The deep-tail correlation factor apparently
+  *suppresses* new records rather than producing them: smooth-shift
+  configurations are rarer at larger \(p\) (each \(f_R \to 0\)), and no new
+  structurally-exceptional prime appeared.
 
 **Key facts at \(10^9\):**
 - Extending the bound by \(20\times\) (from \(5\times 10^7\)) produced
