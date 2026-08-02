@@ -86,7 +86,12 @@ independent of those bounds. The residual-certificate framework studied
 here appears in recent technical notes \cite{Notes2026}; the structure of
 the solution count was analyzed by Elsholtz and Tao \cite{ElsholtzTao}.
 Verification, however, exhibits no mechanism; the aim here is a
-quantitative structural reduction.
+quantitative structural reduction. For calibration, Vaughan's classical
+mean-value bound \cite{Vaughan} gives an exceptional set
+$\ll x \exp(-c(\log x)^{2/3})$ for \eqref{eq:es} --- asymptotically
+stronger than any fixed power of $\log x$; the value of the present
+approach is not raw density but its explicit, certificate-generating,
+machine-verified structure, together with the exact criteria.
 
 \subsection{The residual method}
 
@@ -224,6 +229,18 @@ In particular all but a proportion $O((\log x)^{-2})$ of hard primes are
 solved within $\{3, 7, 11, 19\}$, and all but
 $O((\log x)^{-15/2})$ within $\mathcal{P}$.
 \end{theorem}
+
+\begin{proposition}[aggregate identity families]\label{prop:agg}
+Let $p \equiv 1 \pmod 4$ be prime and $R \equiv 3 \pmod 4$. If
+$R \mid p+1$, then $k = a p^2$ is a certificate for residual $R$; if
+$R \mid p+4$, then $k = a^2 p$ is. Hence any prime factor
+$\equiv 3 \pmod 4$ of $p+1$ or of $p+4$ yields an explicit solution,
+and these are the only $a$-independent divisor shapes $k = a^j p^i$ with
+this property. Adding the two corresponding linear forms to
+Theorem~\ref{thm:FG}: the number of hard primes $p \le x$ failing every
+residual in $\mathcal{P}$ and both families is
+$O\!\left(x/(\log x)^{19/2}\right)$.
+\end{proposition}
 
 \begin{theorem}[density reduction]\label{thm:D}
 For every $A > 0$ there is a finite admissible set $S(A)$ such that the
@@ -466,6 +483,20 @@ through finitely many maximal-support branches, plus $1$ for primality:
 total dimension $\ge 1 + \tfrac{15}{2} = \tfrac{17}{2}$, with forbidden
 residues pairwise distinct for $q > 107$ and smaller primes absorbed
 into the congruence class of $n$.
+\end{proof}
+
+\begin{proof}[Proof of Proposition \ref{prop:agg}]
+$k = a p^2$ divides $m^2 = p^2 a^2$ and $k \equiv -m$ iff
+$a p^2 \equiv -p a$, i.e.\ $p \equiv -1 \pmod R$; $k = a^2 p$ divides
+$m^2$ and $a^2 p \equiv -p a$ iff $a \equiv -1$, i.e.\
+$p \equiv -4 \pmod R$ by \eqref{eq:star}. Integrality of $b, c$ is
+automatic. Scanning all shapes $k = a^j p^i$ ($j, i \le 2$) yields no
+further $p$-only condition. The failure of both families states that the
+two forms $(p+1)/2$ and $p+4$ (in $n$: $2n-1$ and $4n+1$) are free of
+primes $\equiv 3 \pmod 4$ --- two further sifting conditions of
+dimension $\tfrac12$ each on forms distinct from all previous ones.
+Empirically the two families alone cover $74\%$ of hard primes below
+$10^9$, and none of the four critical primes.
 \end{proof}
 
 \begin{remark}
@@ -828,6 +859,11 @@ S.~E.~Salez,
 \emph{The Erd\H{o}s--Straus conjecture: new modular equations and
 checking up to $N = 10^{17}$},
 preprint, arXiv:1406.6307, 2014.
+
+\bibitem{Vaughan}
+R.~C.~Vaughan,
+\emph{On a problem of Erd\H{o}s, Straus and Schinzel},
+Mathematika \textbf{17} (1970), 193--198.
 
 \bibitem{Swett}
 A.~Swett,

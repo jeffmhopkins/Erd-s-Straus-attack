@@ -656,6 +656,32 @@ def verify_support_bound_dp(R: int, time_budget: float = 900.0) -> Dict:
             "secs": round(time.time() - t0, 1)}
 
 
+def aggregate_identity_certificate(p: int) -> Optional[Tuple[int, int, int, int]]:
+    """Theorem I: explicit certificate from the p+1 / p+4 aggregate families.
+
+    If some prime R ≡ 3 (mod 4) divides p+1, then k = a·p² certifies
+    residual R (p ≡ −1 mod R); if R | p+4, then k = a²·p does (p ≡ −4).
+    Returns (R, a, b, c) for the smallest such R, or None if both p+1 and
+    p+4 are free of prime factors ≡ 3 (mod 4).
+    """
+    _init_small_primes()
+    best = None
+    for shift, jexp, iexp in [(1, 1, 2), (4, 2, 1)]:
+        for q in factorize(p + shift):
+            if q % 4 == 3 and (best is None or q < best[0]):
+                R = q
+                a = (p + R) // 4
+                m = p * a
+                k = (a ** jexp) * (p ** iexp)
+                b = (k + m) // R
+                c = ((m * m) // k + m) // R
+                if b > c:
+                    b, c = c, b
+                if 4 * a * b * c == p * (b * c + a * c + a * b):
+                    best = (R, a, b, c)
+    return best
+
+
 # --- the four critical primes ---------------------------------------------
 
 CRITICAL = [8803369, 142361209, 287567281, 794037841]
