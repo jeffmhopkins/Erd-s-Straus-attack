@@ -1004,6 +1004,68 @@ Theorem S(iii) currently covers ω ≤ 2. (ii) For fixed J this adds no
 density strength over Theorem 1.11; its role is structural, as the
 rigorous base of the conditional theorem below.
 
+#### Theorem B₁ (the first rung of B, proved)
+
+*Fix a prime q ≥ 11 and δ ∈ (0, 1). For x ≥ x₀(q, δ), among the hard
+primes p ≤ x with least non-residue q(p) = q, those failing their
+selected residual R₀ = (−p) mod 4q number at most*
+
+    (1 − δ) · #E₀(x)   —   indeed   #E₁(x) ≪_q #E₀(x) · (log x)^{−1/φ(4q)} = o(#E₀(x)).
+
+*So Hypothesis B's inequality holds at j = 0, for every fixed q, with
+any δ < 1 eventually.*
+
+**Proof.** The condition q(p) = q is a conjunction of quadratic-residue
+conditions at the primes 11, …, q, i.e. a union U of reduced residue
+classes mod M = 840·∏_{11 ≤ ℓ ≤ q} ℓ; fix one class c ∈ U (mod
+lcm(M, 4q)), which fixes R₀ = R(c) and forces q | (p+R₀)/4. By
+Dirichlet/Siegel–Walfisz, primes in the class number
+∼ x/(φ(M')·log x) — a positive proportion of E₀ per class, finitely
+many classes.
+
+Key step (Proposition 2.2, universal class): if n = (p+R₀)/4 has any
+prime factor u ≡ −4⁻¹ (mod R₀), then k = u·p² is a certificate and
+rung R₀ succeeds. Hence a failing p in the class has
+n ≡ n_c (mod M''), 4n − R₀ = p prime, and **n free of prime factors
+≡ −4⁻¹ (mod R₀)**. Sift {n ≤ (x+R₀)/4 : n ≡ n_c (mod M'')} by the
+primes ℓ ≤ z = x^{1/10}, ℓ ∤ M'': forbidden classes are
+4n ≡ R₀ (mod ℓ) always (primality of p, one class), plus
+n ≡ 0 (mod ℓ) when ℓ ≡ −4⁻¹ (mod R₀) (one further class, distinct
+from the first for every ℓ ∤ R₀). By Dirichlet the sifting dimension
+is κ = 1 + 1/φ(R₀), and the Fundamental Lemma gives
+
+    #(failing p in the class) ≪ x / (log x)^{1 + 1/φ(R₀)}.
+
+Dividing by the class's ∼ x/(φ(M')·log x) primes and summing the
+finitely many classes: the failing fraction is
+≪_q (log x)^{−1/φ(4q)} → 0. ∎
+
+**Corollary (uniform range).** Since M = e^{O(q)} ≤ (log x)^{O(1)} for
+q ≤ c₀ log log x, Siegel–Walfisz and the Fundamental Lemma apply
+uniformly there, and the failing fraction is
+≤ exp(−c₁ log log x / q) ≤ 1 − δ₀ for q ≤ c₂ log log x: **B's first
+rung holds with a uniform δ₀ for all q up to c log log x** (which by
+Lemma Q covers all hard primes outside a set of relative density
+2^{−π(c log log x)}). The x₀ is ineffective (Siegel–Walfisz).
+
+**Data checks.** (i) The proof's mechanism is exact in the census:
+across 11,816 sampled selected-rung failures below 10⁹, *none* has a
+prime factor of (p+R₀)/4 in any of the Prop 2.2 classes
+{t, tp⁻¹, tp⁻²} — zero violations, as the contrapositive requires.
+(ii) A bonus channel the proof doesn't even need: for 25.5 % of hard
+primes the selected q itself lies in the universal class
+(4q ≡ −1 mod R₀), so the closed-form certificate k = q(p)·p² solves p
+at R₀ outright — a p-adapted identity family in the sense of
+Prop. 1.12.
+
+**What remains for j ≥ 1.** Applying the same sieve to rung j alone
+bounds each unconditional failing set (that is Theorem L₀). The open
+content of B is the *conditional* inequality — that rung j+1 removes
+a δ-fraction *of the survivors of rungs 0…j*, whose set is already
+sieve-thin; the rung map a ↦ a + q refreshes the factorization, and
+making that refresh rigorous against a conditioned set is precisely
+the remaining gap between B₁ and B.
+
 #### Hypothesis B and Theorem L₁ (the almost-all draft)
 
 The census makes the following counting hypothesis precise and
@@ -1016,7 +1078,9 @@ x ≥ x₀, all q ≤ (log x)², and all 0 ≤ j < J(x):
 
     #E_{j+1}(x)  ≤  (1 − δ) · #E_j(x)  +  O(√x).
 
-*Measured*: the census gives per-rung survival factors 1 − δ ≈
+*Status*: the j = 0 case is **proved** (Theorem B₁ above), for every
+fixed q and uniformly for q ≪ log log x. *Measured*: the census gives
+per-rung survival factors 1 − δ ≈
 0.05–0.14 at every scale tested (10⁹ exhaustively; 10¹⁰–10¹¹ sampled;
 the 10¹¹ deep tail completely), with no drift in p, through ~9 rungs
 and two q's. The anatomy subsection above is the proof target: a rung

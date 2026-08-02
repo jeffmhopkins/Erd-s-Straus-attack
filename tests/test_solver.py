@@ -446,3 +446,29 @@ def test_reach_diagnostics_known_budget_failure():
     assert not d["target_reached"]
     assert d["true_budget"] and not d["subgroup_miss"]
     assert d["missed"] == 1 and d["support_size"] <= 5
+
+
+def test_prop22_contrapositive_on_selected_rung_failures():
+    """Theorem B1's mechanism (THEORY.md 2.10): a selected-rung failure
+    cannot have any prime factor of (p+R)/4 in the Prop 2.2 classes
+    {t, t/p, t/p^2} mod R -- checked against ground truth solvability."""
+    from erdos_straus.bulk_generate import (_init_small_primes,
+                                            solve_residual, factorize)
+    from erdos_straus.burgess_scan import (least_legendre_nonresidue,
+                                           selected_residual)
+    from erdos_straus.solver import generate_hard_primes
+
+    _init_small_primes()
+    checked = 0
+    for p in generate_hard_primes(300000):
+        q = least_legendre_nonresidue(p)
+        R = selected_residual(p, q)
+        if solve_residual(p, R) is not None:
+            continue
+        checked += 1
+        t = (-pow(4, -1, R) * p * p) % R
+        pinv = pow(p, -1, R)
+        classes = {t, t * pinv % R, t * pinv * pinv % R}
+        a = (p + R) // 4
+        assert not any(u % R in classes for u in factorize(a)), (p, q, R)
+    assert checked > 5
