@@ -134,6 +134,60 @@ def verify_all(files: List[Path] | None = None) -> List[FileReport]:
     return [verify_file(p) for p in files]
 
 
+def verify_npz(npz_path: str, sample_step: int = 1000,
+               tail_min: int = 43, progress: bool = True) -> Dict:
+    """Verify a (primes, rvals) npz from ``generate_rseq``.
+
+    Checks, with exact integer arithmetic throughout:
+      - every sampled entry reconstructs to a valid triple via its stored R;
+      - every tail entry (R >= tail_min) reconstructs AND is minimal
+        (no smaller admissible R succeeds);
+      - primes are strictly increasing hard-class values.
+    """
+    import numpy as np
+    from erdos_straus.bulk_generate import _init_small_primes, solve_residual
+
+    _init_small_primes()
+    data = np.load(npz_path)
+    primes, rvals = data["primes"], data["rvals"]
+    n = len(primes)
+    assert len(rvals) == n
+    assert bool(np.all(np.diff(primes) > 0)), "primes not increasing"
+    res = primes % 840
+    assert bool(np.isin(res, np.array(sorted(HARD_RESIDUES))).all()), \
+        "non-hard prime present"
+
+    bad = 0
+    checked = 0
+    idxs = list(range(0, n, sample_step))
+    for j, i in enumerate(idxs):
+        p, R = int(primes[i]), int(rvals[i])
+        sol = solve_residual(p, R)
+        checked += 1
+        if sol is None or not is_solution(p, *sol):
+            bad += 1
+            print(f"  BAD reconstruction p={p} R={R}")
+        if progress and j % 20000 == 0 and j:
+            print(f"  [verify] {j:,}/{len(idxs):,} sampled", flush=True)
+
+    tail_idx = np.nonzero(rvals >= tail_min)[0]
+    not_minimal = 0
+    for i in tail_idx.tolist():
+        p, R = int(primes[i]), int(rvals[i])
+        sol = solve_residual(p, R)
+        if sol is None or not is_solution(p, *sol):
+            bad += 1
+            print(f"  BAD tail p={p} R={R}")
+        for smaller in range(3, R, 4):
+            if solve_residual(p, smaller) is not None:
+                not_minimal += 1
+                print(f"  NOT MINIMAL p={p} stored R={R}, R={smaller} works")
+                break
+    return {"n": n, "sampled": checked, "tail_checked": len(tail_idx),
+            "bad": bad, "not_minimal": not_minimal,
+            "ok": bad == 0 and not_minimal == 0}
+
+
 def main(argv: List[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     paths = [Path(a) for a in argv] if argv else None

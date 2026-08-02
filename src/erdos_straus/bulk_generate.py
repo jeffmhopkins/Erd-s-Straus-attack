@@ -41,13 +41,13 @@ from typing import Dict, List, Optional, Tuple
 HARD_RESIDUES = frozenset({1, 121, 169, 289, 361, 529})
 
 # Precomputed small primes for trial division of a = (n+R)/4 < n/4 + 100.
-# Correct full factorization needs primes up to sqrt(a): for n up to 1e10,
-# a <= ~2.5e9 and sqrt(a) < 50_100. The 60000 default covers n up to ~1.4e10;
-# raise the bound before pushing past that.
+# Correct full factorization needs primes up to sqrt(a): for n up to 1e11,
+# a <= ~2.5e10 and sqrt(a) < 158_200. The 180000 default covers n up to
+# ~1.29e11; raise the bound before pushing past that.
 _SMALL_PRIMES: List[int] = []
 
 
-def _init_small_primes(bound: int = 60000) -> None:
+def _init_small_primes(bound: int = 180000) -> None:
     global _SMALL_PRIMES
     if _SMALL_PRIMES and _SMALL_PRIMES[-1] >= bound:
         return
@@ -197,18 +197,20 @@ def hard_primes_upto(limit: int) -> List[int]:
 
 
 def hard_primes_upto_segmented(limit: int, segment_size: int = 1 << 23,
-                               progress: bool = False) -> List[int]:
+                               progress: bool = False,
+                               as_array: bool = False):
     """All hard-residue primes p <= limit via a segmented sieve.
 
     Memory is bounded by the base-prime table (primes up to sqrt(limit)) plus
-    one bool array of ``segment_size`` — a few MB regardless of ``limit``.
+    one bool array of ``segment_size``. Returns a Python list by default;
+    pass ``as_array=True`` for a numpy int64 array (8 bytes/prime — required
+    at 1e11 scale, where a list would need ~4 GB).
     """
     np = _require_numpy()
     hard_res = np.array(sorted(HARD_RESIDUES))
     base = _base_primes(int(math.isqrt(limit)) + 1)
-    base_arr = np.array(base, dtype=np.int64)
 
-    hard_list: List[int] = []
+    parts = []
     lo = 2
     n_seg = (limit - 1) // segment_size + 1
     seg_idx = 0
@@ -227,13 +229,15 @@ def hard_primes_upto_segmented(limit: int, segment_size: int = 1 << 23,
             res = primes % 840
             mask = np.isin(res, hard_res)
             if mask.any():
-                hard_list.extend(primes[mask].tolist())
+                parts.append(primes[mask].astype(np.int64))
         seg_idx += 1
-        if progress:
+        if progress and (seg_idx % 200 == 0 or hi == limit):
+            n_found = sum(len(a) for a in parts)
             print(f"[sieve] segment {seg_idx}/{n_seg} "
-                  f"(up to {hi:,}), {len(hard_list):,} hard so far", flush=True)
+                  f"(up to {hi:,}), {n_found:,} hard so far", flush=True)
         lo = hi + 1
-    return hard_list
+    arr = np.concatenate(parts) if parts else np.empty(0, dtype=np.int64)
+    return arr if as_array else arr.tolist()
 
 
 # --- parallel driver -------------------------------------------------------
@@ -347,6 +351,129 @@ def generate(limit: int, out_path: str, workers: Optional[int] = None,
     return stats
 
 
+def _worker_rseq(chunk) -> Tuple[object, List[Tuple[int, int, int, int, int]]]:
+    """Solve a numpy chunk of primes; return (uint8 R-array, tail entries).
+
+    Tail entries (R >= 43, or sentinel R = -1 for unsolved) carry the full
+    verified triple so the repo can store them explicitly.
+    """
+    import numpy as np
+    _init_small_primes()
+    out = np.empty(len(chunk), dtype=np.uint8)
+    tail = []
+    for i, n in enumerate(chunk.tolist()):
+        res = minimal_certificate(n)
+        if res is None:
+            out[i] = 0
+            tail.append((n, -1, 0, 0, 0))
+        else:
+            a, b, c, R = res
+            out[i] = R if R <= 255 else 255
+            if R >= 43:
+                tail.append((n, R, a, b, c))
+    return out, tail
+
+
+def generate_rseq(limit: int, out_prefix: str,
+                  workers: Optional[int] = None,
+                  scratch_npz: Optional[str] = None,
+                  progress: bool = True) -> Dict[str, object]:
+    """Large-scale generation with compact R-sequence output.
+
+    Writes three artifacts:
+      {out_prefix}.rvals.u8.gz  - gzip of the uint8 minimal-R values, in
+                                  ascending-prime order (primes regenerate
+                                  deterministically by the segmented sieve;
+                                  sha256 of the prime bytes is recorded)
+      {out_prefix}.meta.json    - limit, count, hashes, distribution, record
+      {out_prefix}.tail.json    - explicit verified triples for R >= 43
+    plus, if scratch_npz is given, a full (primes, rvals) npz for direct
+    verification without re-sieving.
+    """
+    import gzip
+    import hashlib
+    import numpy as np
+
+    _init_small_primes()
+    t0 = time.time()
+    if progress:
+        print(f"[sieve] hard primes up to {limit:,} (segmented, array) ...",
+              flush=True)
+    primes = hard_primes_upto_segmented(limit, segment_size=1 << 25,
+                                        progress=progress, as_array=True)
+    total = len(primes)
+    sieve_secs = round(time.time() - t0, 1)
+    if progress:
+        print(f"[sieve] {total:,} hard primes ({sieve_secs}s)", flush=True)
+
+    workers = workers or os.cpu_count() or 1
+    n_chunks = max(1, min(512, total // 200_000 + 1))
+    bounds = [total * i // n_chunks for i in range(n_chunks + 1)]
+    chunks = [primes[bounds[i]:bounds[i + 1]] for i in range(n_chunks)]
+
+    rvals = np.empty(total, dtype=np.uint8)
+    tail: List[Tuple[int, int, int, int, int]] = []
+    t1 = time.time()
+    pos = 0
+    from multiprocessing import Pool
+    with Pool(workers) as pool:
+        for ci, (out, t) in enumerate(pool.imap(_worker_rseq, chunks)):
+            rvals[pos:pos + len(out)] = out
+            pos += len(out)
+            tail.extend(t)
+            if progress and (ci % 8 == 0 or ci == n_chunks - 1):
+                el = time.time() - t1
+                eta = el / max(pos, 1) * (total - pos)
+                print(f"[solve] {pos:,}/{total:,} ({el:.0f}s, "
+                      f"ETA {eta/60:.0f}m)", flush=True)
+
+    unsolved = [e[0] for e in tail if e[1] == -1]
+    dist_counts = np.bincount(rvals, minlength=256)
+    R_distribution = {int(R): int(c) for R, c in enumerate(dist_counts)
+                      if c > 0 and R > 0}
+    solved_tail = [e for e in tail if e[1] > 0]
+    max_R = max((e[1] for e in solved_tail), default=int(max(
+        (R for R in R_distribution), default=0)))
+    if solved_tail and max_R >= 43:
+        max_R_prime = min(e[0] for e in solved_tail if e[1] == max_R)
+    else:
+        max_R_prime = 0
+
+    raw = rvals.tobytes()
+    with gzip.open(out_prefix + ".rvals.u8.gz", "wb", compresslevel=9) as f:
+        f.write(raw)
+    tail_json = [{"p": e[0], "R": e[1], "a": e[2], "b": e[3], "c": e[4]}
+                 for e in solved_tail]
+    with open(out_prefix + ".tail.json", "w") as f:
+        json.dump(tail_json, f, indent=1)
+    stats = {
+        "limit": limit,
+        "num_hard_primes": total,
+        "num_unsolved": len(unsolved),
+        "unsolved_sample": unsolved[:50],
+        "max_R": int(max_R),
+        "max_R_prime": int(max_R_prime),
+        "R_distribution": R_distribution,
+        "first_prime": int(primes[0]) if total else None,
+        "last_prime": int(primes[-1]) if total else None,
+        "sha256_rvals": hashlib.sha256(raw).hexdigest(),
+        "sha256_primes": hashlib.sha256(primes.tobytes()).hexdigest(),
+        "sieve_secs": sieve_secs,
+        "elapsed_secs": round(time.time() - t0, 1),
+        "format": "uint8 minimal-R values in ascending-prime order; primes "
+                  "regenerate via hard_primes_upto_segmented(limit)",
+    }
+    with open(out_prefix + ".meta.json", "w") as f:
+        json.dump(stats, f, indent=2)
+    if scratch_npz:
+        np.savez_compressed(scratch_npz, primes=primes, rvals=rvals)
+    if progress:
+        print(f"[done] {total - len(unsolved):,}/{total:,} solved, "
+              f"max R={max_R} at n={max_R_prime}, "
+              f"{stats['elapsed_secs']}s", flush=True)
+    return stats
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--max", type=int, default=120_000_000,
@@ -357,14 +484,23 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--workers", type=int, default=None)
     ap.add_argument("--segmented", action="store_true",
                     help="use the low-memory segmented sieve (needed at 10^9)")
-    ap.add_argument("--store", choices=["full", "rmap"], default="full",
-                    help="'full' writes {n:{R,a,b,c}}; 'rmap' writes compact {n:R}")
+    ap.add_argument("--store", choices=["full", "rmap", "rseq"], default="full",
+                    help="'full' writes {n:{R,a,b,c}}; 'rmap' writes compact "
+                         "{n:R}; 'rseq' writes the uint8 R-sequence format "
+                         "(--out is then a path prefix)")
+    ap.add_argument("--scratch-npz", type=str, default=None,
+                    help="rseq only: also save a full (primes, rvals) npz "
+                         "for direct verification")
     ap.add_argument("--stats-out", type=str, default=None,
                     help="optional path to write JSON run statistics")
     args = ap.parse_args(argv)
 
-    stats = generate(args.max, args.out, workers=args.workers,
-                     segmented=args.segmented, store=args.store)
+    if args.store == "rseq":
+        stats = generate_rseq(args.max, args.out, workers=args.workers,
+                              scratch_npz=args.scratch_npz)
+    else:
+        stats = generate(args.max, args.out, workers=args.workers,
+                         segmented=args.segmented, store=args.store)
     if args.stats_out:
         with open(args.stats_out, "w") as f:
             json.dump(stats, f, indent=2)
