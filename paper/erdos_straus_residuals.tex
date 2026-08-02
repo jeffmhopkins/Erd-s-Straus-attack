@@ -157,6 +157,20 @@ Theorems~\ref{thm:Ap} and~\ref{thm:App} are established by finite,
 machine-verified case analyses (Section~\ref{sec:exact}); the reduction to
 a finite check is itself a theorem:
 
+\begin{remark}[computer-assisted components]\label{rem:computer}
+The exhaustive verifications behind Theorems~\ref{thm:Ap},
+\ref{thm:App} and Lemma~\ref{lem:S} below are \emph{parts of the
+respective proofs}, on the same footing as a hand case analysis. Each is
+a deterministic enumeration of a finite configuration space whose
+finiteness and sufficiency are proved in advance
+(Theorem~\ref{thm:meta}; for Lemma~\ref{lem:S}, monotonicity of
+target-reachability in support and multiplicities, checked at minimal
+exponents). The checks are short (seconds on commodity hardware),
+involve only exact integer arithmetic, and the code is available in the
+accompanying repository; Appendix~\ref{app:verif} records the exact
+configuration counts and entry points.
+\end{remark}
+
 \begin{theorem}[meta-theorem]\label{thm:meta}
 For every fixed prime $R \equiv 3 \pmod 4$, the validity of
 \eqref{eq:cert} at a hard prime $p$ depends only on \textup{(i)} the
@@ -403,14 +417,21 @@ non-residue classes mod $11$ (density $\tfrac12$); \emph{branch (b)} ---
 $n+2$ free of the six classes $\{4,5,7,8,9,10\}$ mod $11$ (density
 $\tfrac35$). Each branch is a four-form sieve problem of dimension
 $1 + \tfrac12 + \tfrac12 + \tfrac12 = \tfrac52$, resp.\
-$1 + \tfrac12 + \tfrac12 + \tfrac35 = \tfrac{13}{5}$, and the Fundamental
-Lemma gives $O(x/(\log x)^{5/2})$ plus a lower-order term.
+$1 + \tfrac12 + \tfrac12 + \tfrac35 = \tfrac{13}{5}$. Since
+$\tfrac{13}{5} > \tfrac52$, the Type-II branch contributes
+$O\!\left(x/(\log x)^{13/5}\right) = o\!\left(x/(\log x)^{5/2}\right)$:
+the bound is the maximum of the branch exponents, attained by the
+character branch (a). The Fundamental Lemma applied to each branch gives
+$O(x/(\log x)^{5/2})$ in total.
 
 For $\{3,7,11,19\}$, Lemma~\ref{lem:S} splits failure at $19$ into
 finitely many maximal-support branches, each forbidding an explicit set
 of at least $9$ of the $18$ unit classes mod $19$ on $n+4$ --- dimension
 $\ge \tfrac12$. Crossing with the branches at $11$ leaves finitely many
-combined branches, each a five-form problem of dimension $\ge 3$; the
+combined branches, each a five-form problem of dimension $\ge 3$ (those
+involving the Type-II case at $11$ have dimension
+$\ge 1 + \tfrac12 + \tfrac12 + \tfrac35 + \tfrac12 = \tfrac{31}{10} > 3$
+and are again lower-order); the
 forbidden residues of the five forms are pairwise distinct for $q > 19$,
 smaller primes being absorbed into the congruence class of $n$. Summing
 the finitely many branches gives $O(x/(\log x)^3)$. The
@@ -427,13 +448,60 @@ concrete instantiation of Theorem~\ref{thm:D} with explicit, verified
 constants.
 \end{remark}
 
-\begin{proof}[Proof of Theorem \ref{thm:D} (sketch)]
-By Proposition~\ref{prop:succ}, failure at $R$ implies $(p+R)/4$ has no
-prime factor in at least one explicit class mod $R$, a sifting condition
-of dimension $\ge 1/\varphi(R)$ on the form $(p+R)/4$; distinct $R$ give
-distinct shifts. Since $\sum_{R \equiv 3 (4)} 1/\varphi(R)$ diverges, a
-finite set $S(A)$ achieves total dimension $> A$, and the
-multidimensional Selberg sieve yields the claim.
+\begin{proof}[Proof of Theorem \ref{thm:D}]
+Fix $A > 0$. Choose $B = B(A)$ so large that
+\begin{equation}\label{eq:divergence}
+  \sum_{\substack{3 \le R \le B \\ R \equiv 3 \, (4)}} \frac{1}{\varphi(R)}
+  \;\ge\; \sum_{\substack{3 \le R \le B \\ R \equiv 3 \, (4)}} \frac{1}{R}
+  \;>\; A;
+\end{equation}
+this is possible since the reciprocal sum over the progression
+$R \equiv 3 \pmod 4$ diverges, and $\varphi(R) \le R$. Let
+$S(A) = \{R \equiv 3 \, (4) : 3 \le R \le B\}$ and
+$M = 840 \cdot \prod_{R \in S(A)} R$.
+
+Write $n = (p+3)/4$ as before, so $(p+R)/4 = n + (R-3)/4$ for each
+$R \in S(A)$: a family of $|S(A)|$ integer linear forms in $n$ with
+pairwise distinct shifts, together with the form $4n - 3 = p$. Fix a
+residue class $n \equiv n_0 \pmod M$ compatible with $p$ hard; there are
+finitely many, and it suffices to bound each. Within such a class, for
+every $R \in S(A)$ the quantities $t \equiv -4^{-1}p^2$ and
+$p^{-1} \bmod R$ are constant, so the class set
+$S_R(p) = \{t, tp^{-1}, tp^{-2}\} \bmod R$ of
+Proposition~\ref{prop:succ} is a fixed nonempty set of
+$t_R = t_R(n_0) \in \{1, 2, 3\}$ classes. By the contrapositive of
+Proposition~\ref{prop:succ}, if every residual in $S(A)$ fails at $p$,
+then for each $R \in S(A)$ the form $n + (R-3)/4$ has \emph{no} prime
+factor in $S_R(p)$; and $4n - 3$, being prime and $> z$, has no prime
+factor $\le z$.
+
+Sift the class $\{n \le (x+3)/4 : n \equiv n_0 \ (M)\}$ by the primes
+$q \le z = x^{1/10}$, $q \nmid M$. A prime $q$ forbids: the class
+$n \equiv 3 \cdot 4^{-1} \pmod q$ (from the primality of $4n - 3$), and,
+for each $R \in S(A)$ with $q \bmod R \in S_R(p)$, the single class
+$n \equiv -\tfrac{R-3}{4} \pmod q$ (a prime factor $q$ of the form
+$n + (R-3)/4$ in a guaranteed-success class cannot occur). Thus
+\[
+  \omega(q) \;=\; 1 \;+\;
+  \#\bigl\{R \in S(A) : q \bmod R \in S_R(p)\bigr\},
+\]
+which is bounded by $|S(A)| + 1$; the forbidden residues of distinct
+forms are pairwise distinct for $q > B$, since the shifts $(R-3)/4$
+differ by less than $B$ and $q \nmid M$. For each $R$, the density of
+primes $q$ with $q \bmod R \in S_R(p)$ is $t_R/\varphi(R)$ by
+Dirichlet's theorem, so $\omega$ has average
+\[
+  \kappa \;=\; 1 + \sum_{R \in S(A)} \frac{t_R}{\varphi(R)}
+  \;\ge\; 1 + \sum_{R \in S(A)} \frac{1}{\varphi(R)} \;>\; 1 + A
+\]
+in the Halberstam--Richert sense, by \eqref{eq:divergence}. The
+Fundamental Lemma (\cite[Thm.~2.5]{HalberstamRichert}) in dimension
+$\kappa$ then bounds the sifted count by
+$O_{A}\!\left(x \prod_{q \le z}(1 - \omega(q)/q)\right)
+ = O_A\!\left(x (\log x)^{-\kappa}\right)
+ = O_A\!\left(x/(\log x)^{1+A}\right)$,
+and summing over the finitely many classes $n_0 \bmod M$ preserves the
+bound.
 \end{proof}
 
 \begin{remark}
@@ -480,7 +548,8 @@ Salient features:
   orders of magnitude.
 \item No prime has minimal $R \in \{87, 91, 95, 99, 103\}$. This gap
   requires no modular explanation: under the calibrated independence
-  model the expected counts there are $0.12, 0.03, 0.05, 0.01, 0.01$.
+  model the expected counts there are $0.12$, $0.03$, $0.05$, $0.01$,
+  $0.01$.
   Conditioned on failing every $R \le 83$, a prime lands at $87$ with
   probability $0.53$ and at $107$ with probability $0.017$; the record
   prime is the anomaly, not the gap.
@@ -541,6 +610,47 @@ $\varphi(R)$ grows harder while the character dichotomy stays binary.
   47$). A quantitative theory of joint failure for smooth-shift primes
   would explain why the record is static and bound its future growth.
 \end{enumerate}
+
+\appendix
+
+\section{Verification details}\label{app:verif}
+
+Each computer-assisted component below is a deterministic, exhaustive
+enumeration of a finite space whose sufficiency is established in the
+text; all arithmetic is exact integer arithmetic, each run completes in
+seconds on commodity hardware, and the entry points named are in the
+module \texttt{erdos\_straus.theory} of the accompanying repository.
+
+\begin{center}
+\small
+\begin{tabular}{p{2.4cm}|p{5.4cm}|r|p{3.2cm}}
+component & configuration space & count & entry point \\ \hline
+Thm.~\ref{thm:Ap} ($R=7$) &
+class multisets in $(\mathbb{Z}/7)^*$, multiplicities $\le 3$, with the
+forced even factor, $p \bmod 7 \in \{1,2,4\}$, and the consistency
+relation & $1{,}536$ &
+\texttt{verify\_R7\_finite} \\ \hline
+Thm.~\ref{thm:App} ($R=11$) &
+dynamic program over $(\mathbb{Z}/11)^*$ with the forced factor $3$;
+collapses to equivalence states ($16$ succeed, $6$ fail by character,
+$3$ by budget) & $25$ states &
+\texttt{finite\_criterion\_dp} \\ \hline
+Lem.~\ref{lem:S} ($R=19$) &
+all supports of size $9$ over the nonzero logs $\times$ all classes of
+$p$, at minimal multiplicities & $437{,}580$ &
+\texttt{verify\_support}\newline\texttt{\_bound} \\ \hline
+Lem.~\ref{lem:S} ($R=23$) &
+all supports of size $11$, likewise & $7{,}759{,}752$ &
+\texttt{verify\_support}\newline\texttt{\_bound} \\
+\end{tabular}
+\end{center}
+
+In addition (as sanity checks, not proof components), the criteria of
+Theorems~\ref{thm:A}--\ref{thm:App} were compared against ground-truth
+divisor search on the complete solvability data below $10^9$: agreement
+in $1{,}587{,}581/1{,}587{,}581$ cases for $R = 3$ and
+$158{,}759/158{,}759$ sampled cases for $R = 11$, with zero
+discrepancies.
 
 \begin{thebibliography}{9}
 
