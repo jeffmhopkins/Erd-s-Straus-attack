@@ -32,6 +32,10 @@ residual framework from the companion paper.
 | `isSubprod_primes_iff_dvd` | subproducts of a prime list (budget 1 per occurrence) are exactly the divisors of its product — the fundamental theorem of arithmetic in the form the model needs |
 | `mem_reach_iff_dvd` / `divisorConfig` | **the divisor bridge**: c ∈ reach(factor configuration of N) ⟺ ∃ k ∣ N with class c |
 | `reach_certificate` / `certificate_reach` | **the meta-theorem's reduction, capstone**: reach membership of the target −m (m = p·a, 4a = p+R) yields explicit positive k ∣ m², b, c with R·b = k+m, R·c = m²/k+m and 4abc = p(bc+ca+ab) — and conversely every divisor class is reached. Solvability ⟺ model reachability, machine-checked |
+| `reach_merge` / `reach_subperm` / `reach_two_eq_doubled` | budget consolidation: equal-class entries merge with summed budgets, reach is monotone under sub-permutations, budget-2 = doubled budget-1 |
+| `lemmaS_R19_certificate` | **the composed corollary**: if `(p+19)/4` has nine prime factors in pairwise-distinct unit classes ≠ 1 mod 19, an explicit Erdős–Straus certificate exists at p — enumeration + both bridges + consolidation, end to end |
+| `R31.dedupMax_dominates` / `R31.dp_sound_aux` (LemmaS31.lean) | **verified dynamic programming**: the DP round carries every state and adds every extension; the soundness induction shows every support `S ⊆ {1..29}` is represented with count ≥ min(\|S\|, 15) — standard axioms only |
+| `R31.lemmaS_finite_R31` | **Lemma S at R = 31**: the C(29,15) = 77,558,760 supports are *never enumerated* — the DP covers them through 3,001 states, and the only computation is the final 3,001 × 30 target check (`native_decide`) |
 
 Together these verify the elementary layer of the paper end to end —
 certificates are sound and integral, Theorem A is exact in both
@@ -85,13 +89,12 @@ against the same finite spaces, with identical results.
 
 ## Roadmap (not yet formalized)
 
-- Lemma S past R = 23: C(25,13) × 26 ≈ 135M checks at R = 31 exceeds
-  the evaluator's practical budget; the DP formulation (or a
-  precompiled checker) would be needed.
-- Budget-consolidation lemmas connecting `divisorConfig` (budget 1
-  per prime occurrence) to the enumeration-shaped configurations
-  (budget 2·multiplicity per distinct class), to compose
-  `reach_certificate` directly with the `_mult` theorems.
+- Lemma S past R = 31: the verified-DP machinery of `LemmaS31.lean`
+  extends directly (R = 43, 47, …); the cost is the evaluator's DP
+  run, which grows with the state count (3,001 at R = 31; millions by
+  R = 83), eventually needing a compacter state representation.
+- Composed corollaries at R = 11, 23, 31 analogous to
+  `lemmaS_R19_certificate` (same recipe).
 - The sieve chapter is out of scope by design (see the paper's
   trusted-computing-base paragraph): the large-scale computations remain
   independently reproducible software with deterministic verification.

@@ -258,11 +258,256 @@ theorem reach_certificate (R p a : ℕ) (hR : 0 < R) (hp : 0 < p)
     (by exact_mod_cast hc.symm)
   exact_mod_cast hZ
 
+/-! ### Budget consolidation
+
+The glue between configuration shapes: merging equal-class entries,
+sub-permutation monotonicity, and the expansion of budget-2 entries
+into two budget-1 entries. Together these let the `_mult` enumeration
+theorems (budget 2 per distinct class) compose with `divisorConfig`
+(budget 1 per prime occurrence). -/
+
+section Consolidation
+
+variable {R : ℕ}
+
+/-- Two steps on the same class merge into one with the summed
+budget. -/
+lemma step_step_same (A : Finset (ZMod R)) (x : ZMod R) (b₁ b₂ : ℕ) :
+    step (step A (x, b₁)) (x, b₂) = step A (x, b₁ + b₂) := by
+  ext z
+  simp only [mem_step]
+  constructor
+  · rintro ⟨s, ⟨t, ht, e₁, he₁, rfl⟩, e₂, he₂, rfl⟩
+    exact ⟨t, ht, e₁ + e₂, by omega, by rw [pow_add]; ring⟩
+  · rintro ⟨t, ht, e, he, rfl⟩
+    exact ⟨t * x ^ min e b₁, ⟨t, ht, min e b₁, min_le_right _ _, rfl⟩,
+      e - min e b₁, by omega, by rw [mul_assoc, ← pow_add]; congr 2; omega⟩
+
+/-- Merging adjacent equal-class entries preserves `reach`. -/
+lemma reach_merge (x : ZMod R) (b₁ b₂ : ℕ) (t : List (ZMod R × ℕ)) :
+    reach ((x, b₁) :: (x, b₂) :: t) = reach ((x, b₁ + b₂) :: t) := by
+  show List.foldl step _ _ = List.foldl step _ _
+  simp only [List.foldl_cons, step_step_same]
+
+/-- `reach` is monotone under sub-permutations. -/
+lemma reach_subperm {l L : List (ZMod R × ℕ)} (h : l.Subperm L) :
+    reach l ⊆ reach L := by
+  obtain ⟨l', hperm, hsub⟩ := h
+  rw [← reach_perm hperm]
+  exact reach_sublist hsub
+
+/-- A budget-2 configuration equals the doubled budget-1
+configuration. -/
+lemma reach_two_eq_doubled (ns : List ℕ) :
+    reach (ns.map fun (q : ℕ) => ((q : ZMod R), (2 : ℕ))) =
+      reach ((ns.flatMap fun q => [q, q]).map
+        fun (q : ℕ) => ((q : ZMod R), (1 : ℕ))) := by
+  show List.foldl step _ _ = List.foldl step _ _
+  generalize ({1} : Finset (ZMod R)) = A
+  induction ns generalizing A with
+  | nil => rfl
+  | cons q t ih =>
+      simp only [List.map_cons, List.flatMap_cons, List.map_append,
+        List.foldl_cons, List.singleton_append, List.map_nil,
+        List.nil_append, List.foldl_append] at ih ⊢
+      rw [show step (step A ((q : ZMod R), 1)) ((q : ZMod R), 1) =
+        step A ((q : ZMod R), 2) from step_step_same A _ 1 1]
+      exact ih _
+
+end Consolidation
+
+/-! ### The composed corollary: Lemma S in action at R = 19
+
+Everything assembled: if `a = (p+19)/4` has nine prime factors in
+distinct unit classes other than 1 modulo 19, the Erdős–Straus
+equation is solvable at `p` with first denominator `a` — machine
+checked end to end (the finite enumeration by the evaluator, all
+bridges symbolic). -/
+
+section Composed
+
+open Finset in
+/-- **Lemma S applied (R = 19).** Let `p` be prime with `p > 19`,
+`4a = p + 19`, and suppose `qs` lists nine primes dividing `a` whose
+classes mod 19 are pairwise distinct and avoid `{0, 1}`. Then an
+explicit Erdős–Straus certificate exists at `p`. -/
+theorem lemmaS_R19_certificate
+    (p a : ℕ) (hp : p.Prime) (hp19 : 19 < p) (ha : 0 < a)
+    (h4 : 4 * a = p + 19)
+    (qs : List ℕ) (hlen : qs.length = 9)
+    (hq_prime : ∀ q ∈ qs, q.Prime)
+    (hq_dvd : ∀ q ∈ qs, q ∣ a)
+    (hq_cls : ∀ q ∈ qs, ((q : ZMod 19) ≠ 0 ∧ (q : ZMod 19) ≠ 1))
+    (hq_nodup : (qs.map fun (q : ℕ) => (q : ZMod 19)).Nodup) :
+    ∃ k b c : ℕ, k ∣ (p * a) ^ 2 ∧ 19 * b = k + p * a ∧
+      19 * c = (p * a) ^ 2 / k + p * a ∧ 0 < b ∧ 0 < c ∧
+      4 * (a * b * c) = p * (b * c + a * c + a * b) := by
+  have h19 : (19 : ℕ).Prime := by norm_num
+  -- 19 divides neither p nor a
+  have h19p : ¬ (19 ∣ p) := by
+    intro h
+    have := (Nat.prime_dvd_prime_iff_eq h19 hp).mp h
+    omega
+  have h19a : ¬ (19 ∣ a) := by
+    intro h
+    exact h19p (by omega : (19 : ℕ) ∣ p)
+  have hcop : Nat.Coprime 19 (p * a) := by
+    rcases (Nat.Prime.coprime_iff_not_dvd h19).mpr
+      (fun h => (h19.dvd_mul.mp h).elim h19p h19a) with h
+    exact h
+  -- p divides a is impossible (a < p), so p ∉ qs
+  have hpa : ¬ (p ∣ a) := by
+    intro h
+    have := Nat.le_of_dvd ha h
+    omega
+  have hp_not_mem : p ∉ qs := fun h => hpa (hq_dvd p h)
+  -- the support
+  have hqs_nodup : qs.Nodup := hq_nodup.of_map
+  set T : Finset (ZMod 19) :=
+    (qs.map fun (q : ℕ) => (q : ZMod 19)).toFinset with hT_def
+  have hT : T ∈ powersetCard 9
+      ((univ : Finset (ZMod 19)).filter fun x => x ≠ 0 ∧ x ≠ 1) := by
+    rw [Finset.mem_powersetCard]
+    constructor
+    · intro x hx
+      rw [hT_def, List.mem_toFinset, List.mem_map] at hx
+      obtain ⟨q, hq, rfl⟩ := hx
+      simp only [mem_filter, mem_univ, true_and]
+      exact hq_cls q hq
+    · rw [hT_def, List.toFinset_card_of_nodup hq_nodup,
+        List.length_map, hlen]
+  -- the configuration list
+  set l : List (ZMod 19 × ℕ) :=
+    qs.map (fun (q : ℕ) => ((q : ZMod 19), (2 : ℕ))) with hl_def
+  have hl_nodup : l.Nodup := by
+    rw [hl_def, show (fun (q : ℕ) => ((q : ZMod 19), (2 : ℕ))) =
+      (fun x : ZMod 19 => (x, (2 : ℕ))) ∘ (fun (q : ℕ) => (q : ZMod 19))
+      from rfl, ← List.map_map]
+    exact hq_nodup.map (fun x y h => (Prod.ext_iff.mp h).1)
+  have hl_mem : ∀ xb : ZMod 19 × ℕ, xb ∈ l ↔ xb.1 ∈ T ∧ xb.2 = 2 := by
+    intro xb
+    rw [hl_def, List.mem_map, hT_def]
+    constructor
+    · rintro ⟨q, hq, rfl⟩
+      exact ⟨List.mem_toFinset.mpr (List.mem_map.mpr ⟨q, hq, rfl⟩), rfl⟩
+    · rintro ⟨hx1, hx2⟩
+      rw [List.mem_toFinset, List.mem_map] at hx1
+      obtain ⟨q, hq, hqx⟩ := hx1
+      exact ⟨q, hq, by cases xb; simp_all⟩
+  -- p's class is a unit
+  have hpz : (p : ZMod 19) ≠ 0 := by
+    rw [Ne, ZMod.natCast_eq_zero_iff]
+    exact h19p
+  -- the enumeration theorem
+  have htarget := lemmaS_finite_R19_mult T hT l hl_nodup hl_mem p hpz
+  -- consolidate into the divisor configuration of (p·a)²
+  set m : ℕ := p * a with hm_def
+  have hm0 : m ≠ 0 := by positivity
+  have hsub : reach (l ++ [((p : ZMod 19), 2)]) ⊆
+      reach (divisorConfig 19 (m ^ 2)) := by
+    have hshape : l ++ [((p : ZMod 19), 2)] =
+        (qs ++ [p]).map fun (q : ℕ) => ((q : ZMod 19), (2 : ℕ)) := by
+      rw [hl_def, List.map_append]
+      rfl
+    rw [hshape, reach_two_eq_doubled]
+    apply reach_subperm
+    -- the doubled ℕ-list sub-permutes the prime list of m²
+    have hnat : ((qs ++ [p]).flatMap fun q => [q, q]).Subperm
+        (m ^ 2).primeFactorsList := by
+      rw [List.subperm_ext_iff]
+      intro r hr
+      have hrmem : r ∈ qs ++ [p] := by
+        rw [List.mem_flatMap] at hr
+        obtain ⟨q, hq, hrq⟩ := hr
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hrq
+        rcases hrq with rfl | rfl <;> exact hq
+      have hr_prime : r.Prime := by
+        rcases List.mem_append.mp hrmem with h | h
+        · exact hq_prime r h
+        · simp only [List.mem_singleton] at h
+          subst h; exact hp
+      have hr_dvd : r ∣ m := by
+        rcases List.mem_append.mp hrmem with h | h
+        · exact (hq_dvd r h).mul_left p
+        · simp only [List.mem_singleton] at h
+          subst h; exact Dvd.intro a rfl
+      -- left count = 2
+      have hcount2 : ∀ (ns : List ℕ), ns.Nodup → r ∈ ns →
+          (ns.flatMap fun q => [q, q]).count r = 2 := by
+        intro ns
+        induction ns with
+        | nil => intro _ h; cases h
+        | cons q t ih =>
+            intro hnd hmem
+            rw [List.flatMap_cons, List.count_append]
+            rcases List.mem_cons.mp hmem with rfl | hmem'
+            · have hnot : r ∉ (t.flatMap fun q => [q, q]) := by
+                intro hcontra
+                rw [List.mem_flatMap] at hcontra
+                obtain ⟨w, hw, hrw⟩ := hcontra
+                simp only [List.mem_cons, List.not_mem_nil, or_false]
+                  at hrw
+                rcases hrw with rfl | rfl <;>
+                  exact (List.nodup_cons.mp hnd).1 hw
+              rw [List.count_cons_self, List.count_cons_self,
+                List.count_nil, List.count_eq_zero_of_not_mem hnot]
+            · have hne : r ≠ q := fun h =>
+                (List.nodup_cons.mp hnd).1 (h ▸ hmem')
+              rw [List.count_cons_of_ne hne.symm,
+                List.count_cons_of_ne hne.symm, List.count_nil]
+              simpa using ih (List.nodup_cons.mp hnd).2 hmem'
+      have hnodup_full : (qs ++ [p]).Nodup := by
+        rw [List.nodup_append]
+        refine ⟨hqs_nodup, List.nodup_singleton p, ?_⟩
+        intro x hx y hy hxy
+        have hyp : y = p := by simpa using hy
+        exact hp_not_mem ((hxy.trans hyp) ▸ hx)
+      rw [hcount2 (qs ++ [p]) hnodup_full hrmem]
+      -- right count = factorization of m², which is ≥ 2
+      rw [Nat.primeFactorsList_count_eq, Nat.factorization_pow,
+        Finsupp.smul_apply, smul_eq_mul]
+      have := hr_prime.factorization_pos_of_dvd hm0 hr_dvd
+      omega
+    obtain ⟨l', hperm, hsubl⟩ := hnat
+    exact ⟨l'.map fun (q : ℕ) => ((q : ZMod 19), (1 : ℕ)),
+      hperm.map _, by
+        rw [divisorConfig]
+        exact hsubl.map _⟩
+  -- the target classes agree: −m ≡ −4⁻¹p² (mod 19)
+  have h4inv : (4 : ZMod 19)⁻¹ * 4 = 1 := by
+    rw [ZMod.inv_eq_of_mul_eq_one 19 4 5 (by decide)]
+    decide
+  have ha' : (a : ZMod 19) = (4 : ZMod 19)⁻¹ * (p : ZMod 19) := by
+    have h4' : (4 : ZMod 19) * (a : ℕ) = ((p : ℕ) : ZMod 19) := by
+      have hc : ((4 * a : ℕ) : ZMod 19) = ((p + 19 : ℕ) : ZMod 19) := by
+        rw [h4]
+      push_cast at hc
+      rw [hc, show (19 : ZMod 19) = 0 from by decide, add_zero]
+    have := congrArg (fun z => (4 : ZMod 19)⁻¹ * z) h4'
+    simpa [← mul_assoc, h4inv] using this
+  have htgt_eq : (-(((p * a) : ℕ) : ZMod 19)) =
+      -(4⁻¹ : ZMod 19) * (p : ZMod 19) ^ 2 := by
+    push_cast
+    rw [ha']
+    ring
+  have hfinal : (-(((p * a) : ℕ) : ZMod 19)) ∈
+      reach (divisorConfig 19 ((p * a) ^ 2)) := by
+    rw [htgt_eq]
+    exact hsub htarget
+  -- apply the capstone
+  exact reach_certificate 19 p a (by norm_num) hp.pos ha h4 hcop hfinal
+
+end Composed
+
 end ErdosStraus
 
--- Audit: the divisor bridge is fully symbolic — standard axioms only,
--- no `native_decide` anywhere in this file.
+-- Audit: the divisor bridge and consolidation layers are fully
+-- symbolic — standard axioms only; the composed corollary inherits
+-- exactly the R = 19 enumeration's single `native_decide` axiom.
 #print axioms ErdosStraus.mem_reach_iff_subprod
 #print axioms ErdosStraus.isSubprod_primes_iff_dvd
 #print axioms ErdosStraus.mem_reach_iff_dvd
 #print axioms ErdosStraus.reach_certificate
+#print axioms ErdosStraus.reach_merge
+#print axioms ErdosStraus.reach_subperm
+#print axioms ErdosStraus.lemmaS_R19_certificate
