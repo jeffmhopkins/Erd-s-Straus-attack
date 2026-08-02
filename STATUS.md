@@ -90,6 +90,12 @@ with $R \le 400$. Failures are budget-type in 82 401 of 82 808 cases
 reciprocity $(q|R) = (p|q)$ verified at every selected residual, zero
 violations. Purity (non-residue factor $\Rightarrow$ success) holds
 exactly at the proved $R = 3, 7, 15$ and fails everywhere else.
+**Scaled to $10^{11}$** (`burgess_scan_1e10_1e11.json`): first-shot
+rate is flat at 95.0–95.8 % across four half-decade window samples
+(10 000 primes each, ladder coverage 100 %), and on the complete
+$10^{11}$ deep tail (all 20 151 primes with $R_{\min} \ge 43$) the
+ladder resolves all but two primes at cap 400 — both resolve by
+$R = 435$. No drift in the per-rung budget-failure rate with $p$.
 
 ### $10^{11}$ update (the gap fills; the record stands)
 

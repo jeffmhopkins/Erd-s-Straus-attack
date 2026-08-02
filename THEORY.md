@@ -905,6 +905,32 @@ the all-Jacobi-QR failure mode of Lemma N is impossible at R. Results:
   later non-residue q (same construction, R ≤ 400). **Coverage below
   10⁹ is 100.0 % with R ≤ 400** across at most two q's.
 
+#### Scaling to 10¹⁰ and 10¹¹ (window samples + the complete deep tail)
+
+Above 10⁹ there are no full masks, so success at each rung is computed
+directly with the composite exact engine (archive:
+`data/analysis/burgess_scan_1e10_1e11.json`; the engine agrees with the
+stored R_min on a systematic tail sample, 0/101 disagreements).
+Systematic window samples of 10,000 hard primes per half-decade:
+
+| range | first-shot | ladder ≤ 400 |
+|---|---:|---:|
+| 10⁹–3.2×10⁹ | 95.4 % | **100 %** |
+| 3.2×10⁹–10¹⁰ | 95.0 % | **100 %** |
+| 10¹⁰–3.2×10¹⁰ | 95.8 % | **100 %** |
+| 3.2×10¹⁰–10¹¹ | 95.7 % | **100 %** |
+
+**No drift**: the first-shot rate is flat (slightly rising) across two
+decades, and the ladder resolved every one of the 40,000 sampled primes.
+The adversarial population — the complete 10¹¹ deep tail, all 20,151
+primes with R_min ≥ 43, which by construction fail every small residual
+— still gives first-shot 75.1 % and ladder 99.990 %: exactly two primes
+(23,248,669,921 and 55,952,434,561, both with unusually large least
+non-residues q₁ = 67, 83) exhaust the 400-cap, and both resolve at
+R = 407 resp. 435 — so tail coverage is also 100 % at cap 435. The
+budget-failure probability per rung shows no growth with p, which is
+what Hypothesis L needs.
+
 #### The Ladder Hypothesis, and what it would give
 
 **Hypothesis L.** There is an absolute C such that for every hard
