@@ -286,6 +286,24 @@ def test_support_bound_dp_agrees_and_extends():
         assert res["status"] == "OK" and res["lemma_holds"], (R, res)
 
 
+def test_aggregate_identity_families():
+    """Theorem I: p+1 / p+4 divisor identities give valid certificates,
+    and the certificate's R genuinely divides p+1 or p+4."""
+    from erdos_straus.theory import aggregate_identity_certificate
+    from erdos_straus.solver import generate_hard_primes
+
+    covered = 0
+    for p in generate_hard_primes(100000):
+        res = aggregate_identity_certificate(p)
+        if res is not None:
+            R, a, b, c = res
+            assert R % 4 == 3
+            assert (p + 1) % R == 0 or (p + 4) % R == 0
+            assert is_solution(p, a, b, c)
+            covered += 1
+    assert covered > 0
+
+
 def test_bulk_generate_matches_stored_minimal_R():
     """The fast bulk solver reproduces the minimal R of stored certificates."""
     from erdos_straus.bulk_generate import _init_small_primes, minimal_certificate

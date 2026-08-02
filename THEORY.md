@@ -429,6 +429,38 @@ Lemma S (now verified for the twelve remaining primes in P) handles the
 rest; each contributes dimension ≥ ½ through finitely many
 maximal-support branches, plus 1 for primality: total ≥ 1 + 15/2. ∎
 
+### Theorem I (aggregate identity families) and the 19/2 upgrade
+
+*Let p ≡ 1 (mod 4) be prime and R ≡ 3 (mod 4). If R | p+1, then k = a·p²
+is a certificate for residual R; if R | p+4, then k = a²·p is. Hence any
+prime factor ≡ 3 (mod 4) of either p+1 or p+4 yields an explicit
+solution.*
+
+**Proof.** k = a p² divides m² = p²a² and k ≡ −m ⟺ ap² ≡ −pa ⟺ p ≡ −1
+(mod R); k = a²p divides m² and a²p ≡ −pa ⟺ a ≡ −1 ⟺ 4⁻¹p ≡ −1 ⟺
+p ≡ −4 (mod R). Integrality of b, c is automatic as always. ∎
+
+These are *aggregate* conditions — one multiplicative condition on p+1
+(resp. p+4) simultaneously activates every residual dividing it. A scan
+of the a-independent divisor shapes k = a^j p^i shows these two are the
+**only** such families. Verified on the 10⁹ data: the two families alone
+cover **74.2 %** of hard primes (random sample of 3 000), and none of the
+four critical primes — whose p+1 and p+4 must accordingly be free of
+3-mod-4 prime factors, a strong structural characterization of them.
+
+**Sieve consequence.** Failure of both families means p+1 and p+4 (two
+new linear forms, ~(2n−1) and (4n+1) in n = (p+3)/4) are free of primes
+≡ 3 (mod 4): two further sifting conditions of dimension ½ each. Added
+to Theorem H: *the number of hard primes p ≤ x failing all fifteen prime
+residuals up to 107 **and** both aggregate families is
+O(x/(log x)^{19/2}).*
+
+**Context (known bounds).** For calibration: Vaughan's classical
+mean-value bound gives an exceptional set ≪ x·exp(−c(log x)^{2/3}) for
+the Erdős–Straus equation — asymptotically stronger than any fixed power
+of log x. The value of the present chain is not raw density but its
+explicit, certificate-generating, machine-verified structure.
+
 **Limit of the method (important).** No fixed finite list can be pushed
 to *emptiness* this way: a constant-dimension sieve bounds counts by
 x/(log x)^κ, which diverges for every fixed κ. Moreover the calibrated
@@ -440,6 +472,70 @@ The finite covering hypothesis in its fixed-list form is therefore
 probably **false**; the correctly-posed target is a slowly growing bound
 R_min(p) ≪ f(p), which requires existence (lower-bound) technology
 beyond upper-bound sieves.
+
+## 2.8 Two attempts at totality, and their walls
+
+Both attempts below were executed; each yields something real, and each
+hits a wall that is now *precisely characterized* rather than merely
+suspected.
+
+### Attempt 1 (constructive): aggregate families
+
+Outcome: Theorem I above — the complete list of a-independent divisor
+identities is {p+1, p+4}; they cover 74 % of hard primes and add +1 to
+the chain exponent. Wall: any family of this shape covers p through a
+multiplicative condition on a *single shifted value*, so its failure set
+has density ~(log x)^{−1/2} — positive at every finite level. The four
+critical primes already escape both families. Constructive families
+thicken the almost-all coverage but structurally cannot reach totality.
+
+### Attempt 2 (analytic): growing lists and the larger sieve
+
+Idea: let the residual list grow with p (B ≈ C log p), so the sieve
+dimension grows and the count bound x/(log x)^{κ(B)} could in principle
+drop below 1 — proving R_min(p) ≤ C log p outright. Two requirements
+emerge:
+
+1. **p-independent forbidden classes.** The per-branch half-density
+   forbidden sets of Lemma S depend on p mod R; aggregating them over
+   ~log x residuals requires conditioning on p mod ∏R ≈ e^{B/2} ≈ x² —
+   more classes than there are primes ≤ x. Only *p-independent* (branch-
+   and p-class-free) forbidden classes can be aggregated. Computing this
+   set exhaustively (forced-class DP over all configurations and all p
+   classes, R = 11 … 43): **the always-forbidden set is exactly one
+   class — the universal class −4⁻¹ (mod R) — at every R tested.** Every
+   other class occurs in some failing configuration. So the aggregable
+   sifting weight per modulus q is W(q) = #{R ≤ B : R | 4q+1}, of average
+   ~½ log B — not the ~B/log B that half-density sets would give.
+
+2. **The support-level cap.** Even granting stronger inputs, the larger
+   sieve's quantity L is capped by the constraint d ≤ Q: moduli usable
+   for the growing list have size ≥ B, so at most log Q/log B ≈
+   log x/(2 log log x) of them fit into one squarefree d, giving
+   L ≤ exp(O(log x/log log x)) — never ≥ x. The same cap appears as the
+   remainder-term explosion (log x)^{#forms} in the fundamental lemma.
+
+Outcome: unconditionally the growing-list route yields at best a bound
+of shape x·exp(−c(log log x)²) — beyond every fixed power of log, but
+(a) still divergent, and (b) weaker than Vaughan's classical
+x·exp(−c(log x)^{2/3}). The wall is not technical laziness: it is the
+collapse of the p-independent forbidden structure to a single class,
+measured exactly by the AF computation.
+
+### Verdict
+
+Upper-bound counting — fixed lists, growing lists, aggregate families,
+in any combination available to us — bounds the exceptional set but
+cannot empty it. The residual method's genuine frontier is an existence
+statement (some R ≤ f(p) works for *every* p), which no upper-bound
+sieve can deliver. Candidate genuinely-new inputs, in increasing order
+of speculation: (i) additive-combinatorial theorems (Olson-type bounded
+subset sums in cyclic groups) proving failing supports at every R are
+either small or subgroup-trapped — this would enlarge the *provable*
+forbidden structure and could push the conditional bound past Vaughan;
+(ii) bilinear/dispersion estimates treating p and the factors of p+R
+symmetrically; (iii) a mean-value treatment of the certificate count
+itself (the Vaughan route) upgraded with the residual structure.
 
 All statements tested against the complete per-prime solvability masks
 (27 residuals × 1 587 581 hard primes).
