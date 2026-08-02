@@ -44,14 +44,15 @@ results are: (i)~\emph{exact} solvability criteria for the residuals
 $R = 3$, $7$, and $11$ at hard primes, the latter two established by
 machine-verified finite case analyses; (ii)~a meta-theorem showing such a
 finite exact criterion exists and is computable for every fixed $R$;
-(iii)~an unconditional chain of sieve bounds: the number of hard primes
-$p \le x$ solved by no residual in $\{3,7\}$, $\{3,7,11\}$,
-$\{3,7,11,19\}$, $\{3,7,11,19,23\}$ is respectively
-$O\!\left(x/(\log x)^{2}\right)$, $O\!\left(x/(\log x)^{5/2}\right)$,
-$O\!\left(x/(\log x)^{3}\right)$, $O\!\left(x/(\log x)^{7/2}\right)$,
-the last two via a machine-verified \emph{support-bound lemma} that makes
-every failure at $R = 19, 23$ a sifting condition of dimension
-$\ge \tfrac12$; (iv)~a general
+(iii)~an unconditional chain of sieve bounds, via a machine-verified
+\emph{support-bound lemma} that makes every failure at each prime
+residual a sifting condition of dimension $\ge \tfrac12$: the number of
+hard primes $p \le x$ solved by no residual in $\{3,7\}$ is
+$O\!\left(x/(\log x)^{2}\right)$, by no residual in $\{3,7,11\}$ is
+$O\!\left(x/(\log x)^{5/2}\right)$, and --- with the lemma verified for
+\emph{all fifteen} primes $R \equiv 3 \pmod 4$, $R \le 107$ --- by no
+residual among those fifteen is $O\!\left(x/(\log x)^{17/2}\right)$;
+(iv)~a general
 density reduction: for every $A$ there is a finite residual list whose
 joint exceptional set has relative density $O((\log x)^{-A})$ among hard
 primes. Computationally, we exhibit verified residual certificates for all
@@ -189,15 +190,18 @@ solved by neither $R = 3$ nor $R = 7$) is $O\!\left(x/(\log x)^2\right)$.
 
 The exponent grows by $\tfrac12$ for each further residual with a
 sieve-grade handle. For $R = 11$ this handle is Theorem~\ref{thm:App};
-for $R = 19, 23$ it is the following machine-verified lemma
+for larger $R$ it is the following machine-verified lemma
 (Section~\ref{sec:sieve}).
 
-\begin{lemma}[support bound; verified for $R = 19, 23$]\label{lem:S}
-Let $R \in \{19, 23\}$. Every configuration for which residual $R$ fails
-at a hard prime has at most $(R-3)/2$ nonzero factor-class support;
-equivalently, the prime factors of $(p+R)/4$ lie in at most $(R-1)/2$ of
-the $R-1$ unit classes mod $R$. Consequently failure at $R$ forbids at
-least half the classes, through finitely many maximal-support branches.
+\begin{lemma}[support bound; verified for every prime
+$R \equiv 3 \ (4)$, $19 \le R \le 107$]\label{lem:S}
+Let $R$ be one of the twelve primes
+$19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103, 107$. Every configuration
+for which residual $R$ fails at a hard prime has at most $(R-3)/2$
+nonzero factor-class support; equivalently, the prime factors of
+$(p+R)/4$ lie in at most $(R-1)/2$ of the $R-1$ unit classes mod $R$.
+Consequently failure at $R$ forbids at least half the classes, through
+finitely many maximal-support branches.
 \end{lemma}
 
 \begin{theorem}[the chain]\label{thm:FG}
@@ -209,8 +213,16 @@ respectively,
   O\!\left(\frac{x}{(\log x)^{3}}\right), \qquad
   O\!\left(\frac{x}{(\log x)^{7/2}}\right).
 \]
+More generally, with $\mathcal{P} = \{3, 7, 11, 19, 23, 31, 43, 47, 59,
+67, 71, 79, 83, 103, 107\}$ --- all fifteen primes $\equiv 3 \pmod 4$ up
+to $107$ --- the number of hard primes failing every residual in
+$\mathcal{P}$ is
+\[
+  O\!\left(\frac{x}{(\log x)^{17/2}}\right).
+\]
 In particular all but a proportion $O((\log x)^{-2})$ of hard primes are
-solved within $\{3, 7, 11, 19\}$.
+solved within $\{3, 7, 11, 19\}$, and all but
+$O((\log x)^{-15/2})$ within $\mathcal{P}$.
 \end{theorem}
 
 \begin{theorem}[density reduction]\label{thm:D}
@@ -399,11 +411,21 @@ monotone in both the support and the multiplicities of the factor-class
 configuration. It therefore suffices to check that for every support of
 size $(R-1)/2$ over the nonzero discrete logs and every class of
 $p$ mod $R$, the target is reachable already at minimal multiplicities
-(exponent budget $2$ per class, $p$-budget $2$). The exhaustive check
-(code: \texttt{theory.verify\_support\_bound}) covers $437{,}580$ pairs
-at $R = 19$ and $7{,}759{,}752$ pairs at $R = 23$, with no failures. The
-bound is tight: the all-residue (Type~I) configurations occupy exactly
-$(R-3)/2$ nonzero classes.
+(exponent budget $2$ per class, $p$-budget $2$). For $R = 19, 23$ a
+direct enumeration of all $\binom{R-2}{(R-1)/2}$ supports suffices
+($437{,}580$ resp.\ $7{,}759{,}752$ pairs; code:
+\texttt{theory.verify\_support\_bound}). For the larger residuals the
+binomial count explodes, and the check is instead performed by a subset
+dynamic program (\texttt{theory.verify\_support\_bound\_dp}): fold all
+supports into a table mapping each reachability mask to the maximal
+support size achieving it --- valid because, by the same monotonicity,
+failure at any multiplicities implies failure at multiplicity one. The
+realized masks are heavily structured, so the state count stays
+tractable ($3{,}001$ states at $R = 31$ against $77.5$~million supports;
+$19{,}530{,}971$ states at $R = 107$, $331$ seconds). All twelve
+residuals verify with zero violations; exact state counts are tabulated
+in Appendix~\ref{app:verif}. The bound is tight: the all-residue
+(Type~I) configurations occupy exactly $(R-3)/2$ nonzero classes.
 \end{proof}
 
 \begin{proof}[Proof of Theorem \ref{thm:FG}]
@@ -436,16 +458,34 @@ forbidden residues of the five forms are pairwise distinct for $q > 19$,
 smaller primes being absorbed into the congruence class of $n$. Summing
 the finitely many branches gives $O(x/(\log x)^3)$. The
 $\{3,7,11,19,23\}$ case adds the form $n+5$ with Lemma~\ref{lem:S} at
-$R = 23$, one more factor of $(\log x)^{1/2}$.
+$R = 23$, one more factor of $(\log x)^{1/2}$. The full chain
+$\mathcal{P}$ is identical: the fifteen forms $n + (R-3)/4$,
+$R \in \mathcal{P}$, are distinct integer shifts of $n$ (pairwise
+differences less than $27$), each contributing dimension $\ge \tfrac12$
+through finitely many maximal-support branches, plus $1$ for primality:
+total dimension $\ge 1 + \tfrac{15}{2} = \tfrac{17}{2}$, with forbidden
+residues pairwise distinct for $q > 107$ and smaller primes absorbed
+into the congruence class of $n$.
 \end{proof}
 
 \begin{remark}
 Each further prime residual $R \equiv 3 \pmod 4$ whose support-bound
-lemma is verified adds $\tfrac12$ to the exponent; the verification costs
-$\binom{R-2}{(R-1)/2}$ reachability checks, trivial through $R = 23$ and
-feasible with bit-parallel code to $R \approx 31$--$43$. The chain is a
-concrete instantiation of Theorem~\ref{thm:D} with explicit, verified
-constants.
+lemma is verified adds $\tfrac12$ to the exponent; the dynamic-program
+verification has now been carried through every prime residual up to
+$107$. The chain is a concrete instantiation of
+Theorem~\ref{thm:D} with explicit, verified constants. Two caveats
+frame its scope. First, the composite residuals ($15, 27, 35, \dots$)
+are not covered by the present lemma; treating them requires the
+componentwise theory mod each prime-power factor. Second --- and
+fundamentally --- no fixed finite list can be pushed to \emph{emptiness}
+by upper-bound sieving: the count bound $x/(\log x)^{\kappa}$ diverges
+for every fixed $\kappa$, and the calibrated model of
+Section~\ref{sec:comp} predicts a positive density constant at every
+fixed list, i.e.\ infinitely many exceptional primes with the record
+minimal residual growing slowly without bound. The correctly-posed
+remaining problem is a slowly growing bound $R_{\min}(p) \ll f(p)$,
+which requires existence (lower-bound) technology beyond upper-bound
+sieves.
 \end{remark}
 
 \begin{proof}[Proof of Theorem \ref{thm:D}]
@@ -599,11 +639,14 @@ $\varphi(R)$ grows harder while the character dichotomy stays binary.
 \item \textbf{Finite covering.} Prove that some finite admissible set $S$
   covers all hard primes (Theorem~\ref{thm:D} gives density
   $(\log x)^{-A}$ for every $A$; emptiness is beyond the sieve).
-\item \textbf{Longer chains.} Verify Lemma~\ref{lem:S} at
-  $R = 31, 43, 47$ (exponents $4, \tfrac92, 5$) with bit-parallel
-  enumeration, and treat the first composite residual $R = 15$ (coupled
-  conditions mod $3$ and mod $5$), for which the meta-theorem applies
-  componentwise.
+\item \textbf{Beyond the prime chain.} The support-bound lemma is now
+  verified for every prime residual up to $107$ (exponent
+  $\tfrac{17}{2}$); extending past $107$ meets the growth of the DP
+  state space ($\approx 2\times$ per residual), and the composite
+  residuals require the componentwise theory. More importantly, the
+  fixed-list format itself cannot reach emptiness (see the remark after
+  Theorem~\ref{thm:FG}): the structurally right target is a slowly
+  growing bound on $R_{\min}(p)$.
 \item \textbf{The record prime.} $8{,}803{,}369$ fails every residual
   below $107$ even allowing $R \le 400$; its shifted values are
   anomalously smooth (at $R = 107$, $a = 3^2 \cdot 11^2 \cdot 43 \cdot
@@ -654,7 +697,13 @@ $p$, at minimal multiplicities & $437{,}580$ &
 \texttt{verify\_support}\newline\texttt{\_bound} \\ \hline
 Lem.~\ref{lem:S} ($R=23$) &
 all supports of size $11$, likewise & $7{,}759{,}752$ &
-\texttt{verify\_support}\newline\texttt{\_bound} \\
+\texttt{verify\_support}\newline\texttt{\_bound} \\ \hline
+Lem.~\ref{lem:S} ($R = 19$--$107$, all twelve primes) &
+subset dynamic program over reachability-mask states; state counts
+$271$ ($R{=}19$), $3{,}001$ ($R{=}31$), $2{,}414{,}145$ ($R{=}83$),
+$19{,}530{,}971$ ($R{=}107$); zero violations throughout &
+$\le 19.5$M states &
+\texttt{verify\_support}\newline\texttt{\_bound\_dp} \\
 \end{tabular}
 \end{center}
 

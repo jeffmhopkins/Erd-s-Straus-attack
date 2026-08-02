@@ -392,12 +392,54 @@ O(x/(log x)³); sum over the finitely many branches. ∎
 *Identically, with Lemma S at R = 23 and the form (p+23)/4 = n+5:
 the joint exceptional set of {3, 7, 11, 19, 23} is O(x/(log x)^{7/2}).*
 
-**The chain.** Every further prime residual R ≡ 3 (mod 4) whose
-support-bound lemma is verified adds ½ to the exponent. The verification
-cost is C(R−2, (R−1)/2) reachability checks — trivial through R = 23,
-feasible with bit-parallel code to R ≈ 31–43. The exceptional-set
-exponent is thus pushable to any fixed level by finite computation, a
-concrete instantiation of Theorem D with explicit, verified constants.
+**The chain — completed to R = 107.** Every further prime residual
+R ≡ 3 (mod 4) whose support-bound lemma is verified adds ½ to the
+exponent. The naive verification cost is C(R−2, (R−1)/2) reachability
+checks, which explodes past R = 31; but a **subset dynamic program**
+(`theory.verify_support_bound_dp`) folds all supports into a table
+mapping each reachability mask to the maximal support size achieving it
+(valid because failure at any multiplicities implies failure at
+multiplicity 1, by monotonicity). Realized masks are heavily structured,
+so the state count stays tractable:
+
+| R | states | time | violations |
+|---:|---:|---:|---:|
+| 19 | 271 | <0.1 s | 0 |
+| 23 | 790 | <0.1 s | 0 |
+| 31 | 3 001 | <0.1 s | 0 |
+| 43 | 20 559 | 0.1 s | 0 |
+| 47 | 40 573 | 0.2 s | 0 |
+| 59 | 203 978 | 1.7 s | 0 |
+| 67 | 470 070 | 4.2 s | 0 |
+| 71 | 764 895 | 7.2 s | 0 |
+| 79 | 1 529 223 | 16 s | 0 |
+| 83 | 2 414 145 | 28 s | 0 |
+| 103 | 12 998 639 | 220 s | 0 |
+| 107 | 19 530 971 | 331 s | 0 |
+
+**Theorem H (the full prime chain).** *Let
+P = {3, 7, 11, 19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103, 107} — all
+fifteen primes ≡ 3 (mod 4) up to 107. The number of hard primes p ≤ x
+failing every residual in P is O(x/(log x)^{17/2}); all but a proportion
+O((log x)^{−15/2}) of hard primes are solved within P.*
+
+Proof: identical to Theorem G — the forms (p+R)/4 = n + (R−3)/4 are
+distinct integer shifts of n; Theorems A/A′/A″ handle 3, 7, 11 and
+Lemma S (now verified for the twelve remaining primes in P) handles the
+rest; each contributes dimension ≥ ½ through finitely many
+maximal-support branches, plus 1 for primality: total ≥ 1 + 15/2. ∎
+
+**Limit of the method (important).** No fixed finite list can be pushed
+to *emptiness* this way: a constant-dimension sieve bounds counts by
+x/(log x)^κ, which diverges for every fixed κ. Moreover the calibrated
+independence model predicts the joint-failure density of ANY fixed list
+is a positive constant times (log x)^{−κ(S)} — i.e. infinitely many
+exceptional primes are expected for every fixed S, with the record
+minimal residual growing slowly (roughly logarithmically) without bound.
+The finite covering hypothesis in its fixed-list form is therefore
+probably **false**; the correctly-posed target is a slowly growing bound
+R_min(p) ≪ f(p), which requires existence (lower-bound) technology
+beyond upper-bound sieves.
 
 All statements tested against the complete per-prime solvability masks
 (27 residuals × 1 587 581 hard primes).

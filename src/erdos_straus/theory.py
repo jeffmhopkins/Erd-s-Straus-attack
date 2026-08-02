@@ -607,6 +607,55 @@ def verify_support_bound(R: int) -> Dict:
             "lemma_holds": not failures}
 
 
+def verify_support_bound_dp(R: int, time_budget: float = 900.0) -> Dict:
+    """Support-bound lemma verification by subset dynamic programming.
+
+    Equivalent to :func:`verify_support_bound` but exponentially faster:
+    instead of enumerating all C(R-2, (R-1)/2) supports, fold subsets into
+    a table mapping each reachability mask (budget 2 per included class —
+    multiplicity 1 suffices, since failure at any multiplicities implies
+    failure at multiplicity 1 by monotonicity) to the maximum support size
+    achieving it. The lemma holds iff no mask realized by >= (R-1)/2
+    nonzero classes misses the target for some class of p. Realized masks
+    are heavily structured, so the state count stays small (e.g. 3,001
+    states at R=31 vs 77.5M supports; 13.0M states at R=103).
+    """
+    d = R - 1
+    _, LOG = _dlog_table(R)
+    inv4_log = LOG[pow(4, -1, R)]
+    FULL = (1 << d) - 1
+
+    def rot(m: int, s: int) -> int:
+        s %= d
+        return ((m << s) | (m >> (d - s))) & FULL
+
+    t0 = time.time()
+    states: Dict[int, int] = {1: 0}
+    for v in range(1, d):
+        new = dict(states)
+        for mask, cnt in states.items():
+            nm = mask | rot(mask, v) | rot(mask, 2 * v)
+            c = cnt + 1
+            if new.get(nm, -1) < c:
+                new[nm] = c
+        states = new
+        if time.time() - t0 > time_budget:
+            return {"R": R, "status": "TIMEOUT", "states": len(states)}
+
+    violations = []
+    for mask, cnt in states.items():
+        if cnt < d // 2 or mask == FULL:
+            continue
+        for p_log in range(d):
+            reach = mask | rot(mask, p_log) | rot(mask, 2 * p_log)
+            t = (d // 2 + 2 * p_log + inv4_log) % d
+            if not (reach >> t) & 1:
+                violations.append((mask, cnt, p_log))
+    return {"R": R, "status": "OK", "states": len(states),
+            "violations": violations, "lemma_holds": not violations,
+            "secs": round(time.time() - t0, 1)}
+
+
 # --- the four critical primes ---------------------------------------------
 
 CRITICAL = [8803369, 142361209, 287567281, 794037841]
