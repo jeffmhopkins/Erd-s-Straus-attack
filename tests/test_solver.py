@@ -286,6 +286,27 @@ def test_support_bound_dp_agrees_and_extends():
         assert res["status"] == "OK" and res["lemma_holds"], (R, res)
 
 
+def test_reciprocity_structure_theorem():
+    """Theorem J: (q|R) = (p|q) for odd primes q | (p+R)/4, R prime."""
+    from erdos_straus.bulk_generate import _init_small_primes, factorize
+    from erdos_straus.theory import jacobi
+    from erdos_straus.solver import generate_hard_primes
+
+    _init_small_primes()
+    checked = 0
+    for p in generate_hard_primes(50000):
+        for R in [3, 7, 11, 19, 23, 31]:
+            a = (p + R) // 4
+            for q in factorize(a):
+                if q % 2 == 1 and q != R:
+                    assert jacobi(q, R) == jacobi(p, q), (p, R, q)
+                    checked += 1
+        # hard classes are squares mod 840 => p is a QR mod 3, 5, 7
+        for small in [3, 5, 7]:
+            assert jacobi(p, small) == 1, (p, small)
+    assert checked > 100
+
+
 def test_aggregate_identity_families():
     """Theorem I: p+1 / p+4 divisor identities give valid certificates,
     and the certificate's R genuinely divides p+1 or p+4."""
