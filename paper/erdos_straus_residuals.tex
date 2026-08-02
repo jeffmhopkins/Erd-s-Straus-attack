@@ -2,6 +2,7 @@
 
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{graphicx}
+\usepackage{array}
 \usepackage[margin=1.1in]{geometry}
 \usepackage{hyperref}
 
@@ -41,7 +42,7 @@ primes}). We develop the \emph{residual method}: a solution with first
 denominator $a = (p+R)/4$ exists if and only if some divisor
 $k \mid m^2$, $m = pa$, satisfies $k \equiv -m \pmod R$. Our central
 results make this criterion exact and finite: solvability at any fixed
-residual $R$ is a computable function of the factor classes of $(p+R)/4$
+prime residual $R$ is a computable function of the factor classes of $(p+R)/4$
 and of $p \bmod R$ (a finite-state meta-theorem), yielding closed-form
 criteria at $R = 3, 7, 11$ and a reciprocity identity
 $\smash{\legendre{q}{R}} = \smash{\legendre{p}{q}}$ that explains how
@@ -52,11 +53,12 @@ explicit conditions with constructive certificates. These are weaker in
 density than Vaughan's classical $x\exp(-c(\log x)^{2/3})$, but
 mechanistic where mean-value methods are not: every bound produces
 certificates and exact local criteria. Computationally we exhibit
-verified certificates for all $128{,}671{,}219$ hard primes below
-$10^{11}$; the maximal minimal residual is $107$, unchanged from
-$5 \times 10^7$, and the calibrated model correctly predicted the
-population of the last empty band of minimal residuals between $10^{10}$
-and $10^{11}$.
+certificates for all $128{,}671{,}219$ hard primes below $10^{11}$,
+verified exhaustively to $10^9$ and by systematic sampling plus full
+tail verification beyond; the record minimal residual is $107$, first
+attained below $10^7$ and never exceeded, and the calibrated model
+correctly predicted the population of the last empty band of minimal
+residuals between $10^{10}$ and $10^{11}$.
 \end{abstract}
 
 \section{Introduction}
@@ -70,7 +72,7 @@ has a solution in positive integers $a, b, c$. By multiplicativity it
 suffices to treat prime $n$, and classical polynomial identities settle
 every prime outside the six residue classes
 \[
-  \Hset \bmod 840 \;=\; \{1,\, 121,\, 169,\, 289,\, 361,\, 529\},
+  \Hset \bmod 840 \;=\; \{1, 121, 169, 289, 361, 529\},
 \]
 the squares of units modulo $840$ (Mordell \cite{Mordell}). We call primes
 in these classes \emph{hard primes}. Direct verification has confirmed the
@@ -86,17 +88,17 @@ stronger than any fixed power of $\log x$; the value of the present
 approach is not raw density but its explicit, certificate-generating,
 machine-verified structure, together with the exact criteria.
 
-\subsection{The residual method}
+\subsection{The residual method}\label{sec:intro-method}
 
 Fix a hard prime $p$. All six classes satisfy
 \[
-  \text{(H1) } p \equiv 1 \ (\mathrm{mod}\ 8), \qquad
-  \text{(H2) } p \equiv 1 \ (\mathrm{mod}\ 3), \qquad
+  \text{(H1) } p \equiv 1 \pmod 8, \qquad
+  \text{(H2) } p \equiv 1 \pmod 3, \qquad
   \text{(H3) } p \bmod 7 \in \{1, 2, 4\}.
 \]
 For an \emph{admissible residual} $R \equiv 3 \pmod 4$ put
 \[
-  a \;=\; \frac{p+R}{4} \in \mathbb{Z}, \qquad m \;=\; p\,a .
+  a \;=\; \frac{p+R}{4} \in \mathbb{Z}, \qquad m \;=\; pa.
 \]
 Substituting $a$ into \eqref{eq:es} and clearing denominators shows that a
 solution with first denominator $a$ exists if and only if
@@ -105,8 +107,12 @@ solution with first denominator $a$ exists if and only if
 \end{equation}
 in which case $b = (k+m)/R$ and $c = (m^2/k + m)/R$ are positive integers
 solving \eqref{eq:es}. We write $R_{\min}(p)$ for the least admissible $R$
-for which \eqref{eq:cert} holds. Two elementary congruences drive
-everything below. From $4a = p + R$,
+for which \eqref{eq:cert} holds. The formulation is \emph{complete}: any
+solution with denominators $a \le b \le c$ has $p/4 < a \le 3p/4$, so
+$R = 4a - p \in (0, 2p]$ with $R \equiv 3 \pmod 4$ automatic --- every
+solution of \eqref{eq:es} at $p$ is a residual certificate, and
+$R_{\min}(p) \le 2p$ is equivalent to the conjecture at $p$. Two
+elementary congruences drive everything below. From $4a = p + R$,
 \begin{equation}\label{eq:star}
   a \equiv 4^{-1}p, \qquad m \equiv 4^{-1}p^2 \pmod R,
 \end{equation}
@@ -116,12 +122,13 @@ modulo $R$. By \eqref{eq:star}, $m$ is a \emph{square} modulo every prime
 $r \mid R$; hence for every prime $r \mid R$ with $r \equiv 3 \pmod 4$
 (at least one exists, since $R \equiv 3 \pmod 4$),
 \begin{equation}\label{eq:target}
-  \legendre{-m}{r} \;=\; \legendre{-1}{r} \;=\; -1 :
+  \left(\frac{-m}{r}\right) \;=\; \left(\frac{-1}{r}\right)
+  \;=\; -1:
 \end{equation}
 \emph{the target class $-m$ is a quadratic non-residue mod $r$.}
 
 \paragraph{A worked example.} Take the hard prime $p = 1009$
-($\equiv 169 \bmod 840$) and the smallest admissible residual $R = 3$.
+($\equiv 169 \pmod 840$) and the smallest admissible residual $R = 3$.
 Then $a = (1009+3)/4 = 253 = 11 \cdot 23$ and $m = pa = 255{,}277$.
 Since $11 \equiv 2 \pmod 3$, Theorem~\ref{thm:A} below promises a
 certificate: take $k = 11$, a divisor of $m^2$ with
@@ -169,7 +176,8 @@ if and only if either
 \begin{itemize}
 \item[(a)] every prime factor of $a$ is a quadratic residue mod $11$; or
 \item[(b)] $v_3(a) = 1$, every other prime factor of $a$ is
-  $\equiv 1 \pmod{11}$ except a non-residue part of exactly one of the
+  $\equiv 1 \pmod{11}$ except a \emph{non-residue part} --- its factors
+  in the non-residue classes mod $11$ --- of exactly one of the
   shapes
   \[
     \{q \equiv 2\}, \qquad \{q \equiv 6\}, \qquad
@@ -188,42 +196,42 @@ a deterministic enumeration of a finite configuration space whose
 finiteness and sufficiency are proved in advance
 (Theorem~\ref{thm:meta}; for Lemma~\ref{lem:S}, monotonicity of
 target-reachability in support and multiplicities, checked at minimal
-exponents). The checks are short (seconds on commodity hardware),
-involve only exact integer arithmetic, and the code is available in the
+exponents). The checks are short (seconds each, up to $331$\,s for the largest,
+$R = 107$), involve only exact integer arithmetic, and the code is
+available in the
 accompanying repository; Appendix~\ref{app:verif} records the exact
 configuration counts and entry points.
 \end{remark}
 
 The obstruction framework of Section~\ref{sec:obstruction} yields a
 reciprocity identity that converts the per-residual conditions into a
-single global statement about $p$ — the structural explanation of joint
-failure across residuals:
+single global statement about $p$ --- the structural explanation of
+joint failure across residuals:
 
 \begin{theorem}[reciprocity structure]\label{thm:J}
 Let $p$ be a hard prime, $R \equiv 3 \pmod 4$ prime, and $q$ an odd
 prime factor of $a = (p+R)/4$ (necessarily $q \ne R$). Then
 \[
-  \legendre{q}{R} \;=\; \legendre{p}{q}.
+  \left(\frac{q}{R}\right) \;=\; \left(\frac{p}{q}\right).
 \]
 \end{theorem}
 
-The anchor result converts the exact criteria into an unconditional bound.
-
-The sieve consequences need one input per residual: a ``sieve-grade
-handle'' making failure at $R$ a positive-density multiplicative
-restriction. For $R = 3, 7, 11$ the handles are the exact criteria; for
-larger $R$ it is the following machine-verified lemma
-(Section~\ref{sec:sieve}).
+The sieve consequences below need one input per residual: a statement
+that failure at $R$ forces the shifted form $(p+R)/4$ to avoid prime
+factors in a positive-density set of residue classes. For
+$R = 3, 7, 11$ the exact criteria provide this; for larger $R$ it is the
+following machine-verified lemma (proved in Section~\ref{sec:sieve}).
 
 \begin{lemma}[support bound; verified for every prime
 $R \equiv 3 \ (4)$, $19 \le R \le 107$]\label{lem:S}
 Let $R$ be one of the twelve primes
-$19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103, 107$. Every configuration
-for which residual $R$ fails at a hard prime has at most $(R-3)/2$
-nonzero factor-class support; equivalently, the prime factors of
-$(p+R)/4$ lie in at most $(R-1)/2$ of the $R-1$ unit classes mod $R$.
-Consequently failure at $R$ forbids at least half the classes, through
-finitely many maximal-support branches.
+$19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103, 107$, and call the set of
+unit classes mod $R$ occupied by the prime factors of $(p+R)/4$ its
+\emph{support}. Every configuration for which residual $R$ fails at a
+hard prime has support of size at most $(R-1)/2$, at most $(R-3)/2$ of
+whose classes differ from the identity class (which never affects
+solvability). Consequently failure at $R$ forbids at least half the
+classes, through finitely many maximal-support branches.
 \end{lemma}
 
 \begin{theorem}[the chain]\label{thm:FG}
@@ -236,16 +244,18 @@ $\{3, 7, 11, 19, 23\}$ is, respectively,
   O\!\left(\frac{x}{(\log x)^{3}}\right), \qquad
   O\!\left(\frac{x}{(\log x)^{7/2}}\right).
 \]
-More generally, with $\mathcal{P} = \{3, 7, 11, 19, 23, 31, 43, 47, 59,
-67, 71, 79, 83, 103, 107\}$ --- all fifteen primes $\equiv 3 \pmod 4$ up
-to $107$ --- the number of hard primes failing every residual in
-$\mathcal{P}$ is
+More generally, let
+$\mathcal{P} = \{3, 7, 11, 19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103,
+107\}$ be the set of all fifteen primes $\equiv 3 \pmod 4$ up to $107$.
+The number of hard primes failing every residual in $\mathcal{P}$ is
 \[
   O\!\left(\frac{x}{(\log x)^{17/2}}\right).
 \]
 In particular all but a proportion $O((\log x)^{-2})$ of hard primes are
 solved within $\{3, 7, 11, 19\}$, and all but
-$O((\log x)^{-15/2})$ within $\mathcal{P}$.
+$O((\log x)^{-15/2})$ within $\mathcal{P}$ --- one power of $\log x$
+less than the counts above, since there are $\asymp x/\log x$ hard
+primes up to $x$.
 \end{theorem}
 
 \begin{proposition}[aggregate identity families]\label{prop:agg}
@@ -257,7 +267,7 @@ and these are the only $a$-independent divisor shapes $k = a^j p^i$ with
 this property. Adding the two corresponding linear forms to
 Theorem~\ref{thm:FG}: the number of hard primes $p \le x$ failing every
 residual in $\mathcal{P}$ and both families is
-$O\!\left(x/(\log x)^{19/2}\right)$.
+$O(x/(\log x)^{19/2})$.
 \end{proposition}
 
 \begin{theorem}[density reduction]\label{thm:D}
@@ -278,18 +288,21 @@ lemmas are exact or machine-verified. Vaughan's method counts solutions
 on average and exhibits neither certificates nor criteria.
 \end{remark}
 
-\emph{Organization.} Proofs are arranged by logical dependency, which
-matches the statement order above: Section~\ref{sec:obstruction}
-develops the obstruction framework (Propositions~\ref{prop:char},
-\ref{prop:succ} and the proof of Theorem~\ref{thm:J});
+\emph{Organization.} Proofs are arranged by logical dependency.
+Section~\ref{sec:obstruction} develops the obstruction framework
+(Propositions~\ref{prop:char}, \ref{prop:succ}) and proves
+Theorem~\ref{thm:J}, whose prerequisites live there.
 Section~\ref{sec:exact} proves Theorem~\ref{thm:A}, then
 Theorem~\ref{thm:meta}, then Theorems~\ref{thm:Ap} and~\ref{thm:App},
-which rest on it; Section~\ref{sec:sieve} proves
-Theorem~\ref{thm:FG}, Lemma~\ref{lem:S},
-Proposition~\ref{prop:agg}, and Theorem~\ref{thm:D}.
+which rest on it. Section~\ref{sec:sieve} proves
+Theorem~\ref{thm:FG} --- base case first, then, after the monotonicity
+reduction (Lemma~\ref{lem:mono}) and Lemma~\ref{lem:S}, the higher
+exponents --- followed by Proposition~\ref{prop:agg} and
+Theorem~\ref{thm:D}.
 
 Computations (Section~\ref{sec:comp}) provide verified certificates for
-all hard primes below $10^{10}$ and calibrate every constant in sight.
+all hard primes below $10^{11}$ and calibrate the base-case constant and
+decay exponents of the chain.
 
 \section{The obstruction framework}\label{sec:obstruction}
 
@@ -333,7 +346,7 @@ The next identity converts the per-residual character conditions into a
 single global statement about $p$, and is the structural explanation of
 joint failure across residuals.
 
-\begin{proof}[Proof of Theorem \ref{thm:J}]
+\begin{proof}[Proof of Theorem~\ref{thm:J}]
 From $q \mid p+R$ we get $R \equiv -p \pmod q$. By quadratic
 reciprocity with $R \equiv 3 \pmod 4$,
 $\legendre{q}{R} = (-1)^{\frac{q-1}{2}} \legendre{R}{q}
@@ -351,22 +364,21 @@ failure} --- a conceptual explanation of why the hard classes are
 exactly the square classes. (ii) $p$ fails Type-I at every prime
 residual $R \le B$ simultaneously if and only if
 $\smash{\legendre{p}{R}} = +1$ for each such $R$ and
-$\smash{\legendre{p}{q}} = +1$ for every unforced odd prime $q$
-dividing any of the shifted values --- \emph{one condition per distinct
-prime, shared across every residual it divides}. This is the
-correlation mechanism behind the deep tail: smooth shifted values have
-fewer distinct prime factors, hence fewer independent sign conditions.
-For the record prime $8{,}803{,}369$, the $27$ shifted values contain
-only $43$ distinct odd primes (typical: $45$--$52$) and $81\%$ of them
-satisfy $\legendre{p}{q} = +1$ (typical: $44$--$60\%$) --- a
-$\approx 4\sigma$ fluctuation in provably the right statistic.
-Verified: $135{,}588$ instances of Theorem~\ref{thm:J} and $61{,}438$
-forced-prime instances in the $10^9$ data, zero violations of either.
+$\smash{\legendre{p}{q}} = +1$ for every \emph{unforced} odd prime $q$
+(one not forced by the congruences of (H1)--(H3)) dividing any of the
+\emph{shifted values} $(p+R)/4$, $R \le B$ --- \emph{one condition per
+distinct prime, shared across every residual it divides}. Failures at
+distinct residuals therefore correlate through shared prime factors:
+shifted values with few distinct prime factors leave few independent
+sign conditions. Section~\ref{sec:comp} quantifies this for the record
+prime. Both parts are verified at scale ($135{,}588$ instances of
+Theorem~\ref{thm:J}, $61{,}438$ forced-prime instances, zero violations
+of either; Appendix~\ref{app:verif}).
 \end{corollary}
 
 \section{Exact criteria}\label{sec:exact}
 
-\subsection{Proof of Theorem \ref{thm:A}}
+\subsection{Proof of Theorem~\ref{thm:A}}
 
 Modulo $3$ the unit group has order $2$, so quadratic character equals
 class. Since $p^2 \equiv 1 \pmod 3$, \eqref{eq:star} gives $m \equiv 1$
@@ -378,7 +390,7 @@ $m^2$ is $\equiv 1 \pmod 3$: class $2$ is never attained.
 \emph{Sufficiency:} $k = q \equiv 2 \pmod 3$ divides $m^2$, and the
 recovery formulae give integers as in Proposition~\ref{prop:succ}. \qed
 
-\subsection{Proof of Theorem \ref{thm:meta}}
+\subsection{Proof of Theorem~\ref{thm:meta}}
 
 A certificate is a divisor $k \mid m^2$ in class $-m \bmod R$. The set of
 classes of divisors of $m^2$ is determined by the classes of the prime
@@ -391,7 +403,7 @@ class and the consistency relation $\prod (\text{classes}) \equiv a \equiv
 solvability is a function of the capped class multiset and $p \bmod R$, a
 finite amount of data. \qed
 
-\subsection{Proof of Theorem \ref{thm:Ap}}
+\subsection{Proof of Theorem~\ref{thm:Ap}}
 
 ($\Rightarrow$) is Proposition~\ref{prop:char} with $r = R = 7$.
 ($\Leftarrow$) reduces to a finite verification via
@@ -405,7 +417,7 @@ primes:
 \item[(iii)] the factor classes multiply to $a \equiv 4^{-1} p \pmod 7$.
 \end{itemize}
 Enumerating all class multisets with multiplicities capped at $3$
-subject to (i)--(iii) yields $1536$ consistent configurations; for each,
+subject to (i)--(iii) yields $1{,}536$ consistent configurations; for each,
 one checks whether the target class is attained by a bounded-exponent
 subproduct. The verification (code: \texttt{theory.verify\_R7\_finite})
 confirms: the target is attainable precisely when some factor class is a
@@ -415,16 +427,16 @@ non-residue. \qed
 The hard-class hypotheses are essential: for $p = 701 \equiv 1 \pmod 4$
 (not hard), $a = 177 = 3 \cdot 59$ has the non-residue factor $3$, yet
 $R = 7$ fails. Constraint (ii) --- the forced even factor --- is exactly
-what rescues every would-be Type~II configuration at hard primes.
+what rescues every would-be Type-II configuration at hard primes.
 Empirically (Section~\ref{sec:comp}), among $41{,}421$ sampled failures of
 $R=7$ at hard primes, \emph{all} are Type~I.
 \end{remark}
 
-\subsection{Proof of Theorem \ref{thm:App}}
+\subsection{Proof of Theorem~\ref{thm:App}}
 
 By Theorem~\ref{thm:meta} with $R = 11$, $d = 10$: multiplicities cap at
-$5$, and at hard primes $3 \mid a$ (from (H2), $11 \equiv 2 \bmod 3$),
-while $2 \nmid a$ (from (H1), $p + 11 \equiv 4 \bmod 8$) and $7 \nmid a$
+$5$, and at hard primes $3 \mid a$ (from (H2), $11 \equiv 2 \pmod 3$),
+while $2 \nmid a$ (from (H1), $p + 11 \equiv 4 \pmod 8$) and $7 \nmid a$
 (from (H3), $-11 \equiv 3 \bmod 7 \notin \{1,2,4\}$). A dynamic-programming
 enumeration over the finite configuration space
 (code: \texttt{theory.finite\_criterion\_dp}) compresses it to $25$
@@ -435,15 +447,16 @@ patterns. Two structural facts emerge from the enumeration. First, no
 state fails by a \emph{proper-subgroup} obstruction: the only subgroup of
 $\mathbb{Z}/10$ containing an odd element properly is $\{0, 5\}$, and the
 consistency relation forces $p$'s class to extend it to all of
-$\mathbb{Z}/10$. Second, the case-(b) failures are pure exponent-budget
-edge cases: any of $v_3(a) \ge 2$, a factor in class $\{4, 5, 9\}$, or a
+$\mathbb{Z}/10$. Second, the case-(b) failures are pure \emph{budget}
+failures --- the exponent bounds, not the character obstruction, block
+the target: any of $v_3(a) \ge 2$, a factor in class $\{4, 5, 9\}$, or a
 second non-residue factor restores solvability. The criterion agrees with
 ground-truth divisor search for $158{,}759$ of $158{,}759$ hard primes
 tested below $10^9$. \qed
 
 \section{The sieve bound}\label{sec:sieve}
 
-\begin{proof}[Proof of Theorem \ref{thm:FG}, base case $\{3,7\}$]
+\begin{proof}[Proof of Theorem~\ref{thm:FG}, base case $\{3,7\}$]
 \emph{Step 1 (exact criteria).} Let $p$ be a hard prime and set
 $n = (p+3)/4$, so that $(p+7)/4 = n + 1$: \emph{the two shifted forms are
 consecutive integers}. By Theorems~\ref{thm:A} and~\ref{thm:Ap}, $p$ is
@@ -520,7 +533,7 @@ the converse inclusion is trivial. The same argument applies verbatim
 after adjoining the $p$-shifts.
 \end{proof}
 
-\begin{proof}[Proof of Lemma \ref{lem:S}]
+\begin{proof}[Proof of Lemma~\ref{lem:S}]
 By Lemma~\ref{lem:mono} it suffices to check that for every support of
 size $(R-1)/2$ over the nonzero discrete logs and every class of
 $p$ mod $R$, the target is reachable already at minimal multiplicities
@@ -546,7 +559,7 @@ in Appendix~\ref{app:verif}. The bound is tight: the all-residue
 (Type~I) configurations occupy exactly $(R-3)/2$ nonzero classes.
 \end{proof}
 
-\begin{proof}[Proof of Theorem \ref{thm:FG}, higher exponents]
+\begin{proof}[Proof of Theorem~\ref{thm:FG}, higher exponents]
 Write $n = (p+3)/4$; the relevant forms are $n$, $n+1$, $n+2 = (p+11)/4$,
 $n+4 = (p+19)/4$, $n+5 = (p+23)/4$, and $4n-3 = p$. Joint failure of
 $\{3,7,11\}$ implies, by Theorems~\ref{thm:A}, \ref{thm:Ap},
@@ -559,7 +572,7 @@ $\tfrac35$). Each branch is a four-form sieve problem of dimension
 $1 + \tfrac12 + \tfrac12 + \tfrac12 = \tfrac52$, resp.\
 $1 + \tfrac12 + \tfrac12 + \tfrac35 = \tfrac{13}{5}$. Since
 $\tfrac{13}{5} > \tfrac52$, the Type-II branch contributes
-$O\!\left(x/(\log x)^{13/5}\right) = o\!\left(x/(\log x)^{5/2}\right)$:
+$O(x/(\log x)^{13/5}) = o(x/(\log x)^{5/2})$:
 the bound is the maximum of the branch exponents, attained by the
 character branch (a). The Fundamental Lemma applied to each branch gives
 $O(x/(\log x)^{5/2})$ in total.
@@ -586,10 +599,10 @@ residues pairwise distinct for $q > 107$ and smaller primes absorbed
 into the congruence class of $n$.
 \end{proof}
 
-\begin{proof}[Proof of Proposition \ref{prop:agg}]
-$k = a p^2$ divides $m^2 = p^2 a^2$ and $k \equiv -m$ iff
+\begin{proof}[Proof of Proposition~\ref{prop:agg}]
+$k = a p^2$ divides $m^2 = p^2 a^2$ and $k \equiv -m$ if and only if
 $a p^2 \equiv -p a$, i.e.\ $p \equiv -1 \pmod R$; $k = a^2 p$ divides
-$m^2$ and $a^2 p \equiv -p a$ iff $a \equiv -1$, i.e.\
+$m^2$ and $a^2 p \equiv -p a$ if and only if $a \equiv -1$, i.e.\
 $p \equiv -4 \pmod R$ by \eqref{eq:star}. Integrality of $b, c$ is
 automatic. Scanning all shapes $k = a^j p^i$ ($j, i \le 2$) yields no
 further $p$-only condition. The failure of both families states that the
@@ -597,10 +610,11 @@ two forms $(p+1)/2$ and $p+4$ (in $n$: $2n-1$ and $4n+1$) are free of
 primes $\equiv 3 \pmod 4$ --- two further sifting conditions of
 dimension $\tfrac12$ each on forms distinct from all previous ones.
 Empirically the two families alone cover $74\%$ of hard primes below
-$10^9$, and none of the four critical primes.
+$10^9$ --- and none of the four primes of Section~\ref{sec:comp} that
+admit a unique working residual $\le 107$.
 \end{proof}
 
-\begin{remark}
+\begin{remark}\label{rem:emptiness}
 Each further prime residual $R \equiv 3 \pmod 4$ whose support-bound
 lemma is verified adds $\tfrac12$ to the exponent; the dynamic-program
 verification has now been carried through every prime residual up to
@@ -611,25 +625,25 @@ are not covered by the present lemma; treating them requires the
 componentwise theory mod each prime-power factor. Second --- and
 fundamentally --- no fixed finite list can be pushed to \emph{emptiness}
 by upper-bound sieving: the count bound $x/(\log x)^{\kappa}$ diverges
-for every fixed $\kappa$, and the calibrated model of
-Section~\ref{sec:comp} predicts a positive density constant at every
-fixed list, i.e.\ infinitely many exceptional primes with the record
-minimal residual growing slowly without bound. The correctly-posed
-remaining problem is a slowly growing bound $R_{\min}(p) \ll f(p)$,
+for every fixed $\kappa$, and extrapolating the calibration of
+Section~\ref{sec:comp} to any fixed list yields a positive density
+constant, i.e.\ infinitely many expected exceptional primes with the
+record minimal residual growing slowly without bound. The correctly
+posed remaining problem is a slowly growing bound $R_{\min}(p) \ll f(p)$,
 which requires existence (lower-bound) technology beyond upper-bound
 sieves.
 \end{remark}
 
-\begin{proof}[Proof of Theorem \ref{thm:D}]
+\begin{proof}[Proof of Theorem~\ref{thm:D}]
 Fix $A > 0$. Choose $B = B(A)$ so large that
 \begin{equation}\label{eq:divergence}
-  \sum_{\substack{3 \le R \le B \\ R \equiv 3 \, (4)}} \frac{1}{\varphi(R)}
-  \;\ge\; \sum_{\substack{3 \le R \le B \\ R \equiv 3 \, (4)}} \frac{1}{R}
+  \sum_{\substack{3 \le R \le B \\ R \equiv 3 \ (4)}} \frac{1}{\varphi(R)}
+  \;\ge\; \sum_{\substack{3 \le R \le B \\ R \equiv 3 \ (4)}} \frac{1}{R}
   \;>\; A;
 \end{equation}
 this is possible since the reciprocal sum over the progression
 $R \equiv 3 \pmod 4$ diverges, and $\varphi(R) \le R$. Let
-$S(A) = \{R \equiv 3 \, (4) : 3 \le R \le B\}$ and
+$S(A) = \{R \equiv 3 \ (4) : 3 \le R \le B\}$ and
 $M = 840 \cdot \prod_{R \in S(A)} R$.
 
 Write $n = (p+3)/4$ as before, so $(p+R)/4 = n + (R-3)/4$ for each
@@ -664,7 +678,7 @@ primes $q$ with $q \bmod R \in S_R(p)$ is $t_R/\varphi(R)$ by
 Dirichlet's theorem, so $\omega$ has average
 \[
   \kappa \;=\; 1 + \sum_{R \in S(A)} \frac{t_R}{\varphi(R)}
-  \;\ge\; 1 + \sum_{R \in S(A)} \frac{1}{\varphi(R)} \;>\; 1 + A
+  \;\ge\; 1 + \sum_{R \in S(A)} \frac{1}{\varphi(R)} \;>\; 1 + A,
 \]
 in the Halberstam--Richert sense, by \eqref{eq:divergence}. The
 Fundamental Lemma (\cite[Thm.~2.5]{HalberstamRichert}) in dimension
@@ -677,12 +691,15 @@ bound.
 \end{proof}
 
 \begin{remark}
+\emergencystretch=1.5em
 Theorem~\ref{thm:D} is the strongest statement the pure sieve can give:
 density $O((\log x)^{-A})$ for every $A$, but not emptiness. The
 conjecture for hard primes is equivalent to a \emph{finite covering
 hypothesis}: some finite $S$ admits, for every hard prime, a residual
-$R \in S$ with \eqref{eq:cert}. All computational evidence below supports
-$S = \{3, 7, 11, \dots, 107\}$.
+$R \in S$ with \eqref{eq:cert}. The data to $10^{11}$ is covered by
+$S = \{3, 7, 11, \dots, 107\}$ --- yet both the calibration
+(Remark~\ref{rem:emptiness}) and the conditional construction of
+Section~\ref{sec:open} predict that any fixed list eventually fails.
 \end{remark}
 
 \section{Computations to $10^{11}$}\label{sec:comp}
@@ -691,7 +708,7 @@ All code and data are in the accompanying repository. Certificates are
 found by direct integer factorization of $a$ (trial division; the
 factorization of $m^2 = p^2 a^2$ follows) and scanning divisors for the
 class condition \eqref{eq:cert}; every certificate is re-verified in exact
-integer arithmetic, $4abc = n(bc + ac + ab)$.
+integer arithmetic, $4abc = p(bc + ac + ab)$.
 
 \subsection{Data}
 
@@ -702,15 +719,15 @@ follows ($10^{11}$ data; Figure~\ref{fig:hist}):
 \begin{center}
 \begin{tabular}{rr|rr|rr}
 $R$ & count & $R$ & count & $R$ & count \\ \hline
-3  & 69\,951\,190 & 39 & 25\,258 & 79 & 50 \\
-7  & 31\,335\,473 & 43 & 6\,850  & 83 & 23 \\
-11 & 19\,439\,771 & 47 & 8\,811  & 87 & 8  \\
-15 & 3\,974\,286  & 51 & 1\,450  & 91 & 3  \\
-19 & 2\,441\,687  & 55 & 1\,369  & 95 & 5  \\
-23 & 1\,070\,808  & 59 & 954     & 99 & 1  \\
-27 & 187\,963     & 63 & 283     & 103 & 1 \\
-31 & 193\,848     & 67 & 104     & 107 & 1 \\
-35 & 30\,784      & 71 & 209     &     &   \\
+3  & 69{,}951{,}190 & 39 & 25{,}258 & 79 & 50 \\
+7  & 31{,}335{,}473 & 43 & 6{,}850  & 83 & 23 \\
+11 & 19{,}439{,}771 & 47 & 8{,}811  & 87 & 8  \\
+15 & 3{,}974{,}286  & 51 & 1{,}450  & 91 & 3  \\
+19 & 2{,}441{,}687  & 55 & 1{,}369  & 95 & 5  \\
+23 & 1{,}070{,}808  & 59 & 954     & 99 & 1  \\
+27 & 187{,}963     & 63 & 283     & 103 & 1 \\
+31 & 193{,}848     & 67 & 104     & 107 & 1 \\
+35 & 30{,}784      & 71 & 209     &     &   \\
    &              & 75 & 29      &     &   \\
 \end{tabular}
 \end{center}
@@ -728,13 +745,18 @@ the record $R = 107$ is attained by a single prime below $10^7$.}
 Salient features:
 \begin{itemize}
 \item $R_{\max} = 107$, attained by the single prime $8{,}803{,}369 <
-  10^7$, \emph{unchanged from $5 \times 10^7$ to $10^{11}$}.
+  10^7$, \emph{unchanged from $5 \times 10^7$ to $10^{11}$}. In the
+  language of Corollary~\ref{cor:J}: its $27$ shifted values contain
+  only $43$ distinct odd primes (typical: $45$--$52$), and $81\%$ of
+  them satisfy $\smash{\legendre{p}{q}} = +1$ (typical: $44$--$60\%$)
+  --- a $\approx 4\sigma$ fluctuation in provably the right statistic.
 \item \textbf{A confirmed prediction.} Below $10^{10}$ no prime had
   minimal $R \in \{87, 91, 95, 99, 103\}$; the calibrated independence
   model attributed this gap to small-number statistics (expected counts
   $\le 0.12$ per value at $10^9$) and predicted that deep-tail primes
   (failing every $R \le 83$) land at $87, 91, 95, 99, 103, \ge 107$
-  with probabilities $0.53, 0.11, 0.22, 0.03, 0.05, 0.02$. Between
+  with probabilities $0.53, 0.11, 0.22, 0.03, 0.05, 0.06$ (the last
+  being the total mass at or beyond $107$). Between
   $10^{10}$ and $10^{11}$ the band populated with $8, 3, 5, 1, 1$ primes
   respectively (all in $(1.3 \times 10^{10}, 10^{11})$), and none passed
   $103$: the observed conditional distribution over the $19$ deep-tail
@@ -749,7 +771,7 @@ Salient features:
   bound of $12$.
 \end{itemize}
 
-\subsection{Calibration of the base case of Theorem \ref{thm:FG}}
+\subsection{Calibration of the base case of Theorem~\ref{thm:FG}}
 
 The proportion of hard primes failing both $R = 3$ and $R = 7$, multiplied
 by $\log x$, is constant to within $2\%$ across three decades of the
@@ -776,9 +798,13 @@ $\hat\kappa = 0.539$ for $R = 7$).
 Sampling the complete solvability table at $10^9$: failures at $R = 7$
 are $100\%$ Type~I (as Theorem~\ref{thm:Ap} requires); at $R = 11$,
 $89.7\%$ Type~I and $10.3\%$ the budget pattern of
-Theorem~\ref{thm:App}(b); the Type~I share decreases with $\varphi(R)$
+Theorem~\ref{thm:App}(b); the Type-I share decreases with $\varphi(R)$
 (e.g.\ $51\%$ at $R = 103$), as hitting one specific class among
 $\varphi(R)$ grows harder while the character dichotomy stays binary.
+Taken together, the data of this section is the empirical face of
+Sections~\ref{sec:obstruction}--\ref{sec:sieve}: every distributional
+feature --- the head, the geometric tail, the once-empty band, the
+static record --- now has a mechanism attached.
 
 \section{Open problems}\label{sec:open}
 
@@ -791,9 +817,9 @@ $\varphi(R)$ grows harder while the character dichotomy stays binary.
   $\tfrac{17}{2}$); extending past $107$ meets the growth of the DP
   state space ($\approx 2\times$ per residual), and the composite
   residuals require the componentwise theory. More importantly, the
-  fixed-list format itself cannot reach emptiness (see the remark after
-  Theorem~\ref{thm:FG}): the structurally right target is a slowly
-  growing bound on $R_{\min}(p)$.
+  fixed-list format itself cannot reach emptiness
+  (Remark~\ref{rem:emptiness}): the structurally right target is a
+  slowly growing bound on $R_{\min}(p)$.
 \item \textbf{The constant $5.17$.} The joint $\{3,7\}$-exceptional
   density is measured as $\approx 5.17/\log x$, stable to $2\%$ across
   three decades. Conjecturally $5.17$ is a Selberg--Delange-type
@@ -803,7 +829,8 @@ $\varphi(R)$ grows harder while the character dichotomy stays binary.
   for each prime $q$, the probability that $q$ divides neither form in a
   forbidden class. Proving the asymptotic (not just the upper bound)
   requires a two-form Selberg--Delange or shifted-convolution analysis
-  --- open, and a natural test problem for such methods.
+  --- open, and a natural test problem for such methods (see also
+  Remark~\ref{rem:vaughan} for the density context).
 \item \textbf{Structural reformulations and complexity.} Theorem~\ref{thm:J}
   invites a graph formulation: on the bipartite graph joining primes $q$
   to residuals $R$ by $q \mid (p+R)/4$, the edge characters
@@ -812,7 +839,7 @@ $\varphi(R)$ grows harder while the character dichotomy stays binary.
   vertex assignment --- a percolation-style object whose structure could
   organize the growth law. Separately, the meta-theorem's enumeration
   complexity is unresolved: the DP state count grows empirically by
-  $\approx 2\times$ per successive prime residual ($271$ at $R = 19$ to
+  $\approx 2.8\times$ per successive prime residual ($271$ at $R = 19$ to
   $1.95 \times 10^7$ at $R = 107$); is the equivalence-state complexity
   genuinely exponential in $R$, and is there a polynomial-size
   certificate for the support-bound property?
@@ -830,19 +857,18 @@ $\varphi(R)$ grows harder while the character dichotomy stays binary.
   out of reach: already ``infinitely many hard $p$ fail $R=3$''
   contains a two-form prime-tuple statement. What remains open is an
   unconditional upper bound on $R_{\min}(p)$ --- and this is not an
-  incremental item: the residual formulation is \emph{complete} (any
-  solution with denominators $a \le b \le c$ has $p/4 < a \le 3p/4$,
-  so $R = 4a - p \in (0, 2p]$ with $R \equiv 3 \pmod 4$ automatic),
-  hence $R_{\min}(p) \le 2p$ is \emph{equivalent} to the conjecture at
-  $p$. An unconditional bound $R_{\min}(p) \le f(p)$ for any $f$
-  whatsoever is the full problem.
+  incremental item: by the completeness observation of
+  Section~\ref{sec:intro-method}, $R_{\min}(p) \le 2p$ is
+  \emph{equivalent} to the conjecture at $p$, so an unconditional bound
+  $R_{\min}(p) \le f(p)$ for any $f$ whatsoever is the full problem.
 \end{enumerate}
 
 \appendix
 
 \section{Verification details}\label{app:verif}
 
-This appendix documents every computer-assisted claim of the paper: the
+This appendix documents every computer-assisted claim of the paper
+(their proof status is stated in Remark~\ref{rem:computer}): the
 finite enumerations that are \emph{proof components}
 (Appendix~\ref{app:proof-components}), the large-scale certificate
 computations behind Section~\ref{sec:comp} and how each dataset is
@@ -858,7 +884,8 @@ sufficiency is established in the text (Theorem~\ref{thm:meta} for the
 exact criteria; for Lemma~\ref{lem:S}, monotonicity of the
 reachability of the target in support and multiplicities, checked at
 minimal exponents).
-Each run completes in seconds on commodity hardware; the entry points
+Each run completes in seconds on commodity hardware, except the largest
+support-bound check ($R = 107$: $331$\,s); the entry points
 named are in the module \texttt{erdos\_straus.theory}.
 
 \paragraph{Trusted computing base.} The certificate data does not rest
@@ -882,7 +909,7 @@ and we would welcome one.
 
 \begin{center}
 \small
-\begin{tabular}{p{2.4cm}|p{5.4cm}|r|p{3.2cm}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.4cm}|>{\raggedright\arraybackslash}p{5.4cm}|r|>{\raggedright\arraybackslash}p{3.2cm}}
 component & configuration space & count & entry point \\ \hline
 Thm.~\ref{thm:Ap} ($R=7$) &
 class multisets in $(\mathbb{Z}/7)^*$, multiplicities $\le 3$, with the
@@ -913,9 +940,13 @@ $\le 19.5$M states &
 In addition (as sanity checks, not proof components), the criteria of
 Theorems~\ref{thm:A}--\ref{thm:App} were compared against ground-truth
 divisor search on the complete solvability data below $10^9$: agreement
-in $1{,}587{,}581/1{,}587{,}581$ cases for $R = 3$ and
-$158{,}759/158{,}759$ sampled cases for $R = 11$, with zero
-discrepancies.
+in $1{,}587{,}581/1{,}587{,}581$ cases for $R = 3$,
+$41{,}421/41{,}421$ sampled failure cases for $R = 7$ (all Type-I, as
+Theorem~\ref{thm:Ap} requires), and $158{,}759/158{,}759$ sampled cases
+for $R = 11$, with zero discrepancies. The identity of
+Theorem~\ref{thm:J} and its forced-prime corollary were likewise
+checked on $135{,}588$ resp.\ $61{,}438$ instances from the same data,
+with zero violations (Corollary~\ref{cor:J}).
 
 \subsection{Certificate datasets and their verification}\label{app:datasets}
 
@@ -930,7 +961,7 @@ verified as a genuine certificate, not taken on faith.
 
 \begin{center}
 \small
-\begin{tabular}{p{3.7cm}|r|p{6.8cm}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{3.7cm}|r|>{\raggedright\arraybackslash}p{6.8cm}}
 dataset & entries & verification performed \\ \hline
 explicit triples, $p < 1.2 \times 10^8$ &
 $213{,}131$ &
@@ -947,7 +978,7 @@ solvability masks, $p < 10^9$ &
 $27 \times 1{,}587{,}581$ &
 per-prime solvability of every admissible $R \le 107$ by full divisor-class
 computation; consistency with the minimal-$R$ map \\ \hline
-R-sequence dataset, $p < 10^{11}$ &
+$R$-sequence dataset, $p < 10^{11}$ &
 $128{,}671{,}219$ &
 $257{,}343$ systematically sampled entries reconstructed and checked;
 \emph{all} $20{,}151$ tail entries ($R \ge 43$) checked with full
@@ -971,7 +1002,7 @@ command runs in seconds to minutes.
 
 \begin{center}
 \small
-\begin{tabular}{p{5.2cm}|p{7.6cm}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{5.2cm}|>{\raggedright\arraybackslash}p{7.6cm}}
 claim & command \\ \hline
 Thm.~\ref{thm:Ap} finite check &
 \texttt{python -c "from erdos\_straus.theory} \newline
@@ -1027,16 +1058,16 @@ S.~E.~Salez,
 checking up to $N = 10^{17}$},
 preprint, arXiv:1406.6307, 2014.
 
-\bibitem{Vaughan}
-R.~C.~Vaughan,
-\emph{On a problem of Erd\H{o}s, Straus and Schinzel},
-Mathematika \textbf{17} (1970), 193--198.
-
 \bibitem{Swett}
 A.~Swett,
 \emph{The Erd\H{o}s--Straus conjecture},
 online verification record to $10^{14}$,
 \url{http://math.uindy.edu/swett/esc.htm}, 1999.
+
+\bibitem{Vaughan}
+R.~C.~Vaughan,
+\emph{On a problem of Erd\H{o}s, Straus and Schinzel},
+Mathematika \textbf{17} (1970), 193--198.
 
 \end{thebibliography}
 
