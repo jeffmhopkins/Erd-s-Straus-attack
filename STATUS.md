@@ -177,7 +177,8 @@ residuals \(R \equiv 3 \pmod 4\), \(R \le 107\) that yield a solution
 - `data/hard_primes_1e11_minimalR.{rvals.u8.gz, meta.json, tail.json}` — R-sequence dataset for all 128 671 219 hard primes \(< 10^{11}\) (uint8 minimal-\(R\) values in ascending-prime order + sha256-pinned metadata + explicit verified tail \(R \ge 43\))
 - `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
 - `tests/test_solver.py` — 46 tests: unit, certificate validation, theorem checks (A/A′/A″/J/meta), support-bound lemmas, aggregate identities
-- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 13 pp.
+- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 16 pp.
+- `lean/ErdosStraus/` — Lean 4 + mathlib formalization (ten verified declarations; `lake exe cache get && lake build`)
 - `THEORY.md` — full theoretical development; `STATUS.md` — this document
 
 All 1 803 722 certificates in the `es-verify` defaults pass exhaustively
@@ -230,6 +231,12 @@ full tail minimality.
 - **Completeness** — every ESC solution is a residual certificate with
   R ≤ 2p, so *any* unconditional bound on R_min(p) is equivalent to the
   conjecture itself.
+- **Lean formalization** (`lean/ErdosStraus`) — the elementary layer is
+  machine-checked in Lean 4 + mathlib: certificate soundness and
+  integrality, Theorem A both directions, both Theorem I families,
+  Theorem J, and the hard-class lemmas — ten sorry-free declarations,
+  axiom-audited. Next tier: the meta-theorem / finite enumerations via
+  `Decidable` instances.
 
 ## Current Assessment
 - No counterexample; all 128 671 219 hard primes below \(10^{11}\) have
