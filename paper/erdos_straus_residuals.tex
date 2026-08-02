@@ -52,13 +52,19 @@ denominator $a = (p+R)/4$ exists if and only if some divisor
 $k \mid m^2$, $m = pa$, satisfies $k \equiv -m \pmod R$, and every
 solution arises this way, so the least workable residual
 $R_{\min}(p)$ controls the conjecture at $p$. Solvability at any fixed
-prime residual is a computable function of finite data (a
-meta-theorem), yielding exact criteria at $R = 3, 7, 11$ and a
-reciprocity identity
+residual --- prime or composite --- is a computable function of finite
+data (a meta-theorem), yielding exact criteria at $R = 3, 7, 11$ and
+at the first composite residual $R = 15$ (a clean Jacobi-character
+dichotomy), and a reciprocity identity
 $\smash{\legendre{q}{R}} = \smash{\legendre{p}{q}}$ that governs how
-failures correlate across residuals. The criteria feed an
-unconditional chain of sieve bounds --- exceptional sets
-$O(x/(\log x)^{\kappa})$ with $\kappa$ up to $19/2$ --- weaker in
+failures correlate across residuals. The per-residual sieve input ---
+failure at $R$ forbids at least half the unit classes mod $R$ on the
+shifted form $(p+R)/4$ --- is proved unconditionally for every
+residual at once via Kneser's addition theorem, giving an
+unconditional chain of sieve bounds: exceptional sets
+$O_{\mathcal{P}}(x/(\log x)^{1+|\mathcal{P}|/2})$ for every finite
+admissible residual list $\mathcal{P}$, reaching exponent $31/2$ on
+the $27$ residuals up to $107$ --- weaker in
 density than Vaughan's classical $x\exp(-c(\log x)^{2/3})$ but
 explicit and certificate-producing; the elementary and
 finite-enumeration layers of the proofs are machine-checked in
@@ -117,20 +123,29 @@ machine-verified structure, together with the exact criteria.
   condition, complete over all solutions
   (Proposition~\ref{prop:complete}).
 \item \emph{Exact} solvability criteria at $R = 3, 7, 11$
-  (Theorems~\ref{thm:A}, \ref{thm:Ap}, \ref{thm:App}), and a meta-theorem
-  (Theorem~\ref{thm:meta}) showing every fixed prime residual admits a
-  finite computable exact criterion.
+  (Theorems~\ref{thm:A}, \ref{thm:Ap}, \ref{thm:App}) and at the first
+  composite residual $R = 15$ (Theorem~\ref{thm:R15}: a Jacobi-character
+  dichotomy with no budget cases), and a meta-theorem
+  (Theorem~\ref{thm:meta}) showing every fixed residual --- prime or
+  composite --- admits a finite computable exact criterion.
 \item A reciprocity principle (Theorem~\ref{thm:J}) collapsing the
   per-residual conditions into one global statement about $p$ --- which
   we read as the organizing principle behind correlated failure and the
   record prime.
+\item The per-residual sieve input proved unconditionally for
+  \emph{every} residual at once (Theorem~\ref{thm:S}): via Kneser's
+  addition theorem, any failing configuration occupies at most
+  $(R-3)/2$ nonzero factor classes --- closing what was previously a
+  per-residual machine verification capped at $R = 107$
+  (Lemma~\ref{lem:S}, now an independent confirmation), and extending
+  to composite residuals through the general abelian form.
 \item A constructive sieve chain built on these criteria
-  (Lemma~\ref{lem:S}, Theorem~\ref{thm:FG},
-  Proposition~\ref{prop:agg}): explicit, certificate-producing
-  exceptional-set bounds, with the machine-verified support-bound lemma
-  as the per-residual input; and an unconditional density reduction
-  (Theorem~\ref{thm:D}): for every $A$, a finite residual set whose
-  joint failure set is $O_A(x/(\log x)^{1+A})$.
+  (Theorem~\ref{thm:FG}, Proposition~\ref{prop:agg}): explicit,
+  certificate-producing exceptional-set bounds of exponent
+  $1 + |\mathcal{P}|/2$ for every finite admissible list $\mathcal{P}$
+  ($31/2$ on the $27$ residuals up to $107$); and an unconditional
+  density reduction (Theorem~\ref{thm:D}): for every $A$, a finite
+  residual set whose joint failure set is $O_A(x/(\log x)^{1+A})$.
 \item Computed and verified residual certificates for all
   $128{,}671{,}219$ hard primes below $10^{11}$, with a calibrated model
   whose deep-tail predictions were subsequently confirmed
@@ -278,9 +293,27 @@ if and only if either
 \end{itemize}
 \end{theorem}
 
+For composite $R$ the certificate condition couples the prime-power
+components of $R$ through the Chinese Remainder Theorem, and the
+divisor-class computation lives in the (generally non-cyclic) unit
+group $(\mathbb{Z}/R)^*$. Theorem~\ref{thm:meta} holds verbatim with
+$(\mathbb{Z}/R)^*$ in place of the cyclic group (multiplicities capped
+once exponent ranges cover each class's cyclic span; see
+Remark~\ref{rem:cap}). The first composite case turns out to be
+\emph{simpler} than $R = 11$: a pure character dichotomy, with the
+quadratic character modulo a prime replaced by the Jacobi character
+modulo $15$, and no budget cases at all.
+
+\begin{theorem}[$R=15$, hard primes; exact]\label{thm:R15}
+Let $p$ be a hard prime and $a = (p+15)/4$; note $p \bmod 15 \in
+\{1, 4\}$ and $2 \mid a$ automatically. Then \eqref{eq:cert} holds for
+$R = 15$ if and only if $a$ has a prime factor $q$ with
+$\legendre{q}{15} = -1$, i.e.\ $q \equiv 7, 11, 13, 14 \pmod{15}$.
+\end{theorem}
+
 \begin{remark}[computer-assisted components]\label{rem:computer}
 The exhaustive verifications behind Theorems~\ref{thm:Ap},
-\ref{thm:App} and Lemma~\ref{lem:S} below are \emph{parts of the
+\ref{thm:App}, \ref{thm:R15} and Lemma~\ref{lem:S} below are \emph{parts of the
 respective proofs}, on the same footing as a hand case analysis. Each is
 a deterministic enumeration of a finite configuration space whose
 finiteness and sufficiency are proved in advance
@@ -312,8 +345,12 @@ prime factor of $a = (p+R)/4$ (necessarily $q \ne R$). Then
 The sieve consequences below need one input per residual: a statement
 that failure at $R$ forces the shifted form $(p+R)/4$ to avoid prime
 factors in a positive-density set of residue classes. For
-$R = 3, 7, 11$ the exact criteria provide this; for larger $R$ it is the
-following machine-verified lemma (proved in Section~\ref{sec:sieve}).
+$R = 3, 7, 11, 15$ the exact criteria provide this; for every other
+residual it is the support bound, which we state first in the
+per-residual machine-verified form in which it was originally
+established (Lemma~\ref{lem:S}) and then prove unconditionally for
+every residual at once (Theorem~\ref{thm:S}; both proved in
+Section~\ref{sec:sieve}).
 
 \begin{lemma}[support bound; verified for every prime
 $R \equiv 3 \pmod 4$, $19 \le R \le 107$]\label{lem:S}
@@ -327,28 +364,50 @@ solvability). Consequently failure at $R$ forbids at least half the
 classes, through finitely many maximal-support branches.
 \end{lemma}
 
+\begin{theorem}[unconditional support bound]\label{thm:S}
+\textup{(i)} Let $d \ge 4$ be even and $S \subseteq \mathbb{Z}/d
+\setminus \{0\}$. If the bounded subset-sum set
+\[
+  M(S) \;=\; \Bigl\{ \textstyle\sum_{v \in S} e_v v \;:\;
+  e_v \in \{0, 1, 2\} \Bigr\}
+\]
+is not all of $\mathbb{Z}/d$, then $|S| \le d/2 - 1$, and the bound is
+attained ($S =$ the nonzero even classes). \textup{(ii)} Consequently,
+for \emph{every} prime $R \equiv 3 \pmod 4$ and every $p$: if the prime
+factors of $(p+R)/4$ occupy at least $(R-1)/2$ nonzero unit classes
+mod $R$, then every unit class is a divisor class of $m^2$ and
+\eqref{eq:cert} holds; failure forces the conclusion of
+Lemma~\ref{lem:S}, with no upper limit on $R$. \textup{(iii)} In a
+finite abelian group $G$ of even order $g$ with $t$ involutions
+(multiplicative form, $M(S) = \prod_{v \in S}\{1, v, v^2\}$): if
+$M(S) \ne G$ then $|S| \le \max(\lfloor (g+t-2)/2 \rfloor,\, g/2 - 1)$.
+For $G = (\mathbb{Z}/R)^*$ with $\omega(R) \le 2$ this is $\le g/2$, so
+failure at any admissible composite $R \le 107$ forbids at least
+$\varphi(R)/2$ unit classes on $(p+R)/4$: the composite residuals join
+the chain with sieve dimension $\ge \tfrac12$ each.
+\end{theorem}
+
 \begin{theorem}[the chain]\label{thm:FG}
 The number of hard primes $p \le x$ failing every residual in
-$\{3, 7\}$, in $\{3, 7, 11\}$, in $\{3, 7, 11, 19\}$, and in
-$\{3, 7, 11, 19, 23\}$ is, respectively,
+$\{3, 7\}$, in $\{3, 7, 11\}$, in $\{3, 7, 11, 15\}$, and in
+$\{3, 7, 11, 15, 19\}$ is, respectively,
 \[
   O\!\left(\frac{x}{(\log x)^{2}}\right), \qquad
   O\!\left(\frac{x}{(\log x)^{5/2}}\right), \qquad
   O\!\left(\frac{x}{(\log x)^{3}}\right), \qquad
   O\!\left(\frac{x}{(\log x)^{7/2}}\right).
 \]
-More generally, let
-$\mathcal{P} = \{3, 7, 11, 19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103,
-107\}$ be the set of all fifteen primes $\equiv 3 \pmod 4$ up to $107$.
-The number of hard primes failing every residual in $\mathcal{P}$ is
-\[
-  O\!\left(\frac{x}{(\log x)^{17/2}}\right).
-\]
-In particular all but a proportion $O((\log x)^{-2})$ of hard primes are
-solved within $\{3, 7, 11, 19\}$, and all but
-$O((\log x)^{-15/2})$ within $\mathcal{P}$ --- one power of $\log x$
-less than the counts above, since there are $\asymp x/\log x$ hard
-primes up to $x$.
+More generally, by Theorem~\ref{thm:S}, for \emph{every} finite set
+$\mathcal{P}$ of admissible residuals $R \equiv 3 \pmod 4$ --- prime,
+or composite with $\omega(R) \le 2$ --- the number of hard primes
+failing every residual in $\mathcal{P}$ is
+$O_{\mathcal{P}}\!\left(x/(\log x)^{1+|\mathcal{P}|/2}\right)$. In
+particular, for the fifteen primes $\equiv 3 \pmod 4$ up to $107$ the
+exponent is $17/2$, and for the full $27$-element admissible list
+$\{3, 7, 11, \dots, 107\}$ it is $29/2$. All but a proportion
+$O((\log x)^{-2})$ of hard primes are solved within
+$\{3, 7, 11, 15\}$ --- one power of $\log x$ less than the counts
+above, since there are $\asymp x/\log x$ hard primes up to $x$.
 \end{theorem}
 
 \begin{proposition}[aggregate identity families]\label{prop:agg}
@@ -359,8 +418,9 @@ $\equiv 3 \pmod 4$ of $p+1$ or of $p+4$ yields an explicit solution,
 and these are the only $a$-independent divisor shapes $k = a^j p^i$ with
 this property. Adding the two corresponding linear forms to
 Theorem~\ref{thm:FG}: the number of hard primes $p \le x$ failing every
-residual in $\mathcal{P}$ and both families is
-$O(x/(\log x)^{19/2})$.
+prime residual up to $107$ and both families is
+$O(x/(\log x)^{19/2})$; with the full $27$-element admissible list the
+exponent is $31/2$.
 \end{proposition}
 
 \begin{theorem}[density reduction]\label{thm:D}
@@ -387,10 +447,11 @@ Section~\ref{sec:obstruction} develops the obstruction framework
 Theorem~\ref{thm:J}, whose Corollary~\ref{cor:J} depends on the
 Type-I/II dichotomy introduced there.
 Section~\ref{sec:exact} proves Theorem~\ref{thm:A}, then
-Theorem~\ref{thm:meta}, then Theorems~\ref{thm:Ap} and~\ref{thm:App},
-which rest on it. Section~\ref{sec:sieve} proves
+Theorem~\ref{thm:meta}, then Theorems~\ref{thm:Ap}, \ref{thm:App}
+and~\ref{thm:R15}, which rest on it. Section~\ref{sec:sieve} proves
 Theorem~\ref{thm:FG} --- base case first, then, after the monotonicity
-reduction (Lemma~\ref{lem:mono}) and Lemma~\ref{lem:S}, the higher
+reduction (Lemma~\ref{lem:mono}), Lemma~\ref{lem:S} and its
+unconditional upgrade Theorem~\ref{thm:S}, the higher
 exponents --- followed by Proposition~\ref{prop:agg} and
 Theorem~\ref{thm:D}.
 
@@ -587,11 +648,60 @@ the target: any of $v_3(a) \ge 2$, a factor in class $\{4, 5, 9\}$, or a
 second non-residue factor restores solvability.
 \end{proof}
 
+\subsection{Proof of Theorem~\ref{thm:R15}}
+
+\begin{proof}
+($\Rightarrow$, the Jacobi obstruction.) By \eqref{eq:star},
+$m \equiv 4^{-1}p^2 = (2^{-1}p)^2 \pmod{15}$ is the square of a unit,
+so the Jacobi symbol satisfies $\legendre{m}{15} = +1$; and
+$\legendre{-1}{15} = \legendre{-1}{3}\legendre{-1}{5} = -1$. Hence
+$\legendre{-m}{15} = -1$. The classes with $\legendre{q}{15} = +1$ are
+exactly $\{1, 2, 4, 8\} = \langle 2 \rangle$, a subgroup of
+$(\mathbb{Z}/15)^*$ containing $p$'s class ($p \bmod 15 \in \{1,4\}$,
+since $p \equiv 1 \bmod 3$ by (H2) and $p \equiv \pm 1 \bmod 5$ for all
+six hard classes). If every prime factor of $a$ lies in
+$\langle 2 \rangle$, then every divisor of $m^2$ does, and the target
+$-m \equiv 11 \pmod{15}$ (an equality valid for both $p$-classes) is
+unreachable. This composite-modulus form of
+Proposition~\ref{prop:char} is strictly stronger than the proposition
+applied to the single prime $r = 3 \mid 15$.
+
+($\Leftarrow$.) By the composite form of Theorem~\ref{thm:meta} over
+$(\mathbb{Z}/15)^* \cong \mathbb{Z}/2 \times \mathbb{Z}/4$
+(Carmichael exponent $\lambda(15) = 4$, so reachability saturates at
+multiplicity $2$; multiplicities $0..5$ capture every pair of
+saturation state and class product). The structural constraints at
+hard primes are: $p \bmod 15 \in \{1, 4\}$; $2 \mid a$ (from (H1),
+$8 \mid p + 15$), so the class of $2$ always appears; and consistency
+$\prod(\text{classes}) \equiv a \equiv 4p \pmod{15}$. Enumerating the
+full space (code: \texttt{theory.verify\_R15\_finite}) yields
+$349{,}920$ consistent configurations: $349{,}380$ succeed and $540$
+fail --- and \emph{every} failing configuration has all factor classes
+in $\langle 2 \rangle$. In contrast to $R = 11$ there are no budget
+failures at all: the consistency relation forces
+$\prod \legendre{q}{15}^{\mu_q} = \legendre{4p}{15} = +1$, so
+non-residue factors occur with even total multiplicity, and the
+enumeration confirms that any two non-residue units (or one squared),
+together with the forced powers of $2$, always reach the target. The
+criterion agrees with ground-truth divisor search for $158{,}759$ of
+$158{,}759$ hard primes tested below $10^9$.
+\end{proof}
+
+\begin{remark}
+The general composite-$R$ engine (\texttt{theory.solvable\_exact\_general}),
+which evaluates the criterion of the composite meta-theorem directly in
+$(\mathbb{Z}/R)^*$, agrees with ground-truth divisor search on
+\emph{every} composite admissible residual
+$R \in \{15, 27, 35, \dots, 99\}$ ($7{,}938$ sampled hard primes per
+residual below $10^9$, zero disagreements).
+\end{remark}
+
 \section{The sieve bound}\label{sec:sieve}
 
 We now prove the chain of Theorem~\ref{thm:FG}, beginning with the
-base case, and then Lemma~\ref{lem:S}, the aggregate identities, and
-the density reduction.
+base case, and then Lemma~\ref{lem:S}, its unconditional upgrade
+Theorem~\ref{thm:S}, the aggregate identities, and the density
+reduction.
 
 \begin{proof}[Proof of Theorem~\ref{thm:FG}, base case $\{3,7\}$]
 \emph{Step 1 (exact criteria).} Let $p$ be a hard prime and set
@@ -696,9 +806,72 @@ in Table~\ref{tab:components}. The bound is tight: the all-residue
 (Type~I) configurations occupy exactly $(R-3)/2$ nonzero classes.
 \end{proof}
 
+\begin{proof}[Proof of Theorem~\ref{thm:S}]
+(i) Write $M = A_1 + \cdots + A_k$ with $A_i = \{0, v_i, 2v_i\}$,
+$k = |S|$, and let $H = \mathrm{Stab}(M) = \{h : M + h = M\}$, a
+subgroup of $\mathbb{Z}/d$. Kneser's addition theorem
+\cite{Kneser} (see \cite[Thm.~5.5]{TaoVu} for the iterated form used
+here) gives
+\[
+  |M| \;\ge\; \sum_{i=1}^{k} |A_i + H| \;-\; (k-1)\,|H|.
+\]
+\emph{Case $H = \{0\}$.} Every $|A_i| = 3$ except $|A_{d/2}| = 2$
+(there $2v = 0$), and at most one element of $S$ equals $d/2$; so
+$|M| \ge (3k - 1) - (k - 1) = 2k$. Since $M \ne \mathbb{Z}/d$,
+$2k \le d - 1$, and $d$ even forces $k \le d/2 - 1$.
+\emph{Case $|H| = h > 1$.} $M$ is a union of $H$-cosets and
+$M \ne \mathbb{Z}/d$, so $|M| \le d - h$. Split
+$k_0 = |S \cap H| \le h - 1$ (distinct nonzero elements of $H$) and
+$k_1 = k - k_0$. For $v \in H$, $|A_v + H| = h$; for $v \notin H$,
+$A_v + H \supseteq H \cup (v + H)$, so $|A_v + H| \ge 2h$. Kneser's
+bound gives $d - h \ge h(k_0 + 2k_1 - k + 1) = h(k_1 + 1)$, so
+$k_1 \le d/h - 2$ and $k \le (h-1) + (d/h - 2) = h + d/h - 3$. For
+every divisor $h$ with $2 \le h \le d/2$, the quadratic
+$h^2 - (\tfrac d2 + 2)h + d \le 0$ (its roots are $2$ and $d/2$), i.e.\
+$h + d/h - 3 \le d/2 - 1$. Tightness: for $S$ the nonzero even
+classes, $M(S)$ is the even subgroup and $|S| = d/2 - 1$.
+
+(ii) In discrete-log coordinates on $(\mathbb{Z}/R)^* \cong
+\mathbb{Z}/d$, $d = R - 1$, the divisor classes of $m^2$ contain the
+set $M(S)$ over the nonzero support $S$ of $(p+R)/4$ at exponent
+budget $2$ per class (Lemma~\ref{lem:mono}: multiplicities $\ge 1$
+only enlarge budgets). If $|S| \ge d/2$, part (i) forces
+$M(S) = \mathbb{Z}/d$: every class --- in particular the target $-m$
+--- is a divisor class of $m^2$, without invoking the $p$-powers, and
+\eqref{eq:cert} holds. Contrapositively, failure at $R$ forces
+$|S| \le d/2 - 1 = (R-3)/2$, which is the conclusion of
+Lemma~\ref{lem:S} for arbitrary $R$.
+
+(iii) The argument in (i) never used cyclicity. In a finite abelian
+$G$ of even order $g$: in the $H$-trivial case each involution
+$v \in S$ has $|\{1, v, v^2\}| = 2$, so
+$|M| \ge (3k - t) - (k - 1) = 2k - t + 1$ and $M \ne G$ gives
+$k \le \lfloor (g + t - 2)/2 \rfloor$; the $|H| = h > 1$ case is
+verbatim, giving $k \le h + g/h - 3 \le g/2 - 1$ over proper
+subgroups. For $G = (\mathbb{Z}/R)^*$, $t = 2^{\omega(R)} - 1$; with
+$\omega(R) \le 2$, $t \le 3$ and the bound is $\le g/2$, so failure
+forbids at least $g/2 = \varphi(R)/2$ unit classes. Numerically the
+maximum support of a proper product-set is exactly $g/2 - 1$ for every
+composite admissible $R \le 107$
+(\texttt{theory.kneser\_support\_general}; e.g.\ $R = 95$: $g = 72$,
+maximum $35$ over $583{,}455$ realizable product-sets).
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:S}(ii) is strictly stronger than what the sieve
+needs: at support $\ge (R-1)/2$ \emph{every} class is reachable, for
+every target and every $p$. The strong form is also confirmed
+numerically (\texttt{theory.verify\_support\_bound\_strong}): the
+maximum support of a non-full reachability mask equals $(R-3)/2$
+exactly at every prime residual checked. Lemma~\ref{lem:S} and its
+dynamic-program verifications now stand as independent machine
+confirmations of special cases (and remain the form carried by the
+Lean development).
+\end{remark}
+
 \begin{proof}[Proof of Theorem~\ref{thm:FG}, higher exponents]
 Write $n = (p+3)/4$; the relevant forms are $n$, $n+1$, $n+2 = (p+11)/4$,
-$n+4 = (p+19)/4$, $n+5 = (p+23)/4$, and $4n-3 = p$. Joint failure of
+$n+3 = (p+15)/4$, $n+4 = (p+19)/4$, and $4n-3 = p$. Joint failure of
 $\{3,7,11\}$ implies, by Theorems~\ref{thm:A}, \ref{thm:Ap},
 \ref{thm:App}: $n$ free of primes $\equiv 2 \pmod 3$; $n+1$ free of
 non-residues mod $7$; and, splitting by the two cases of
@@ -714,26 +887,39 @@ the bound is the maximum of the branch exponents, attained by the
 character branch (a). The Fundamental Lemma applied to each branch gives
 $O(x/(\log x)^{5/2})$ in total.
 
-For $\{3,7,11,19\}$, Lemma~\ref{lem:S} splits failure at $19$ into
+Adjoining $R = 15$: by Theorem~\ref{thm:R15}, failure at $15$ is the
+single condition ``$n + 3$ free of the four classes
+$\{7, 11, 13, 14\}$ mod $15$'' --- one branch, density
+$\tfrac{4}{8} = \tfrac12$ over the $\varphi(15) = 8$ unit classes ---
+raising each combined branch to dimension $\ge 3$: joint failure of
+$\{3, 7, 11, 15\}$ is $O(x/(\log x)^3)$.
+
+For $\{3,7,11,15,19\}$, Theorem~\ref{thm:S} (equivalently, at this
+residual, Lemma~\ref{lem:S}) splits failure at $19$ into
 finitely many maximal-support branches, each forbidding an explicit set
 of at least $9$ of the $18$ unit classes mod $19$ on $n+4$ --- dimension
 $\ge \tfrac12$. Crossing with the branches at $11$ leaves finitely many
-combined branches, each a five-form problem of dimension $\ge 3$ (those
-involving the Type-II case at $11$ have dimension
-$\ge 1 + \tfrac12 + \tfrac12 + \tfrac35 + \tfrac12 = \tfrac{31}{10} > 3$
+combined branches, each a six-form problem of dimension $\ge \tfrac72$
+(those involving the Type-II case at $11$ have dimension
+$\ge \tfrac{31}{10} + \tfrac12 > \tfrac72$
 and are again lower-order); the
-forbidden residues of the five forms are pairwise distinct for $q > 19$,
+forbidden residues of the six forms are pairwise distinct for $q > 19$,
 smaller primes being absorbed into the congruence class of $n$. Summing
-the finitely many branches gives $O(x/(\log x)^3)$. The
-$\{3,7,11,19,23\}$ case adds the form $n+5$ with Lemma~\ref{lem:S} at
-$R = 23$, one more factor of $(\log x)^{1/2}$. The full chain
-$\mathcal{P}$ is identical: the fifteen forms $n + (R-3)/4$,
-$R \in \mathcal{P}$, are distinct integer shifts of $n$ (pairwise
-differences less than $27$), each contributing dimension $\ge \tfrac12$
-through finitely many maximal-support branches, plus $1$ for primality:
-total dimension $\ge 1 + \tfrac{15}{2} = \tfrac{17}{2}$, with forbidden
-residues pairwise distinct for $q > 107$ and smaller primes absorbed
-into the congruence class of $n$.
+the finitely many branches gives $O(x/(\log x)^{7/2})$.
+
+The general case is identical: for a finite admissible list
+$\mathcal{P}$ (prime, or composite with $\omega(R) \le 2$), the forms
+$n + (R-3)/4$, $R \in \mathcal{P}$, are distinct integer shifts of
+$n$; Theorems~\ref{thm:A}, \ref{thm:Ap}, \ref{thm:App}, \ref{thm:R15}
+handle $R = 3, 7, 11, 15$ and Theorem~\ref{thm:S} handles every other
+residual (part (ii) for primes, part (iii) for composites), each
+contributing dimension $\ge \tfrac12$ through finitely many
+maximal-support branches, plus $1$ for primality: total dimension
+$\ge 1 + |\mathcal{P}|/2$, with forbidden residues pairwise distinct
+for $q > \max \mathcal{P}$ and smaller primes absorbed into the
+congruence class of $n$. For the fifteen primes up to $107$ this gives
+exponent $\tfrac{17}{2}$; for the full $27$-element admissible list,
+$\tfrac{29}{2}$.
 \end{proof}
 
 \begin{proof}[Proof of Proposition~\ref{prop:agg}]
@@ -753,15 +939,14 @@ $10^9$ --- and none of the four primes of Section~\ref{sec:comp} that
 admit a unique working residual $\le 107$.
 
 \begin{remark}\label{rem:emptiness}
-Each further prime residual $R \equiv 3 \pmod 4$ whose support-bound
-lemma is verified adds $\tfrac12$ to the exponent; the dynamic-program
-verification has now been carried through every prime residual up to
-$107$. The chain is a concrete instantiation of
-Theorem~\ref{thm:D} with explicit, verified constants. Two caveats
-frame its scope. First, the composite residuals ($15, 27, 35, \dots$)
-are not covered by the present lemma; treating them requires the
-componentwise theory mod each prime-power factor. Second --- and
-fundamentally --- no fixed finite list can be pushed to \emph{emptiness}
+By Theorem~\ref{thm:S}, every residual --- prime or composite --- adds
+$\tfrac12$ to the exponent, so the chain's exponent is bounded only by
+the number of residuals used; the constants $O_{\mathcal{P}}$, however,
+grow with $|\mathcal{P}|$ (branch counts and the remainder term of the
+Fundamental Lemma). The chain is a concrete instantiation of
+Theorem~\ref{thm:D} with explicit constants. One caveat frames its
+scope, and it is fundamental: no fixed finite list can be pushed to
+\emph{emptiness}
 by upper-bound sieving: the count bound $x/(\log x)^{\kappa}$ diverges
 for every fixed $\kappa$, and extrapolating the calibration of
 Section~\ref{sec:comp} to any fixed list yields a positive density
@@ -972,14 +1157,20 @@ record).
 \item \textbf{Finite covering.} Prove that some finite admissible set $S$
   covers all hard primes (Theorem~\ref{thm:D} gives density
   $(\log x)^{-A}$ for every $A$; emptiness is beyond the sieve).
-\item \textbf{Beyond the prime chain.} The support-bound lemma is now
-  verified for every prime residual up to $107$ (exponent
-  $\tfrac{17}{2}$); extending past $107$ meets the growth of the DP
-  state space ($\approx 2.8\times$ per residual), and the composite
-  residuals require the componentwise theory. More importantly, the
-  fixed-list format itself cannot reach emptiness
-  (Remark~\ref{rem:emptiness}): the structurally right target is a
-  slowly growing bound on $R_{\min}(p)$.
+\item \textbf{Beyond fixed lists.} The support bound is now proved
+  unconditionally for every residual, prime and composite
+  (Theorem~\ref{thm:S}), so the chain's exponent is unbounded over
+  growing lists --- but the fixed-list format itself cannot reach
+  emptiness (Remark~\ref{rem:emptiness}), and aggregating residuals
+  that grow with $p$ meets two walls: the per-branch forbidden classes
+  depend on $p \bmod R$, and the branch count per residual, though
+  finite, grows. The proof of Theorem~\ref{thm:S} shows the extremal
+  failing supports are \emph{subgroup-trapped} (the stabilizer $H$ is
+  nontrivial and $S$ concentrates on $H$ up to at most $d/|H| - 2$
+  outliers); exploiting this structure \emph{uniformly in $R$} ---
+  fewer, $p$-independent branches --- is now a well-posed
+  additive-combinatorics question, and the structurally right target
+  remains a slowly growing bound on $R_{\min}(p)$.
 \item \textbf{The constant \boldmath$5.17$.} The joint $\{3,7\}$-exceptional
   density is measured as $\approx 5.17/\log x$, stable to $2\%$ across
   three decades. Conjecturally $5.17$ is a Selberg--Delange-type
@@ -1001,8 +1192,9 @@ record).
   complexity is unresolved: the DP state count grows empirically by
   $\approx 2.8\times$ per successive prime residual ($271$ at $R = 19$ to
   $1.95 \times 10^7$ at $R = 107$); is the equivalence-state complexity
-  genuinely exponential in $R$, and is there a polynomial-size
-  certificate for the support-bound property?
+  genuinely exponential in $R$? (For the support-bound property itself
+  the question is settled: Theorem~\ref{thm:S} is a constant-size
+  certificate. The open version concerns the full exact criteria.)
 \item \textbf{The record and the covering hypothesis.}
   Theorem~\ref{thm:J} explains the record prime quantitatively (see
   Corollary~\ref{cor:J}) and yields a conditional resolution of the
@@ -1146,6 +1338,12 @@ dynamic program over $(\mathbb{Z}/11)^*$ with the forced factor $3$;
 collapses to $25$ equivalence states ($16$ succeed, $6$ fail by
 character, $3$ by budget) & $25$ &
 \texttt{finite\_\allowbreak criterion\_dp} \\ \addlinespace
+Thm.~\ref{thm:R15} ($R=15$) &
+class multisets in $(\mathbb{Z}/15)^*$, multiplicities $\le 5$, with the
+forced even factor, $p \bmod 15 \in \{1, 4\}$, and the consistency
+relation ($349{,}380$ succeed, $540$ fail all-residue, zero budget
+failures) & $349{,}920$ &
+\texttt{verify\_R15\_finite} \\ \addlinespace
 Lem.~\ref{lem:S} ($R=19$) &
 all supports of size $9$ over the nonzero logs $\times$ all classes of
 $p$, at minimal multiplicities & $437{,}580$ &
@@ -1167,13 +1365,19 @@ spaces and the entry points in \texttt{erdos\_straus.theory}.}
 \end{table}
 
 In addition (as sanity checks, not proof components), the criteria of
-Theorems~\ref{thm:A}, \ref{thm:Ap} and~\ref{thm:App} were compared
-against ground-truth
+Theorems~\ref{thm:A}, \ref{thm:Ap}, \ref{thm:App} and~\ref{thm:R15}
+were compared against ground-truth
 divisor search on the complete solvability data below $10^9$: agreement
 in $1{,}587{,}581/1{,}587{,}581$ cases for $R = 3$,
 $41{,}421/41{,}421$ sampled failure cases for $R = 7$ (all Type-I, as
 Theorem~\ref{thm:Ap} requires), and $158{,}759/158{,}759$ sampled cases
-for $R = 11$, with zero discrepancies. The identity of
+for each of $R = 11$ and $R = 15$, with zero discrepancies; the
+general composite-$R$ engine (\texttt{solvable\_exact\_general})
+likewise agrees on $7{,}938$ sampled primes for every composite
+admissible residual, and the strong form of Theorem~\ref{thm:S} is
+confirmed numerically at every residual checked
+(\texttt{verify\_support\_bound\_strong},
+\texttt{kneser\_support\_general}). The identity of
 Theorem~\ref{thm:J} and its forced-prime corollary were likewise
 checked on $135{,}588$ resp.\ $61{,}438$ instances from the same data,
 with zero violations (Corollary~\ref{cor:J}).
@@ -1254,6 +1458,13 @@ Thm.~\ref{thm:App} enumeration &
 \texttt{tests/test\_solver.py}) \\ \addlinespace
 Lem.~\ref{lem:S} at $R = 19, 23$ &
 \texttt{verify\_support\_bound(19)}, \texttt{(23)} \\ \addlinespace
+Thm.~\ref{thm:R15} finite check &
+\texttt{python -c 'from erdos\_straus.theory \textbackslash} \newline
+\texttt{\ \ import verify\_R15\_finite; \textbackslash} \newline
+\texttt{\ \ print(verify\_R15\_finite())'} \\ \addlinespace
+Thm.~\ref{thm:S} numerical confirmation &
+\texttt{verify\_support\_bound\_strong(31)},
+\texttt{kneser\_support\_general(15)} \\ \addlinespace
 generate the $10^{10}$ map &
 \texttt{python -m erdos\_straus.bulk\_generate \textbackslash} \newline
 \texttt{\ \ --max 10000000000 --segmented --store rmap} \\ \addlinespace
@@ -1275,7 +1486,7 @@ module \texttt{erdos\_straus.theory}.}
 \label{tab:repro}
 \end{table}
 
-The full test suite (\texttt{python -m pytest}; $46$ tests) exercises the
+The full test suite (\texttt{python -m pytest}; $52$ tests) exercises the
 proof-component checks, the exact criteria against ground truth, and
 sampled dataset validation on every run.
 
@@ -1314,6 +1525,11 @@ H.~Halberstam and H.-E.~Richert,
 \emph{Sieve Methods},
 Academic Press, London, 1974.
 
+\bibitem{Kneser}
+M.~Kneser,
+\emph{Absch\"atzung der asymptotischen Dichte von Summenmengen},
+Math.\ Z.\ \textbf{58} (1953), 459--484.
+
 \bibitem{MihneaBogdan}
 S.~Mihnea and D.~C.~Bogdan,
 \emph{Further verification and empirical evidence for the
@@ -1337,6 +1553,12 @@ A.~Swett,
 online verification record to $10^{14}$, 1999; formerly at
 \url{http://math.uindy.edu/swett/esc.htm} (archived snapshots
 available via the Internet Archive; accessed August 2026).
+
+\bibitem{TaoVu}
+T.~Tao and V.~H.~Vu,
+\emph{Additive Combinatorics},
+Cambridge Studies in Advanced Mathematics, vol.~105,
+Cambridge University Press, Cambridge, 2006.
 
 \bibitem{Vaughan}
 R.~C.~Vaughan,
