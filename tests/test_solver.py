@@ -276,6 +276,16 @@ def test_support_bound_lemma_R19_R23():
         assert res["lemma_holds"], (R, res["failures"][:3])
 
 
+def test_support_bound_dp_agrees_and_extends():
+    """The DP verifier agrees with the combinatorial one and extends the
+    lemma to larger residuals (Theorem H chain)."""
+    from erdos_straus.theory import verify_support_bound_dp
+
+    for R in [19, 23, 31, 43]:
+        res = verify_support_bound_dp(R)
+        assert res["status"] == "OK" and res["lemma_holds"], (R, res)
+
+
 def test_bulk_generate_matches_stored_minimal_R():
     """The fast bulk solver reproduces the minimal R of stored certificates."""
     from erdos_straus.bulk_generate import _init_small_primes, minimal_certificate
