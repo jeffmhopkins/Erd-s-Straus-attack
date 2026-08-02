@@ -5,8 +5,10 @@ failure classification, and the growth model for the minimal residual.
 Naming note: this module's internal labels predate the paper. The
 dictionary is: "Prop. 1" = paper Prop. 2.1 (character obstruction),
 "Thm. 2"/"Theorem A" = paper Thm. 1.1, "Prop. 3" = paper Prop. 2.2
-(guaranteed success), "Theorems F/G"/"Theorem H" = paper Thm. 1.8
-(the chain), "Theorem I" = paper Prop. 1.9, Lemma S = paper Lem. 1.7.
+(guaranteed success), "Theorems F/G"/"Theorem H" = paper Thm. 1.10
+(the chain), "Theorem I" = paper Prop. 1.11, Lemma S = paper Lem. 1.8,
+"Theorem A'''" (R = 15) = paper Thm. 1.5, "Theorem S" (unconditional
+support bound) = paper Thm. 1.9.
 
 Mathematical setup
 ------------------
@@ -578,7 +580,7 @@ def verify_support_bound(R: int) -> Dict:
     p-budget 2). Type-I (all-QR) configurations have exactly d/2 - 1
     nonzero classes, so the bound is tight.
 
-    Consequence (used in Theorem 1.8, the chain): failure at R implies (p+R)/4 has
+    Consequence (used in Theorem 1.10, the chain): failure at R implies (p+R)/4 has
     no prime factor in an explicit set of ≥ d/2 classes, a sifting
     condition of dimension ≥ 1/2 — and there are finitely many maximal
     failing supports, so the exceptional count splits into finitely many
@@ -663,8 +665,291 @@ def verify_support_bound_dp(R: int, time_budget: float = 900.0) -> Dict:
             "secs": round(time.time() - t0, 1)}
 
 
+# --- Composite residuals: general exact engine and Theorem A''' (R = 15) ---
+#
+# For composite R ≡ 3 (mod 4) the certificate condition k ≡ −m (mod R) is a
+# CRT-coupled system over the prime powers of R, and the divisor-class group
+# is the (generally non-cyclic) unit group (Z/R)*.  The meta-theorem holds
+# verbatim with (Z/R)* in place of the cyclic group: success depends only on
+# the multiset of factor classes of a (multiplicities capped once exponent
+# ranges cover each class's cyclic span, i.e. at ⌈λ(R)/2⌉ for the Carmichael
+# function λ) together with p mod R.
+#
+# JACOBI OBSTRUCTION (Proposition 1, composite form).  m ≡ (2⁻¹p)² (mod R)
+# is a perfect square of a unit mod R, so the Jacobi symbol (m|R) = +1; and
+# (−1|R) = (−1)^{(R−1)/2} = −1 for every R ≡ 3 (mod 4).  Hence
+# (−m|R) = −1: if every prime factor of m = pa satisfies (q|R) = +1, every
+# divisor of m² has Jacobi symbol +1 and the target class is unreachable —
+# residual R fails.  For prime R this is Prop. 1; for composite R it is
+# strictly stronger than Prop. 1 applied to a single prime factor r | R.
+
+def unit_group(R: int) -> List[int]:
+    """The unit group (Z/R)* as a sorted list of residues."""
+    return [x for x in range(1, R) if math.gcd(x, R) == 1]
+
+
+def multiplicative_order(v: int, R: int) -> int:
+    o, x = 1, v % R
+    while x != 1:
+        x = x * v % R
+        o += 1
+    return o
+
+
+def solvable_exact_general(p: int, R: int) -> bool:
+    """Exact solvability of residual R at p for ANY odd R coprime to p
+    (composite included) — factor-class reachability in (Z/R)*, no divisor
+    search.  Agrees with ground truth on every composite residual in the
+    10⁹ mask data (7,938 sampled primes per residual, zero disagreements).
+    """
+    a = (p + R) // 4
+    target = (-p * a) % R
+    S = {1}
+    for q, e in factorize(a).items():
+        v = q % R
+        if v == 1:
+            continue
+        o = multiplicative_order(v, R)
+        cap = min(2 * e, o - 1)
+        powers = [pow(v, k, R) for k in range(cap + 1)]
+        S = {s * y % R for s in S for y in powers}
+    pl = p % R
+    S = {s * pow(pl, i, R) % R for s in S for i in range(3)}
+    return target in S
+
+
+# Classes with Jacobi symbol (q|15) = −1: the failure/success dichotomy
+# classes of Theorem A''' below.
+R15_NONRESIDUES = (7, 11, 13, 14)
+
+
+def criterion_R15(p: int) -> bool:
+    """Theorem A''' (exact criterion for R = 15, hard primes): residual 15
+    succeeds ⟺ a = (p+15)/4 has a prime factor q with (q|15) = −1, i.e.
+    q ≡ 7, 11, 13, or 14 (mod 15).
+
+    Validated against ground truth for 158,759/158,759 sampled hard primes
+    below 10⁹ (every 10th) — zero disagreements.
+    """
+    a = (p + 15) // 4
+    return any(q % 15 in R15_NONRESIDUES for q in factorize(a))
+
+
+def verify_R15_finite() -> Dict:
+    """Finite verification of Theorem A''' by exhaustive enumeration of all
+    consistent factor-class configurations for R = 15 at hard primes.
+
+    Structure used (all forced by the Mordell classes):
+      (i)   p mod 15 ∈ {1, 4}: p ≡ 1 (mod 3) and p ≡ ±1 (mod 5);
+      (ii)  2 | a: p ≡ 1 (mod 8) ⟹ 8 | p + 15 — the class of 2 always
+            appears among a's factor classes;
+      (iii) consistency: ∏ classes ≡ a ≡ 4⁻¹p ≡ 4p (mod 15).
+    The target class is −m ≡ −4p² ≡ 11 (mod 15) for both p-classes.
+
+    Configuration space: multiplicity 0..5 per unit class (λ(15) = 4, so
+    0..5 captures every (reach-saturation, class-product) pair: reach
+    saturates at multiplicity 2, and 0..5 covers every residue mod each
+    class order together with saturation), folded by dynamic programming
+    over states (reach-mask, product, has-nonresidue-factor).
+
+    Verified claim: the target is reachable ⟺ some factor class has
+    (q|15) = −1.  Consistency is what kills the budget cases: the product
+    relation forces χ₁₅(a) = χ₁₅(4p) = +1, so non-residue factors occur
+    with even total multiplicity — and any two of them (or one squared,
+    together with the forced powers of 2) reach the target.
+    """
+    R = 15
+    units = unit_group(R)                      # [1, 2, 4, 7, 8, 11, 13, 14]
+    uidx = {u: i for i, u in enumerate(units)}
+    target_bit = uidx[11]
+    full = len(units)
+
+    # perm[y][A]: the 8-bit reach-mask A with every element multiplied by y
+    perm: Dict[int, List[int]] = {}
+    for y in units:
+        t = [0] * (1 << full)
+        for A in range(1 << full):
+            r = 0
+            for i, u in enumerate(units):
+                if A >> i & 1:
+                    r |= 1 << uidx[u * y % R]
+            t[A] = r
+        perm[y] = t
+
+    init = (1 << uidx[1], 1, False)
+    states: Dict[Tuple[int, int, bool], int] = {init: 1}
+    for v in units:
+        new: Dict[Tuple[int, int, bool], int] = {}
+        for (rm, pr, hn), cnt in states.items():
+            for mult in range(6):
+                if v == 2 and mult == 0:
+                    continue                    # (ii): 2 | a forced
+                if mult == 0 or v == 1:
+                    key = (rm, pr, hn)
+                else:
+                    cap = min(2 * mult, 7)
+                    nrm, y = 0, 1
+                    for _ in range(cap + 1):
+                        nrm |= perm[y][rm]
+                        y = y * v % R
+                    key = (nrm, pr * pow(v, mult, R) % R,
+                           hn or (v in R15_NONRESIDUES))
+                new[key] = new.get(key, 0) + cnt
+        states = new
+
+    total = succ = fail = fail_nonres = 0
+    violations: List[Dict] = []
+    for (rm, pr, hn), cnt in states.items():
+        for p_res in (1, 4):                    # (i)
+            if pr != 4 * p_res % R:
+                continue                        # (iii)
+            frm, y = 0, 1
+            for _ in range(3):                  # p-powers p^0, p^1, p^2
+                frm |= perm[y][rm]
+                y = y * p_res % R
+            ok = bool(frm >> target_bit & 1)
+            total += cnt
+            if ok:
+                succ += cnt
+                if not hn:
+                    violations.append({"reach": rm, "p_res": p_res,
+                                       "kind": "success_without_nonresidue"})
+            else:
+                fail += cnt
+                if hn:
+                    fail_nonres += cnt
+                    violations.append({"reach": rm, "p_res": p_res,
+                                       "kind": "budget_failure"})
+    return {"configs": total, "success": succ, "fail": fail,
+            "fail_with_nonresidue": fail_nonres,
+            "violations": violations, "theorem_holds": not violations}
+
+
+def validate_R15_criterion(masks: Dict[int, int], sample_step: int = 10
+                           ) -> Dict:
+    """Check Theorem A''' against the ground-truth solvability masks."""
+    _init_small_primes()
+    bit = R_INDEX[15]
+    primes = sorted(masks)[::sample_step]
+    agree = 0
+    bad: List[int] = []
+    for p in primes:
+        if criterion_R15(p) == bool(masks[p] >> bit & 1):
+            agree += 1
+        else:
+            bad.append(p)
+    return {"checked": len(primes), "agree": agree,
+            "disagreements": bad[:50]}
+
+
+# --- Kneser: the unconditional support bound (Lemma S for every R) ---------
+#
+# THEOREM S (unconditional; proof via Kneser's addition theorem).  Let
+# d ≥ 4 be even and S ⊆ Z/d \ {0}.  If the bounded subset-sum set
+#     M(S) = { Σ_{v∈S} e_v v  :  e_v ∈ {0, 1, 2} }
+# is not all of Z/d, then |S| ≤ d/2 − 1.
+#
+# Proof.  Write M = A_1 + ... + A_k with A_i = {0, v_i, 2v_i}, k = |S|, and
+# let H = Stab(M) = {h : M + h = M}.  Kneser's theorem gives
+#     |M| ≥ Σ_i |A_i + H| − (k − 1)|H|.
+# If H = {0}: |A_i| = 3 except |A_{d/2}| = 2 (at most one such i), so
+# |M| ≥ (3k − 1) − (k − 1) = 2k; M ≠ Z/d forces 2k ≤ d − 1, i.e.
+# k ≤ d/2 − 1 (d even).  If |H| = h > 1: M is a union of H-cosets and
+# M ≠ Z/d, so |M| ≤ d − h.  Let k₀ = |S ∩ H| ≤ h − 1 and k₁ = k − k₀.
+# For v ∈ H, |A_v + H| = h; for v ∉ H, |A_v + H| ≥ 2h.  Kneser gives
+# d − h ≥ h(k₀ + 2k₁ − k + 1) = h(k₁ + 1), so k₁ ≤ d/h − 2 and
+# k ≤ (h − 1) + (d/h − 2) = h + d/h − 3 ≤ d/2 − 1 for every divisor
+# 2 ≤ h ≤ d/2 (the quadratic h² − (d/2 + 2)h + d ≤ 0 has roots 2, d/2). ∎
+#
+# The bound is tight: S = the even classes (Type-I/all-QR configurations)
+# has |S| = d/2 − 1 and M(S) = the even subgroup.
+#
+# COROLLARY (Lemma S for EVERY prime R ≡ 3 mod 4 — no upper limit).  In
+# discrete-log coordinates the divisor classes of m² realize exactly such
+# an M(S) (multiplicities only enlarge budgets, monotonically), so if the
+# nonzero factor-class support of (p+R)/4 has size ≥ (R−1)/2, every class
+# mod R is a divisor class of m² — in particular −m, and residual R
+# SUCCEEDS.  Failure therefore forces support ≤ (R−3)/2: the machine-
+# verified Lemma S instances 19 ≤ R ≤ 107 are special cases, and the
+# Theorem-H chain extends to arbitrary finite prime residual lists.
+#
+# GENERAL ABELIAN FORM (composite R).  In any finite abelian group G of
+# even order g (multiplicative form M(S) = ∏_{v∈S}{1, v, v²}), the same
+# proof gives: M(S) ≠ G implies
+#     |S| ≤ max( ⌊(g + t − 2)/2⌋ , h + g/h − 3 )   ≤ g/2   for t ≤ 3,
+# t = #involutions of G (the H-trivial case loses one unit per involution
+# in S since |{1, v, v²}| = 2 for v² = 1), h ranging over proper subgroup
+# orders.  For (Z/R)* with ω(R) ≤ 2 prime factors, t = 2^ω − 1 ≤ 3, so
+# failure at ANY admissible composite R ≤ 107 forbids ≥ g/2 = φ(R)/2
+# classes — sieve dimension ≥ 1/2, and the composite residuals join the
+# chain on equal footing with the primes.
+
+def verify_support_bound_strong(R: int, time_budget: float = 900.0) -> Dict:
+    """Verify the STRONG (Kneser) form of the support bound at prime R:
+    every subset-sum mask realized by ≥ (R−1)/2 nonzero classes is FULL —
+    equivalently, the maximum support of a non-full mask is (R−3)/2.
+
+    This is the numerical confirmation of Theorem S (which proves it for
+    all even d at once); the observed maximum equals the bound exactly.
+    """
+    d = R - 1
+    FULL = (1 << d) - 1
+
+    def rot(m: int, s: int) -> int:
+        s %= d
+        return ((m << s) | (m >> (d - s))) & FULL
+
+    t0 = time.time()
+    states: Dict[int, int] = {1: 0}
+    for v in range(1, d):
+        new = dict(states)
+        for mask, cnt in states.items():
+            nm = mask | rot(mask, v) | rot(mask, 2 * v)
+            if new.get(nm, -1) < cnt + 1:
+                new[nm] = cnt + 1
+        states = new
+        if time.time() - t0 > time_budget:
+            return {"R": R, "status": "TIMEOUT", "states": len(states)}
+    max_nonfull = max((c for m, c in states.items() if m != FULL), default=-1)
+    return {"R": R, "status": "OK", "states": len(states),
+            "max_nonfull_support": max_nonfull, "kneser_bound": d // 2 - 1,
+            "strong_holds": max_nonfull <= d // 2 - 1,
+            "secs": round(time.time() - t0, 1)}
+
+
+def kneser_support_general(R: int) -> Dict:
+    """The general-abelian support bound over G = (Z/R)* (composite R):
+    DP over realizable bounded product-sets ∏_{v∈S}{1, v, v²}, reporting
+    the maximum support of a proper product-set against the Kneser bound
+    max(⌊(g + t − 2)/2⌋, g/2 − 1).  Observed: g/2 − 1 exactly, for every
+    composite admissible R ≤ 107."""
+    G = unit_group(R)
+    g = len(G)
+    t = sum(1 for x in G if x != 1 and x * x % R == 1)
+    FULLSET = frozenset(G)
+    t0 = time.time()
+    states: Dict[frozenset, int] = {frozenset([1]): 0}
+    for v in G:
+        if v == 1:
+            continue
+        add = (1, v, v * v % R)
+        new = dict(states)
+        for M, c in states.items():
+            nm = frozenset(x * y % R for x in M for y in add)
+            if new.get(nm, -1) < c + 1:
+                new[nm] = c + 1
+        states = new
+    mx = max((c for M, c in states.items() if M != FULLSET), default=-1)
+    bound = max((g + t - 2) // 2, g // 2 - 1)
+    return {"R": R, "g": g, "involutions": t, "states": len(states),
+            "max_nonfull_support": mx, "kneser_bound": bound,
+            "holds": mx <= bound,
+            "half_forbidden": 2 * (g - mx) >= g,
+            "secs": round(time.time() - t0, 1)}
+
+
 def aggregate_identity_certificate(p: int) -> Optional[Tuple[int, int, int, int]]:
-    """Aggregate identity families (paper Prop. 1.9; "Theorem I" in the notes).
+    """Aggregate identity families (paper Prop. 1.11; "Theorem I" in the notes).
 
     If some prime R ≡ 3 (mod 4) divides p+1, then k = a·p² certifies
     residual R (p ≡ −1 mod R); if R | p+4, then k = a²·p does (p ≡ −4).

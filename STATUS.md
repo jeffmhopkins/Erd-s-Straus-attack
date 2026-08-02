@@ -172,7 +172,7 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 - `src/erdos_straus/parametric_search.py` — early experiments with fixed-residual parametric searches
 - `src/erdos_straus/bulk_generate.py` — fast integer-only solver + monolithic/segmented sieves + parallel driver for large-scale generation
 - `src/erdos_straus/analyze.py` — minimal-$R$ distribution/CDF, covering-set (set cover over full residual masks), and high-$R$ tail structure analysis
-- `src/erdos_straus/theory.py` — obstruction theory: Jacobi machinery, failure taxonomy, exact-criteria engines (`solvable_exact`, `finite_criterion_dp`), support-bound verifiers (combinatorial and DP), aggregate identities, R=7 finite verification, independence model
+- `src/erdos_straus/theory.py` — obstruction theory: Jacobi machinery, failure taxonomy, exact-criteria engines (`solvable_exact`, `finite_criterion_dp`, composite-R `solvable_exact_general`), R=7/R=15 finite verifications, support-bound verifiers (combinatorial, DP, strong/Kneser form, general abelian), aggregate identities, independence model
 - `src/erdos_straus/verify.py` — independent verification of the stored certificates (full triples, minimal-$R$ maps, and npz archives)
 - `data/hard_primes_1e9_minimalR.json.gz` — minimal-$R$ map for all 1 587 581 hard primes $< 10^9$ (gzip; triples reconstruct deterministically)
 - `data/hard_primes_1.2e8_solutions.json.gz` — explicit $(R,a,b,c)$ for all 213 131 hard primes $< 1.2 \times 10^8$ (gzip)
@@ -182,7 +182,7 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 - `data/hard_primes_1e10_minimalR.json.gz` — minimal-$R$ map for all 14 215 707 hard primes $< 10^{10}$
 - `data/hard_primes_1e11_minimalR.{rvals.u8.gz, meta.json, tail.json}` — R-sequence dataset for all 128 671 219 hard primes $< 10^{11}$ (uint8 minimal-$R$ values in ascending-prime order + sha256-pinned metadata + explicit verified tail $R \ge 43$)
 - `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
-- `tests/test_solver.py` — 46 tests: unit, certificate validation, theorem checks (A/A′/A″/J/meta), support-bound lemmas, aggregate identities
+- `tests/test_solver.py` — 52 tests: unit, certificate validation, theorem checks (A/A′/A″/A‴/J/meta incl. composite R), support-bound lemmas (DP + strong Kneser form, cyclic and general abelian), aggregate identities
 - `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 18 pp.
 - `lean/ErdosStraus/` — Lean 4 + mathlib formalization, elementary layer + finite enumerations (`lake exe cache get && lake build`)
 - `THEORY.md` — full theoretical development; `STATUS.md` — this document
@@ -209,20 +209,39 @@ full tail minimality.
 - **Theorem A″** (R=11 exact criterion) — the first case beyond the
   character dichotomy: failure ⟺ all factors QR mod 11, *or* one of three
   explicit exponent-budget patterns (verified on 158 759/158 759 primes).
+- **Theorem A‴** (R=15 exact criterion — the first composite residual) —
+  a clean *Jacobi-character* dichotomy: residual 15 succeeds ⟺ (p+15)/4
+  has a prime factor q with (q|15) = −1 (q ≡ 7, 11, 13, 14 mod 15).
+  Zero budget cases (consistency forces non-residue factors in pairs);
+  machine-verified over 349 920 consistent configurations and validated
+  on 158 759/158 759 sampled primes below 10⁹.
 - **Meta-theorem** — every fixed R admits a computable exact finite-state
-  criterion (`theory.solvable_exact`, `theory.finite_criterion_dp`).
+  criterion (`theory.solvable_exact`, `theory.finite_criterion_dp`); now
+  extended to composite R via the unit group (Z/R)*
+  (`theory.solvable_exact_general`, exact on every composite residual
+  tested against the 10⁹ masks).
 - **Theorem E** (unconditional, full proof) — hard primes failing both
   R=3 and R=7 number O(x/(log x)²); empirically density ≈ 5.17/log x,
   constant to 2 % across three decades. With A″, the {3,7,11} exceptional
   set is O(x/(log x)^{5/2}).
 - **Theorems F/G/G′/H** (the chain) — joint exceptional sets:
-  {3,7,11} → O(x/(log x)^{5/2}); {3,7,11,19} → O(x/(log x)³);
-  +23 → 7/2; all fifteen primes ≤ 107 → **17/2**, via **Lemma S**
-  (support bound, machine-verified by subset-DP for every prime residual
-  19…107, zero violations).
+  {3,7,11} → O(x/(log x)^{5/2}); {3,7,11,15} → O(x/(log x)³) (exponent 3
+  already at B=15 via A‴); all fifteen primes ≤ 107 → **17/2**; the full
+  27-residual admissible list ≤ 107 → **29/2**; and now for **every**
+  finite admissible list P (prime or composite): exponent 1 + |P|/2.
+- **Theorem S** (unconditional support bound — Kneser/Olson route) —
+  the former machine-verified Lemma S is now *proved for every residual
+  at once*: if the factor classes of (p+R)/4 occupy ≥ (R−1)/2 nonzero
+  classes, every class mod R is a divisor class of m² and R succeeds;
+  failure forces support ≤ (R−3)/2. Proof via Kneser's addition theorem
+  (stabilizer dichotomy); tight (Type-I configurations). General
+  abelian form covers composite R (≥ φ(R)/2 classes forbidden for all
+  ω(R) ≤ 2). "Lemma S past 107" is thereby closed for all R, and the
+  DP verifications 19…107 become independent confirmations.
 - **Theorem I** (aggregate identities) — R | p+1 or R | p+4 always
-  certifies; the only a-independent families; +1 to the chain (**19/2**);
-  covers 74 % of hard primes alone; characterizes the critical primes.
+  certifies; the only a-independent families; +1 to the chain (**19/2**
+  on the prime list, **31/2** on the full 27-residual list); covers 74 %
+  of hard primes alone; characterizes the critical primes.
 - **Theorem J** (reciprocity structure) — (q|R) = (p|q) for odd primes
   q | (p+R)/4: joint Type-I failure ⟺ p is a QR mod every unforced prime
   of every shifted value. Explains the record prime (4σ Legendre-coin
@@ -296,10 +315,16 @@ full tail minimality.
 4. ~~Algebraic conditions forcing large $R$.~~ **Done** — Proposition 1
    (character obstruction), Theorem A″ (budget patterns), Theorem J
    (reciprocity structure): the full mechanism of the tail.
-5. Open: composite-residual criteria (R = 15 first); Lemma S past 107;
-   Olson-type additive combinatorics to enlarge the provable forbidden
-   structure (the route that could pass Vaughan conditionally); the
-   unconditional $R_{\min}$ bound (= the conjecture).
+5. ~~Composite-residual criteria (R = 15 first).~~ **Done** — Theorem A‴:
+   a clean Jacobi dichotomy, plus the general composite-R exact engine.
+   ~~Lemma S past 107.~~ ~~Olson-type additive combinatorics.~~ **Both
+   done at once** — Theorem S proves the support bound unconditionally
+   for every residual via Kneser's addition theorem; the chain now has
+   exponent 1 + |P|/2 for every finite admissible list. Open:
+   exploit the subgroup-trapped structure of failing supports
+   *uniformly in R* (p-independent branches — the remaining gap on the
+   conditionally-past-Vaughan route); formalize Theorem S and A‴ in
+   Lean; the unconditional $R_{\min}$ bound (= the conjecture).
 
 ---
 *Attack ongoing. Framework and data are ready for further extension or theoretical work.*
