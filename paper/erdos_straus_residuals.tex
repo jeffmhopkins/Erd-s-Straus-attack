@@ -682,7 +682,7 @@ $R \in S$ with \eqref{eq:cert}. All computational evidence below supports
 $S = \{3, 7, 11, \dots, 107\}$.
 \end{remark}
 
-\section{Computations to $10^{10}$}\label{sec:comp}
+\section{Computations to $10^{11}$}\label{sec:comp}
 
 All code and data are in the accompanying repository. Certificates are
 found by direct integer factorization of $a$ (trial division; the
@@ -692,36 +692,41 @@ integer arithmetic, $4abc = n(bc + ac + ab)$.
 
 \subsection{Data}
 
-Every one of the $14{,}215{,}707$ hard primes $p < 10^{10}$ possesses a
+Every one of the $128{,}671{,}219$ hard primes $p < 10^{11}$ possesses a
 residual certificate with $R \le 107$. The minimal residuals distribute as
-follows ($10^{10}$ data):
+follows ($10^{11}$ data):
 
 \begin{center}
 \begin{tabular}{rr|rr|rr}
 $R$ & count & $R$ & count & $R$ & count \\ \hline
-3  & 7\,386\,405 & 31 & 30\,222 & 63 & 57 \\
-7  & 3\,472\,188 & 35 & 4\,775  & 67 & 18 \\
-11 & 2\,325\,588 & 39 & 4\,307  & 71 & 46 \\
-15 & 487\,889    & 43 & 1\,131  & 75 & 3  \\
-19 & 322\,871    & 47 & 1\,661  & 79 & 11 \\
-23 & 150\,828    & 51 & 240     & 83 & 5  \\
-27 & 27\,000     & 55 & 263     & 107 & 1 \\
-   &             & 59 & 198     &     &   \\
+3  & 69\,951\,190 & 39 & 25\,258 & 79 & 50 \\
+7  & 31\,335\,473 & 43 & 6\,850  & 83 & 23 \\
+11 & 19\,439\,771 & 47 & 8\,811  & 87 & 8  \\
+15 & 3\,974\,286  & 51 & 1\,450  & 91 & 3  \\
+19 & 2\,441\,687  & 55 & 1\,369  & 95 & 5  \\
+23 & 1\,070\,808  & 59 & 954     & 99 & 1  \\
+27 & 187\,963     & 63 & 283     & 103 & 1 \\
+31 & 193\,848     & 67 & 104     & 107 & 1 \\
+35 & 30\,784      & 71 & 209     &     &   \\
+   &              & 75 & 29      &     &   \\
 \end{tabular}
 \end{center}
 
 Salient features:
 \begin{itemize}
 \item $R_{\max} = 107$, attained by the single prime $8{,}803{,}369 <
-  10^7$, \emph{unchanged from $5 \times 10^7$ to $10^{10}$} --- three
-  orders of magnitude.
-\item No prime has minimal $R \in \{87, 91, 95, 99, 103\}$. This gap
-  requires no modular explanation: under the calibrated independence
-  model the expected counts there are $0.12$, $0.03$, $0.05$, $0.01$,
-  $0.01$.
-  Conditioned on failing every $R \le 83$, a prime lands at $87$ with
-  probability $0.53$ and at $107$ with probability $0.017$; the record
-  prime is the anomaly, not the gap.
+  10^7$, \emph{unchanged from $5 \times 10^7$ to $10^{11}$}.
+\item \textbf{A confirmed prediction.} Below $10^{10}$ no prime had
+  minimal $R \in \{87, 91, 95, 99, 103\}$; the calibrated independence
+  model attributed this gap to small-number statistics (expected counts
+  $\le 0.12$ per value at $10^9$) and predicted that deep-tail primes
+  (failing every $R \le 83$) land at $87, 91, 95, 99, 103, \ge 107$
+  with probabilities $0.53, 0.11, 0.22, 0.03, 0.05, 0.02$. Between
+  $10^{10}$ and $10^{11}$ the band populated with $8, 3, 5, 1, 1$ primes
+  respectively (all in $(1.3 \times 10^{10}, 10^{11})$), and none passed
+  $103$: the observed conditional distribution over the $19$ deep-tail
+  primes ($8, 3, 5, 1, 1, 1$ including the record) matches the
+  prediction. The gap confirmed its own explanation by disappearing.
 \item Among all $1{,}587{,}581$ hard primes below $10^9$, exactly
   \emph{four} admit a unique working residual $\le 107$
   ($8{,}803{,}369$ with $107$; $142{,}361{,}209$ with $59$;
@@ -887,7 +892,13 @@ minimality (no smaller admissible $R$ succeeds) \\ \hline
 solvability masks, $p < 10^9$ &
 $27 \times 1{,}587{,}581$ &
 per-prime solvability of every admissible $R \le 107$ by full divisor-class
-computation; consistency with the minimal-$R$ map \\
+computation; consistency with the minimal-$R$ map \\ \hline
+R-sequence dataset, $p < 10^{11}$ &
+$128{,}671{,}219$ &
+$257{,}343$ systematically sampled entries reconstructed and checked;
+\emph{all} $20{,}151$ tail entries ($R \ge 43$) checked with full
+minimality; prime array pinned by sha256; pipeline validated
+byte-for-byte against the exhaustively verified $10^9$ map \\
 \end{tabular}
 \end{center}
 

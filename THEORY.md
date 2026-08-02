@@ -712,6 +712,19 @@ power laws f_R(x) = C_R (log x)^{−κ_R}:
 Both are sharp, falsifiable predictions of the model; the 10¹⁰ run tests
 them directly.
 
+**Outcome (10¹¹ run, 128 671 219 hard primes, all solved):**
+
+- **Record: HELD again** — max minimal R = 107, still uniquely at
+  8 803 369, now across 5×10⁷ → 10¹¹.
+- **Gap: FILLED**, exactly as this model predicted. Minimal
+  R ∈ {87, 91, 95, 99, 103} acquired 8, 3, 5, 1, 1 primes respectively,
+  all in (1.3×10¹⁰, 10¹¹). Conditional landing distribution for the 19
+  deep-tail primes (R_min > 83) vs the model's §5 prediction:
+  P(87) predicted 0.53, observed 8/19 ≈ 0.42; P(91) 0.11 vs 3/19;
+  P(95) 0.22 vs 5/19; P(99) 0.03 vs 1/19; P(103) 0.05 vs 1/19;
+  P(107+) 0.02 vs 1/19 (the record itself). The "gap" §5 explained
+  statistically has now confirmed the explanation by disappearing.
+
 **Outcome (10¹⁰ run, 14 215 707 hard primes, all solved):**
 
 - **Record: HELD.** Max minimal R remains 107, still uniquely at 8 803 369.

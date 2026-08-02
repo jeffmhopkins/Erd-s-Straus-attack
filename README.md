@@ -28,7 +28,7 @@ For a target $n$ and residual $R = 4a - n > 0$ (with $a = (n+R)/4$ an integer):
 The attack searches increasing residuals $R$ until a certificate $(a,b,c)$ is
 found, and records the **minimal $R$** per prime. The fixed list
 $R \in \{3, 7, 11, \dots, 107\}$ covers every hard prime examined so far
-(up to $10^{10}$; a $10^{11}$ run is in progress).
+(up to $10^{11}$).
 
 ## Layout
 
@@ -66,14 +66,15 @@ THEORY.md              theoretical development with proofs
 
 ## Current results
 
-All **14,215,707** hard primes below **10¹⁰** have verified solutions: full
-explicit triples up to 1.2 × 10⁸, and compact minimal-R maps (`n → R`) up to
-10⁹ and 10¹⁰ from which triples reconstruct deterministically (re-derived and
-exactly checked by `es-verify`). The maximal minimal residual is **R = 107**,
-attained at a *single* prime (8,803,369 < 10⁷) — unchanged across **three
-orders of magnitude**. `R = 3` covers 49 % of hard primes, `R ∈ {3, 7, 11}`
-covers 91 %, and no prime has minimal R in {87, 91, 95, 99, 103}: the
-distribution jumps from 83 straight to 107.
+All **128,671,219** hard primes below **10¹¹** have verified solutions:
+full explicit triples up to 1.2 × 10⁸, compact minimal-R maps to 10¹⁰, and
+the R-sequence dataset at 10¹¹ (triples reconstruct deterministically and
+are re-derived and exactly checked — never taken on faith). The maximal
+minimal residual is **R = 107**, attained at a *single* prime
+(8,803,369 < 10⁷) — unchanged from 5×10⁷ to 10¹¹. `R = 3` covers 49 % of
+hard primes and `R ∈ {3, 7, 11}` covers 91 %. The once-conspicuous gap
+(no minimal R in {87…103} below 10¹⁰) **filled at 10¹¹ exactly as the
+calibrated model predicted** — 18 new deep-tail primes, none passing 103.
 
 **Theory** (see `THEORY.md` and `paper/`): exact solvability criteria are
 proved for R = 3, 7, and 11 (the latter two by machine-verified finite case

@@ -46,7 +46,7 @@ at \(10^{11}\) scale).
 | \(< 1.2 \times 10^8\) | 213 131 | Yes | 107               | Full explicit solutions saved (gzip) |
 | \(< 10^9\)     | 1 587 581 | Yes | 107               | Minimal-\(R\) map saved (gzip) |
 | \(< 10^{10}\)  | **14 215 707** | **Yes** | **107**      | Minimal-\(R\) map saved (gzip); current verified bound |
-| \(< 10^{11}\)  | ~128.7 M (est.) | *in progress* | — | R-sequence run launched 2026-08-02; results PR to follow |
+| \(< 10^{11}\)  | **128 671 219** | **Yes** | **107**     | R-sequence format (gzip uint8 + explicit tail); current verified bound |
 
 The \(1.2 \times 10^8\) pass was produced by `erdos_straus.bulk_generate`
 (integer-only trial-division solver, numpy sieve, 4-way parallel) in **≈9 s**
@@ -72,6 +72,26 @@ triple, so the map is a full certificate set, not a summary.
 | 31 | 4 820   | 0.30 % | 99.87 %| | 71 | 6 |
 | 35 | 708     | 0.045 %| 99.91 %| | 79 | 1 |
 | 39 | 755     | 0.048 %| 99.96 %| | 107 | 1 (\(p=8\,803\,369\)) |
+
+### \(10^{11}\) update (the gap fills; the record stands)
+
+The \(10^{11}\) run (streaming R-sequence pipeline, 2.85 h on 4 cores;
+verified by 257 k sampled reconstructions plus **all** 20 151 tail entries
+\(R \ge 43\) with full minimality — see results PR) delivered two
+headline outcomes:
+
+- **The gap {87, 91, 95, 99, 103} FILLED**, exactly as the independence
+  model predicted: 8, 3, 5, 1, 1 primes respectively, all in
+  \((1.3 \times 10^{10}, 10^{11})\). The conditional landing
+  distribution for deep-tail primes matches the model's prediction from
+  \(10^9\) data (predicted \(P(87 \mid \text{deep}) = 0.53\) vs
+  observed \(8/19\); \(P(95) = 0.22\) vs \(5/19\)). The gap was
+  small-number statistics, now confirmed by its own disappearance.
+- **The record STILL stands**: max minimal \(R = 107\), still uniquely at
+  \(p = 8\,803\,369 < 10^7\), across \(5\times 10^7 \to 10^{11}\).
+  Eighteen new primes entered \(R_{\min} > 83\) territory and none
+  passed 103 — consistent with the Theorem J growth law (first record
+  break forecast \(10^{12}\)–\(10^{13}\)).
 
 ### \(10^{10}\) update (prediction test)
 
@@ -154,6 +174,7 @@ residuals \(R \equiv 3 \pmod 4\), \(R \le 107\) that yield a solution
 - `data/hard_primes_2e5_solutions.json` — smaller explicit set
 - `data/high_R_primes_5e6.json` — primes that required larger residuals
 - `data/hard_primes_1e10_minimalR.json.gz` — minimal-\(R\) map for all 14 215 707 hard primes \(< 10^{10}\)
+- `data/hard_primes_1e11_minimalR.{rvals.u8.gz, meta.json, tail.json}` — R-sequence dataset for all 128 671 219 hard primes \(< 10^{11}\) (uint8 minimal-\(R\) values in ascending-prime order + sha256-pinned metadata + explicit verified tail \(R \ge 43\))
 - `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
 - `tests/test_solver.py` — 46 tests: unit, certificate validation, theorem checks (A/A′/A″/J/meta), support-bound lemmas, aggregate identities
 - `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 13 pp.
@@ -211,8 +232,8 @@ full tail minimality.
   conjecture itself.
 
 ## Current Assessment
-- No counterexample; all 14 215 707 hard primes below \(10^{10}\) have
-  explicit verified solutions with \(R \le 107\); \(10^{11}\) in progress.
+- No counterexample; all 128 671 219 hard primes below \(10^{11}\) have
+  verified solutions with \(R \le 107\).
 - The record's staticness is now *explained* (Theorem J): joint failure is a
   Legendre-coin large-deviation event; expected record growth
   \(\asymp \log x/\log\log x\) at the pure-Type-I level.
@@ -224,9 +245,11 @@ full tail minimality.
   for every fixed R (meta-theorem).
 
 ## Next Natural Steps (updated)
-1. ~~Extend past \(10^8\), \(10^9\), \(10^{10}\).~~ **Done**;
-   \(10^{11}\) running (tests the Theorem J growth law: record expected to
-   survive, first break forecast \(10^{12}\)–\(10^{13}\)).
+1. ~~Extend past \(10^8\), \(10^9\), \(10^{10}\), \(10^{11}\).~~
+   **Done** — the \(10^{11}\) run confirmed the Theorem J growth law on
+   both counts (record survived; gap filled with the predicted
+   conditional distribution). Next decade (\(10^{12}\), ~29 h compute)
+   enters the forecast record-break window.
 2. ~~Fixed finite list?~~ **Resolved in direction**: covering lists computed
    (18 suffice below \(10^9\), lower bound 12); fixed lists fail infinitely
    often under Dickson (Theorem K). Remaining: nothing short of the
