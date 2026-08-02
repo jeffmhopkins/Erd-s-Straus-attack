@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Run test suite
+        run: python -m pytest -q
+      - name: Proof-component smoke checks
+        run: |
+          python -c "from erdos_straus.theory import verify_R7_finite; r = verify_R7_finite(); assert r['theorem_holds'], r"
+          python -c "from erdos_straus.theory import verify_R15_finite; r = verify_R15_finite(); assert r['theorem_holds'], r"
+          python -c "from erdos_straus.theory import verify_support_bound_dp; r = verify_support_bound_dp(31); assert r['lemma_holds'], r"

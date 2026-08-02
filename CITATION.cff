@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software or data, please cite it as below."
+title: "Residual certificates for the Erdős–Straus conjecture"
+authors:
+  - family-names: Hopkins
+    given-names: J. M.
+    email: jeff.m.hopkins@gmail.com
+version: 1.0.0
+date-released: 2026-08-02
+license: MIT
+repository-code: "https://github.com/jeffmhopkins/Erd-s-Straus-attack"
+keywords:
+  - Erdős–Straus conjecture
+  - Egyptian fractions
+  - unit fractions
+  - sieve methods
+  - formal verification
+  - Lean 4

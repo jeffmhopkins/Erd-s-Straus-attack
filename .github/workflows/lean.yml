@@ -1,0 +1,33 @@
+name: Lean
+
+on:
+  push:
+    branches: [main]
+    paths: ["lean/**"]
+  pull_request:
+    branches: [main]
+    paths: ["lean/**"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: lean/ErdosStraus
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Cache mathlib build artifacts
+        uses: actions/cache@v4
+        with:
+          path: lean/ErdosStraus/.lake
+          key: lake-${{ runner.os }}-${{ hashFiles('lean/ErdosStraus/lake-manifest.json', 'lean/ErdosStraus/lean-toolchain') }}
+      - name: Fetch mathlib cache
+        run: lake exe cache get
+      - name: Build (audits axioms via #print)
+        run: lake build
