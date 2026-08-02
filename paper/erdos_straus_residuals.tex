@@ -1,0 +1,510 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Hset}{\mathcal{H}}
+\newcommand{\legendre}[2]{\left(\tfrac{#1}{#2}\right)}
+\DeclareMathOperator{\ord}{ord}
+
+\title{Residual certificates for the Erd\H{o}s--Straus conjecture:\\
+exact solvability criteria, a sieve bound,\\
+and computations to $10^{10}$}
+
+\author{Jeff M.\ Hopkins\thanks{\texttt{jeff.m.hopkins@gmail.com}.
+Computations and computer-assisted case analyses were carried out with the
+code repository accompanying this paper
+(\url{https://github.com/jeffmhopkins/Erd-s-Straus-attack}).}}
+
+\date{August 2026 --- draft}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The Erd\H{o}s--Straus conjecture asserts that $4/n = 1/a+1/b+1/c$ is
+solvable in positive integers for every $n \ge 2$. The open cases
+concentrate on primes in the six residue classes
+$\{1, 121, 169, 289, 361, 529\} \bmod 840$ (\emph{hard primes}). We study
+the \emph{residual method}: for $R \equiv 3 \pmod 4$ set $a = (p+R)/4$,
+$m = pa$; a solution with first denominator $a$ exists if and only if some
+divisor $k \mid m^2$ satisfies $k \equiv -m \pmod R$. Our main theoretical
+results are: (i)~\emph{exact} solvability criteria for the residuals
+$R = 3$, $7$, and $11$ at hard primes, the latter two established by
+machine-verified finite case analyses; (ii)~a meta-theorem showing such a
+finite exact criterion exists and is computable for every fixed $R$;
+(iii)~an unconditional sieve bound: the number of hard primes $p \le x$
+solved by neither $R=3$ nor $R=7$ is $O\!\left(x/(\log x)^2\right)$, and
+with $R = 11$ included, $O\!\left(x/(\log x)^{5/2}\right)$; (iv)~a general
+density reduction: for every $A$ there is a finite residual list whose
+joint exceptional set has relative density $O((\log x)^{-A})$ among hard
+primes. Computationally, we exhibit verified residual certificates for all
+$14{,}215{,}707$ hard primes below $10^{10}$: the maximal minimal residual
+is $107$, attained at the single prime $8{,}803{,}369$ and unchanged from
+$5\times 10^{7}$ to $10^{10}$; a fixed list of $18$ residuals covers every
+hard prime below $10^9$. The measured density of the joint
+$\{3,7\}$-exceptional set is $\approx 5.17/\log x$, matching the sieve
+exponent exactly.
+\end{abstract}
+
+\section{Introduction}
+
+Erd\H{o}s and Straus conjectured that for every integer $n \ge 2$ the
+equation
+\begin{equation}\label{eq:es}
+  \frac{4}{n} \;=\; \frac{1}{a} + \frac{1}{b} + \frac{1}{c}
+\end{equation}
+has a solution in positive integers $a, b, c$. By multiplicativity it
+suffices to treat prime $n$, and classical polynomial identities settle
+every prime outside the six residue classes
+\[
+  \Hset \bmod 840 \;=\; \{1,\, 121,\, 169,\, 289,\, 361,\, 529\},
+\]
+the squares of units modulo $840$ (Mordell \cite{Mordell}). We call primes
+in these classes \emph{hard primes}. Direct verification has confirmed the
+conjecture far beyond any range considered here (to $10^{14}$ by Swett, to
+$10^{17}$ by Salez \cite{Salez}, and further in recent work%
+\footnote{Verification to $10^{18}$ is reported in recent literature; the
+present paper is logically independent of that bound. % TODO: cite the
+% 2025 verification and the 2026 residual-certificate notes when finalizing.
+}); the structure of the solution count was analyzed by Elsholtz and Tao
+\cite{ElsholtzTao}. Verification, however, exhibits no mechanism; the aim
+here is a quantitative structural reduction.
+
+\subsection{The residual method}
+
+Fix a hard prime $p$. All six classes satisfy
+\begin{equation}\label{eq:H}
+  \text{(H1) } p \equiv 1 \ (\mathrm{mod}\ 8), \qquad
+  \text{(H2) } p \equiv 1 \ (\mathrm{mod}\ 3), \qquad
+  \text{(H3) } p \bmod 7 \in \{1, 2, 4\}.
+\end{equation}
+For an \emph{admissible residual} $R \equiv 3 \pmod 4$ put
+\[
+  a \;=\; \frac{p+R}{4} \in \mathbb{Z}, \qquad m \;=\; p\,a .
+\]
+Substituting $a$ into \eqref{eq:es} and clearing denominators shows that a
+solution with first denominator $a$ exists if and only if
+\begin{equation}\label{eq:cert}
+  \exists\, k \mid m^2 \quad\text{with}\quad k \equiv -m \pmod R,
+\end{equation}
+in which case $b = (k+m)/R$ and $c = (m^2/k + m)/R$ are positive integers
+solving \eqref{eq:es}. We write $R_{\min}(p)$ for the least admissible $R$
+for which \eqref{eq:cert} holds. Two elementary congruences drive
+everything below. From $4a = p + R$,
+\begin{equation}\label{eq:star}
+  a \equiv 4^{-1}p, \qquad m \equiv 4^{-1}p^2 \pmod R,
+\end{equation}
+and since $\gcd(p, R) = 1$ (as $p > R$ is prime), also
+$\gcd(a, R) = \gcd(m, R) = 1$: the setting is always a unit computation
+modulo $R$. By \eqref{eq:star}, $m$ is a \emph{square} modulo every prime
+$r \mid R$; hence for every prime $r \mid R$ with $r \equiv 3 \pmod 4$
+(at least one exists, since $R \equiv 3 \pmod 4$),
+\begin{equation}\label{eq:target}
+  \legendre{-m}{r} \;=\; \legendre{-1}{r} \;=\; -1 :
+\end{equation}
+\emph{the target class $-m$ is a quadratic non-residue mod $r$.}
+
+\subsection{Main results}
+
+\begin{theorem}[$R=3$; exact]\label{thm:A}
+Let $p \equiv 1 \pmod 4$ with $3 \nmid p$, and $a = (p+3)/4$. Then
+\eqref{eq:cert} holds for $R = 3$ if and only if $a$ has a prime factor
+$q \equiv 2 \pmod 3$. When it does, $k = q$ is a certificate.
+\end{theorem}
+
+\begin{theorem}[$R=7$, hard primes; exact]\label{thm:Ap}
+Let $p$ be a hard prime and $a = (p+7)/4$. Then \eqref{eq:cert} holds for
+$R = 7$ if and only if $a$ has a prime factor that is a quadratic
+non-residue modulo $7$.
+\end{theorem}
+
+\begin{theorem}[$R=11$, hard primes; exact]\label{thm:App}
+Let $p$ be a hard prime and $a = (p+11)/4$; note $3 \mid a$, $2 \nmid a$,
+$7 \nmid a$ automatically. Then \eqref{eq:cert} \emph{fails} for $R = 11$
+if and only if either
+\begin{itemize}
+\item[(a)] every prime factor of $a$ is a quadratic residue mod $11$; or
+\item[(b)] $v_3(a) = 1$, every other prime factor of $a$ is
+  $\equiv 1 \pmod{11}$ except a non-residue part of exactly one of the
+  shapes
+  \[
+    \{q \equiv 2\}, \qquad \{q \equiv 6\}, \qquad
+    \{q \equiv 2\} \cup \{q' \equiv 6\} \pmod{11},
+  \]
+  each with multiplicity one, paired respectively with
+  $p \equiv 2,\ 6,\ 1 \pmod{11}$.
+\end{itemize}
+\end{theorem}
+
+Theorems~\ref{thm:Ap} and~\ref{thm:App} are established by finite,
+machine-verified case analyses (Section~\ref{sec:exact}); the reduction to
+a finite check is itself a theorem:
+
+\begin{theorem}[meta-theorem]\label{thm:meta}
+For every fixed prime $R \equiv 3 \pmod 4$, the validity of
+\eqref{eq:cert} at a hard prime $p$ depends only on \textup{(i)} the
+multiset of classes mod $R$ of the prime factors of $a = (p+R)/4$, with
+multiplicities capped at $\lceil (R-1)/2 \rceil$, and \textup{(ii)}
+$p \bmod R$. Consequently an exact solvability criterion exists for every
+$R$ and is computable by finite enumeration.
+\end{theorem}
+
+The anchor result converts the exact criteria into an unconditional bound.
+
+\begin{theorem}[sieve bound]\label{thm:E}
+The number of hard primes $p \le x$ with $R_{\min}(p) \ge 11$ (that is,
+solved by neither $R = 3$ nor $R = 7$) is $O\!\left(x/(\log x)^2\right)$.
+With Theorem~\ref{thm:App} the count of hard primes with
+$R_{\min}(p) > 11$ is $O\!\left(x/(\log x)^{5/2}\right)$. In particular
+these exceptional sets have relative density
+$O((\log x)^{-1})$, resp.\ $O((\log x)^{-3/2})$, among hard primes.
+\end{theorem}
+
+\begin{theorem}[density reduction]\label{thm:D}
+For every $A > 0$ there is a finite admissible set $S(A)$ such that the
+number of hard primes $p \le x$ for which every residual in $S(A)$ fails
+is $O_A\!\left(x/(\log x)^{1+A}\right)$.
+\end{theorem}
+
+Computations (Section~\ref{sec:comp}) provide verified certificates for
+all hard primes below $10^{10}$ and calibrate every constant in sight.
+
+\section{The obstruction framework}\label{sec:obstruction}
+
+\begin{proposition}[character obstruction]\label{prop:char}
+Let $r \mid R$ be prime with $r \equiv 3 \pmod 4$. If every prime factor
+$q$ of $m = pa$ satisfies $\legendre{q}{r} = +1$, then \eqref{eq:cert}
+fails for $R$.
+\end{proposition}
+
+\begin{proof}
+Every divisor $k$ of $m^2$ is a product of prime factors of $m$, so
+$\legendre{k}{r} = +1$. A certificate requires $k \equiv -m \pmod r$,
+whence $\legendre{k}{r} = \legendre{-m}{r} = -1$ by \eqref{eq:target} ---
+impossible.
+\end{proof}
+
+We call failures produced by Proposition~\ref{prop:char} \emph{Type~I};
+failures where $m$ possesses a non-residue prime factor modulo every
+relevant $r$, yet no divisor of $m^2$ attains the exact class $-m \bmod
+R$, are \emph{Type~II}.
+
+\begin{proposition}[guaranteed-success classes]\label{prop:succ}
+Let $t \equiv -4^{-1}p^2 \pmod R$. If $a$ has a prime factor $q$ with
+$q \equiv t\,p^{-i} \pmod R$ for some $i \in \{0, 1, 2\}$, then
+$k = q\,p^{\,i}$ is a certificate. In particular, since
+$t\,p^{-2} \equiv -4^{-1} \pmod R$, any prime factor of $a$ in the fixed
+class $-4^{-1} \bmod R$ certifies success regardless of $p$.
+\end{proposition}
+
+\begin{proof}
+$k = q p^i$ divides $m^2$ (as $q \mid a$ and $i \le 2$) and lies in class
+$t \equiv -m$. Integrality of $b, c$ is automatic from
+$k \equiv -m$ and $m^2/k \equiv m^2(-m)^{-1} \equiv -m \pmod R$.
+\end{proof}
+
+The contrapositive of Proposition~\ref{prop:succ} is the sieve input for
+Theorem~\ref{thm:D}: failure at $R$ forces $(p+R)/4$ to avoid prime
+factors in up to three explicit classes modulo $R$.
+
+\section{Exact criteria}\label{sec:exact}
+
+\subsection{Proof of Theorem \ref{thm:A}}
+
+Modulo $3$ the unit group has order $2$, so quadratic character equals
+class. Since $p^2 \equiv 1 \pmod 3$, \eqref{eq:star} gives $m \equiv 1$
+and the target is $-m \equiv 2 \pmod 3$; also $3 \nmid a$.
+\emph{Necessity:} if every prime factor of $a$ is $\equiv 1 \pmod 3$, then
+$a \equiv 1 \pmod 3$, hence $p = 4a - 3 \equiv 1 \pmod 3$ as well, so
+every prime factor of $m = pa$ is $\equiv 1 \pmod 3$ and every divisor of
+$m^2$ is $\equiv 1 \pmod 3$: class $2$ is never attained.
+\emph{Sufficiency:} $k = q \equiv 2 \pmod 3$ divides $m^2$, and the
+recovery formulae give integers as in Proposition~\ref{prop:succ}. \qed
+
+\subsection{Proof of Theorem \ref{thm:meta}}
+
+A certificate is a divisor $k \mid m^2$ in class $-m \bmod R$. The set of
+classes of divisors of $m^2$ is determined by the classes of the prime
+factors of $m = pa$ together with their multiplicities, each factor being
+usable with exponent at most twice its multiplicity; exponents are only
+meaningful modulo $\ord_R(\text{class}) \le R - 1$, so multiplicities
+beyond $\lceil (R-1)/2 \rceil$ are equivalent to that cap. The target
+class and the consistency relation $\prod (\text{classes}) \equiv a \equiv
+4^{-1} p \pmod R$ are functions of $p \bmod R$ by \eqref{eq:star}. Hence
+solvability is a function of the capped class multiset and $p \bmod R$, a
+finite amount of data. \qed
+
+\subsection{Proof of Theorem \ref{thm:Ap}}
+
+($\Rightarrow$) is Proposition~\ref{prop:char} with $r = R = 7$.
+($\Leftarrow$) reduces to a finite verification via
+Theorem~\ref{thm:meta}. Write $(\mathbb{Z}/7)^* \cong \mathbb{Z}/6$ in
+discrete-log coordinates. Three structural constraints hold at hard
+primes:
+\begin{itemize}
+\item[(i)] $p \bmod 7 \in \{1, 2, 4\}$, by (H3);
+\item[(ii)] $2 \mid a$: by (H1), $p + 7 \equiv 0 \pmod 8$, so $a = (p+7)/4$
+  is even --- the class of $2$ (a residue mod $7$) is always present;
+\item[(iii)] the factor classes multiply to $a \equiv 4^{-1} p \pmod 7$.
+\end{itemize}
+Enumerating all class multisets with multiplicities capped at $3$
+subject to (i)--(iii) yields $1536$ consistent configurations; for each,
+one checks whether the target class is attained by a bounded-exponent
+subproduct. The verification (code: \texttt{theory.verify\_R7\_finite})
+confirms: the target is attainable precisely when some factor class is a
+non-residue. \qed
+
+\begin{remark}
+The hard-class hypotheses are essential: for $p = 701 \equiv 1 \pmod 4$
+(not hard), $a = 177 = 3 \cdot 59$ has the non-residue factor $3$, yet
+$R = 7$ fails. Constraint (ii) --- the forced even factor --- is exactly
+what rescues every would-be Type~II configuration at hard primes.
+Empirically (Section~\ref{sec:comp}), among $41{,}421$ sampled failures of
+$R=7$ at hard primes, \emph{all} are Type~I.
+\end{remark}
+
+\subsection{Proof of Theorem \ref{thm:App}}
+
+By Theorem~\ref{thm:meta} with $R = 11$, $d = 10$: multiplicities cap at
+$5$, and at hard primes $3 \mid a$ (from (H2), $11 \equiv 2 \bmod 3$),
+while $2 \nmid a$ (from (H1), $p + 11 \equiv 4 \bmod 8$) and $7 \nmid a$
+(from (H3), $-11 \equiv 3 \bmod 7 \notin \{1,2,4\}$). A dynamic-programming
+enumeration over the finite configuration space
+(code: \texttt{theory.finite\_criterion\_dp}) compresses it to $25$
+equivalence states: $16$ succeed, $6$ fail with all factor classes
+quadratic residues (case (a)), and exactly $3$ fail with a non-residue
+present (case (b)); the three failing states decode to the three listed
+patterns. Two structural facts emerge from the enumeration. First, no
+state fails by a \emph{proper-subgroup} obstruction: the only subgroup of
+$\mathbb{Z}/10$ containing an odd element properly is $\{0, 5\}$, and the
+consistency relation forces $p$'s class to extend it to all of
+$\mathbb{Z}/10$. Second, the case-(b) failures are pure exponent-budget
+edge cases: any of $v_3(a) \ge 2$, a factor in class $\{4, 5, 9\}$, or a
+second non-residue factor restores solvability. The criterion agrees with
+ground-truth divisor search for $158{,}759$ of $158{,}759$ hard primes
+tested below $10^9$. \qed
+
+\section{The sieve bound}\label{sec:sieve}
+
+\begin{proof}[Proof of Theorem \ref{thm:E}]
+\emph{Step 1 (exact criteria).} Let $p$ be a hard prime and set
+$n = (p+3)/4$, so that $(p+7)/4 = n + 1$: \emph{the two shifted forms are
+consecutive integers}. By Theorems~\ref{thm:A} and~\ref{thm:Ap}, $p$ is
+exceptional (both residuals fail) precisely when
+\[
+  n \ \text{has no prime factor} \equiv 2 \ (\mathrm{mod}\ 3)
+  \quad\text{and}\quad
+  n + 1 \ \text{has no prime factor} \equiv 3, 5, 6 \ (\mathrm{mod}\ 7),
+\]
+with $p = 4n - 3$ prime.
+
+\emph{Step 2 (congruence bookkeeping).} Fix one of the six hard classes
+$h \bmod 840$; then $n \equiv (h+3)/4 \pmod{210}$ is fixed, and the
+conditions at the primes $2, 3, 5, 7$ are determined by the class (in
+particular $3 \nmid n$ and $7 \nmid n+1$ automatically). It suffices to
+bound each class and sum.
+
+\emph{Step 3 (containment in a sifted set).} Let $z = x^{1/10}$. After
+discarding the $O(z)$ primes $p \le z$, every exceptional $p$ gives
+$n \le (x+3)/4$, $n \equiv n_0 \pmod{210}$, such that for every prime $q$
+with $7 < q \le z$:
+\begin{itemize}
+\item[(a)] $q \equiv 2 \pmod 3 \implies n \not\equiv 0 \pmod q$;
+\item[(b)] $q \equiv 3, 5, 6 \pmod 7 \implies n \not\equiv -1 \pmod q$;
+\item[(c)] $q \nmid 4n - 3$ \quad (since $4n - 3 = p$ is prime, $p > z$).
+\end{itemize}
+Conditions (a), (b) only use ``no forbidden factor up to $z$'', which is
+implied by the full criteria --- an upper bound needs no more.
+
+\emph{Step 4 (sieve of dimension 2).} This is a standard upper-bound
+sieve for the three linear forms $n$, $n+1$, $4n - 3$, with sifting
+function
+\[
+  \omega(q) \;=\; \mathbf{1}_{q \equiv 2 (3)}
+    \;+\; \mathbf{1}_{q \,\mathrm{NQR}\, (7)} \;+\; 1
+  \qquad (q > 7),
+\]
+whose forbidden classes $0, -1, 3 \cdot 4^{-1} \bmod q$ are pairwise
+distinct for $q \nmid 21$. By Dirichlet, $\omega$ has average $\kappa =
+\tfrac12 + \tfrac12 + 1 = 2$ in the Halberstam--Richert sense
+$\sum_{q \le w} \omega(q) \log q / q = \kappa \log w + O(1)$. The
+Fundamental Lemma of sieve theory (\cite[Thm.~2.5]{HalberstamRichert};
+\cite[Lem.~6.3]{FriedlanderIwaniec}) with $z = x^{1/10}$ gives
+\[
+  \#E(x) \;\ll\; x \prod_{7 < q \le z} \Bigl(1 - \frac{\omega(q)}{q}\Bigr)
+  \;\asymp\; x \,(\log z)^{-1} (\log z)^{-1/2} (\log z)^{-1/2}
+  \;\asymp\; \frac{x}{(\log x)^2},
+\]
+by Mertens' theorem and its arithmetic-progression form. Summing over the
+six classes preserves the bound.
+
+For the second assertion, Theorem~\ref{thm:App} adds the form
+$(p+11)/4 = n + 2$ --- \emph{three consecutive integers} --- with the
+case-(a) condition ``no prime factor among the five non-residue classes
+mod $11$'' (dimension $\tfrac12$); the case-(b) configurations demand all
+factors of $n+2$ within $4$ of the $10$ unit classes, a condition of
+strictly higher dimension ($\tfrac{6}{10}$), hence negligible. Total
+dimension $\tfrac12 + \tfrac12 + \tfrac12 + 1 = \tfrac52$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem \ref{thm:D} (sketch)]
+By Proposition~\ref{prop:succ}, failure at $R$ implies $(p+R)/4$ has no
+prime factor in at least one explicit class mod $R$, a sifting condition
+of dimension $\ge 1/\varphi(R)$ on the form $(p+R)/4$; distinct $R$ give
+distinct shifts. Since $\sum_{R \equiv 3 (4)} 1/\varphi(R)$ diverges, a
+finite set $S(A)$ achieves total dimension $> A$, and the
+multidimensional Selberg sieve yields the claim.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:D} is the strongest statement the pure sieve can give:
+density $O((\log x)^{-A})$ for every $A$, but not emptiness. The
+conjecture for hard primes is equivalent to a \emph{finite covering
+hypothesis}: some finite $S$ admits, for every hard prime, a residual
+$R \in S$ with \eqref{eq:cert}. All computational evidence below supports
+$S = \{3, 7, 11, \dots, 107\}$.
+\end{remark}
+
+\section{Computations to $10^{10}$}\label{sec:comp}
+
+All code and data are in the accompanying repository. Certificates are
+found by direct integer factorization of $a$ (trial division; the
+factorization of $m^2 = p^2 a^2$ follows) and scanning divisors for the
+class condition \eqref{eq:cert}; every certificate is re-verified in exact
+integer arithmetic, $4abc = n(bc + ac + ab)$.
+
+\subsection{Data}
+
+Every one of the $14{,}215{,}707$ hard primes $p < 10^{10}$ possesses a
+residual certificate with $R \le 107$. The minimal residuals distribute as
+follows ($10^{10}$ data):
+
+\begin{center}
+\begin{tabular}{rr|rr|rr}
+$R$ & count & $R$ & count & $R$ & count \\ \hline
+3  & 7\,386\,405 & 31 & 30\,222 & 63 & 57 \\
+7  & 3\,472\,188 & 35 & 4\,775  & 67 & 18 \\
+11 & 2\,325\,588 & 39 & 4\,307  & 71 & 46 \\
+15 & 487\,889    & 43 & 1\,131  & 75 & 3  \\
+19 & 322\,871    & 47 & 1\,661  & 79 & 11 \\
+23 & 150\,828    & 51 & 240     & 83 & 5  \\
+27 & 27\,000     & 55 & 263     & 107 & 1 \\
+   &             & 59 & 198     &     &   \\
+\end{tabular}
+\end{center}
+
+Salient features:
+\begin{itemize}
+\item $R_{\max} = 107$, attained by the single prime $8{,}803{,}369 <
+  10^7$, \emph{unchanged from $5 \times 10^7$ to $10^{10}$} --- three
+  orders of magnitude.
+\item No prime has minimal $R \in \{87, 91, 95, 99, 103\}$. This gap
+  requires no modular explanation: under the calibrated independence
+  model the expected counts there are $0.12, 0.03, 0.05, 0.01, 0.01$.
+  Conditioned on failing every $R \le 83$, a prime lands at $87$ with
+  probability $0.53$ and at $107$ with probability $0.017$; the record
+  prime is the anomaly, not the gap.
+\item Among all $1{,}587{,}581$ hard primes below $10^9$, exactly
+  \emph{four} admit a unique working residual $\le 107$
+  ($8{,}803{,}369$ with $107$; $142{,}361{,}209$ with $59$;
+  $287{,}567{,}281$ with $83$; $794{,}037{,}841$ with $63$) --- the entire
+  obstruction to a shorter covering list. A greedy cover of the full
+  solvability table uses $18$ residuals; a packing argument gives a lower
+  bound of $12$.
+\end{itemize}
+
+\subsection{Calibration of Theorem \ref{thm:E}}
+
+The proportion of hard primes failing both $R = 3$ and $R = 7$, multiplied
+by $\log x$, is constant to within $2\%$ across three decades of the
+$10^9$ data:
+
+\begin{center}
+\begin{tabular}{c|ccccc}
+bin ($p \sim$) & $10^6$ & $10^7$ & $6 \times 10^7$ & $2.5 \times 10^8$ & $10^9$ \\ \hline
+density $\times \log x$ & 5.14 & 5.19 & 5.18 & 5.17 & 5.16
+\end{tabular}
+\end{center}
+
+That is, the joint exceptional density is $\approx 5.17 / \log x$: the
+sieve exponent of Theorem~\ref{thm:E} is exactly right, and $5.17$
+estimates the (conjectural) Selberg--Delange constant. The exceptional
+set is density zero but decays slowly: $26.5\%$ of hard primes below
+$10^9$ fail both residuals; all are settled by deeper residuals of the
+list. The fitted per-residual decay exponents likewise match the sieve
+prediction $\kappa = \tfrac12$ where exact criteria exist (e.g.\
+$\hat\kappa = 0.539$ for $R = 7$).
+
+\subsection{Failure taxonomy}
+
+Sampling the complete solvability table at $10^9$: failures at $R = 7$
+are $100\%$ Type~I (as Theorem~\ref{thm:Ap} requires); at $R = 11$,
+$89.7\%$ Type~I and $10.3\%$ the budget pattern of
+Theorem~\ref{thm:App}(b); the Type~I share decreases with $\varphi(R)$
+(e.g.\ $51\%$ at $R = 103$), as hitting one specific class among
+$\varphi(R)$ grows harder while the character dichotomy stays binary.
+
+\section{Open problems}\label{sec:open}
+
+\begin{enumerate}
+\item \textbf{Finite covering.} Prove that some finite admissible set $S$
+  covers all hard primes (Theorem~\ref{thm:D} gives density
+  $(\log x)^{-A}$ for every $A$; emptiness is beyond the sieve).
+\item \textbf{More exact criteria.} The meta-theorem makes every fixed
+  $R$ decidable; $R = 15$ (first composite, coupled conditions mod $3$
+  and $5$) and $R = 19, 23$ are natural next cases, each raising the
+  proven exponent in the chain of Theorem~\ref{thm:E}.
+\item \textbf{The record prime.} $8{,}803{,}369$ fails every residual
+  below $107$ even allowing $R \le 400$; its shifted values are
+  anomalously smooth (at $R = 107$, $a = 3^2 \cdot 11^2 \cdot 43 \cdot
+  47$). A quantitative theory of joint failure for smooth-shift primes
+  would explain why the record is static and bound its future growth.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+
+\bibitem{ElsholtzTao}
+C.~Elsholtz and T.~Tao,
+\emph{Counting the number of solutions to the Erd\H{o}s--Straus equation
+on unit fractions},
+J.~Aust.\ Math.\ Soc.\ \textbf{94} (2013), 50--105.
+
+\bibitem{FriedlanderIwaniec}
+J.~Friedlander and H.~Iwaniec,
+\emph{Opera de Cribro},
+AMS Colloquium Publications \textbf{57}, 2010.
+
+\bibitem{HalberstamRichert}
+H.~Halberstam and H.-E.~Richert,
+\emph{Sieve Methods},
+Academic Press, London, 1974.
+
+\bibitem{Mordell}
+L.~J.~Mordell,
+\emph{Diophantine Equations},
+Academic Press, London, 1969, Chapter~30.
+
+\bibitem{Salez}
+S.~E.~Salez,
+\emph{The Erd\H{o}s--Straus conjecture: new modular equations and
+checking up to $N = 10^{17}$},
+preprint, arXiv:1406.6307, 2014.
+
+% TODO before submission: add the 2025 verification-to-10^18 reference and
+% the 2026 residual-certificate notes; confirm the Swett 10^14 citation.
+
+\end{thebibliography}
+
+\end{document}
