@@ -24,6 +24,10 @@ residual framework from the companion paper.
 | `rot18` / `lemmaS_finite_R19` | Lemma S at R = 19: every 9-class support reaches the target at minimal multiplicities, for every class of p — C(17,9) = 24,310 supports × 18 = 437,580 checks, stated in the discrete-log coordinates of the proof (`native_decide`) |
 | `rot10` / `theoremA''_finite_R11` | Theorem A″'s finite verification: all 497,664 consistent capped configurations at R = 11 — target reachable ⟺ neither failure shape (all-QR, or the three exact budget patterns), in discrete-log coordinates (`native_decide`) |
 | `rot22` / `lemmaS_finite_R23` | Lemma S at R = 23: C(21,11) = 352,716 supports × 22 = 7,759,752 checks, same form as R = 19 (`native_decide`) |
+| `rotg` / `maskSet` / `mstep` (Bridges.lean) | the parametric discrete-log bridge: a mask represents a set of classes, rotation is multiplication by g^s (`maskSet_rotg`), the mask fold is `reach` (`maskSet_mstep`, `reach_eq_maskSet`) — standard axioms only |
+| `reach_perm` / `reach_append_single` | `reach` is invariant under permutations of the configuration list (step is right-commutative) |
+| `lemmaS_finite_R19_mult` / `lemmaS_finite_R23_mult` | the support bounds **restated over `ZMod 19` / `ZMod 23` and the multiplicative `reach` model** (any duplicate-free enumeration of any 9- resp. 11-class support), derived from the mask checks via the bridge |
+| `theoremA''_finite_R11_mult` | Theorem A″'s exact criterion **restated over `ZMod 11`** — class-indexed multiplicities, consistency-determined p, reach membership ⟺ neither failure shape — derived via the bridge |
 
 Together these verify the elementary layer of the paper end to end —
 certificates are sound and integral, Theorem A is exact in both
@@ -34,11 +38,14 @@ meta-theorem's reachability model with both monotonicity reductions,
 the R = 7 check stated directly in that multiplicative model
 (`ZMod 7`, no discrete-log encoding), the full R = 11 criterion
 (Theorem A″'s exact two-case failure classification), and the
-R = 19 and R = 23 support-bound checks — the latter three in the
-discrete-log coordinates their proofs use. The one unformalized
-translation is the discrete-log isomorphism `(ℤ/R)ˣ ≅ ℤ/(R−1)`
-connecting those statements to the multiplicative model — see the
-`lemmaS_finite_R19` docstring.
+R = 19 and R = 23 support-bound checks — the latter three evaluated
+in the discrete-log coordinates their proofs use, **and then carried
+back to the multiplicative model by the formally proved discrete-log
+bridges** (`Bridges.lean`): the mask semantics (rotation =
+multiplication by `g^s`, mask fold = `reach`) is a theorem, so
+`theoremA''_finite_R11_mult`, `lemmaS_finite_R19_mult`, and
+`lemmaS_finite_R23_mult` state the same results directly over
+`ZMod 11 / 19 / 23` and `reach`, with no coordinate caveat left.
 
 ### Trust base
 
@@ -55,17 +62,18 @@ check in the `Finset`-over-`ZMod` model costs hours in the
 interpreter, while the same enumeration in discrete-log mask
 coordinates (pure `Nat` bit arithmetic, as in
 `theory.verify_support_bound`) runs in seconds — which is why
-the log-coordinate checks are stated in those coordinates.
-Mitigation for the evaluator trust: every statement is checked by
+the log-coordinate checks are *evaluated* in those coordinates. The
+coordinates themselves add no trust: `Bridges.lean` proves the mask
+semantics symbolically (standard axioms only) and derives the
+multiplicative `_mult` forms, each of which reports exactly its
+enumeration's single `native_decide` axiom and nothing else.
+Mitigation for the evaluator trust: every enumeration is checked by
 independent Python implementations (`theory.verify_R7_finite`,
 `theory.finite_criterion_dp`, `theory.verify_support_bound`) written
 against the same finite spaces, with identical results.
 
 ## Roadmap (not yet formalized)
 
-- The discrete-log bridges `(ℤ/R)ˣ ≅ ℤ/(R−1)`, to restate the
-  log-coordinate checks (R = 11, 19, 23) in the multiplicative model
-  like R = 7.
 - Lemma S past R = 23: C(25,13) × 26 ≈ 135M checks at R = 31 exceeds
   the evaluator's practical budget; the DP formulation (or a
   precompiled checker) would be needed.

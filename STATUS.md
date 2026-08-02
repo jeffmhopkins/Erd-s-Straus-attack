@@ -241,10 +241,13 @@ full tail minimality.
   (R = 7, 1,536 configurations) and Theorem A″ (R = 11, 497,664
   capped configurations with the exact two-case failure
   classification), and Lemma S at R = 19 and R = 23 (437,580 +
-  7,759,752 checks), all via `native_decide`. All declarations
-  sorry-free and axiom-audited; see `lean/README.md` for the trust
-  base. Next tier: the discrete-log bridges and the
-  reach ⟺ divisor-certificate bridge.
+  7,759,752 checks), all via `native_decide` — plus the proved
+  discrete-log bridges (`Bridges.lean`): mask semantics as theorems,
+  and multiplicative-model forms of A″ and both support bounds, each
+  inheriting exactly one evaluator axiom. All declarations sorry-free
+  and axiom-audited; see `lean/README.md` for the trust base. Next
+  tier: the reach ⟺ divisor-certificate bridge; Lemma S past 23 needs
+  the DP form.
 
 ## Current Assessment
 - No counterexample; all 128 671 219 hard primes below \(10^{11}\) have
