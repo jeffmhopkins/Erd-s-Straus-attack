@@ -244,10 +244,15 @@ full tail minimality.
   7,759,752 checks), all via `native_decide` — plus the proved
   discrete-log bridges (`Bridges.lean`): mask semantics as theorems,
   and multiplicative-model forms of A″ and both support bounds, each
-  inheriting exactly one evaluator axiom. All declarations sorry-free
-  and axiom-audited; see `lean/README.md` for the trust base. Next
-  tier: the reach ⟺ divisor-certificate bridge; Lemma S past 23 needs
-  the DP form.
+  inheriting exactly one evaluator axiom — plus the
+  reach ⟺ divisor-certificate bridge (`DivisorBridge.lean`):
+  reachability ⟺ ∃ divisor of m² in the class (FTA), and
+  `reach_certificate` produces the explicit positive (k, b, c) with
+  the ES identity — the meta-theorem's reduction, standard axioms
+  only. All declarations sorry-free and axiom-audited; see
+  `lean/README.md` for the trust base. Remaining formal roadmap:
+  Lemma S past 23 (needs the DP form) and budget-consolidation
+  glue between `divisorConfig` and the enumeration configurations.
 
 ## Current Assessment
 - No counterexample; all 128 671 219 hard primes below \(10^{11}\) have
