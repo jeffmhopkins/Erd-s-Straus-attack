@@ -524,6 +524,7 @@ Thm.~\ref{thm:S} & Kneser's theorem + Lem.~\ref{lem:mono}; (iii) upgrade at $R \
 Thm.~\ref{thm:FG} & Thms.~\ref{thm:A}, \ref{thm:Ap}--\ref{thm:R15}, \ref{thm:S} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
 Prop.~\ref{prop:agg} & elementary + Thm.~\ref{thm:FG} & \S\ref{sec:sieve} & families in Lean \\ \addlinespace
 Thm.~\ref{thm:D} & Prop.~\ref{prop:succ} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
+Lems.~\ref{lem:Jcomp}--\ref{lem:N} & Jacobi reciprocity, elementary & \S\ref{sec:ladder} & Lean \\ \addlinespace
 Thms.~\ref{thm:L0}--\ref{thm:B2} & Thm.~\ref{thm:S} / Prop.~\ref{prop:succ} + sieve & \S\ref{sec:ladder} & no \\ \addlinespace
 Thm.~\ref{thm:P1} & Prop.~\ref{prop:char} + half-dim.\ sieve~\cite{IwaniecHalfDim} & \S\ref{sec:ladder} & no \\ \addlinespace
 Thm.~\ref{thm:L1} & Hypothesis~\ref{hyp:B} (measured) + large sieve & \S\ref{sec:ladder} & no (conditional) \\
@@ -1697,7 +1698,12 @@ ultimately uses. The formalization comprises:
 \item \emph{The elementary layer}, as ordinary kernel-checked proofs:
   certificate soundness and integrality, both directions of
   Theorem~\ref{thm:A}, both families of Proposition~\ref{prop:agg},
-  and Theorem~\ref{thm:J}.
+  Theorem~\ref{thm:J}, and the ladder's elementary layer ---
+  Lemmas~\ref{lem:Jcomp} and~\ref{lem:N} in full, and the
+  selected-residual identity of Section~\ref{sec:ladder}
+  (the formalization shows the coprimality hypothesis of
+  Lemma~\ref{lem:Jcomp} is not needed: for $q \mid R$ both symbols
+  vanish).
 \item \emph{The enumeration layer}: the reachability model underlying
   Theorem~\ref{thm:meta} is defined in the multiplicative structure
   of $\mathbb{Z}/R$ directly, and both halves of
