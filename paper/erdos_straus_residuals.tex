@@ -21,6 +21,8 @@
 \newtheorem{corollary}[theorem]{Corollary}
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
+\theoremstyle{plain}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
 
 \numberwithin{equation}{section}
 \emergencystretch=1.5em
@@ -64,7 +66,11 @@ admissible residual list $\mathcal{P}$: weaker in density than
 Vaughan's classical $x\exp(-c(\log x)^{2/3})$, but explicit and
 certificate-producing, with the elementary and finite-enumeration
 layers of the proofs machine-checked in Lean~4/\mbox{mathlib}.
-Computationally we exhibit certificates for all $128{,}671{,}219$
+A reciprocity-selected \emph{ladder} of $p$-adapted residuals then
+localizes the conjecture for hard primes into a single measured
+counting inequality, with the first rung proved and failures bounded
+below by the half-dimensional sieve. Computationally we exhibit
+certificates for all $128{,}671{,}219$
 hard primes below $10^{11}$; the record minimal residual is $107$.
 \end{abstract}
 
@@ -144,6 +150,15 @@ machine-verified structure, together with the exact criteria.
   $128{,}671{,}219$ hard primes below $10^{11}$, with a calibrated model
   whose deep-tail predictions were subsequently confirmed
   (Section~\ref{sec:comp}).
+\item The \emph{Burgess--reciprocity ladder}
+  (Section~\ref{sec:ladder}): a $p$-adapted residual family on which
+  the all-residue failure mode is impossible by construction; the
+  ladder chain and its first rung proved
+  (Theorems~\ref{thm:L0}, \ref{thm:B1}), the avoidance ladder
+  two-sided (Theorem~\ref{thm:B2}), true failures bounded below via
+  the half-dimensional sieve (Theorem~\ref{thm:P1}), and an
+  almost-all bound past every fixed power of $\log x$ conditional on
+  one measured hypothesis (Theorem~\ref{thm:L1}).
 \item A machine-checked (Lean~4/\mbox{mathlib}) formalization, in the
   accompanying repository, of the elementary layer of the proofs, of
   the finite enumerations behind Theorems~\ref{thm:Ap}
@@ -162,7 +177,8 @@ criteria (Theorems~\ref{thm:A}--\ref{thm:R15}), the reciprocity
 identity (Theorem~\ref{thm:J}), and the support bounds
 (Lemma~\ref{lem:S}, Theorem~\ref{thm:S}); and \textup{(3)}~sieve
 consequences obtained by combining those inputs
-(Theorems~\ref{thm:FG}--\ref{thm:D}). The computations of
+(Theorems~\ref{thm:FG}--\ref{thm:D}), capped by the $p$-adapted
+ladder program of Section~\ref{sec:ladder}. The computations of
 Section~\ref{sec:comp} calibrate layer~(3) and test its predictions;
 the formal development machine-checks the core of layers (1)--(2).
 
@@ -464,7 +480,9 @@ Theorem~\ref{thm:FG} --- base case first, then, after the monotonicity
 reduction (Lemma~\ref{lem:mono}), Lemma~\ref{lem:S} and its
 unconditional upgrade Theorem~\ref{thm:S}, the higher
 exponents --- followed by Proposition~\ref{prop:agg} and
-Theorem~\ref{thm:D}.
+Theorem~\ref{thm:D}. Section~\ref{sec:ladder} develops the
+Burgess--reciprocity ladder on top of Theorem~\ref{thm:S} and the
+census of Section~\ref{sec:comp}.
 
 Table~\ref{tab:deps} records, for each main result, exactly what its
 proof consumes and its formal-verification status, so that each layer
@@ -487,7 +505,10 @@ Lem.~\ref{lem:S} & Lem.~\ref{lem:mono} + enumerations / DP & \S\ref{sec:sieve} &
 Thm.~\ref{thm:S} & Kneser's theorem & \S\ref{sec:sieve} & no \\ \addlinespace
 Thm.~\ref{thm:FG} & Thms.~\ref{thm:A}, \ref{thm:Ap}--\ref{thm:R15}, \ref{thm:S} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
 Prop.~\ref{prop:agg} & elementary + Thm.~\ref{thm:FG} & \S\ref{sec:sieve} & families in Lean \\ \addlinespace
-Thm.~\ref{thm:D} & Prop.~\ref{prop:succ} + Fundamental Lemma & \S\ref{sec:sieve} & no \\
+Thm.~\ref{thm:D} & Prop.~\ref{prop:succ} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
+Thms.~\ref{thm:L0}--\ref{thm:B2} & Thm.~\ref{thm:S} / Prop.~\ref{prop:succ} + sieve & \S\ref{sec:ladder} & no \\ \addlinespace
+Thm.~\ref{thm:P1} & Prop.~\ref{prop:char} + half-dim.\ sieve~\cite{IwaniecHalfDim} & \S\ref{sec:ladder} & no \\ \addlinespace
+Thm.~\ref{thm:L1} & Hypothesis~\ref{hyp:B} (measured) & \S\ref{sec:ladder} & no (conditional) \\
 \bottomrule
 \end{tabular}
 \caption{Audit map: what each main result depends on, where it is
@@ -1068,6 +1089,283 @@ $S = \{3, 7, 11, \dots, 107\}$ --- yet both the calibration
 Section~\ref{sec:open} predict that any fixed list eventually fails.
 \end{remark}
 
+\section{The Burgess--reciprocity ladder}\label{sec:ladder}
+
+Theorem~\ref{thm:S} closed the fixed-list axis: every residual
+contributes its maximal sieve input, and no fixed finite list can
+reach emptiness (Remark~\ref{rem:emptiness}). This section develops
+the program that opens in its place: a \emph{$p$-adapted} family of
+residuals, chosen through quadratic reciprocity, along which the
+failure modes are localized, partially proved, and reduced to a
+single measured hypothesis. Entry points and archives for all
+measurements cited here are in Appendix~\ref{app:verif}.
+
+\subsection{Necessity, purity, and the selected residual}
+
+\begin{lemma}[composite reciprocity]\label{lem:Jcomp}
+Let $R \equiv 3 \pmod 4$ be any admissible residual and $q$ an odd
+prime with $q \mid (p+R)/4$ and $\gcd(q, R) = 1$. Then the Jacobi
+symbol satisfies $\legendre{q}{R} = \legendre{p}{q}$.
+\end{lemma}
+
+\begin{proof}
+$q \mid p + R$ gives $R \equiv -p \pmod q$; Jacobi reciprocity with
+$R \equiv 3 \pmod 4$ gives
+$\legendre{q}{R} = (-1)^{\frac{q-1}{2}}\legendre{R}{q}
+ = (-1)^{\frac{q-1}{2}}\legendre{-1}{q}\legendre{p}{q}
+ = \legendre{p}{q}$ --- the proof of Theorem~\ref{thm:J} verbatim,
+which never used primality of $R$.
+\end{proof}
+
+\begin{lemma}[Jacobi necessity]\label{lem:N}
+For every admissible $R$: if no prime factor of $a = (p+R)/4$ has
+Jacobi symbol $\legendre{\cdot}{R} = -1$, then \eqref{eq:cert} fails
+at $R$.
+\end{lemma}
+
+\begin{proof}
+All factors of $a$ Jacobi residues gives $\legendre{a}{R} = +1$; by
+consistency \eqref{eq:star}, $\legendre{p}{R} = \legendre{4a}{R} =
++1$ as well, so every prime factor of $m = pa$ has symbol $+1$, hence
+every divisor $k \mid m^2$ has $\legendre{k}{R} = +1$, while the
+target has $\legendre{-m}{R} = \legendre{-1}{R} = -1$.
+\end{proof}
+
+Call $R$ \emph{pure} (at hard primes) if the converse also holds: a
+Jacobi non-residue factor present implies success. Theorems~\ref{thm:A},
+\ref{thm:Ap} and~\ref{thm:R15} say exactly that $R = 3, 7, 15$ are
+pure; the census below shows they are the \emph{only} pure residuals
+up to $107$, with the conditional failure rate at the others ranging
+from $1.3\%$ ($R = 23$) to $73\%$ ($R = 67$).
+
+Now run Lemma~\ref{lem:Jcomp} backwards. For a hard prime $p$ let
+$q = q(p)$ be its least Legendre non-residue (hard primes are
+residues at $3, 5, 7$ by Corollary~\ref{cor:J}, so $q \ge 11$;
+Burgess bounds $q \ll p^{1/(4\sqrt e)+\varepsilon}$ unconditionally
+and GRH gives $q \ll (\log p)^2$; the observed maximum below
+$10^{11}$ is $83$), and let the \emph{selected residual} be
+$R_0 = (-p) \bmod 4q$, so that $R_0 \equiv 3 \pmod 4$ automatically
+and $q \mid (p+R_0)/4$. By Lemma~\ref{lem:Jcomp},
+$\legendre{q}{R_0} = \legendre{p}{q} = -1$: the all-residue failure
+mode of Lemma~\ref{lem:N} is impossible at $R_0$ \emph{by
+construction}. The \emph{$q$-ladder} is the progression
+$R_j = R_0 + 4qj$, along which the same holds at every rung.
+
+\subsection{The census}
+
+Computed over every one of the $1{,}587{,}581$ hard primes below
+$10^9$, with mask-free window samples of $10{,}000$ primes per
+half-decade beyond, and the complete $10^{11}$ deep tail
+(Appendix~\ref{app:verif}):
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lrr}
+\toprule
+population & first-rung success & ladder (\,$R \le 400$\,) \\ \midrule
+all hard $p < 10^9$ (exhaustive) & $94.78\%$ & $100\%$ (two $q$'s) \\
+$10^9$--$3.2{\times}10^9$ (sampled) & $95.4\%$ & $100\%$ \\
+$3.2{\times}10^9$--$10^{10}$ & $95.0\%$ & $100\%$ \\
+$10^{10}$--$3.2{\times}10^{10}$ & $95.8\%$ & $100\%$ \\
+$3.2{\times}10^{10}$--$10^{11}$ & $95.7\%$ & $100\%$ \\
+$10^{11}$ deep tail ($R_{\min} \ge 43$, complete) & $75.1\%$ &
+$99.99\%$ ($100\%$ at $R \le 435$) \\
+\bottomrule
+\end{tabular}
+\caption{The selected-residual census: success rates at the first
+rung and along the $q$-ladder. The per-rung failure rate is flat in
+$p$ across two decades, including on the adversarial deep-tail
+population.}
+\label{tab:ladder}
+\end{table}
+
+Failure anatomy (all $82{,}808$ first-rung failures below $10^9$):
+$97.5\%$ are \emph{true budget} failures --- the subgroup generated
+by the factor classes contains the target and only the bounded
+exponents miss it --- and $29\%$ miss exactly one unit class, the
+target itself. No failure has more than $5$ distinct non-identity
+factor classes (Theorem~\ref{thm:S} would allow $(R-3)/2$), with the
+conditional failure probability decaying by a factor ${\approx}7$
+per additional class; and the Jacobi non-residue mass sits at the
+parity minimum forced by consistency in $97.9\%$ of failures --- the
+mechanism of Theorem~\ref{thm:R15}'s proof, observed at every
+residual.
+
+\subsection{What is proved}
+
+\begin{theorem}[ladder chain]\label{thm:L0}
+Fix a prime $q \ge 11$ and $J \ge 1$. The number of hard primes
+$p \le x$ with $\legendre{p}{q} = -1$ failing every rung $R_j$,
+$0 \le j < J$, of their $q$-ladder is
+$O_{q,J}\!\left(x/(\log x)^{1+J'/2}\right)$, where $J'$ is the number
+of rungs with at most two prime factors.
+\end{theorem}
+
+\begin{proof}
+The shifted forms $(p+R_j)/4 = n + (R_0-3)/4 + qj$ are distinct
+integer shifts of $n = (p+3)/4$, and Theorem~\ref{thm:S} --- part
+(ii) at prime rungs, part (iii) at composite rungs with
+$\omega \le 2$ --- makes failure at each usable rung a sifting
+condition of dimension $\ge \tfrac12$, exactly as in the proof of
+Theorem~\ref{thm:FG}, which applies verbatim to this $p$-adapted
+list.
+\end{proof}
+
+\begin{theorem}[first rung]\label{thm:B1}
+Fix a prime $q \ge 11$. Among hard primes $p \le x$ with least
+non-residue $q(p) = q$, the proportion failing the selected residual
+$R_0$ is $\ll_q (\log x)^{-1/\varphi(4q)} \to 0$.
+\end{theorem}
+
+\begin{proof}
+The condition $q(p) = q$ is a union of residue classes modulo
+$M = 840\prod_{11 \le \ell \le q}\ell$; fix one, which fixes $R_0$.
+By Proposition~\ref{prop:succ}, any prime factor of $(p+R_0)/4$ in
+the universal class $-4^{-1} \bmod R_0$ certifies success via
+$k = up^2$, so a failing $p$ has $(p+R_0)/4$ free of an entire
+congruence class of primes: a sifting condition of dimension
+$1 + 1/\varphi(R_0)$ (with primality), and the Fundamental Lemma
+bounds the failing count by $\ll x/(\log x)^{1+1/\varphi(R_0)}$
+against class size $\asymp x/\log x$ (Siegel--Walfisz). The bound is
+uniform for $q \ll \log\log x$.
+\end{proof}
+
+\begin{theorem}[proxy ladder, two-sided]\label{thm:B2}
+Fix $q$, a class \textup(fixing $R_0, R_1, \dots$\textup), and $J$
+with $\kappa = \sum_{j<J} 1/\varphi(R_j)$ below an absolute
+constant. Let $\tilde E_J(x)$ be the set of hard primes in the class
+whose shifted values $(p+R_j)/4$, $j < J$, all avoid prime factors
+in their universal classes. Then
+\[
+  x/(\log x)^{1+\kappa} \;\ll_{q,J}\; \#\tilde E_J(x)
+  \;\ll_{q,J}\; x/(\log x)^{1+\kappa}:
+\]
+the avoidance ladder decays by the factor
+$(\log x)^{-1/\varphi(R_{j+1})}$ at every rung.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The upper bound is the Fundamental Lemma as in
+Theorem~\ref{thm:B1}. The lower bound is a beta-sieve in dimension
+$\kappa < 1$ on the prime-supported sequence, with level
+$x^{1/2-\varepsilon}$ from Bombieri--Vinogradov; integers with a
+forbidden prime factor above the sifting range are removed by
+Brun--Titchmarsh upper bounds in the progressions they define, whose
+total is absorbable for $\kappa$ small.
+\end{proof}
+
+\begin{hypothesis}[P; proportionality]\label{hyp:P}
+There is $c_P > 0$ with $\#E_j(x) \ge c_P\, \#\tilde E_j(x)$ for
+$j \le J$ and $x$ large, where $E_j$ is the set of true ladder
+failures through rung $j$: failures are a positive proportion of
+their necessary-condition set.
+\end{hypothesis}
+
+Measured: $c_P \approx 0.10$--$0.12$ at rung $0$ and $0.13$--$0.16$
+at rung $1$, flat across two decades to $10^{11}$
+(Appendix~\ref{app:verif}). Under Hypothesis~\ref{hyp:P}, since
+$E_{j+1} \subseteq \tilde E_{j+1}$,
+\[
+  \#E_{j+1} \;\le\; \#\tilde E_{j+1}
+  \;\ll\; (\log x)^{-1/\varphi(R_{j+1})}\, \#\tilde E_j
+  \;\le\; (\log x)^{-1/\varphi(R_{j+1})}\, c_P^{-1}\, \#E_j,
+\]
+so the ladder failure count decays at \emph{every} fixed rung --- the
+per-rung decay Hypothesis~\ref{hyp:B} below posits, proved from
+Hypothesis~\ref{hyp:P} alone.
+
+\begin{theorem}[half-dimensional failure lower bound]\label{thm:P1}
+Call a class admissible if $R_0$ is composite with a prime factor
+$r_1 \equiv 3 \pmod 4$ such that $\legendre{q}{r_1} = +1$ \textup(and
+$\legendre{2}{r_1} = +1$ when $2 \mid a$\textup). On every admissible
+class,
+\[
+  \#E_0(x) \;\ge\; \#\{p \equiv c \le x : \text{every prime factor
+  of } (p+R_0)/4 \text{ is a QR mod } r_1\} \;\gg\;
+  \frac{x}{(\log x)^{3/2}}.
+\]
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Membership forces failure by Proposition~\ref{prop:char} at $r_1$:
+all factors of $a$ are residues mod $r_1$ by hypothesis, and
+$\legendre{p}{r_1} = +1$ follows \emph{for free} from consistency
+$a \equiv 4^{-1}p$, so every divisor of $m^2$ is a residue while
+$\legendre{-m}{r_1} = \legendre{-1}{r_1} = -1$. The membership
+condition sifts the $(r_1-1)/2$ non-residue classes mod $r_1$ ---
+dimension exactly $\tfrac12$ --- and Iwaniec's half-dimensional
+sieve~\cite{IwaniecHalfDim} produces the matching-order lower bound
+for the full condition: at dimension $\tfrac12$ the sifting range
+reaches the Bombieri--Vinogradov level, leaving at most one large
+non-residue factor, removed by a switching argument.
+\end{proof}
+
+Theorem~\ref{thm:P1} is the program's first unconditional
+\emph{lower} bound on true ladder failures ($6.6\%$ of first rungs
+are admissible; every all-residue member found in the data fails as
+required, e.g.\ $p = 5{,}544{,}361$ with $R_0 = 51$, $r_1 = 3$,
+$a = 31 \cdot 61 \cdot 733$). Against
+Hypothesis~\ref{hyp:P} it gives the two-sided bracket
+$(\log x)^{-(1/2 - 1/\varphi(R_0))} \ll \#E_0/\#\tilde E_0 \le 1$:
+what remains of the hypothesis is exactly the closing of this
+log-gap, the parity obstruction in its sharpest local form.
+
+\subsection{The conditional theorem, and honest scope}
+
+\begin{hypothesis}[B; per-rung decay]\label{hyp:B}
+There are $\delta > 0$ and $x_0$ such that for $x \ge x_0$, all
+$q \le (\log x)^2$ and all $0 \le j < J(x)$:
+$\#E_{j+1}(x) \le (1-\delta)\,\#E_j(x) + O(\sqrt x)$.
+\end{hypothesis}
+
+The $j = 0$ case is Theorem~\ref{thm:B1}; every fixed rung follows
+from Hypothesis~\ref{hyp:P}; the measured survival factors are
+$0.86$--$0.95$ per rung with no drift in $p$.
+
+\begin{theorem}[conditional almost-all bound]\label{thm:L1}
+Assume Hypothesis~\ref{hyp:B}. Then all but
+\[
+  O\!\left(x\,e^{-\delta J(x)} \;+\; x\,2^{-\pi((\log x)^2)}\right)
+\]
+hard primes $p \le x$ satisfy
+$R_{\min}(p) \le 4\,q(p)\,(J(x)+1) \le (\log x)^{2+o(1)} J(x)$.
+\end{theorem}
+
+\begin{proof}
+Hard primes with $q(p) > (\log x)^2$ are residues at every prime in
+$(7, (\log x)^2]$, a half-class condition per modulus, and the large
+sieve bounds their count by the second term. For the rest, iterate
+Hypothesis~\ref{hyp:B} $J(x)$ times; a survivor is the only way to
+lack a certificate on the ladder.
+\end{proof}
+
+With $J(x) = (\log\log x)^2$ --- a mild extrapolation of the nine
+measured rungs --- the exceptional set is
+$\ll x\exp(-\delta(\log\log x)^2)$, beyond every fixed power of
+$\log x$ and hence beyond Theorems~\ref{thm:FG} and~\ref{thm:D};
+with $J(x) = (\log x)^{\theta}$, $\theta > 2/3$, it would pass
+Vaughan's bound. The hypothesis-strength required scales with the
+ambition, and each increment is testable before it is assumed.
+
+\begin{remark}[scope]\label{rem:ladder-scope}
+Theorem~\ref{thm:L1} is an almost-all statement under a measured
+hypothesis; three things it is not. It is not unconditional: closing
+Hypothesis~\ref{hyp:P}'s log-gap is a parity problem, and
+Theorem~\ref{thm:P1} sits at dimension $\tfrac12$ precisely because
+that is the unique historically known opening in the parity wall. It
+is not a density record: Vaughan's bound remains asymptotically
+stronger unconditionally. And it is not a path to the full
+conjecture by itself: emptiness is beyond upper-bound methods
+(Remark~\ref{rem:emptiness}), and excluding the individual
+conspiratorial prime --- a super-record dodging $J(p)$ rungs, of
+which the record prime of Section~\ref{sec:comp} is an empirical
+foreshadowing --- is a simultaneous-multiplicative-structure
+statement of prime-tuple difficulty. What the ladder does is
+localize the conjecture for hard primes into one measured, twice-
+bracketed counting inequality, with every sub-statement current
+tools can decide now decided.
+\end{remark}
+
 \section{Computations to \texorpdfstring{$10^{11}$}{10\textasciicircum 11}}\label{sec:comp}
 
 All code and data are in the accompanying repository. Certificates are
@@ -1544,7 +1842,13 @@ module \texttt{erdos\_straus.theory}.}
 \label{tab:repro}
 \end{table}
 
-The full test suite (\texttt{python -m pytest}; $53$ tests) exercises the
+The ladder census of Section~\ref{sec:ladder} is reproduced by
+\texttt{python -m erdos\_straus.burgess\_scan} (the $10^9$
+population) and by the scaled drivers in the same module for the
+window samples and the deep tail; the archives are the five
+\texttt{burgess\_*.json} files under \texttt{data/analysis/}.
+
+The full test suite (\texttt{python -m pytest}; $56$ tests) exercises the
 proof-component checks, the exact criteria against ground truth, and
 sampled dataset validation on every run.
 Table~\ref{tab:env} summarizes the computational environment.
@@ -1621,6 +1925,11 @@ American Mathematical Society, Providence, RI, 2010.
 H.~Halberstam and H.-E.~Richert,
 \emph{Sieve Methods},
 Academic Press, London, 1974.
+
+\bibitem{IwaniecHalfDim}
+H.~Iwaniec,
+\emph{The half dimensional sieve},
+Acta Arith.\ \textbf{29} (1976), 69--95.
 
 \bibitem{Kneser}
 M.~Kneser,

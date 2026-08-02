@@ -2,7 +2,7 @@
 
 Log-scale histogram of the minimal-residual distribution over all
 128,671,219 hard primes below 10^11, from the distribution of
-Table 2 (data/hard_primes_1e11_minimalR.*). The figure is built at
+Table 3 (data/hard_primes_1e11_minimalR.*). The figure is built at
 its final printed size (6.3 in = the paper's text width, included at
 width=\\linewidth), so font sizes below are true on-page sizes, and
 fonts are embedded as vector outlines (pdf.fonttype 42), matching the
@@ -30,7 +30,7 @@ plt.rcParams.update(
     }
 )
 
-# Table 2 of the paper (10^11 data).
+# Table 3 of the paper (10^11 data).
 DIST = {
     3: 69951190, 7: 31335473, 11: 19439771, 15: 3974286, 19: 2441687,
     23: 1070808, 27: 187963, 31: 193848, 35: 30784, 39: 25258,
@@ -42,7 +42,7 @@ DIST = {
 fig, ax = plt.subplots(figsize=(6.3, 3.4))
 xs = list(DIST.keys())
 ys = [DIST[r] for r in xs]
-# The band 87-103 was empty below 10^10 (Section 5.1 of the paper).
+# The band 87-103 was empty below 10^10 (Section 6.1 of the paper).
 ax.axvspan(85, 105, color="0.88", zorder=0)
 ax.text(95, 6e6, "band empty\nbelow $10^{10}$", ha="center",
         fontsize=8, color="0.35")
