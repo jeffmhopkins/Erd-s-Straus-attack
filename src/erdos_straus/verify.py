@@ -145,7 +145,9 @@ def verify_npz(npz_path: str, sample_step: int = 1000,
       - primes are strictly increasing hard-class values.
     """
     import numpy as np
-    from erdos_straus.bulk_generate import _init_small_primes, solve_residual
+    from erdos_straus.bulk_generate import (
+        HARD_RESIDUES, _init_small_primes, solve_residual,
+    )
 
     _init_small_primes()
     data = np.load(npz_path)
