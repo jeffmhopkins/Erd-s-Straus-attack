@@ -41,6 +41,9 @@ DEFAULT_FILES = [
     # Minimal-R map: verification reconstructs each triple from (n, R) and
     # checks it exactly (slow but exhaustive: ~15 min single-threaded).
     "hard_primes_1e9_minimalR.json.gz",
+    # The 1e10 map (14.2M entries, ~2.5h to verify exhaustively) is not in
+    # the defaults; run explicitly:
+    #   python -m erdos_straus.verify data/hard_primes_1e10_minimalR.json.gz
 ]
 
 
