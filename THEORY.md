@@ -1,6 +1,6 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
-**Date:** 2026-08-02 (current through PR #28).
+**Date:** 2026-08-02 (current through PR #30).
 **Status:** Proved: Theorems A, A′, A″ (exact criteria; A′/A″ by
 machine-verified finite case analysis), the meta-theorem, Propositions 1
 and 3, Theorem E and the chain F/G/G′/H (exponents 2 … 17/2, via Lemma S
@@ -10,31 +10,34 @@ families, → 19/2), Theorem J (reciprocity structure), and Theorem D
 Dickson's conjecture. Section 6 is heuristic, validated against the
 complete solvability data below 10⁹ and the 10¹⁰/10¹¹ minimal-R data.
 §2.8 records two executed attempts at totality and their
-precisely-characterized walls; the completeness remark (R_min ≤ 2p ⟺
+precisely-characterized walls; the completeness proposition (paper
+Prop. 1.1: R_min ≤ 2p ⟺
 ESC) calibrates what "closing the problem" requires. Much of the
 elementary and enumeration layer is machine-checked in Lean 4
 (`lean/README.md`); paper counterparts of each named result are listed
 in the mapping table below.
 
-### Name mapping to the paper
+## Name mapping to the paper
 
 This document uses working letter names; the paper numbers results.
 The dictionary (paper labels in parentheses):
 
 | here | paper |
 |---|---|
+| completeness observation | Proposition 1.1 (`prop:complete`) |
 | Proposition 1 (character obstruction) | Proposition 2.1 (`prop:char`) |
 | Proposition 3 (guaranteed success) | Proposition 2.2 (`prop:succ`) |
-| Theorem A / A′ / A″ | Theorems 1.1 / 1.3 / 1.4 |
-| meta-theorem | Theorem 1.2 (`thm:meta`) |
-| Theorem B (empirical covering) | unnumbered remark after Thm. 1.10 |
+| Theorem A / A′ / A″ | Theorems 1.2 / 1.4 / 1.5 |
+| meta-theorem | Theorem 1.3 (`thm:meta`) |
+| Theorem B (finite covering reduction) | Remark 4.3 (unlabeled in source) |
 | Theorem C | not carried into the paper |
-| Theorem D (density reduction) | Theorem 1.10 (`thm:D`) |
-| Theorems E/F/G/G′/H (the chain) | the single Theorem 1.8 (`thm:FG`) |
-| Theorem I (aggregate families) | Proposition 1.9 (`prop:agg`) |
-| Theorem J (reciprocity) | Theorem 1.6 (`thm:J`) |
+| Theorem D (density reduction) | Theorem 1.11 (`thm:D`) |
+| Theorems E/F/G/G′/H (the chain) | the single Theorem 1.9 (`thm:FG`) |
+| Theorem I (aggregate families) | Proposition 1.10 (`prop:agg`) |
+| Theorem J (reciprocity) | Theorem 1.7 (`thm:J`) |
+| Corollaries J1/J2 | Corollary 2.3(i)/(ii) (`cor:J`) |
 | Theorem K (conditional) | sketch inside Open Problem 5 |
-| Lemma S (support bound) | Lemma 1.7 (`lem:S`) |
+| Lemma S (support bound) | Lemma 1.8 (`lem:S`) |
 | monotonicity reduction | Lemma 4.1 (`lem:mono`) |
 
 ---
@@ -169,8 +172,10 @@ exceed a full cycle). D_R(p) as defined is exactly what the computation
 verifies. The computational statement stands: **S₀ = {3, 7, 11, …, 107}
 (all R ≡ 3 mod 4) satisfies the hypothesis for every hard prime below
 10¹¹** (complete per-residual solvability masks verified below 10⁹;
-minimal-R data to 10¹¹). The paper states the covering hypothesis as an
-equivalence with the conjecture for hard primes.
+minimal-R data to 10¹¹). The paper (Remark 4.3) states the implication
+in this direction only: a finite covering set would imply the conjecture
+for hard primes, while the conjecture itself bounds R_min(p) by 2p and
+does not produce a uniform finite S.
 
 ### Theorem C/D (density of exceptions; quantitative)
 
@@ -236,9 +241,9 @@ over six.
 O(z) primes p ≤ z, every p ∈ E(x) yields n ≤ (x+3)/4 with n ≡ n₀ (mod 210)
 such that for **every** prime q with 7 < q ≤ z:
 
-  (a) q ≡ 2 (mod 3)  ⟹  n ≢ 0 (mod q);
-  (b) q ≡ 3, 5, 6 (mod 7)  ⟹  n ≢ −1 (mod q);
-  (c) q ∤ 4n − 3   (since 4n − 3 = p is prime and p > z).
+    (a) q ≡ 2 (mod 3)  ⟹  n ≢ 0 (mod q);
+    (b) q ≡ 3, 5, 6 (mod 7)  ⟹  n ≢ −1 (mod q);
+    (c) q ∤ 4n − 3   (since 4n − 3 = p is prime and p > z).
 
 Indeed (a), (b) restate "no prime factor ≤ z in the forbidden classes" —
 weaker than the full criteria, which is fine for an upper bound.
@@ -384,7 +389,7 @@ branches, each a sifting condition of dimension ≥ ½ on (p+R)/4.*
 Note the check deliberately ignores the consistency relation
 ∏(classes) ≡ 4⁻¹p: it examines a *superset* of the realizable
 configurations and can only overstate the failing supports — the lemma
-is conservative (paper, proof of Lemma 1.7).
+is conservative (paper, proof of Lemma 1.8).
 
 **Proof.** Reachability of the target class is monotone in both the
 support and the multiplicities. It therefore suffices to check that for
@@ -412,7 +417,7 @@ mod 11 (density 3/5). Each branch is a four-form sieve problem
 O(x/(log x)^{5/2}) and branch (b) by O(x/(log x)^{13/5}) = o(the former).
 Sum over the two branches and the six hard classes. ∎ (At {3,7,11,19}
 the paper's proof also carries the Type-II cross-branch at exponent
-31/10; see the proof of Theorem 1.8 there.)
+31/10; see the proof of Theorem 1.9 there.)
 
 ### Theorem G ({3,7,11,19}; exponent 3)
 
@@ -614,7 +619,7 @@ distinct primes q of the interval, plus Type-II luck where signs come up
 coins to win. Measured for the record p = 8 803 369 against typical
 hard primes of its size:
 
-| | distinct odd primes over 27 shifted values | share with (p|q)=+1 |
+| | distinct odd primes over 27 shifted values | share with (p\|q)=+1 |
 |---|---:|---:|
 | record 8 803 369 | **43** | **81 %** |
 | typical (5 samples) | 45–52 | 44–60 % |
@@ -684,8 +689,9 @@ All statements tested against the complete per-prime solvability masks
 Type I share of failures by residual (sampled): R=7: 100 %, R=23: 96.6 %,
 R=11: 89.7 %, R=47: 87.2 %, R=71: 82.1 %, R=31: 79.3 %, … down to
 R=67: 33.5 %. Character obstruction dominates at residuals that are prime
-or have small 3-mod-4 prime power structure; class misses (Type II) grow
-with φ(R) — as expected, since hitting one specific class among φ(R) gets
+or have small 3-mod-4 prime power structure; class misses (Type II)
+broadly grow with φ(R), though not monotonically (see the sampled list
+above) — as expected, since hitting one specific class among φ(R) gets
 harder while the character argument only sees the QR/NQR dichotomy.
 
 ---
@@ -762,10 +768,11 @@ power laws f_R(x) = C_R (log x)^{−κ_R}:
 - new primes with min R > 107 (record broken): 0.038 (indep.);
   with the ×30 deep-tail calibration ⟹ **order 1 — a genuine coin flip**.
 
-Both are sharp, falsifiable predictions of the model; the 10¹⁰ run tests
-them directly.
+Both were sharp, falsifiable predictions of the model, tested directly
+by the 10¹⁰ and 10¹¹ runs; the outcomes follow.
 
-**Outcome (10¹¹ run, 128 671 219 hard primes, all solved):**
+**Outcome (10¹¹ run, 128 671 219 hard primes, all solved — verified by
+sampling plus full tail checks; exhaustive below 10⁹):**
 
 - **Record: HELD again** — max minimal R = 107, still uniquely at
   8 803 369, now across 5×10⁷ → 10¹¹.
@@ -821,7 +828,7 @@ them directly.
    verifies every prime residual to 107 (§2.7); chain exponent 17/2, and
    19/2 with the aggregate families (Theorem I). Next: composite residuals
    (R = 15 first: coupled conditions mod 3 and mod 5, meta-theorem
-   componentwise), Lemma S past 107 (DP state count grows ≈2× per
+   componentwise), Lemma S past 107 (DP state count grows ≈2.8× per
    residual), and Olson-type additive combinatorics to enlarge the
    provable forbidden structure — the one route that could conditionally
    pass Vaughan (§2.8).

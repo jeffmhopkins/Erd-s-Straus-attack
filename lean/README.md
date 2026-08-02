@@ -13,8 +13,8 @@ residual framework from the companion paper.
 | `theoremA_necessity` | Theorem A (⇒): all prime factors of a ≡ 1 (mod 3) blocks every divisor k of (pa)² from the class −pa (mod 3) |
 | `theoremA_sufficiency` | Theorem A (⇐): a divisor q ≡ 2 (mod 3) of a yields positive b, c with the identity (k = q) |
 | `divisor_one_mod_three` | the multiplicative-closure lemma behind necessity |
-| `family_p_plus_one` | Proposition 1.9 (Theorem I in the notes): R ∣ p+1 certifies via k = a·p² |
-| `family_p_plus_four` | Proposition 1.9: R ∣ p+4 (R odd) certifies via k = a²·p |
+| `family_p_plus_one` | Proposition 1.10 (Theorem I in the notes): R ∣ p+1 certifies via k = a·p² |
+| `family_p_plus_four` | Proposition 1.10: R ∣ p+4 (R odd) certifies via k = a²·p |
 | `hard_classes_are_squares` | the six Mordell classes are squares of units mod 840 (explicit witnesses 1², 11², 13², 17², 19², 23²) |
 | `hard_classes_local` | Corollary 2.3(i)'s arithmetic core: hard classes ≡ 1 (mod 8), ≡ 1 (mod 3), QR mod 5 and mod 7 |
 | `reach` / `powers` / `step` | the meta-theorem's finite model: divisor-class reachability from (class, exponent-budget) pairs, computably, in ZMod R |
@@ -82,7 +82,8 @@ the log-coordinate checks are *evaluated* in those coordinates. The
 coordinates themselves add no trust: `Bridges.lean` proves the mask
 semantics symbolically (standard axioms only) and derives the
 multiplicative `_mult` forms, each of which reports exactly its
-enumeration's single `native_decide` axiom and nothing else.
+enumeration's single `native_decide` axiom beyond the three standard
+axioms — no additional computational trust.
 Mitigation for the evaluator trust: every enumeration is checked by
 independent Python implementations (`theory.verify_R7_finite`,
 `theory.finite_criterion_dp`, `theory.verify_support_bound`,
@@ -97,16 +98,18 @@ against the same finite spaces, with identical results.
   R = 83), eventually needing a compacter state representation.
 - Composed corollaries at R = 11, 23, 31 analogous to
   `lemmaS_R19_certificate` (same recipe).
-- The sieve chapter is out of scope by design (see the paper's
-  trusted-computing-base paragraph): the large-scale computations remain
-  independently reproducible software with deterministic verification.
+- The analytic sieve bounds (the chain of Theorem 1.9 and the density
+  reduction) and the large-scale computations of the paper's §5 are out
+  of scope by design (see the paper's trusted-computing-base
+  discussion): they remain independently reproducible software with
+  deterministic verification.
 
 ## Modules
 
 | File | Contents |
 |---|---|
 | `Basic.lean` | certificate soundness/integrality, Theorem J (reciprocity) |
-| `Families.lean` | the aggregate identity families (Proposition 1.9), hard-class lemmas |
+| `Families.lean` | the aggregate identity families (Proposition 1.10), hard-class lemmas |
 | `TheoremA.lean` | Theorem A (R = 3), both directions, with positivity |
 | `Enumerations.lean` | the `reach` model, monotonicity lemmas, and the four `native_decide` finite checks (R = 7, 11, 19, 23) |
 | `Bridges.lean` | the parametric discrete-log bridge and the three `_mult` multiplicative restatements |

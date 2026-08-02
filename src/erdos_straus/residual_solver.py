@@ -6,7 +6,6 @@ This is the core of the attack harness for moderate n (up to ~10^6 easily, large
 
 import sympy as sp
 from typing import Optional, Tuple, List
-from fractions import Fraction
 
 def is_solution(n: int, a: int, b: int, c: int) -> bool:
     return a > 0 and b > 0 and c > 0 and 4 * a * b * c == n * (b * c + a * c + a * b)
@@ -42,7 +41,6 @@ def find_solution_by_residuals(n: int, max_R: int = 200) -> Optional[Tuple[int, 
     if start_R == 4:
         start_R = 0
     for R in range(start_R if start_R > 0 else 4, max_R + 1, 4):  # R must stay ≡ -n (mod 4), hence step 4.
-        # Actually since step 4 preserves mod 4.
         sol = solve_residual(n, R)
         if sol:
             return (*sol, R)

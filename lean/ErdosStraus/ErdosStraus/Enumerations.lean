@@ -256,7 +256,8 @@ theorem lemmaS_finite_R23 :
 end ErdosStraus
 
 -- Audit. The monotonicity lemmas must report only the standard axioms;
--- the finite checks additionally report `Lean.ofReduceBool` (trust
+-- the finite checks additionally report a per-theorem
+-- `..._native.native_decide.ax_1_1` axiom, the `Lean.ofReduceBool` mechanism (trust
 -- in the compiled evaluator — kernel reduction of Finset/Multiset
 -- computations is impractical at this scale; every enumeration is
 -- independently cross-checked by the Python implementations. See

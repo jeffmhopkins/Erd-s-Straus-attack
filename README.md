@@ -63,7 +63,7 @@ data/
 tests/
   test_solver.py       46 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (18 pp.)
+  erdos_straus_residuals.tex/.pdf   the manuscript (19 pp.)
 lean/
   ErdosStraus/         Lean 4 + mathlib formalization (7 modules: Basic,
                        Families, TheoremA, Enumerations, Bridges,

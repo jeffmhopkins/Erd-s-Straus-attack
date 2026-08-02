@@ -4,9 +4,11 @@ failure classification, and the growth model for the minimal residual.
 
 Naming note: this module's internal labels predate the paper. The
 dictionary is: "Prop. 1" = paper Prop. 2.1 (character obstruction),
-"Thm. 2"/"Theorem A" = paper Thm. 1.1, "Prop. 3" = paper Prop. 2.2
-(guaranteed success), "Theorems F/G"/"Theorem H" = paper Thm. 1.8
-(the chain), "Theorem I" = paper Prop. 1.9, Lemma S = paper Lem. 1.7.
+"Thm. 2"/"Theorem A" = paper Thm. 1.2, "Prop. 3" = paper Prop. 2.2
+(guaranteed success), the meta-theorem = paper Thm. 1.3, "Theorem A'" =
+paper Thm. 1.4, "Theorem A''" = paper Thm. 1.5, "Theorem J" = paper
+Thm. 1.7, "Theorems F/G"/"Theorem H" = paper Thm. 1.9 (the chain),
+"Theorem I" = paper Prop. 1.10, Lemma S = paper Lem. 1.8.
 
 Mathematical setup
 ------------------
@@ -54,13 +56,12 @@ import argparse
 import gzip
 import json
 import math
-import os
 import time
 from collections import Counter, defaultdict
 from typing import Dict, List, Optional, Sequence, Tuple
 
 from erdos_straus.bulk_generate import _init_small_primes, factorize
-from erdos_straus.analyze import R_LIST, R_INDEX, load_rmap
+from erdos_straus.analyze import R_LIST, R_INDEX
 
 
 # --- basic number theory ---------------------------------------------------
@@ -578,7 +579,7 @@ def verify_support_bound(R: int) -> Dict:
     p-budget 2). Type-I (all-QR) configurations have exactly d/2 - 1
     nonzero classes, so the bound is tight.
 
-    Consequence (used in Theorem 1.8, the chain): failure at R implies (p+R)/4 has
+    Consequence (used in Theorem 1.9, the chain): failure at R implies (p+R)/4 has
     no prime factor in an explicit set of ≥ d/2 classes, a sifting
     condition of dimension ≥ 1/2 — and there are finitely many maximal
     failing supports, so the exceptional count splits into finitely many
@@ -664,7 +665,7 @@ def verify_support_bound_dp(R: int, time_budget: float = 900.0) -> Dict:
 
 
 def aggregate_identity_certificate(p: int) -> Optional[Tuple[int, int, int, int]]:
-    """Aggregate identity families (paper Prop. 1.9; "Theorem I" in the notes).
+    """Aggregate identity families (paper Prop. 1.10; "Theorem I" in the notes).
 
     If some prime R ≡ 3 (mod 4) divides p+1, then k = a·p² certifies
     residual R (p ≡ −1 mod R); if R | p+4, then k = a²·p does (p ≡ −4).

@@ -1,5 +1,5 @@
 /-
-Proposition 1.9 of the paper (aggregate identity families; "Theorem I"
+Proposition 1.10 of the paper (aggregate identity families; "Theorem I"
 in the development notes) and the hard-class local facts. The two
 family theorems are corollaries of `certificate_sound`; the hard-class
 facts are direct finite checks.
@@ -8,7 +8,7 @@ import ErdosStraus.Basic
 
 namespace ErdosStraus
 
-/-- **Aggregate identities, first family** (Proposition 1.9). If `R ∣ p + 1` (with the usual residual
+/-- **Aggregate identities, first family** (Proposition 1.10). If `R ∣ p + 1` (with the usual residual
 setup), then `k = a·p²` certifies: explicit `b, c` exist with the
 Erdős–Straus identity. -/
 theorem family_p_plus_one
@@ -29,7 +29,7 @@ theorem family_p_plus_one
     certificate_sound p R a m (a * p ^ 2) a b c hR ha hm
       (by rw [hm]; ring) hb'.symm hc'.symm⟩
 
-/-- **Aggregate identities, second family** (Proposition 1.9). If `R ∣ p + 4` and `R` is odd, then
+/-- **Aggregate identities, second family** (Proposition 1.10). If `R ∣ p + 4` and `R` is odd, then
 `k = a²·p` certifies. -/
 theorem family_p_plus_four
     (p R a m : ℤ) (hR : R ≠ 0) (hRodd : Odd R)
@@ -77,7 +77,7 @@ theorem hard_classes_are_squares :
   · exact ⟨19, by norm_num⟩
   · exact ⟨23, by norm_num⟩
 
-/-- Corollary J1, arithmetic core: every hard class is ≡ 1 (mod 8),
+/-- Corollary J1 (paper Corollary 2.3(i)), arithmetic core: every hard class is ≡ 1 (mod 8),
 ≡ 1 (mod 3), a QR mod 5, and a QR mod 7. -/
 theorem hard_classes_local :
     ∀ h ∈ [1, 121, 169, 289, 361, 529],

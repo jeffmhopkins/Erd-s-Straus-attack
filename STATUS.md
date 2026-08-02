@@ -1,5 +1,5 @@
 # Erdős–Straus Conjecture Attack — Current State
-**Date:** 2026-08-02 (current through PR #28)  
+**Date:** 2026-08-02 (current through PR #30)  
 **Focus:** Hard-class primes (Mordell exceptional residues mod 840)
 
 ## The Problem
@@ -122,12 +122,12 @@ at $10^9$ (see `THEORY.md` §6):
   **no new maximal $R$**: the record 107 still comes from the single prime
   $8\,803\,369 < 10^7$.
 - At $10^9$ there was a conspicuous **gap** (filled at $10^{11}$, see
-  above): no prime below $10^9$ has minimal $R \in
-  \{87, 91, 95, 99, 103\}$ — the distribution jumps from 83 straight to 107.
+  above): no prime below $10^9$ has minimal
+  $R \in \{87, 91, 95, 99, 103\}$ — the distribution jumps from 83 straight to 107.
 - The record prime is genuinely exceptional: no residual below 107 works for
-  it **even allowing $R$ up to 400**; its $a = (p+107)/4 = 3^2 \cdot 11^2
-  \cdot 43 \cdot 47$ is fully smooth, whereas typical high-$R$ primes have
-  an $a$ with one large prime factor.
+  it **even allowing $R$ up to 400**; its
+  $a = (p+107)/4 = 3^2 \cdot 11^2 \cdot 43 \cdot 47$ is fully smooth,
+  whereas typical high-$R$ primes have an $a$ with one large prime factor.
 
 ## Covering-Set Analysis at $10^9$ (`analyze.py cover`)
 
@@ -183,7 +183,7 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 - `data/hard_primes_1e11_minimalR.{rvals.u8.gz, meta.json, tail.json}` — R-sequence dataset for all 128 671 219 hard primes $< 10^{11}$ (uint8 minimal-$R$ values in ascending-prime order + sha256-pinned metadata + explicit verified tail $R \ge 43$)
 - `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
 - `tests/test_solver.py` — 46 tests: unit, certificate validation, theorem checks (A/A′/A″/J/meta), support-bound lemmas, aggregate identities
-- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 18 pp.
+- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 19 pp.
 - `lean/ErdosStraus/` — Lean 4 + mathlib formalization, elementary layer + finite enumerations (`lake exe cache get && lake build`)
 - `THEORY.md` — full theoretical development; `STATUS.md` — this document
 

@@ -10,6 +10,8 @@
 \hypersetup{pdftitle={Residual certificates for the Erdos-Straus
   conjecture: exact solvability criteria, a sieve bound, and
   computations to 10\textasciicircum 11}, pdfauthor={J. M. Hopkins}}
+% Break URLs only at slashes, never inside hyphenated path components.
+\def\UrlBreaks{\do\/}
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
@@ -30,10 +32,11 @@
 exact solvability criteria, a sieve bound,\\
 and computations to $10^{11}$}
 
-\author{J.~M.\ Hopkins\thanks{\texttt{jeff.m.hopkins@gmail.com}.
+\author{J.~M.\ Hopkins\thanks{Independent researcher.
+\texttt{jeff.m.hopkins@gmail.com}.
 Computations and computer-assisted case analyses were carried out with the
-code repository accompanying this paper
-(\url{https://github.com/jeffmhopkins/Erd-s-Straus-attack}).}}
+code repository accompanying this paper:
+\url{https://github.com/jeffmhopkins/Erd-s-Straus-attack}.}}
 
 \date{August 2026}
 
@@ -46,28 +49,33 @@ solvable in positive integers for every $n \ge 2$; the open cases
 concentrate on primes in six residue classes mod $840$ (\emph{hard
 primes}). We develop the \emph{residual method}: a solution with first
 denominator $a = (p+R)/4$ exists if and only if some divisor
-$k \mid m^2$, $m = pa$, satisfies $k \equiv -m \pmod R$. Our central
-results make this criterion exact and finite: solvability at any fixed
-prime residual $R$ is a computable function of the factor classes of $(p+R)/4$
-and of $p \bmod R$ (a finite-state meta-theorem), yielding closed-form
-criteria at $R = 3, 7, 11$ and a reciprocity identity
-$\smash{\legendre{q}{R}} = \smash{\legendre{p}{q}}$ that explains how
-failures correlate across residuals. Consequences include an
+$k \mid m^2$, $m = pa$, satisfies $k \equiv -m \pmod R$, and every
+solution arises this way, so the least workable residual
+$R_{\min}(p)$ controls the conjecture at $p$. Solvability at any fixed
+prime residual is a computable function of finite data (a
+meta-theorem), yielding exact criteria at $R = 3, 7, 11$ and a
+reciprocity identity
+$\smash{\legendre{q}{R}} = \smash{\legendre{p}{q}}$ that governs how
+failures correlate across residuals. The criteria feed an
 unconditional chain of sieve bounds --- exceptional sets
-$O(x/(\log x)^{\kappa})$ with $\kappa$ up to $19/2$, each cut out by
-explicit conditions with constructive certificates. These are weaker in
-density than Vaughan's classical $x\exp(-c(\log x)^{2/3})$, but
-mechanistic where mean-value methods are not: every bound produces
-certificates and exact local criteria, and the elementary and
+$O(x/(\log x)^{\kappa})$ with $\kappa$ up to $19/2$ --- weaker in
+density than Vaughan's classical $x\exp(-c(\log x)^{2/3})$ but
+explicit and certificate-producing; the elementary and
 finite-enumeration layers of the proofs are machine-checked in
-Lean~4/\mbox{mathlib}. Computationally we exhibit
-certificates for all $128{,}671{,}219$ hard primes below $10^{11}$,
-verified exhaustively to $10^9$ and by systematic sampling plus full
-tail verification beyond; the record minimal residual is $107$, first
-attained below $10^7$ and never exceeded, and the calibrated model
-correctly predicted the population of the last empty band of minimal
-residuals between $10^{10}$ and $10^{11}$.
+Lean~4/\mbox{mathlib}. Computationally we exhibit certificates for
+all $128{,}671{,}219$ hard primes below $10^{11}$; the record minimal
+residual, $107$, is attained by a single prime below $10^7$, and the
+calibrated model correctly predicted the population of the last empty
+band of minimal residuals between $10^{10}$ and $10^{11}$.
 \end{abstract}
+
+\medskip
+\noindent\textbf{2020 Mathematics Subject Classification.}
+Primary 11D68; Secondary 11N35, 11Y50, 68V20.
+
+\smallskip
+\noindent\textbf{Keywords.} Erd\H{o}s--Straus conjecture, Egyptian
+fractions, unit fractions, sieve methods, formal verification.
 
 \section{Introduction}
 
@@ -82,14 +90,18 @@ every prime outside the six residue classes
 \[
   \Hset \bmod 840 \;=\; \{1, 121, 169, 289, 361, 529\},
 \]
-the squares of units modulo $840$ (Mordell~\cite[Ch.~30]{Mordell}). We call primes
+the squares of units modulo $840$ (Mordell~\cite[Ch.~30]{Mordell}; the
+quadratic-residue nature of the obstruction goes back to
+Yamamoto~\cite{Yamamoto}). We call primes
 in these classes \emph{hard primes}. Direct verification has confirmed the
 conjecture far beyond any range considered here: to $10^{14}$ by Swett~\cite{Swett}, to $10^{17}$ by Salez~\cite{Salez}, and to $10^{18}$ by
 Mihnea and Bogdan~\cite{MihneaBogdan}; the present paper is logically
 independent of those bounds. The structure of
 the solution count was analyzed by Elsholtz and Tao~\cite{ElsholtzTao}.
 Verification, however, carries no structural information; the aim here
-is a quantitative structural reduction. For calibration, Vaughan's classical
+is a quantitative structural reduction. For calibration: the first
+density bounds on the exceptional set are due to Webb~\cite{Webb}, and
+Vaughan's classical
 mean-value bound~\cite{Vaughan} gives an exceptional set
 $\ll x \exp(-c(\log x)^{2/3})$ for \eqref{eq:es} --- asymptotically
 stronger than any fixed power of $\log x$; the value of the present
@@ -102,14 +114,16 @@ machine-verified structure, together with the exact criteria.
 \begin{itemize}
 \item The \emph{residual formulation} of the Erd\H{o}s--Straus equation:
   solvability with first denominator $(p+R)/4$ is a divisor-class
-  condition, complete over all solutions (Section~\ref{sec:intro-method}).
+  condition, complete over all solutions
+  (Proposition~\ref{prop:complete}).
 \item \emph{Exact} solvability criteria at $R = 3, 7, 11$
   (Theorems~\ref{thm:A}, \ref{thm:Ap}, \ref{thm:App}), and a meta-theorem
   (Theorem~\ref{thm:meta}) showing every fixed prime residual admits a
   finite computable exact criterion.
 \item A reciprocity principle (Theorem~\ref{thm:J}) collapsing the
-  per-residual conditions into one global statement about $p$ --- the
-  organizing principle behind correlated failure and the record prime.
+  per-residual conditions into one global statement about $p$ --- which
+  we read as the organizing principle behind correlated failure and the
+  record prime.
 \item A constructive sieve chain built on these criteria
   (Lemma~\ref{lem:S}, Theorem~\ref{thm:FG},
   Proposition~\ref{prop:agg}): explicit, certificate-producing
@@ -121,20 +135,13 @@ machine-verified structure, together with the exact criteria.
   $128{,}671{,}219$ hard primes below $10^{11}$, with a calibrated model
   whose deep-tail predictions were subsequently confirmed
   (Section~\ref{sec:comp}).
-\item A machine-checked (Lean~4/\mbox{mathlib}) verification of the elementary
-  layer --- certificate soundness and integrality, Theorem~\ref{thm:A}
-  in both directions, both families of Proposition~\ref{prop:agg}, and
-  Theorem~\ref{thm:J} --- and of the finite-enumeration layer: the
-  divisor-class reachability model with its monotonicity reductions
-  (Lemma~\ref{lem:mono}), the full finite verifications of
-  Theorems~\ref{thm:Ap} and~\ref{thm:App}, the support-bound
-  checks of Lemma~\ref{lem:S} at $R = 19$ and $23$ (and at $R = 31$
-  by certified dynamic programming), the proved discrete-log bridges
-  carrying the $R = 11, 19, 23$ enumerations into the multiplicative
-  model, and the model-faithfulness reduction of
-  Theorem~\ref{thm:meta} (reachability in the model is equivalent to
-  the existence of a divisor certificate \eqref{eq:cert}, and
-  produces one explicitly) --- in the accompanying repository.
+\item A machine-checked (Lean~4/\mbox{mathlib}) formalization, in the
+  accompanying repository, of the elementary layer of the proofs, of
+  the finite enumerations behind Theorems~\ref{thm:Ap}
+  and~\ref{thm:App} and Lemma~\ref{lem:S} at $R = 19, 23, 31$, and of
+  the reduction of Theorem~\ref{thm:meta} itself. The complete
+  inventory, and what each layer contributes to the trusted base, is
+  in Appendix~\ref{app:verif}.
 \end{itemize}
 
 \subsection{The residual method}\label{sec:intro-method}
@@ -156,11 +163,26 @@ solution with first denominator $a$ exists if and only if
 \end{equation}
 in which case $b = (k+m)/R$ and $c = (m^2/k + m)/R$ are positive integers
 solving \eqref{eq:es}. We write $R_{\min}(p)$ for the least admissible $R$
-for which \eqref{eq:cert} holds. The formulation is \emph{complete}: any
-solution with denominators $a \le b \le c$ has $p/4 < a \le 3p/4$, so
-$R = 4a - p \in (0, 2p]$ with $R \equiv 3 \pmod 4$ automatic --- every
-solution of \eqref{eq:es} at $p$ is a residual certificate, and
-$R_{\min}(p) \le 2p$ is equivalent to the conjecture at $p$. Two
+for which \eqref{eq:cert} holds. The formulation loses no solutions:
+
+\begin{proposition}[completeness]\label{prop:complete}
+Every solution of \eqref{eq:es} at a hard prime $p$, ordered
+$a \le b \le c$, has $p/4 < a \le 3p/4$; hence $R = 4a - p$ is an
+admissible residual in $(0, 2p]$ and the solution is a residual
+certificate at $R$. Consequently $R_{\min}(p) \le 2p$ if and only if
+the conjecture holds at $p$.
+\end{proposition}
+
+\begin{proof}
+With $a \le b \le c$, the equation gives $1/a < 4/p \le 3/a$, so
+$p/4 < a \le 3p/4$ and $R = 4a - p \in (0, 2p]$; $R \equiv 3 \pmod 4$
+is automatic from $p \equiv 1 \pmod 4$. By the displayed equivalence,
+the solution yields a divisor $k$ as in \eqref{eq:cert}, so
+$R_{\min}(p) \le R \le 2p$. Conversely \eqref{eq:cert} at any
+admissible $R$ produces a solution.
+\end{proof}
+
+Two
 elementary congruences drive everything below. From $4a = p + R$,
 \begin{equation}\label{eq:star}
   a \equiv 4^{-1}p, \qquad m \equiv 4^{-1}p^2 \pmod R,
@@ -171,7 +193,7 @@ modulo $R$. By \eqref{eq:star}, $m$ is a \emph{square} modulo every prime
 $r \mid R$; hence for every prime $r \mid R$ with $r \equiv 3 \pmod 4$
 (at least one exists, since $R \equiv 3 \pmod 4$),
 \begin{equation}\label{eq:target}
-  \left(\frac{-m}{r}\right) \;=\; \left(\frac{-1}{r}\right)
+  \legendre{-m}{r} \;=\; \legendre{-1}{r}
   \;=\; -1:
 \end{equation}
 \emph{the target class $-m$ is a quadratic non-residue mod $r$.}
@@ -268,16 +290,10 @@ exponents). The checks are short (seconds each, up to $331$\,s for the largest,
 $R = 107$), involve only exact integer arithmetic, and the code is
 available in the
 accompanying repository; Table~\ref{tab:components} records the exact
-configuration counts and entry points. These enumerations are
-additionally formalized in Lean~4: the $R = 7$ verification of
-Theorem~\ref{thm:Ap}, the $R = 11$ criterion of Theorem~\ref{thm:App},
-and the $R = 19, 23$ cases of Lemma~\ref{lem:S} are discharged by
-Lean's compiled evaluator (and the $R = 31$ case by a certified
-dynamic program), with the monotonicity reductions
-(Lemma~\ref{lem:mono}) \emph{and} the discrete-log coordinate
-translations proved as theorems, so that the four enumerations at
-$R = 7, 11, 19, 23$ hold as machine-checked statements directly in
-the multiplicative model (Appendix~\ref{app:verif}).
+configuration counts and entry points. The enumerations are
+additionally formalized in Lean~4, with the reductions they rely on
+proved as theorems rather than trusted; Appendix~\ref{app:verif}
+gives the inventory and the exact trust base.
 \end{remark}
 
 The obstruction framework of Section~\ref{sec:obstruction} yields a
@@ -289,7 +305,7 @@ joint failure across residuals:
 Let $p$ be a hard prime, $R \equiv 3 \pmod 4$ prime, and $q$ an odd
 prime factor of $a = (p+R)/4$ (necessarily $q \ne R$). Then
 \[
-  \left(\frac{q}{R}\right) \;=\; \left(\frac{p}{q}\right).
+  \legendre{q}{R} \;=\; \legendre{p}{q}.
 \]
 \end{theorem}
 
@@ -300,7 +316,7 @@ $R = 3, 7, 11$ the exact criteria provide this; for larger $R$ it is the
 following machine-verified lemma (proved in Section~\ref{sec:sieve}).
 
 \begin{lemma}[support bound; verified for every prime
-$R \equiv 3 \ (4)$, $19 \le R \le 107$]\label{lem:S}
+$R \equiv 3 \pmod 4$, $19 \le R \le 107$]\label{lem:S}
 Let $R$ be one of the twelve primes
 $19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103, 107$, and call the set of
 unit classes mod $R$ occupied by the prime factors of $(p+R)/4$ its
@@ -356,7 +372,7 @@ is $O_A\!\left(x/(\log x)^{1+A}\right)$.
 \begin{remark}[relation to Vaughan's bound]\label{rem:vaughan}
 Theorem~\ref{thm:D} and the chain of Theorem~\ref{thm:FG} are
 \emph{weaker in density} than Vaughan's bound
-$\ll x \exp(-c(\log x)^{2/3})$ \cite{Vaughan}, which already exceeds
+$\ll x \exp(-c(\log x)^{2/3})$~\cite{Vaughan}, which already exceeds
 every fixed power of $\log x$. Their interest is orthogonal: the
 exceptional sets here are cut out by finitely many \emph{explicit}
 multiplicative conditions on shifted forms, each failure of which is
@@ -421,8 +437,8 @@ Theorem~\ref{thm:D}: failure at $R$ forces $(p+R)/4$ to avoid prime
 factors in up to three explicit classes modulo $R$.
 
 The next identity converts the per-residual character conditions into a
-single global statement about $p$, and is the organizing principle
-behind joint failure across residuals.
+single global statement about $p$, collapsing joint failure across
+residuals into one set of quadratic-character conditions.
 
 \begin{proof}[Proof of Theorem~\ref{thm:J}]
 From $q \mid p+R$ we get $R \equiv -p \pmod q$. By quadratic
@@ -436,9 +452,9 @@ $\legendre{q}{R} = (-1)^{\frac{q-1}{2}} \legendre{R}{q}
 (i) The hard classes are the squares mod $840$, so $p$ is automatically
 a quadratic residue mod $3, 5, 7$, and $p \equiv 1 \pmod 8$ handles
 $q = 2$ (which divides $a$ only for $R \equiv 7 \pmod 8$, where
-$\smash{\legendre{2}{R}} = +1$): the small primes forced into
-the shifted values by the Mordell structure never break a Type-I
-failure. (ii) $p$ fails Type-I at every prime
+$\smash{\legendre{2}{R}} = +1$): no prime forced into a shifted value
+$(p+R)/4$ by the congruences (H1)--(H3) carries a negative character.
+(ii) $p$ fails Type-I at every prime
 residual $R \le B$ simultaneously if and only if
 $\smash{\legendre{p}{R}} = +1$ for each such $R$ and
 $\smash{\legendre{p}{q}} = +1$ for every \emph{unforced} odd prime $q$
@@ -452,8 +468,10 @@ Immediate from Theorem~\ref{thm:J} together with (H1)--(H3) and the
 quadratic characters of the forced small primes.
 \end{proof}
 
-Part (i) is a conceptual reading of why the hard classes are exactly
-the square classes. By part (ii), failures at distinct residuals
+In words, part (i) says that the small primes forced into the shifted
+values by the Mordell structure never break a Type-I failure --- a
+conceptual reading of why the hard classes are exactly the square
+classes. By part (ii), failures at distinct residuals
 correlate through shared prime factors: shifted values with few
 distinct prime factors leave few independent sign conditions.
 Section~\ref{sec:comp} quantifies this for the record prime. Both
@@ -549,10 +567,11 @@ $R=7$ at hard primes, \emph{all} are Type~I.
 \subsection{Proof of Theorem~\ref{thm:App}}
 
 \begin{proof}
-By Theorem~\ref{thm:meta} with $R = 11$, $d = 10$: multiplicities cap at
+By Theorem~\ref{thm:meta} with $R = 11$ (the unit group has order
+$10$): multiplicities cap at
 $5$, and at hard primes $3 \mid a$ (from (H2), $11 \equiv 2 \pmod 3$),
 while $2 \nmid a$ (from (H1), $p + 11 \equiv 4 \pmod 8$) and $7 \nmid a$
-(from (H3), $-11 \equiv 3 \bmod 7 \notin \{1,2,4\}$). A dynamic-programming
+(from (H3), $-11 \bmod 7 = 3 \notin \{1,2,4\}$). A dynamic-programming
 enumeration over the finite configuration space
 (code: \texttt{theory.finite\_criterion\_dp}) compresses it to $25$
 equivalence states: $16$ succeed, $6$ fail with all factor classes
@@ -565,9 +584,7 @@ consistency relation forces $p$'s class to extend it to all of
 $\mathbb{Z}/10$. Second, the case-(b) failures are pure \emph{budget}
 failures --- the exponent bounds, not the character obstruction, block
 the target: any of $v_3(a) \ge 2$, a factor in class $\{4, 5, 9\}$, or a
-second non-residue factor restores solvability. The criterion agrees with
-ground-truth divisor search for $158{,}759$ of $158{,}759$ hard primes
-tested below $10^9$.
+second non-residue factor restores solvability.
 \end{proof}
 
 \section{The sieve bound}\label{sec:sieve}
@@ -582,9 +599,9 @@ $n = (p+3)/4$, so that $(p+7)/4 = n + 1$: \emph{the two shifted forms are
 consecutive integers}. By Theorems~\ref{thm:A} and~\ref{thm:Ap}, $p$ is
 exceptional (both residuals fail) precisely when
 \[
-  n \ \text{has no prime factor} \equiv 2 \ (\mathrm{mod}\ 3)
+  n \ \text{has no prime factor} \equiv 2 \pmod 3
   \quad\text{and}\quad
-  n + 1 \ \text{has no prime factor} \equiv 3, 5, 6 \ (\mathrm{mod}\ 7),
+  n + 1 \ \text{has no prime factor} \equiv 3, 5, 6 \pmod 7,
 \]
 with $p = 4n - 3$ prime.
 
@@ -618,8 +635,8 @@ whose forbidden classes $0, -1, 3 \cdot 4^{-1} \bmod q$ are pairwise
 distinct for $q \nmid 21$. By Dirichlet, $\omega$ has average $\kappa =
 \tfrac12 + \tfrac12 + 1 = 2$ in the Halberstam--Richert sense
 $\sum_{q \le w} \omega(q) \log q / q = \kappa \log w + O(1)$. The
-Fundamental Lemma of sieve theory (see \cite[Thm.~2.5]{HalberstamRichert}
-and \cite[Lem.~6.3]{FriedlanderIwaniec}) with $z = x^{1/10}$ gives
+Fundamental Lemma of sieve theory (see~\cite[Thm.~2.5]{HalberstamRichert}
+and~\cite[Lem.~6.3]{FriedlanderIwaniec}) with $z = x^{1/10}$ gives
 \[
   \#E(x) \;\ll\; x \prod_{7 < q \le z} \Bigl(1 - \frac{\omega(q)}{q}\Bigr)
   \;\asymp\; x \,(\log z)^{-1} (\log z)^{-1/2} (\log z)^{-1/2}
@@ -656,7 +673,7 @@ after adjoining the $p$-shifts.
 \begin{proof}[Proof of Lemma~\ref{lem:S}]
 By Lemma~\ref{lem:mono} it suffices to check that for every support of
 size $(R-1)/2$ over the nonzero discrete logs and every class of
-$p$ mod $R$, the target is reachable already at minimal multiplicities
+$p \bmod R$, the target is reachable already at minimal multiplicities
 (exponent budget $2$ per class, $p$-budget $2$); success there kills
 every configuration on every superset support at any multiplicities.
 The check deliberately ignores the consistency relation
@@ -729,10 +746,11 @@ further $p$-only condition. The failure of both families states that the
 two forms $(p+1)/2$ and $p+4$ (in $n$: $2n-1$ and $4n+1$) are free of
 primes $\equiv 3 \pmod 4$ --- two further sifting conditions of
 dimension $\tfrac12$ each on forms distinct from all previous ones.
+\end{proof}
+
 Empirically the two families alone cover $74\%$ of hard primes below
 $10^9$ --- and none of the four primes of Section~\ref{sec:comp} that
 admit a unique working residual $\le 107$.
-\end{proof}
 
 \begin{remark}\label{rem:emptiness}
 Each further prime residual $R \equiv 3 \pmod 4$ whose support-bound
@@ -763,7 +781,7 @@ Fix $A > 0$. Choose $B = B(A)$ so large that
 \end{equation}
 this is possible since the reciprocal sum over the progression
 $R \equiv 3 \pmod 4$ diverges, and $\varphi(R) \le R$. Let
-$S(A) = \{R \equiv 3 \ (4) : 3 \le R \le B\}$ and
+$S(A) = \{R \equiv 3 \pmod 4 : 3 \le R \le B\}$ and
 $M = 840 \cdot \prod_{R \in S(A)} R$.
 
 Write $n = (p+3)/4$ as before, so $(p+R)/4 = n + (R-3)/4$ for each
@@ -801,7 +819,7 @@ Dirichlet's theorem, so $\omega$ has average
   \;\ge\; 1 + \sum_{R \in S(A)} \frac{1}{\varphi(R)} \;>\; 1 + A,
 \]
 in the Halberstam--Richert sense, by \eqref{eq:divergence}. The
-Fundamental Lemma \cite[Thm.~2.5]{HalberstamRichert} in dimension
+Fundamental Lemma~\cite[Thm.~2.5]{HalberstamRichert} in dimension
 $\kappa$ then bounds the sifted count by
 $O_{A}\!\left(x \prod_{q \le z}(1 - \omega(q)/q)\right)
  = O_A\!\left(x (\log x)^{-\kappa}\right)
@@ -813,9 +831,10 @@ bound.
 \begin{remark}
 Theorem~\ref{thm:D} is the strongest statement the pure sieve can give:
 density $O((\log x)^{-A})$ for every $A$, but not emptiness. The
-conjecture for hard primes is equivalent to a \emph{finite covering
+conjecture for hard primes would follow from a \emph{finite covering
 hypothesis}: some finite $S$ admits, for every hard prime, a residual
-$R \in S$ with \eqref{eq:cert}. The data to $10^{11}$ is covered by
+$R \in S$ with \eqref{eq:cert} (the converse is not automatic --- the
+conjecture bounds $R_{\min}(p)$ by $2p$, not uniformly). The data to $10^{11}$ is covered by
 $S = \{3, 7, 11, \dots, 107\}$ --- yet both the calibration
 (Remark~\ref{rem:emptiness}) and the conditional construction of
 Section~\ref{sec:open} predict that any fixed list eventually fails.
@@ -832,49 +851,51 @@ integer arithmetic, $4abc = p(bc + ac + ab)$.
 \subsection{Data}
 
 Every one of the $128{,}671{,}219$ hard primes $p < 10^{11}$ possesses a
-residual certificate with $R \le 107$. The minimal residuals distribute as
-follows ($10^{11}$ data; Figure~\ref{fig:hist}):
+residual certificate with $R \le 107$. The minimal residuals distribute
+as in Table~\ref{tab:dist} and Figure~\ref{fig:hist}.
 
 \begin{table}[ht]
 \centering
 \begin{tabular}{rr@{\qquad}rr@{\qquad}rr}
 \toprule
 $R$ & count & $R$ & count & $R$ & count \\ \midrule
-3  & 69{,}951{,}190 & 39 & 25{,}258 & 79 & 50 \\
-7  & 31{,}335{,}473 & 43 & 6{,}850  & 83 & 23 \\
-11 & 19{,}439{,}771 & 47 & 8{,}811  & 87 & 8  \\
-15 & 3{,}974{,}286  & 51 & 1{,}450  & 91 & 3  \\
-19 & 2{,}441{,}687  & 55 & 1{,}369  & 95 & 5  \\
-23 & 1{,}070{,}808  & 59 & 954     & 99 & 1  \\
-27 & 187{,}963     & 63 & 283     & 103 & 1 \\
-31 & 193{,}848     & 67 & 104     & 107 & 1 \\
-35 & 30{,}784      & 71 & 209     &     &   \\
-   &              & 75 & 29      &     &   \\
+3  & 69{,}951{,}190 & 39 & 25{,}258 & 75 & 29 \\
+7  & 31{,}335{,}473 & 43 & 6{,}850  & 79 & 50 \\
+11 & 19{,}439{,}771 & 47 & 8{,}811  & 83 & 23 \\
+15 & 3{,}974{,}286  & 51 & 1{,}450  & 87 & 8  \\
+19 & 2{,}441{,}687  & 55 & 1{,}369  & 91 & 3  \\
+23 & 1{,}070{,}808  & 59 & 954     & 95 & 5  \\
+27 & 187{,}963     & 63 & 283     & 99 & 1  \\
+31 & 193{,}848     & 67 & 104     & 103 & 1 \\
+35 & 30{,}784      & 71 & 209     & 107 & 1 \\
 \bottomrule
 \end{tabular}
 \caption{Distribution of the minimal residual $R_{\min}$ over the
-$128{,}671{,}219$ hard primes below $10^{11}$.}
+$128{,}671{,}219$ hard primes below $10^{11}$ (plotted in
+Figure~\ref{fig:hist}).}
 \label{tab:dist}
 \end{table}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=.92\linewidth]{fig_minR_hist}
-\caption{Distribution of the minimal residual $R_{\min}$ over the
-$128{,}671{,}219$ hard primes below $10^{11}$ (logarithmic count scale).
-The head is dominated by $R = 3, 7, 11$; the tail thins geometrically;
-the record $R = 107$ is attained by a single prime below $10^7$.}
+\caption{The data of Table~\ref{tab:dist} on a logarithmic count
+scale. The head is dominated by $R = 3, 7, 11$; the tail thins
+geometrically; the shaded band $87$--$103$ was empty below $10^{10}$
+(its late population is analyzed below); the record $R = 107$ is
+attained by a single prime below $10^7$.}
 \label{fig:hist}
 \end{figure}
 
-Salient features:
+Three features of the distribution deserve comment.\nopagebreak
 \begin{itemize}
 \item $R_{\max} = 107$, attained by the single prime $8{,}803{,}369 <
-  10^7$, \emph{unchanged from $5 \times 10^7$ to $10^{11}$}. In the
+  10^7$ and never exceeded through $10^{11}$. In the
   language of Corollary~\ref{cor:J}: its $27$ shifted values contain
   only $43$ distinct odd primes (typical: $45$--$52$), and $81\%$ of
   them satisfy $\smash{\legendre{p}{q}} = +1$ (typical: $44$--$60\%$)
-  --- a $\approx 4\sigma$ fluctuation in provably the right statistic.
+  --- a $\approx 4\sigma$ fluctuation in the statistic that
+  Theorem~\ref{thm:J} identifies as governing joint failure.
 \item \textbf{A confirmed prediction.} Below $10^{10}$ no prime had
   minimal $R \in \{87, 91, 95, 99, 103\}$; the calibrated independence
   model attributed this gap to small-number statistics (expected counts
@@ -882,11 +903,12 @@ Salient features:
   (failing every $R \le 83$) land at $87, 91, 95, 99, 103, \ge 107$
   with probabilities $0.53, 0.11, 0.22, 0.03, 0.05, 0.06$ (the last
   being the total mass at or beyond $107$). Between
-  $10^{10}$ and $10^{11}$ the band populated with $8, 3, 5, 1, 1$ primes
-  respectively (all in $(1.3 \times 10^{10}, 10^{11})$), and none passed
+  $10^{10}$ and $10^{11}$ the five values acquired $8, 3, 5, 1, 1$
+  primes respectively (all in $(1.3 \times 10^{10}, 10^{11})$), and
+  none passed
   $103$: the observed conditional distribution over the $19$ deep-tail
   primes ($8, 3, 5, 1, 1, 1$ including the record) matches the
-  prediction. The gap confirmed its own explanation by disappearing.
+  prediction.
 \item Among all $1{,}587{,}581$ hard primes below $10^9$, exactly
   \emph{four} admit a unique working residual $\le 107$
   ($8{,}803{,}369$ with $107$; $142{,}361{,}209$ with $59$;
@@ -900,7 +922,7 @@ Salient features:
 
 The proportion of hard primes failing both $R = 3$ and $R = 7$, multiplied
 by $\log x$, is constant to within $2\%$ across three decades of the
-$10^9$ data:
+$10^9$ data (Table~\ref{tab:calib}).
 
 \begin{table}[ht]
 \centering
@@ -910,8 +932,10 @@ bin ($p \sim$) & $10^6$ & $10^7$ & $6 \times 10^7$ & $2.5 \times 10^8$ & $10^9$ 
 density $\times \log x$ & 5.14 & 5.19 & 5.18 & 5.17 & 5.16 \\
 \bottomrule
 \end{tabular}
-\caption{Joint $\{3,7\}$-exceptional density times $\log x$ across
-dyadic bins of the $10^9$ data.}
+\caption{The proportion of hard primes near $x$ that fail both
+$R = 3$ and $R = 7$, multiplied by $\log x$, in five logarithmically
+spaced bins of the $10^9$ data. Constancy of the product is the decay
+rate predicted by the base case of Theorem~\ref{thm:FG}.}
 \label{tab:calib}
 \end{table}
 
@@ -934,10 +958,13 @@ Theorem~\ref{thm:App}(b); the Type-I share broadly decreases with
 $\varphi(R)$ (e.g.\ $51\%$ at $R = 103$, though not monotonically), as
 hitting one specific class among
 $\varphi(R)$ grows harder while the character dichotomy stays binary.
-Taken together, the data of this section is the empirical face of
-Sections~\ref{sec:obstruction}--\ref{sec:sieve}: every distributional
+Taken together, the data of this section matches the framework of
+Sections~\ref{sec:obstruction}--\ref{sec:sieve}: each distributional
 feature --- the head, the geometric tail, the once-empty band, the
-static record --- now has a structural interpretation attached.
+static record --- has a structural or heuristic explanation (the exact
+criteria for the head; the calibrated model, built on the sieve
+dimensions, for the tail and the band; Theorem~\ref{thm:J} for the
+record).
 
 \section{Open problems}\label{sec:open}
 
@@ -990,8 +1017,8 @@ static record --- now has a structural interpretation attached.
   out of reach: already ``infinitely many hard $p$ fail $R=3$''
   contains a two-form prime-tuple statement. What remains open is an
   unconditional upper bound on $R_{\min}(p)$ --- and this is not an
-  incremental item: by the completeness observation of
-  Section~\ref{sec:intro-method}, $R_{\min}(p) \le 2p$ is
+  incremental item: by Proposition~\ref{prop:complete},
+  $R_{\min}(p) \le 2p$ is
   \emph{equivalent} to the conjecture at $p$, so an unconditional bound
   $R_{\min}(p) \le f(p)$ for any $f$ whatsoever is the full problem.
 \end{enumerate}
@@ -1036,76 +1063,72 @@ verify identical claims at $R = 19, 23$, and the exact criteria are
 cross-checked against ground-truth divisor search on up to
 $1{,}587{,}581$ primes with zero discrepancies. Third, every check is
 deterministic, uses exact integer arithmetic only (no floating point,
-randomness, or external libraries), and completes in seconds from the
-repository --- an independent re-implementation is an afternoon's work,
-and we would welcome one.
+randomness, or external libraries), and runs from the repository in
+seconds (the largest, the $R = 107$ dynamic program, in
+\mbox{$331$\,s}) --- an independent re-implementation is an
+afternoon's work, and we would welcome one.
 
-Fourth, the elementary layer and the enumeration layer are formalized
-in Lean~4/\mbox{mathlib} in the accompanying repository (\texttt{lean/}).
-The elementary layer covers certificate soundness and integrality
-(\texttt{certificate\_sound}, \texttt{certificate\_integrality}),
-both directions of Theorem~\ref{thm:A}
-(\texttt{theoremA\_necessity}, \texttt{theoremA\_sufficiency}), both
-families of Proposition~\ref{prop:agg} (\texttt{family\_p\_plus\_one},
-\texttt{family\_p\_plus\_four}, as integer identities), and
-Theorem~\ref{thm:J} (\texttt{reciprocity\_structure}). For the
-enumeration layer, the reachability model underlying
-Theorem~\ref{thm:meta} is defined in the multiplicative structure of
-$\mathbb{Z}/R$ directly, both halves of Lemma~\ref{lem:mono} are
-proved as theorems (\texttt{reach\_mono}, \texttt{reach\_sublist})
-with no computational content to trust, and the full enumerations
-behind Theorem~\ref{thm:Ap} ($1{,}536$ configurations, checked as the
-$384$ that remain after the neutral class collapses),
-Theorem~\ref{thm:App} ($497{,}664$ capped configurations, including
-the exact two-case failure classification), and the $R = 19, 23$
-cases of Lemma~\ref{lem:S} ($437{,}580$ resp.\ $7{,}759{,}752$
-checks) are discharged by Lean's compiled evaluator
-(\texttt{native\_decide}, which trusts the Lean compiler in addition
-to the kernel). The three larger enumerations are \emph{evaluated} in
-the discrete-log coordinates in which the proofs and
-\texttt{verify\_support\_bound} work, but the coordinates add nothing
-to the trusted base: the translation is itself a proved theorem (the
-mask semantics --- rotation is multiplication by $g^s$, the mask fold
-is the divisor-class reachability set), and the formal development
-derives the $R = 11, 19, 23$ statements back in the multiplicative
-model, where each reports exactly its enumeration's single evaluator
-axiom. The reduction of Theorem~\ref{thm:meta} is also formalized
-(\texttt{reach\_certificate}): membership of the target class in the
-reachability model is equivalent to the existence of a divisor
-$k \mid m^2$ in that class --- via the fundamental theorem of
-arithmetic --- and yields the explicit positive certificate
-$(k, b, c)$ with the identity of \eqref{eq:es}; this closes the loop
-between the abstract model that the enumerations check and the
-integer certificates the conjecture asks for, with no computational
-content to trust.
-
-Two further layers are formalized on top. First, the composed
-corollary: if $(p+19)/4$ has nine prime factors in pairwise-distinct
-unit classes other than $1$ modulo $19$, an explicit solution of
-\eqref{eq:es} at $p$ exists --- Lemma~\ref{lem:S} applied end to end,
-machine-checked through the enumeration, both bridges, and the
-budget-consolidation lemmas. Second, the $R = 31$ case of
-Lemma~\ref{lem:S} is verified by \emph{certified dynamic
-programming}: the $\binom{29}{15} = 77{,}558{,}760$ supports are
-never enumerated --- the formal development implements the subset
-dynamic program of \texttt{verify\_support\_bound\_dp} in Lean, a
-machine-checked soundness induction shows it covers every support,
-and the single step delegated to the evaluator is the final check
-that every state realized by $\ge 15$ classes hits all $30$ targets
-($3{,}001$ states in the run). Every main theorem is audited with
-\texttt{\#print axioms}, and helper lemmas are covered transitively
-through them. For these enumerations the sixty-line trust base above
-is thus replaced by the Lean toolchain evaluating a formally stated
-proposition --- and the Python and Lean implementations, written
-independently against the same statements, agree.
-
-In the development notes and Lean sources accompanying this paper,
-several results carry working letter names; the dictionary is:
-Theorem~A $=$ Theorem~\ref{thm:A}, A$'$ $=$ Theorem~\ref{thm:Ap},
-A$''$ $=$ Theorem~\ref{thm:App}, Theorem~J $=$ Theorem~\ref{thm:J},
-Theorem~I $=$ Proposition~\ref{prop:agg}, Lemma~S $=$
-Lemma~\ref{lem:S}, and the monotonicity reduction $=$
-Lemma~\ref{lem:mono}.
+Fourth, much of the development is formalized in the accompanying
+repository (\texttt{lean/}) in Lean~4 with its mathematical library
+mathlib. For readers unfamiliar with proof assistants: Lean is a
+language in which theorem statements and proofs are written formally
+and every proof is checked by a small trusted \emph{kernel}, so a
+theorem accepted by the kernel is correct relative to its formal
+statement, independently of who --- or what --- wrote the proof. Two
+Lean-specific mechanisms matter below: \texttt{native\_decide}
+discharges a decidable proposition by running compiled code, which
+extends the trusted base from the kernel to Lean's compiler and
+evaluator; and \texttt{\#print axioms} reports, for any theorem,
+exactly which axioms (including any such evaluator appeal) its proof
+ultimately uses. The formalization comprises:
+\begin{itemize}
+\item \emph{The elementary layer}, as ordinary kernel-checked proofs:
+  certificate soundness and integrality, both directions of
+  Theorem~\ref{thm:A}, both families of Proposition~\ref{prop:agg},
+  and Theorem~\ref{thm:J}.
+\item \emph{The enumeration layer}: the reachability model underlying
+  Theorem~\ref{thm:meta} is defined in the multiplicative structure
+  of $\mathbb{Z}/R$ directly, and both halves of
+  Lemma~\ref{lem:mono} are proved as theorems, with no computational
+  content to trust. The finite checks behind Theorem~\ref{thm:Ap}
+  ($1{,}536$ configurations, checked as the $384$ that remain after
+  the neutral class collapses), Theorem~\ref{thm:App} ($497{,}664$
+  capped configurations, including the exact two-case failure
+  classification), and Lemma~\ref{lem:S} at $R = 19, 23$
+  ($437{,}580$ resp.\ $7{,}759{,}752$ checks) are discharged by
+  \texttt{native\_decide}.
+\item \emph{The coordinate bridges}: the larger enumerations are
+  \emph{evaluated} in discrete-log coordinates for speed, but the
+  translation to the multiplicative model is itself a proved theorem,
+  so the coordinates add nothing to the trusted base; the $R = 11,
+  19, 23$ statements hold in the multiplicative model, each
+  reporting exactly its enumeration's single evaluator axiom.
+\item \emph{The reduction of Theorem~\ref{thm:meta}}: membership of
+  the target class in the reachability model is proved equivalent to
+  the existence of a divisor $k \mid m^2$ in that class (via the
+  fundamental theorem of arithmetic), and produces the explicit
+  positive certificate $(k, b, c)$ solving \eqref{eq:es} --- closing
+  the loop between the abstract model the enumerations check and the
+  integer certificates the conjecture asks for.
+\item \emph{Two capstones}: a composed corollary (if $(p+19)/4$ has
+  nine prime factors in pairwise-distinct unit classes other than
+  $1$ modulo $19$, an explicit solution of \eqref{eq:es} at $p$
+  exists, machine-checked end to end), and Lemma~\ref{lem:S} at
+  $R = 31$ by \emph{certified dynamic programming} --- the
+  $\binom{29}{15} = 77{,}558{,}760$ supports are never enumerated; a
+  machine-checked induction shows the dynamic program covers every
+  support, and the evaluator's only task is the final check that
+  every state realized by $\ge 15$ classes hits all $30$ targets
+  ($3{,}001$ states in the run).
+\end{itemize}
+Every main theorem is audited with \texttt{\#print axioms}, and
+helper lemmas are covered transitively through them. For these
+enumerations the sixty-line trust base above is thus replaced by the
+Lean toolchain evaluating a formally stated proposition --- and the
+Python and Lean implementations, written independently against the
+same statements, agree. (The development notes and Lean sources use
+working letter names for several results; the repository's
+documentation includes the dictionary.)
 
 \begin{table}[ht]
 \centering
@@ -1134,7 +1157,7 @@ Lem.~\ref{lem:S} ($R = 19$--$107$, all twelve primes) &
 subset dynamic program over reachability-mask states; state counts
 $271$ ($R{=}19$), $3{,}001$ ($R{=}31$), $2{,}414{,}145$ ($R{=}83$),
 $19{,}530{,}971$ ($R{=}107$); zero violations throughout &
-$\le 19.5$M &
+$\approx 19.5$M &
 \texttt{verify\_\allowbreak support\_bound\_dp} \\
 \bottomrule
 \end{tabular}
@@ -1208,8 +1231,9 @@ and the gap analysis.
 
 \subsection{Reproduction}\label{app:repro}
 
-With the repository installed (\texttt{pip install -e .}), the following
-commands regenerate and re-verify everything above. Generation of the
+With the repository installed (\texttt{pip install -e .}), the
+commands of Table~\ref{tab:repro} regenerate and re-verify everything
+above. Generation of the
 full $10^{10}$ map takes about $11$ minutes on four cores; every other
 command runs in seconds to minutes.
 
@@ -1220,12 +1244,14 @@ command runs in seconds to minutes.
 \toprule
 claim & command \\ \midrule
 Thm.~\ref{thm:Ap} finite check &
-\texttt{python -c 'from erdos\_straus.theory \textbackslash} \newline
+\texttt{python -c "from erdos\_straus.theory \textbackslash} \newline
 \texttt{\ \ import verify\_R7\_finite; \textbackslash} \newline
-\texttt{\ \ print(verify\_R7\_finite())'} \\ \addlinespace
+\texttt{\ \ print(verify\_R7\_finite())"} \\ \addlinespace
 Thm.~\ref{thm:App} enumeration &
-\texttt{finite\_criterion\_dp(11, ...)} as in the test suite
-(\texttt{tests/test\_solver.py}) \\ \addlinespace
+\texttt{finite\_criterion\_dp(11,} \newline
+\texttt{\ \ forced\_logs=[\_dlog\_table(11)[3]])} from
+\texttt{erdos\_straus.theory} (as in the test suite,
+\texttt{tests/test\_solver.py}) \\ \addlinespace
 Lem.~\ref{lem:S} at $R = 19, 23$ &
 \texttt{verify\_support\_bound(19)}, \texttt{(23)} \\ \addlinespace
 generate the $10^{10}$ map &
@@ -1234,16 +1260,18 @@ generate the $10^{10}$ map &
 verify a dataset exhaustively &
 \texttt{python -m erdos\_straus.verify data/<file>} \\ \addlinespace
 distribution / covering / taxonomy &
-\texttt{python -m erdos\_straus.analyze dist} (also \texttt{cover},
-\texttt{tail}); \texttt{python -m erdos\_straus.theory} \\ \addlinespace
+\texttt{python -m erdos\_straus.analyze dist \textbackslash} \newline
+\texttt{\ \ --rmap data/hard\_primes\_1e9\_minimalR.json.gz} (also
+\texttt{cover}, \texttt{tail}); \texttt{python -m erdos\_straus.theory} \\ \addlinespace
 Lean formalization (elementary + enumeration layers) &
 \texttt{cd lean/ErdosStraus} \newline
 \texttt{lake exe cache get \&\& lake build} \\
 \bottomrule
 \end{tabular}
-\caption{Reproduction commands (one shell command per line;
-\textbackslash{} marks an explicit line continuation within a single
-command).}
+\caption{Reproduction commands. Shell commands are given verbatim,
+with \textbackslash{} marking an explicit line continuation within a
+single command; the finite-check rows are Python calls from the
+module \texttt{erdos\_straus.theory}.}
 \label{tab:repro}
 \end{table}
 
@@ -1251,7 +1279,15 @@ The full test suite (\texttt{python -m pytest}; $46$ tests) exercises the
 proof-component checks, the exact criteria against ground truth, and
 sampled dataset validation on every run.
 
-\begin{thebibliography}{9}
+\subsection*{Data and code availability}
+
+All code, all datasets of Table~\ref{tab:datasets}, and the Lean
+development are openly available in the repository
+\url{https://github.com/jeffmhopkins/Erd-s-Straus-attack}.
+
+\clearpage
+
+\begin{thebibliography}{99}
 
 \bibitem{ElsholtzTao}
 C.~Elsholtz and T.~Tao,
@@ -1306,6 +1342,16 @@ available via the Internet Archive; accessed August 2026).
 R.~C.~Vaughan,
 \emph{On a problem of Erd\H{o}s, Straus and Schinzel},
 Mathematika \textbf{17} (1970), 193--198.
+
+\bibitem{Webb}
+W.~A.~Webb,
+\emph{On $4/n = 1/x + 1/y + 1/z$},
+Proc.\ Amer.\ Math.\ Soc.\ \textbf{25} (1970), 578--584.
+
+\bibitem{Yamamoto}
+K.~Yamamoto,
+\emph{On the Diophantine equation $4/n = 1/x + 1/y + 1/z$},
+Mem.\ Fac.\ Sci.\ Kyushu Univ.\ Ser.~A \textbf{19} (1965), 37--47.
 
 \end{thebibliography}
 
