@@ -1,0 +1,8 @@
+{
+  "title": "Residual certificates for the Erdős–Straus conjecture: exact solvability criteria, a sieve bound, and computations to 10^11",
+  "description": "Companion repository for the paper: the residual-method solver and verification pipelines, certificate datasets for all 128,671,219 hard primes below 10^11, the Lean 4/mathlib formalization of the elementary and finite-enumeration layers, the full theoretical development notes, and the Burgess–reciprocity ladder census archives.",
+  "creators": [{"name": "Hopkins, J. M."}],
+  "license": "MIT",
+  "upload_type": "software",
+  "keywords": ["Erdős–Straus conjecture", "Egyptian fractions", "unit fractions", "sieve methods", "formal verification", "Lean 4"]
+}

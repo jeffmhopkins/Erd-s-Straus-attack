@@ -1,5 +1,7 @@
 # Erdős–Straus Conjecture — Computational Attack
 
+[![CI](https://github.com/jeffmhopkins/Erd-s-Straus-attack/actions/workflows/ci.yml/badge.svg)](https://github.com/jeffmhopkins/Erd-s-Straus-attack/actions/workflows/ci.yml)
+
 A computational harness for attacking the **Erdős–Straus conjecture**: for every
 integer $n \ge 2$ there exist positive integers $a, b, c$ with
 
@@ -126,6 +128,17 @@ a machine-checked soundness induction — never enumerated). The
 development is sorry-free; every main theorem is audited via
 `#print axioms`, with helper lemmas covered transitively (see
 [lean/README.md](lean/README.md) for the trust base).
+
+## Citation & archiving
+
+Cite via [`CITATION.cff`](CITATION.cff) (GitHub renders a "Cite this
+repository" button). To mint a versioned DOI: enable this repository at
+[zenodo.org/account/settings/github](https://zenodo.org/account/settings/github)
+(one-time toggle), then publish a GitHub release — Zenodo archives the
+release and issues a DOI automatically, with metadata drawn from
+[`.zenodo.json`](.zenodo.json). CI runs the 56-test suite plus the
+proof-component smoke checks on every push; the Lean build has its own
+workflow, triggered by changes under `lean/`.
 
 ## Setup
 
