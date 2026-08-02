@@ -231,6 +231,41 @@ def test_character_obstruction_prop1():
     assert checked > 10  # the obstruction does occur in range
 
 
+def test_meta_theorem_solvable_exact_matches_solver():
+    """solvable_exact (class-based criterion) agrees with the divisor
+    search for R in {11, 19, 23} on small hard primes."""
+    from erdos_straus.bulk_generate import _init_small_primes, solve_residual
+    from erdos_straus.theory import solvable_exact
+    from erdos_straus.solver import generate_hard_primes
+
+    _init_small_primes()
+    for p in generate_hard_primes(150000):
+        for R in [11, 19, 23]:
+            assert solvable_exact(p, R) == (
+                solve_residual(p, R) is not None), (p, R)
+
+
+def test_theorem_Adoubleprime_R11_dp_states():
+    """The R=11 DP enumeration finds exactly the published state tally:
+    16 success, 6 character-obstructed, 3 budget-limited, 0 subgroup."""
+    from erdos_straus.theory import finite_criterion_dp, _dlog_table
+
+    _, L11 = _dlog_table(11)
+    r = finite_criterion_dp(11, forced_logs=[L11[3]])
+    assert r["tally"] == {"success": 16, "fail_all_even": 6,
+                          "fail_budget": 3}
+
+
+def test_R7_dp_reproduces_theorem_Aprime():
+    """The generic DP at R=7 reproduces Theorem A': no budget or subgroup
+    failures - only the character dichotomy."""
+    from erdos_straus.theory import finite_criterion_dp, _dlog_table
+
+    _, L7 = _dlog_table(7)
+    r = finite_criterion_dp(7, forced_logs=[L7[2]], p_res_set=[1, 2, 4])
+    assert set(r["tally"]) == {"success", "fail_all_even"}
+
+
 def test_bulk_generate_matches_stored_minimal_R():
     """The fast bulk solver reproduces the minimal R of stored certificates."""
     from erdos_straus.bulk_generate import _init_small_primes, minimal_certificate
