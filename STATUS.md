@@ -95,7 +95,13 @@ rate is flat at 95.0–95.8 % across four half-decade window samples
 (10 000 primes each, ladder coverage 100 %), and on the complete
 $10^{11}$ deep tail (all 20 151 primes with $R_{\min} \ge 43$) the
 ladder resolves all but two primes at cap 400 — both resolve by
-$R = 435$. No drift in the per-rung budget-failure rate with $p$.
+$R = 435$. No drift in the per-rung budget-failure rate with $p$. **Failure
+anatomy** (`burgess_failures_1e9.json`): 97.5 % of failures are true
+budget misses (29 % miss only the target class); no failure has more
+than 5 non-identity factor classes, with $P(\text{fail} \mid s)$
+falling $\sim 7\times$ per class ($27\% \to 8\% \to 1.2\% \to
+0.08\% \to 0$); non-residue mass sits at its consistency-parity
+minimum in 97.9 % of failures.
 
 ### $10^{11}$ update (the gap fills; the record stands)
 

@@ -433,3 +433,16 @@ def test_burgess_selected_residual_reciprocity():
         R = selected_residual(p, q)
         assert R % 4 == 3 and (p + R) % (4 * q) == 0
         assert jacobi(q % R, R) == -1, (p, q, R)
+
+
+def test_reach_diagnostics_known_budget_failure():
+    """Failure anatomy (THEORY.md 2.10): p = 3361 at its selected residual
+    R = 27 is a true budget failure whose reach misses only the target."""
+    from erdos_straus.bulk_generate import _init_small_primes
+    from erdos_straus.burgess_scan import reach_diagnostics
+
+    _init_small_primes()
+    d = reach_diagnostics(3361, 27)
+    assert not d["target_reached"]
+    assert d["true_budget"] and not d["subgroup_miss"]
+    assert d["missed"] == 1 and d["support_size"] <= 5
