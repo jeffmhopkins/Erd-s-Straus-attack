@@ -472,3 +472,27 @@ def test_prop22_contrapositive_on_selected_rung_failures():
         a = (p + R) // 4
         assert not any(u % R in classes for u in factorize(a)), (p, q, R)
     assert checked > 5
+
+
+def test_halfdim_failure_family_exemplar():
+    """Theorem P1's mechanism (THEORY.md 2.10): p = 5,544,361 is in the
+    half-dimensional failure family of its selected ladder -- R0 = 51 with
+    r1 = 3, (q|3) = +1, and every prime factor of a = (p+R0)/4 a QR mod 3
+    -- and therefore provably fails R0 (Prop 2.1 at r1)."""
+    from erdos_straus.bulk_generate import (_init_small_primes, factorize,
+                                            solve_residual)
+    from erdos_straus.burgess_scan import (least_legendre_nonresidue,
+                                           selected_residual)
+    from erdos_straus.theory import jacobi
+
+    _init_small_primes()
+    p = 5544361
+    q = least_legendre_nonresidue(p)
+    R = selected_residual(p, q)
+    assert (q, R) == (31, 51)
+    r1 = 3
+    assert R % r1 == 0 and r1 % 4 == 3 and jacobi(q % r1, r1) == 1
+    fa = factorize((p + R) // 4)
+    assert fa == {31: 1, 61: 1, 733: 1}
+    assert all(jacobi(u % r1, r1) == 1 for u in fa)
+    assert solve_residual(p, R) is None

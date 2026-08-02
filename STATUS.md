@@ -117,7 +117,12 @@ so the avoidance ladder decays exactly as B prescribes), and
 $c_P$ = 12.0 % at rung 0, 15.9 % at rung 1, archive
 `burgess_proxy_1e9.json`; **stable at scale**: $c_P$ = 9.7–11.6 % across four half-decade bins to $10^{11}$, `burgess_proxy_scaled.json`): under P, B holds at every fixed rung — the
 program is L₀ ✓, B₁ ✓, B₂ ✓, B ⟸ P, L₁ ⟸ B, with P the single
-unproved ingredient. Theorem L₁ — under
+unproved ingredient — now two-sidedly bracketed: **Theorem P₁**
+(Iwaniec's half-dimensional sieve on the per-prime character family
+at composite selected residuals) gives the program's first
+unconditional failure *lower* bound, $\#E_0 \gg x/(\log x)^{3/2}$ on
+the 6.6 % of ladders that are half-dimensionally admissible; the
+remaining gap to P is exactly $(\log x)^{1/2 - 1/\varphi(R_0)}$. Theorem L₁ — under
 B, all but $O(x e^{-\delta J(x)})$ hard primes have
 $R_{\min}(p) \le (\log x)^{2+o(1)} J(x)$; calibrations from
 $J = (\log\log x)^2$ (past the entire chain) to
