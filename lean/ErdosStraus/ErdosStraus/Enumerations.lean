@@ -176,15 +176,92 @@ theorem lemmaS_finite_R19 :
            ((2 * plog + 7) % 18)) = true := by
   native_decide
 
+/-- Cyclic rotation of a 10-bit mask: discrete-log coordinates for
+`(ℤ/11)ˣ` (primitive root `g = 2`; bit `i` is the class `2^i mod 11`). -/
+def rot10 (m s : ℕ) : ℕ :=
+  ((m <<< (s % 10)) ||| (m >>> (10 - s % 10))) &&& (2 ^ 10 - 1)
+
+/-- **Theorem A″, finite verification (R = 11)**, in discrete-log
+coordinates (primitive root 2). Class↔log dictionary:
+`2↦1, 3↦8, 4↦2, 5↦4, 6↦9, 7↦7, 8↦3, 9↦6, 10↦5`; quadratic residues
+are the even logs. `mᵥ` is the (capped) multiplicity of the class of
+log `v` among the prime factors of `a = (p+11)/4`; caps are by order
+(`ord(g^v) = 10/gcd(v,10)`): logs `1,3,7,9` cap 5, logs `2,4,6,8`
+cap 3, log `5` cap 1 — a budget of twice the cap covers the full
+cyclic subgroup, so higher multiplicities are model-equivalent. The
+neutral log 0 is omitted.
+
+Structure at hard primes: `3 ∣ a` forces the class 3 (log 8), so
+`m₈ ≥ 1`; consistency determines `p`:
+`plog = (Σ v·mᵥ + 2) % 10` (since `log 4⁻¹ = log 3 = 8`), and the
+target `−m` has log `(5 + alog + plog) % 10` (`log(−1) = 5`).
+
+Claim (the exact criterion): the target is reachable **iff** the
+configuration is *not* of the two failure shapes of Theorem A″ —
+(a) all factor classes are quadratic residues (all odd logs absent),
+or (b) `v₃(a) = 1`, every other class trivial except a non-residue
+part `{class 2}`, `{class 6}`, or `{class 2, class 6}` at
+multiplicity one (logs 1 and 9), paired with `p ≡ 2, 6, 1 (mod 11)`
+respectively. All 497,664 consistent capped configurations. -/
+theorem theoremA''_finite_R11 :
+    ∀ (m1 m3 m7 m9 : Fin 6) (m2 m4 m6 m8 : Fin 4) (m5 : Fin 2),
+      1 ≤ m8.val →
+      (let alog := (m1.val + 2 * m2.val + 3 * m3.val + 4 * m4.val +
+          5 * m5.val + 6 * m6.val + 7 * m7.val + 8 * m8.val +
+          9 * m9.val) % 10
+       let plog := (alog + 2) % 10
+       let base := [(1, m1.val), (2, m2.val), (3, m3.val), (4, m4.val),
+          (5, m5.val), (6, m6.val), (7, m7.val), (8, m8.val),
+          (9, m9.val)].foldl
+           (fun b vm => if vm.2 = 0 then b else
+             (List.range (2 * vm.2 + 1)).foldl
+               (fun acc e => acc ||| rot10 b (vm.1 * e)) 0) 1
+       (Nat.testBit (base ||| rot10 base plog ||| rot10 base (2 * plog))
+           ((5 + alog + plog) % 10)
+         == !(((m1 == 0) && (m3 == 0) && (m5 == 0) && (m7 == 0) &&
+                (m9 == 0)) ||
+              ((m8 == 1) && (m2 == 0) && (m4 == 0) && (m6 == 0) &&
+                (m3 == 0) && (m5 == 0) && (m7 == 0) &&
+                (((m1 == 1) && (m9 == 0) && (plog == 1)) ||
+                 ((m1 == 0) && (m9 == 1) && (plog == 9)) ||
+                 ((m1 == 1) && (m9 == 1) && (plog == 0)))))) = true) := by
+  native_decide
+
+/-- Cyclic rotation of a 22-bit mask: discrete-log coordinates for
+`(ℤ/23)ˣ` (primitive root `g = 5`; bit `i` is the class `5^i mod 23`). -/
+def rot22 (m s : ℕ) : ℕ :=
+  ((m <<< (s % 22)) ||| (m >>> (22 - s % 22))) &&& (2 ^ 22 - 1)
+
+/-- **Lemma S, finite verification at R = 23**, exactly parallel to
+`lemmaS_finite_R19` (primitive root 5; the target `−4⁻¹p²` has log
+`(11 + 2·plog + 18) % 22 = (2·plog + 7) % 22`, since `log₅(−1) = 11`
+and `log₅(4⁻¹) = log₅ 6 = 18`). Every support of (23−1)/2 = 11
+nonzero logs reaches the target at multiplicity 1 for every class of
+`p`: C(21,11) = 352,716 supports × 22 classes = 7,759,752 checks —
+failing configurations occupy at most 10 nonzero classes. The inner
+quantifier over `p` is phrased with `List.all` so the evaluator
+computes each support's base mask once. -/
+theorem lemmaS_finite_R23 :
+    ∀ S ∈ Finset.powersetCard 11 (Finset.Icc 1 21),
+      ((let base := (List.range 22).foldl
+            (fun b v => if v ∈ S then b ||| rot22 b v ||| rot22 b (2 * v)
+             else b) 1
+        (List.range 22).all fun plog =>
+          Nat.testBit (base ||| rot22 base plog ||| rot22 base (2 * plog))
+            ((2 * plog + 7) % 22)) = true) := by
+  native_decide
+
 end ErdosStraus
 
 -- Audit. The monotonicity lemmas must report only the standard axioms;
--- the two finite checks additionally report `Lean.ofReduceBool` (trust
+-- the finite checks additionally report `Lean.ofReduceBool` (trust
 -- in the compiled evaluator — kernel reduction of Finset/Multiset
--- computations is impractical at this scale; both enumerations are
+-- computations is impractical at this scale; every enumeration is
 -- independently cross-checked by the Python implementations. See
 -- lean/README.md).
 #print axioms ErdosStraus.reach_mono
 #print axioms ErdosStraus.reach_sublist
 #print axioms ErdosStraus.theoremA'_finite_R7
 #print axioms ErdosStraus.lemmaS_finite_R19
+#print axioms ErdosStraus.theoremA''_finite_R11
+#print axioms ErdosStraus.lemmaS_finite_R23
