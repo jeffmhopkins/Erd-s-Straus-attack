@@ -137,6 +137,19 @@ Let $p \equiv 1 \pmod 4$ with $3 \nmid p$, and $a = (p+3)/4$. Then
 $q \equiv 2 \pmod 3$. When it does, $k = q$ is a certificate.
 \end{theorem}
 
+Modulo $3$, character equals class and the criterion is elementary. For
+every other fixed residual, the reduction to a finite check is itself a
+theorem, and the next two results are its first showcase instances.
+
+\begin{theorem}[meta-theorem]\label{thm:meta}
+For every fixed prime $R \equiv 3 \pmod 4$, the validity of
+\eqref{eq:cert} at a hard prime $p$ depends only on \textup{(i)} the
+multiset of classes mod $R$ of the prime factors of $a = (p+R)/4$, with
+multiplicities capped at $\lceil (R-1)/2 \rceil$, and \textup{(ii)}
+$p \bmod R$. Consequently an exact solvability criterion exists for every
+$R$ and is computable by finite enumeration.
+\end{theorem}
+
 \begin{theorem}[$R=7$, hard primes; exact]\label{thm:Ap}
 Let $p$ be a hard prime and $a = (p+7)/4$. Then \eqref{eq:cert} holds for
 $R = 7$ if and only if $a$ has a prime factor that is a quadratic
@@ -161,10 +174,6 @@ if and only if either
 \end{itemize}
 \end{theorem}
 
-Theorems~\ref{thm:Ap} and~\ref{thm:App} are established by finite,
-machine-verified case analyses (Section~\ref{sec:exact}); the reduction to
-a finite check is itself a theorem:
-
 \begin{remark}[computer-assisted components]\label{rem:computer}
 The exhaustive verifications behind Theorems~\ref{thm:Ap},
 \ref{thm:App} and Lemma~\ref{lem:S} below are \emph{parts of the
@@ -179,13 +188,17 @@ accompanying repository; Appendix~\ref{app:verif} records the exact
 configuration counts and entry points.
 \end{remark}
 
-\begin{theorem}[meta-theorem]\label{thm:meta}
-For every fixed prime $R \equiv 3 \pmod 4$, the validity of
-\eqref{eq:cert} at a hard prime $p$ depends only on \textup{(i)} the
-multiset of classes mod $R$ of the prime factors of $a = (p+R)/4$, with
-multiplicities capped at $\lceil (R-1)/2 \rceil$, and \textup{(ii)}
-$p \bmod R$. Consequently an exact solvability criterion exists for every
-$R$ and is computable by finite enumeration.
+The obstruction framework of Section~\ref{sec:obstruction} yields a
+reciprocity identity that converts the per-residual conditions into a
+single global statement about $p$ — the structural explanation of joint
+failure across residuals:
+
+\begin{theorem}[reciprocity structure]\label{thm:J}
+Let $p$ be a hard prime, $R \equiv 3 \pmod 4$ prime, and $q$ an odd
+prime factor of $a = (p+R)/4$ (necessarily $q \ne R$). Then
+\[
+  \legendre{q}{R} \;=\; \legendre{p}{q}.
+\]
 \end{theorem}
 
 The anchor result converts the exact criteria into an unconditional bound.
@@ -262,6 +275,16 @@ lemmas are exact or machine-verified. Vaughan's method counts solutions
 on average and exhibits neither certificates nor criteria.
 \end{remark}
 
+\emph{Organization.} Proofs are arranged by logical dependency, which
+matches the statement order above: Section~\ref{sec:obstruction}
+develops the obstruction framework (Propositions~\ref{prop:char},
+\ref{prop:succ} and the proof of Theorem~\ref{thm:J});
+Section~\ref{sec:exact} proves Theorem~\ref{thm:A}, then
+Theorem~\ref{thm:meta}, then Theorems~\ref{thm:Ap} and~\ref{thm:App},
+which rest on it; Section~\ref{sec:sieve} proves
+Theorems~\ref{thm:E}, \ref{thm:FG}, Lemma~\ref{lem:S},
+Proposition~\ref{prop:agg}, and Theorem~\ref{thm:D}.
+
 Computations (Section~\ref{sec:comp}) provide verified certificates for
 all hard primes below $10^{10}$ and calibrate every constant in sight.
 
@@ -307,15 +330,7 @@ The next identity converts the per-residual character conditions into a
 single global statement about $p$, and is the structural explanation of
 joint failure across residuals.
 
-\begin{theorem}[reciprocity structure]\label{thm:J}
-Let $p$ be a hard prime, $R \equiv 3 \pmod 4$ prime, and $q$ an odd
-prime factor of $a = (p+R)/4$ (necessarily $q \ne R$). Then
-\[
-  \legendre{q}{R} \;=\; \legendre{p}{q}.
-\]
-\end{theorem}
-
-\begin{proof}
+\begin{proof}[Proof of Theorem \ref{thm:J}]
 From $q \mid p+R$ we get $R \equiv -p \pmod q$. By quadratic
 reciprocity with $R \equiv 3 \pmod 4$,
 $\legendre{q}{R} = (-1)^{\frac{q-1}{2}} \legendre{R}{q}
