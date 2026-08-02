@@ -49,6 +49,8 @@ data/
   hard_primes_1e6_solutions.json   explicit (R,a,b,c) for all hard primes < 10^6
   hard_primes_2e5_solutions.json   smaller explicit set
   high_R_primes_5e6.json           primes that needed larger residuals
+  analysis/                        distribution, covering-set, per-prime
+                                   residual masks, and high-R tail reports
 tests/
   test_solver.py       unit tests + certificate validation
 STATUS.md              full status of the attack

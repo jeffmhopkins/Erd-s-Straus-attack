@@ -74,6 +74,37 @@ triple, so the map is a full certificate set, not a summary.
   \cdot 43 \cdot 47\) is fully smooth, whereas typical high-\(R\) primes have
   an \(a\) with one large prime factor.
 
+## Covering-Set Analysis at \(10^9\) (`analyze.py cover`)
+
+For **every** hard prime \(< 10^9\) we computed the full set of admissible
+residuals \(R \equiv 3 \pmod 4\), \(R \le 107\) that yield a solution
+(27-bit mask per prime; archived in
+`data/analysis/residual_masks_1e9.json.gz`). Findings:
+
+- **Zero uncoverable primes**: the fixed list \(\{3, 7, \dots, 107\}\)
+  (all \(R \equiv 3 \bmod 4\)) covers every hard prime below \(10^9\).
+- **Individual residuals are far stronger than minimal-\(R\) statistics
+  suggest**: \(R=23\) alone solves **72 %** of all hard primes, \(R=47\)
+  solves 71 %, \(R=11\) 70 % — minimal-\(R\) counts undersell large
+  residuals because small ones win the race.
+- **The smallest covering list has 18 residuals**:
+  \[\{3, 11, 15, 19, 23, 31, 39, 47, 59, 63, 71, 79, 83, 87, 95, 99, 103, 107\}.\]
+  (Greedy set cover after fixing mandatory elements; \(R=7\) is redundant.)
+- **Only 4 primes in 1 587 581 have a unique working residual \(\le 107\)** —
+  these four *are* the obstruction to a shorter list, one in each of four
+  hard classes:
+
+  | \(p\) | only working \(R \le 107\) | \(p \bmod 840\) |
+  |------:|---------------------------:|----------------:|
+  | 8 803 369    | 107 | 169 |
+  | 142 361 209  | 59  | 529 |
+  | 287 567 281  | 83  | 1   |
+  | 794 037 841  | 63  | 121 |
+
+- Option-count distribution at the thin end: 4 primes with a single option,
+  17 with two, 127 with three — the vast majority of primes have many
+  working residuals.
+
 **Key observations:**
 - Minimal residual \(R\) grows very slowly.
 - Distribution is heavily concentrated: \(R=3\) (~40 %), \(R=7\) and \(R=11\) together cover the large majority.
@@ -114,9 +145,12 @@ All 216 141 bundled certificates pass `es-verify` (exact integer arithmetic).
    segmented sieve). Maximal minimal \(R\) unchanged at 107 across a
    \(20\times\) extension of the bound.
 2. Prove (or disprove) that a short fixed list of residuals always suffices.
-   The full residual-mask/set-cover analysis (`analyze.py cover`) identifies
-   which residuals are unavoidable and the smallest covering list up to
-   \(10^9\).
+   ~~Compute which residuals are unavoidable and the smallest covering list
+   up to \(10^9\).~~ **Done** — 18 residuals suffice below \(10^9\), and only
+   4 primes force the tail of that list (see Covering-Set Analysis). The
+   theoretical question is now sharply posed: show that the density of
+   primes with *no* working residual \(\le B\) vanishes (or is empty) for
+   some fixed \(B\).
 3. Construct a parametric family that covers an entire hard residue class for a fixed small \(R\).
 4. Analyze the algebraic conditions (divisor distribution / Jacobi barriers) that force larger \(R\).
    First data point: the record prime's \(a\) is fully smooth
