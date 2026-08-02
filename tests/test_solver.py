@@ -111,7 +111,9 @@ def test_find_any_solution_matches_brute_force_small():
 )
 def test_certificate_files_are_valid(fname):
     """Every stored (a, b, c) must exactly satisfy the equation."""
-    data = json.loads((DATA_DIR / fname).read_text())
+    from erdos_straus.verify import load_solutions
+
+    data = load_solutions(DATA_DIR / fname)
     assert data, f"{fname} is empty"
     for key, rec in data.items():
         n = int(key)
@@ -119,3 +121,34 @@ def test_certificate_files_are_valid(fname):
         assert is_solution(n, a, b, c), f"bad certificate for n={n} in {fname}"
         if rec.get("R") is not None:
             assert 4 * a - n == int(rec["R"]), f"R mismatch for n={n} in {fname}"
+
+
+def test_large_gz_dataset_sampled():
+    """Spot-check the large gzipped 1.2e8 dataset (every 500th entry)."""
+    from erdos_straus.verify import load_solutions
+
+    path = DATA_DIR / "hard_primes_1.2e8_solutions.json.gz"
+    data = load_solutions(path)
+    assert len(data) > 200_000
+    items = list(data.items())
+    for key, rec in items[::500]:
+        n = int(key)
+        assert hard_residue(n)
+        assert is_solution(n, int(rec["a"]), int(rec["b"]), int(rec["c"]))
+        assert 4 * int(rec["a"]) - n == int(rec["R"])
+
+
+def test_bulk_generate_matches_stored_minimal_R():
+    """The fast bulk solver reproduces the minimal R of stored certificates."""
+    from erdos_straus.bulk_generate import _init_small_primes, minimal_certificate
+    from erdos_straus.verify import load_solutions
+
+    _init_small_primes()
+    data = load_solutions(DATA_DIR / "hard_primes_1e6_solutions.json")
+    for key, rec in list(data.items())[::50]:
+        n = int(key)
+        res = minimal_certificate(n)
+        assert res is not None
+        a, b, c, R = res
+        assert is_solution(n, a, b, c)
+        assert R == rec["R"]

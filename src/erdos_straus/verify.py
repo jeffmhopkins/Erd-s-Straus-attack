@@ -20,6 +20,7 @@ Run as a script to check every bundled data file::
 
 from __future__ import annotations
 
+import gzip
 import json
 import sys
 from dataclasses import dataclass
@@ -36,7 +37,16 @@ DEFAULT_FILES = [
     "hard_primes_2e5_solutions.json",
     "hard_primes_1e6_solutions.json",
     "high_R_primes_5e6.json",
+    "hard_primes_1.2e8_solutions.json.gz",
 ]
+
+
+def load_solutions(path: Path) -> Dict:
+    """Load a solution file, transparently handling gzip (.gz) compression."""
+    if path.suffix == ".gz":
+        with gzip.open(path, "rt") as f:
+            return json.load(f)
+    return json.loads(path.read_text())
 
 
 @dataclass
@@ -75,7 +85,7 @@ def verify_record(n: int, rec: Dict) -> List[str]:
 
 def verify_file(path: Path, expect_hard: bool = True) -> FileReport:
     """Verify every certificate in one JSON file."""
-    data = json.loads(path.read_text())
+    data = load_solutions(path)
     failures: List[str] = []
     valid = 0
     for key, rec in data.items():

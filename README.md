@@ -37,9 +37,12 @@ src/erdos_straus/
   solver.py            core utilities: is_solution, hard_residue,
                        generate_hard_primes, classical identities, brute search
   residual_solver.py   residual engine (R = 4a - n) with sympy divisor factoring
+  bulk_generate.py     fast integer-only solver + numpy sieve + parallel driver
   parametric_search.py fixed-residual parametric experiments per hard class
   verify.py            independent verification of the JSON certificates
 data/
+  hard_primes_1.2e8_solutions.json.gz  explicit (R,a,b,c) for all 213,131
+                                       hard primes < 1.2*10^8 (gzip-compressed)
   hard_primes_1e6_solutions.json   explicit (R,a,b,c) for all hard primes < 10^6
   hard_primes_2e5_solutions.json   smaller explicit set
   high_R_primes_5e6.json           primes that needed larger residuals
@@ -47,6 +50,14 @@ tests/
   test_solver.py       unit tests + certificate validation
 STATUS.md              full status of the attack
 ```
+
+## Current results
+
+All **213,131** hard primes below **1.2 × 10⁸** have explicit, independently
+verified solutions. The maximal minimal residual is still **R = 107** (at a
+single prime, 8,803,369, below 10⁷) — doubling the search bound produced no new
+record, reinforcing the slow-growth signal. `R = 3` covers 46 % of hard primes
+and `R ∈ {3, 7, 11}` covers 89 %.
 
 ## Setup
 
@@ -78,6 +89,18 @@ Run the solver on the small hard primes and print the minimal-$R$ distribution:
 ```bash
 python -m erdos_straus.residual_solver
 ```
+
+Generate explicit solutions in bulk (fast integer solver, parallel). This
+regenerates the bundled `1.2e8` dataset in about 9 seconds on 4 cores:
+
+```bash
+python -m erdos_straus.bulk_generate --max 120000000 \
+    --out data/hard_primes_1.2e8_solutions.json.gz
+```
+
+Output is gzip-compressed when the path ends in `.gz`. Pushing past $10^9$ is
+only a matter of runtime; at that scale swap the numpy sieve for a segmented
+one (noted in `STATUS.md`).
 
 From Python:
 
