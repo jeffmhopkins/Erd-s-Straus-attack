@@ -14,6 +14,9 @@ paper-number dictionary is THEORY.md's mapping table (§1).
 | `theoremA_necessity` | Theorem A (⇒): all prime factors of a ≡ 1 (mod 3) blocks every divisor k of (pa)² from the class −pa (mod 3) (Lean statement assumes the hard-prime congruence p ≡ 1 (mod 3); the paper's Theorem 1.2 covers all 3 ∤ p) |
 | `theoremA_sufficiency` | Theorem A (⇐): a divisor q ≡ 2 (mod 3) of a yields positive b, c with the identity (k = q) (same hard-prime congruence assumption as necessity) |
 | `divisor_one_mod_three` | the multiplicative-closure lemma behind necessity |
+| `composite_reciprocity` | Lemma 5.1 (Lemma J°): (q\|R) = (p\|q) with the left symbol Jacobi, for any R ≡ 3 (mod 4) — prime or composite — and odd prime q ∣ p+R (the paper's gcd(q,R)=1 hypothesis turns out unnecessary) |
+| `jacobi_necessity` / `divisor_jacobiSym_one` | Lemma 5.2 (Lemma N): if every prime factor of a has Jacobi symbol +1 mod R, no divisor k of (pa)² lies in the class −pa (mod R) — via the Jacobi analogue of the multiplicative-closure lemma |
+| `selected_residual_nonresidue` | selected residual, §5.1: with (p\|q) = −1 and 4q ∣ p+R (as at R₀ = (−p) mod 4q and every ladder rung), (q\|R) = −1 — the all-residue failure mode of Lemma N is impossible at R by construction |
 | `family_p_plus_one` | Proposition 1.12 (Theorem I in the notes): R ∣ p+1 certifies via k = a·p² (identity and integrality; positivity of b, c not part of the statement) |
 | `family_p_plus_four` | Proposition 1.12: R ∣ p+4 (R odd) certifies via k = a²·p (identity and integrality; positivity of b, c not part of the statement) |
 | `hard_classes_are_squares` | the six Mordell classes are squares of units mod 840 (explicit witnesses 1², 11², 13², 17², 19², 23²) |
@@ -44,7 +47,9 @@ directions (as stated under the hard-prime congruence p ≡ 1 (mod 3);
 the paper's Theorem 1.2 covers all 3 ∤ p), both aggregate identity
 families certify (identity + integrality; positivity unchecked), the
 reciprocity
-identity governing joint failure is correct, and the hard-class local
+identity governing joint failure is correct — including its composite
+form and the ladder's elementary layer (Lemmas 5.1, 5.2 and the
+selected-residual corollary, `Ladder.lean`) — and the hard-class local
 structure is checked — plus the finite-enumeration layer: the
 meta-theorem's reachability model with both monotonicity reductions,
 the R = 7 check stated directly in that multiplicative model
@@ -69,8 +74,8 @@ reduction itself, fully symbolic, standard axioms only.
 
 ### Trust base
 
-Every main theorem is audited by `#print axioms` (helper lemmas are
-covered transitively through the audited theorems). The model and the
+Every main theorem is audited by `#print axioms` (40 audit lines;
+helper lemmas are covered transitively through the audited theorems). The model and the
 monotonicity lemmas report only the three standard axioms (`propext`,
 `Classical.choice`, `Quot.sound`). The five finite checks (four enumerations plus the R = 31
 `dp_check`) use `native_decide` and so additionally report a `..._native.native_decide.ax_1_1`
@@ -106,8 +111,10 @@ different coordinates and algorithms, with agreeing results.
   confirmations only; the real unformalized targets are Theorem 1.10
   itself and Theorem 1.6 (R = 15).
 - Near-term plan: the ladder Lemmas J° and N plus the
-  selected-residual corollary (elementary, mathlib `jacobiSym`), an
-  R = 15 product-index mask bridge, and a Kneser port for
+  selected-residual corollary are **done** (`Ladder.lean`:
+  `composite_reciprocity`, `jacobi_necessity`,
+  `selected_residual_nonresidue`, standard axioms only); remaining:
+  an R = 15 product-index mask bridge, and a Kneser port for
   Theorem 1.10(i)(ii).
 - Composed corollaries at R = 11, 23, 31 analogous to
   `lemmaS_R19_certificate` (same recipe).
@@ -126,6 +133,7 @@ different coordinates and algorithms, with agreeing results.
 | `Basic.lean` | certificate soundness/integrality, Theorem J (reciprocity) |
 | `Families.lean` | the aggregate identity families (Proposition 1.12), hard-class lemmas |
 | `TheoremA.lean` | Theorem A (R = 3), both directions, with positivity |
+| `Ladder.lean` | the Burgess–reciprocity ladder's elementary layer: Lemma J° (composite reciprocity), Lemma N (Jacobi necessity), the selected-residual corollary |
 | `Enumerations.lean` | the `reach` model, monotonicity lemmas, and the four `native_decide` finite checks (R = 7, 11, 19, 23) |
 | `Bridges.lean` | the parametric discrete-log bridge and the three `_mult` multiplicative restatements |
 | `DivisorBridge.lean` | reach ⟺ divisor certificates (FTA), budget consolidation, the composed corollary |

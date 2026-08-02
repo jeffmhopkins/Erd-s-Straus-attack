@@ -526,3 +526,4 @@ end ErdosStraus
 #print axioms ErdosStraus.reach_merge
 #print axioms ErdosStraus.reach_subperm
 #print axioms ErdosStraus.lemmaS_R19_certificate
+#print axioms ErdosStraus.reach_two_eq_doubled

@@ -943,3 +943,4 @@ end ErdosStraus
 #print axioms ErdosStraus.lemmaS_finite_R19_mult
 #print axioms ErdosStraus.lemmaS_finite_R23_mult
 #print axioms ErdosStraus.theoremA''_finite_R11_mult
+#print axioms ErdosStraus.reach_append_single
