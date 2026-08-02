@@ -102,7 +102,10 @@ the monotonicity reduction, the full finite verifications of Theorems A′
 (R = 7, 1,536 configurations) and A″ (R = 11, 497,664 capped
 configurations, exact two-case failure classification), and Lemma S at
 R = 19 and 23 (437,580 + 7,759,752 checks), all discharged by Lean's
-compiled evaluator. Every declaration is sorry-free and
+compiled evaluator — plus the proved discrete-log bridges (mask
+semantics as theorems), which carry each enumeration back into the
+multiplicative reach model with no coordinate caveat. Every
+declaration is sorry-free and
 axiom-audited via `#print axioms` (see `lean/README.md` for the trust
 base).
 

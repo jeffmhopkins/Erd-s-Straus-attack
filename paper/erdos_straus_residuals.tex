@@ -117,9 +117,10 @@ machine-verified structure, together with the exact criteria.
   Theorem~\ref{thm:J} --- and of the finite-enumeration layer: the
   divisor-class reachability model with its monotonicity reductions
   (Lemma~\ref{lem:mono}), the full finite verifications of
-  Theorems~\ref{thm:Ap} and~\ref{thm:App}, and the support-bound
-  checks of Lemma~\ref{lem:S} at $R = 19$ and $23$ --- in the
-  accompanying repository.
+  Theorems~\ref{thm:Ap} and~\ref{thm:App}, the support-bound
+  checks of Lemma~\ref{lem:S} at $R = 19$ and $23$, and the proved
+  discrete-log bridges carrying each enumeration into the
+  multiplicative model --- in the accompanying repository.
 \end{itemize}
 
 \subsection{The residual method}\label{sec:intro-method}
@@ -255,12 +256,12 @@ available in the
 accompanying repository; Appendix~\ref{app:verif} records the exact
 configuration counts and entry points. These enumerations are
 additionally formalized in Lean~4: the $R = 7$ verification of
-Theorem~\ref{thm:Ap} (re-stated multiplicatively over
-$(\mathbb{Z}/7)^\times$), the $R = 11$ criterion of
-Theorem~\ref{thm:App}, and the $R = 19, 23$ cases of
-Lemma~\ref{lem:S} (the latter three in the discrete-log coordinates
-of their proofs) are discharged by Lean's compiled evaluator, with
-the monotonicity reductions (Lemma~\ref{lem:mono}) proved as theorems
+Theorem~\ref{thm:Ap}, the $R = 11$ criterion of Theorem~\ref{thm:App},
+and the $R = 19, 23$ cases of Lemma~\ref{lem:S} are discharged by
+Lean's compiled evaluator, with the monotonicity reductions
+(Lemma~\ref{lem:mono}) \emph{and} the discrete-log coordinate
+translations proved as theorems, so that all four enumerations hold
+as machine-checked statements directly in the multiplicative model
 (Appendix~\ref{app:verif}).
 \end{remark}
 
@@ -994,19 +995,23 @@ Theorem~\ref{thm:meta} is defined over $(\mathbb{Z}/R)^\times$
 directly, both halves of Lemma~\ref{lem:mono} are proved as theorems
 (\texttt{reach\_mono}, \texttt{reach\_sublist}) with no computational
 content to trust, and the full enumerations behind
-Theorem~\ref{thm:Ap} ($1{,}536$ configurations, stated in the
-multiplicative model itself), Theorem~\ref{thm:App} ($497{,}664$
-capped configurations, including the exact two-case failure
-classification), and the $R = 19, 23$ cases of Lemma~\ref{lem:S}
-($437{,}580$ resp.\ $7{,}759{,}752$ checks) --- the latter three
-stated in the discrete-log coordinates in which the proofs and
-\texttt{verify\_support\_bound} work --- are discharged by Lean's
-compiled evaluator
-(\texttt{native\_decide}, which trusts the Lean compiler in addition
-to the kernel); every declaration is audited with
-\texttt{\#print axioms}. For these two enumerations the sixty-line
-trust base above is thus replaced by the Lean toolchain evaluating a
-formally stated proposition --- and the Python and Lean
+Theorem~\ref{thm:Ap} ($1{,}536$ configurations), Theorem~\ref{thm:App}
+($497{,}664$ capped configurations, including the exact two-case
+failure classification), and the $R = 19, 23$ cases of
+Lemma~\ref{lem:S} ($437{,}580$ resp.\ $7{,}759{,}752$ checks) are
+discharged by Lean's compiled evaluator (\texttt{native\_decide},
+which trusts the Lean compiler in addition to the kernel). The three
+larger enumerations are \emph{evaluated} in the discrete-log
+coordinates in which the proofs and \texttt{verify\_support\_bound}
+work, but the coordinates add nothing to the trusted base: the
+translation is itself a proved theorem (the mask semantics ---
+rotation is multiplication by $g^s$, the mask fold is the
+divisor-class reachability set), and the formal development derives
+each statement back in the multiplicative model, where it reports
+exactly its enumeration's single evaluator axiom. Every declaration
+is audited with \texttt{\#print axioms}. For these enumerations the
+sixty-line trust base above is thus replaced by the Lean toolchain
+evaluating a formally stated proposition --- and the Python and Lean
 implementations, written independently against the same statements,
 agree.
 
