@@ -88,6 +88,34 @@ stronger than any fixed power of $\log x$; the value of the present
 approach is not raw density but its explicit, certificate-generating,
 machine-verified structure, together with the exact criteria.
 
+\subsection*{New contributions}
+
+\begin{itemize}
+\item The \emph{residual formulation} of the Erd\H{o}s--Straus equation:
+  solvability with first denominator $(p+R)/4$ is a divisor-class
+  condition, complete over all solutions (Section~\ref{sec:intro-method}).
+\item \emph{Exact} solvability criteria at $R = 3, 7, 11$
+  (Theorems~\ref{thm:A}, \ref{thm:Ap}, \ref{thm:App}), and a meta-theorem
+  (Theorem~\ref{thm:meta}) showing every fixed prime residual admits a
+  finite computable exact criterion.
+\item A reciprocity principle (Theorem~\ref{thm:J}) collapsing the
+  per-residual conditions into one global statement about $p$ — the
+  mechanism of correlated failure and of the record prime.
+\item A constructive sieve chain built on these criteria
+  (Lemma~\ref{lem:S}, Theorem~\ref{thm:FG},
+  Proposition~\ref{prop:agg}): explicit, certificate-producing
+  exceptional-set bounds, with the machine-verified support-bound lemma
+  as the per-residual input.
+\item Computed and verified residual certificates for all
+  $128{,}671{,}219$ hard primes below $10^{11}$, with a calibrated model
+  whose deep-tail predictions were subsequently confirmed
+  (Section~\ref{sec:comp}).
+\item A machine-checked (Lean~4/mathlib) verification of the elementary
+  layer --- certificate soundness and integrality, Theorem~\ref{thm:A}
+  in both directions, both families of Proposition~\ref{prop:agg}, and
+  Theorem~\ref{thm:J} --- in the accompanying repository.
+\end{itemize}
+
 \subsection{The residual method}\label{sec:intro-method}
 
 Fix a hard prime $p$. All six classes satisfy
