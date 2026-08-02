@@ -1,0 +1,1894 @@
+{
+  "theorem2": {
+    "checked": 1587581,
+    "agree": 1587581,
+    "disagreements": []
+  },
+  "taxonomy": {
+    "23": {
+      "sampled": 79380,
+      "failures": 22151,
+      "type_I": 21386,
+      "type_II": 765,
+      "type_I_share": 0.9655,
+      "prop3_violations": [],
+      "success_with_prop3_class": 25639,
+      "successes": 57229
+    },
+    "11": {
+      "sampled": 79380,
+      "failures": 23893,
+      "type_I": 21431,
+      "type_II": 2462,
+      "type_I_share": 0.897,
+      "prop3_violations": [],
+      "success_with_prop3_class": 41132,
+      "successes": 55487
+    },
+    "7": {
+      "sampled": 79380,
+      "failures": 41421,
+      "type_I": 41421,
+      "type_II": 0,
+      "type_I_share": 1.0,
+      "prop3_violations": [],
+      "success_with_prop3_class": 32291,
+      "successes": 37959
+    },
+    "19": {
+      "sampled": 79380,
+      "failures": 34671,
+      "type_I": 22272,
+      "type_II": 12399,
+      "type_I_share": 0.6424,
+      "prop3_violations": [],
+      "success_with_prop3_class": 23107,
+      "successes": 44709
+    },
+    "31": {
+      "sampled": 79380,
+      "failures": 24925,
+      "type_I": 19770,
+      "type_II": 5155,
+      "type_I_share": 0.7932,
+      "prop3_violations": [],
+      "success_with_prop3_class": 19080,
+      "successes": 54455
+    },
+    "47": {
+      "sampled": 79380,
+      "failures": 22923,
+      "type_I": 19997,
+      "type_II": 2926,
+      "type_I_share": 0.8724,
+      "prop3_violations": [],
+      "success_with_prop3_class": 11884,
+      "successes": 56457
+    },
+    "59": {
+      "sampled": 79380,
+      "failures": 32254,
+      "type_I": 20632,
+      "type_II": 11622,
+      "type_I_share": 0.6397,
+      "prop3_violations": [],
+      "success_with_prop3_class": 9598,
+      "successes": 47126
+    },
+    "71": {
+      "sampled": 79380,
+      "failures": 24687,
+      "type_I": 20267,
+      "type_II": 4420,
+      "type_I_share": 0.821,
+      "prop3_violations": [],
+      "success_with_prop3_class": 9533,
+      "successes": 54693
+    },
+    "43": {
+      "sampled": 79380,
+      "failures": 59507,
+      "type_I": 24470,
+      "type_II": 35037,
+      "type_I_share": 0.4112,
+      "prop3_violations": [],
+      "success_with_prop3_class": 8238,
+      "successes": 19873
+    },
+    "79": {
+      "sampled": 79380,
+      "failures": 39833,
+      "type_I": 23213,
+      "type_II": 16620,
+      "type_I_share": 0.5828,
+      "prop3_violations": [],
+      "success_with_prop3_class": 7263,
+      "successes": 39547
+    },
+    "67": {
+      "sampled": 79380,
+      "failures": 63699,
+      "type_I": 21343,
+      "type_II": 42356,
+      "type_I_share": 0.3351,
+      "prop3_violations": [],
+      "success_with_prop3_class": 5702,
+      "successes": 15681
+    },
+    "83": {
+      "sampled": 79380,
+      "failures": 45568,
+      "type_I": 22776,
+      "type_II": 22792,
+      "type_I_share": 0.4998,
+      "prop3_violations": [],
+      "success_with_prop3_class": 5979,
+      "successes": 33812
+    },
+    "103": {
+      "sampled": 79380,
+      "failures": 44798,
+      "type_I": 23028,
+      "type_II": 21770,
+      "type_I_share": 0.514,
+      "prop3_violations": [],
+      "success_with_prop3_class": 4925,
+      "successes": 34582
+    },
+    "107": {
+      "sampled": 79380,
+      "failures": 55952,
+      "type_I": 24855,
+      "type_II": 31097,
+      "type_I_share": 0.4442,
+      "prop3_violations": [],
+      "success_with_prop3_class": 4419,
+      "successes": 23428
+    }
+  },
+  "binned": {
+    "bins": [
+      {
+        "lo": 1008,
+        "hi": 3188,
+        "count": 7,
+        "mid_logp": 7.492,
+        "fail_rates": {
+          "3": 0.71429,
+          "7": 1.0,
+          "11": 0.42857,
+          "15": 0.71429,
+          "19": 0.57143,
+          "23": 0.28571,
+          "27": 1.0,
+          "31": 0.14286,
+          "35": 1.0,
+          "39": 0.28571,
+          "43": 0.85714,
+          "47": 0.28571,
+          "51": 1.0,
+          "55": 0.71429,
+          "59": 0.85714,
+          "63": 1.0,
+          "67": 1.0,
+          "71": 0.57143,
+          "75": 1.0,
+          "79": 0.85714,
+          "83": 1.0,
+          "87": 0.57143,
+          "91": 1.0,
+          "95": 0.57143,
+          "99": 1.0,
+          "103": 0.85714,
+          "107": 1.0
+        }
+      },
+      {
+        "lo": 3188,
+        "hi": 10074,
+        "count": 20,
+        "mid_logp": 8.643,
+        "fail_rates": {
+          "3": 0.7,
+          "7": 0.7,
+          "11": 0.45,
+          "15": 0.7,
+          "19": 0.85,
+          "23": 0.35,
+          "27": 0.85,
+          "31": 0.6,
+          "35": 0.85,
+          "39": 0.35,
+          "43": 0.9,
+          "47": 0.4,
+          "51": 0.8,
+          "55": 0.65,
+          "59": 0.6,
+          "63": 0.85,
+          "67": 1.0,
+          "71": 0.5,
+          "75": 1.0,
+          "79": 0.7,
+          "83": 0.75,
+          "87": 0.6,
+          "91": 0.85,
+          "95": 0.55,
+          "99": 0.95,
+          "103": 0.8,
+          "107": 0.85
+        }
+      },
+      {
+        "lo": 10074,
+        "hi": 31835,
+        "count": 60,
+        "mid_logp": 9.793,
+        "fail_rates": {
+          "3": 0.7,
+          "7": 0.73333,
+          "11": 0.35,
+          "15": 0.7,
+          "19": 0.63333,
+          "23": 0.43333,
+          "27": 0.85,
+          "31": 0.41667,
+          "35": 0.83333,
+          "39": 0.46667,
+          "43": 0.91667,
+          "47": 0.36667,
+          "51": 0.88333,
+          "55": 0.6,
+          "59": 0.51667,
+          "63": 0.8,
+          "67": 0.91667,
+          "71": 0.51667,
+          "75": 0.9,
+          "79": 0.65,
+          "83": 0.83333,
+          "87": 0.68333,
+          "91": 0.93333,
+          "95": 0.65,
+          "99": 0.9,
+          "103": 0.73333,
+          "107": 0.86667
+        }
+      },
+      {
+        "lo": 31835,
+        "hi": 100599,
+        "count": 187,
+        "mid_logp": 10.944,
+        "fail_rates": {
+          "3": 0.6738,
+          "7": 0.70588,
+          "11": 0.37433,
+          "15": 0.70588,
+          "19": 0.55615,
+          "23": 0.35294,
+          "27": 0.80214,
+          "31": 0.40107,
+          "35": 0.81818,
+          "39": 0.47594,
+          "43": 0.90374,
+          "47": 0.41711,
+          "51": 0.77005,
+          "55": 0.59893,
+          "59": 0.57754,
+          "63": 0.7861,
+          "67": 0.90374,
+          "71": 0.43316,
+          "75": 0.88235,
+          "79": 0.66845,
+          "83": 0.7861,
+          "87": 0.62567,
+          "91": 0.91444,
+          "95": 0.50802,
+          "99": 0.91444,
+          "103": 0.71658,
+          "107": 0.83957
+        }
+      },
+      {
+        "lo": 100599,
+        "hi": 317884,
+        "count": 535,
+        "mid_logp": 12.094,
+        "fail_rates": {
+          "3": 0.63738,
+          "7": 0.68598,
+          "11": 0.37196,
+          "15": 0.63551,
+          "19": 0.5514,
+          "23": 0.32523,
+          "27": 0.75514,
+          "31": 0.40748,
+          "35": 0.7757,
+          "39": 0.42243,
+          "43": 0.85421,
+          "47": 0.38318,
+          "51": 0.76262,
+          "55": 0.55888,
+          "59": 0.53084,
+          "63": 0.73832,
+          "67": 0.88598,
+          "71": 0.38505,
+          "75": 0.86168,
+          "79": 0.65047,
+          "83": 0.73271,
+          "87": 0.6,
+          "91": 0.84673,
+          "95": 0.4785,
+          "99": 0.87103,
+          "103": 0.74206,
+          "107": 0.83364
+        }
+      },
+      {
+        "lo": 317884,
+        "hi": 1004489,
+        "count": 1572,
+        "mid_logp": 13.245,
+        "fail_rates": {
+          "3": 0.6285,
+          "7": 0.64186,
+          "11": 0.36705,
+          "15": 0.63359,
+          "19": 0.52735,
+          "23": 0.34924,
+          "27": 0.73346,
+          "31": 0.36387,
+          "35": 0.75509,
+          "39": 0.42112,
+          "43": 0.82316,
+          "47": 0.35687,
+          "51": 0.73791,
+          "55": 0.52226,
+          "59": 0.51399,
+          "63": 0.71501,
+          "67": 0.88931,
+          "71": 0.38041,
+          "75": 0.82316,
+          "79": 0.61578,
+          "83": 0.71565,
+          "87": 0.57761,
+          "91": 0.86132,
+          "95": 0.49555,
+          "99": 0.84669,
+          "103": 0.67112,
+          "107": 0.81679
+        }
+      },
+      {
+        "lo": 1004489,
+        "hi": 3174103,
+        "count": 4622,
+        "mid_logp": 14.395,
+        "fail_rates": {
+          "3": 0.58351,
+          "7": 0.619,
+          "11": 0.35396,
+          "15": 0.59866,
+          "19": 0.51406,
+          "23": 0.33535,
+          "27": 0.70878,
+          "31": 0.36759,
+          "35": 0.71246,
+          "39": 0.38144,
+          "43": 0.82691,
+          "47": 0.34509,
+          "51": 0.70965,
+          "55": 0.48961,
+          "59": 0.48832,
+          "63": 0.6826,
+          "67": 0.86716,
+          "71": 0.37862,
+          "75": 0.82518,
+          "79": 0.5965,
+          "83": 0.6839,
+          "87": 0.55084,
+          "91": 0.83579,
+          "95": 0.45738,
+          "99": 0.83535,
+          "103": 0.65058,
+          "107": 0.79273
+        }
+      },
+      {
+        "lo": 3174103,
+        "hi": 10029903,
+        "count": 13567,
+        "mid_logp": 15.546,
+        "fail_rates": {
+          "3": 0.57102,
+          "7": 0.5946,
+          "11": 0.33898,
+          "15": 0.58171,
+          "19": 0.49311,
+          "23": 0.31643,
+          "27": 0.68652,
+          "31": 0.35225,
+          "35": 0.69684,
+          "39": 0.3678,
+          "43": 0.81448,
+          "47": 0.3322,
+          "51": 0.70023,
+          "55": 0.47704,
+          "59": 0.46864,
+          "63": 0.66205,
+          "67": 0.85273,
+          "71": 0.36058,
+          "75": 0.7976,
+          "79": 0.56859,
+          "83": 0.65438,
+          "87": 0.54286,
+          "91": 0.81536,
+          "95": 0.43775,
+          "99": 0.80983,
+          "103": 0.62468,
+          "107": 0.77165
+        }
+      },
+      {
+        "lo": 10029903,
+        "hi": 31693665,
+        "count": 40205,
+        "mid_logp": 16.696,
+        "fail_rates": {
+          "3": 0.55215,
+          "7": 0.56799,
+          "11": 0.32896,
+          "15": 0.5567,
+          "19": 0.47216,
+          "23": 0.30825,
+          "27": 0.66489,
+          "31": 0.34249,
+          "35": 0.66753,
+          "39": 0.35331,
+          "43": 0.79244,
+          "47": 0.31757,
+          "51": 0.67962,
+          "55": 0.45937,
+          "59": 0.44669,
+          "63": 0.63597,
+          "67": 0.83624,
+          "71": 0.34202,
+          "75": 0.78105,
+          "79": 0.55192,
+          "83": 0.62828,
+          "87": 0.5172,
+          "91": 0.80199,
+          "95": 0.41865,
+          "99": 0.79229,
+          "103": 0.60965,
+          "107": 0.75401
+        }
+      },
+      {
+        "lo": 31693665,
+        "hi": 100149357,
+        "count": 118967,
+        "mid_logp": 17.847,
+        "fail_rates": {
+          "3": 0.53248,
+          "7": 0.54803,
+          "11": 0.3149,
+          "15": 0.54014,
+          "19": 0.45708,
+          "23": 0.29421,
+          "27": 0.64593,
+          "31": 0.3277,
+          "35": 0.64693,
+          "39": 0.34232,
+          "43": 0.77417,
+          "47": 0.30674,
+          "51": 0.65838,
+          "55": 0.4403,
+          "59": 0.42871,
+          "63": 0.61931,
+          "67": 0.82177,
+          "71": 0.33085,
+          "75": 0.76125,
+          "79": 0.53248,
+          "83": 0.60725,
+          "87": 0.49939,
+          "91": 0.78303,
+          "95": 0.39982,
+          "99": 0.77418,
+          "103": 0.58651,
+          "107": 0.73388
+        }
+      },
+      {
+        "lo": 100149357,
+        "hi": 316463674,
+        "count": 353598,
+        "mid_logp": 18.997,
+        "fail_rates": {
+          "3": 0.51497,
+          "7": 0.5315,
+          "11": 0.30494,
+          "15": 0.52164,
+          "19": 0.44211,
+          "23": 0.28481,
+          "27": 0.62936,
+          "31": 0.31667,
+          "35": 0.62651,
+          "39": 0.33019,
+          "43": 0.75683,
+          "47": 0.2923,
+          "51": 0.64361,
+          "55": 0.42496,
+          "59": 0.41342,
+          "63": 0.60066,
+          "67": 0.80788,
+          "71": 0.3162,
+          "75": 0.74756,
+          "79": 0.51222,
+          "83": 0.5861,
+          "87": 0.48045,
+          "91": 0.76719,
+          "95": 0.38522,
+          "99": 0.75713,
+          "103": 0.56889,
+          "107": 0.71298
+        }
+      },
+      {
+        "lo": 316463674,
+        "hi": 999999001,
+        "count": 1054241,
+        "mid_logp": 20.148,
+        "fail_rates": {
+          "3": 0.50106,
+          "7": 0.51471,
+          "11": 0.29521,
+          "15": 0.50577,
+          "19": 0.42733,
+          "23": 0.27493,
+          "27": 0.61204,
+          "31": 0.30564,
+          "35": 0.60858,
+          "39": 0.31942,
+          "43": 0.74272,
+          "47": 0.28307,
+          "51": 0.62708,
+          "55": 0.41092,
+          "59": 0.39829,
+          "63": 0.58342,
+          "67": 0.79414,
+          "71": 0.30478,
+          "75": 0.73205,
+          "79": 0.49628,
+          "83": 0.56813,
+          "87": 0.465,
+          "91": 0.75216,
+          "95": 0.37106,
+          "99": 0.74098,
+          "103": 0.55242,
+          "107": 0.69549
+        }
+      }
+    ],
+    "power_fits": {
+      "3": {
+        "kappa": 0.387,
+        "C": 1.642
+      },
+      "7": {
+        "kappa": 0.539,
+        "C": 2.583
+      },
+      "11": {
+        "kappa": 0.367,
+        "C": 0.912
+      },
+      "15": {
+        "kappa": 0.377,
+        "C": 1.618
+      },
+      "19": {
+        "kappa": 0.491,
+        "C": 1.889
+      },
+      "23": {
+        "kappa": 0.198,
+        "C": 0.539
+      },
+      "27": {
+        "kappa": 0.453,
+        "C": 2.373
+      },
+      "31": {
+        "kappa": -0.067,
+        "C": 0.291
+      },
+      "35": {
+        "kappa": 0.453,
+        "C": 2.387
+      },
+      "39": {
+        "kappa": 0.084,
+        "C": 0.462
+      },
+      "43": {
+        "kappa": 0.193,
+        "C": 1.362
+      },
+      "47": {
+        "kappa": 0.199,
+        "C": 0.564
+      },
+      "51": {
+        "kappa": 0.405,
+        "C": 2.109
+      },
+      "55": {
+        "kappa": 0.553,
+        "C": 2.173
+      },
+      "59": {
+        "kappa": 0.601,
+        "C": 2.402
+      },
+      "63": {
+        "kappa": 0.493,
+        "C": 2.551
+      },
+      "67": {
+        "kappa": 0.229,
+        "C": 1.589
+      },
+      "71": {
+        "kappa": 0.624,
+        "C": 1.97
+      },
+      "75": {
+        "kappa": 0.322,
+        "C": 1.926
+      },
+      "79": {
+        "kappa": 0.464,
+        "C": 2.02
+      },
+      "83": {
+        "kappa": 0.483,
+        "C": 2.449
+      },
+      "87": {
+        "kappa": 0.285,
+        "C": 1.162
+      },
+      "91": {
+        "kappa": 0.239,
+        "C": 1.565
+      },
+      "95": {
+        "kappa": 0.491,
+        "C": 1.673
+      },
+      "99": {
+        "kappa": 0.29,
+        "C": 1.79
+      },
+      "103": {
+        "kappa": 0.428,
+        "C": 2.021
+      },
+      "107": {
+        "kappa": 0.299,
+        "C": 1.736
+      }
+    }
+  },
+  "record_model": {
+    "in_sample": {
+      "23": {
+        "expected": 8085.67,
+        "observed": 10865
+      },
+      "47": {
+        "expected": 72.5,
+        "observed": 158
+      },
+      "83": {
+        "expected": 0.33,
+        "observed": 1
+      },
+      "103": {
+        "expected": 0.03,
+        "observed": 1
+      },
+      "107": {
+        "expected": 0.02,
+        "observed": 0
+      }
+    },
+    "predicted_counts_1e9_to_1e+10": {
+      "23": 53449.318,
+      "47": 530.202,
+      "83": 1.074,
+      "103": 0.055,
+      "107": 0.038
+    }
+  },
+  "critical": [
+    {
+      "p": 8803369,
+      "p_mod_840": 169,
+      "failures": 26,
+      "type_I": 12,
+      "type_II": 14,
+      "detail": [
+        {
+          "R": 3,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 3,
+          "a_factors": {
+            "2200843": 1
+          }
+        },
+        {
+          "R": 7,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 7,
+          "a_factors": {
+            "2": 2,
+            "550211": 1
+          }
+        },
+        {
+          "R": 11,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 11,
+          "a_factors": {
+            "3": 1,
+            "5": 1,
+            "31": 1,
+            "4733": 1
+          }
+        },
+        {
+          "R": 15,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "19": 1,
+            "57917": 1
+          }
+        },
+        {
+          "R": 19,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 19,
+          "a_factors": {
+            "11": 1,
+            "23": 1,
+            "8699": 1
+          }
+        },
+        {
+          "R": 23,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 23,
+          "a_factors": {
+            "2": 4,
+            "3": 1,
+            "13": 1,
+            "3527": 1
+          }
+        },
+        {
+          "R": 27,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 3,
+          "a_factors": {
+            "7": 1,
+            "314407": 1
+          }
+        },
+        {
+          "R": 31,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 31,
+          "a_factors": {
+            "2": 1,
+            "5": 2,
+            "44017": 1
+          }
+        },
+        {
+          "R": 35,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "3": 6,
+            "3019": 1
+          }
+        },
+        {
+          "R": 39,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 2,
+            "550213": 1
+          }
+        },
+        {
+          "R": 43,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "379": 1,
+            "5807": 1
+          }
+        },
+        {
+          "R": 47,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 47,
+          "a_factors": {
+            "2": 1,
+            "3": 1,
+            "17": 1,
+            "21577": 1
+          }
+        },
+        {
+          "R": 51,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "5": 1,
+            "440171": 1
+          }
+        },
+        {
+          "R": 55,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 3,
+            "7": 1,
+            "39301": 1
+          }
+        },
+        {
+          "R": 59,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "3": 1,
+            "733619": 1
+          }
+        },
+        {
+          "R": 63,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 7,
+          "a_factors": {
+            "2": 1,
+            "11": 1,
+            "71": 1,
+            "1409": 1
+          }
+        },
+        {
+          "R": 67,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "719": 1,
+            "3061": 1
+          }
+        },
+        {
+          "R": 71,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 71,
+          "a_factors": {
+            "2": 2,
+            "3": 2,
+            "5": 1,
+            "12227": 1
+          }
+        },
+        {
+          "R": 75,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 3,
+          "a_factors": {
+            "13": 1,
+            "79": 1,
+            "2143": 1
+          }
+        },
+        {
+          "R": 79,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "601": 1,
+            "1831": 1
+          }
+        },
+        {
+          "R": 83,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "3": 1,
+            "7": 1,
+            "104803": 1
+          }
+        },
+        {
+          "R": 87,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 5,
+            "68777": 1
+          }
+        },
+        {
+          "R": 91,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "5": 1,
+            "19": 1,
+            "23167": 1
+          }
+        },
+        {
+          "R": 95,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "3": 1,
+            "366811": 1
+          }
+        },
+        {
+          "R": 99,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 3,
+          "a_factors": {
+            "2200867": 1
+          }
+        },
+        {
+          "R": 103,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 2,
+            "29": 1,
+            "18973": 1
+          }
+        },
+        {
+          "R": 107,
+          "status": "works"
+        }
+      ]
+    },
+    {
+      "p": 142361209,
+      "p_mod_840": 529,
+      "failures": 26,
+      "type_I": 13,
+      "type_II": 13,
+      "detail": [
+        {
+          "R": 3,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 3,
+          "a_factors": {
+            "7": 1,
+            "1063": 1,
+            "4783": 1
+          }
+        },
+        {
+          "R": 7,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 7,
+          "a_factors": {
+            "2": 5,
+            "1112197": 1
+          }
+        },
+        {
+          "R": 11,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 11,
+          "a_factors": {
+            "3": 1,
+            "5": 1,
+            "2372687": 1
+          }
+        },
+        {
+          "R": 15,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "19": 1,
+            "936587": 1
+          }
+        },
+        {
+          "R": 19,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 19,
+          "a_factors": {
+            "35590307": 1
+          }
+        },
+        {
+          "R": 23,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 23,
+          "a_factors": {
+            "2": 2,
+            "3": 1,
+            "13": 1,
+            "29": 1,
+            "7867": 1
+          }
+        },
+        {
+          "R": 27,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 3,
+          "a_factors": {
+            "35590309": 1
+          }
+        },
+        {
+          "R": 31,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 31,
+          "a_factors": {
+            "2": 1,
+            "5": 1,
+            "7": 1,
+            "508433": 1
+          }
+        },
+        {
+          "R": 35,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "3": 2,
+            "103": 1,
+            "38393": 1
+          }
+        },
+        {
+          "R": 39,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 3,
+            "71": 1,
+            "62659": 1
+          }
+        },
+        {
+          "R": 43,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "11": 1,
+            "3235483": 1
+          }
+        },
+        {
+          "R": 47,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 47,
+          "a_factors": {
+            "2": 1,
+            "3": 1,
+            "269": 1,
+            "22051": 1
+          }
+        },
+        {
+          "R": 51,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "5": 1,
+            "23": 1,
+            "309481": 1
+          }
+        },
+        {
+          "R": 55,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 2,
+            "17": 1,
+            "523387": 1
+          }
+        },
+        {
+          "R": 59,
+          "status": "works"
+        },
+        {
+          "R": 63,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 7,
+          "a_factors": {
+            "2": 1,
+            "17795159": 1
+          }
+        },
+        {
+          "R": 67,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "35590319": 1
+          }
+        },
+        {
+          "R": 71,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 71,
+          "a_factors": {
+            "2": 4,
+            "3": 3,
+            "5": 1,
+            "16477": 1
+          }
+        },
+        {
+          "R": 75,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 3,
+          "a_factors": {
+            "13": 1,
+            "2737717": 1
+          }
+        },
+        {
+          "R": 79,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "349": 1,
+            "50989": 1
+          }
+        },
+        {
+          "R": 83,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "3": 1,
+            "11863441": 1
+          }
+        },
+        {
+          "R": 87,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 2,
+            "7": 1,
+            "11": 1,
+            "115553": 1
+          }
+        },
+        {
+          "R": 91,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "5": 2,
+            "19": 1,
+            "31": 1,
+            "2417": 1
+          }
+        },
+        {
+          "R": 95,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "3": 1,
+            "43": 1,
+            "137947": 1
+          }
+        },
+        {
+          "R": 99,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 11,
+          "a_factors": {
+            "47": 1,
+            "757241": 1
+          }
+        },
+        {
+          "R": 103,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 103,
+          "a_factors": {
+            "2": 3,
+            "61": 1,
+            "72931": 1
+          }
+        },
+        {
+          "R": 107,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "3": 2,
+            "3954481": 1
+          }
+        }
+      ]
+    },
+    {
+      "p": 287567281,
+      "p_mod_840": 1,
+      "failures": 26,
+      "type_I": 13,
+      "type_II": 13,
+      "detail": [
+        {
+          "R": 3,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 3,
+          "a_factors": {
+            "31": 1,
+            "2319091": 1
+          }
+        },
+        {
+          "R": 7,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 7,
+          "a_factors": {
+            "2": 1,
+            "109": 1,
+            "329779": 1
+          }
+        },
+        {
+          "R": 11,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 11,
+          "a_factors": {
+            "3": 1,
+            "23963941": 1
+          }
+        },
+        {
+          "R": 15,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 4,
+            "4493239": 1
+          }
+        },
+        {
+          "R": 19,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 19,
+          "a_factors": {
+            "5": 2,
+            "2875673": 1
+          }
+        },
+        {
+          "R": 23,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 23,
+          "a_factors": {
+            "2": 1,
+            "3": 1,
+            "11981971": 1
+          }
+        },
+        {
+          "R": 27,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "7": 1,
+            "17": 1,
+            "191": 1,
+            "3163": 1
+          }
+        },
+        {
+          "R": 31,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 31,
+          "a_factors": {
+            "2": 2,
+            "1823": 1,
+            "9859": 1
+          }
+        },
+        {
+          "R": 35,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "3": 2,
+            "43": 1,
+            "185767": 1
+          }
+        },
+        {
+          "R": 39,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "5": 1,
+            "167": 1,
+            "43049": 1
+          }
+        },
+        {
+          "R": 43,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "11": 1,
+            "71": 1,
+            "92051": 1
+          }
+        },
+        {
+          "R": 47,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 47,
+          "a_factors": {
+            "2": 3,
+            "3": 1,
+            "2995493": 1
+          }
+        },
+        {
+          "R": 51,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 3,
+          "a_factors": {
+            "13": 1,
+            "5530141": 1
+          }
+        },
+        {
+          "R": 55,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "7": 1,
+            "5135131": 1
+          }
+        },
+        {
+          "R": 59,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "3": 1,
+            "5": 1,
+            "4792789": 1
+          }
+        },
+        {
+          "R": 63,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 7,
+          "a_factors": {
+            "2": 2,
+            "23": 1,
+            "781433": 1
+          }
+        },
+        {
+          "R": 67,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 67,
+          "a_factors": {
+            "103": 1,
+            "697979": 1
+          }
+        },
+        {
+          "R": 71,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "3": 2,
+            "3993991": 1
+          }
+        },
+        {
+          "R": 75,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "19": 1,
+            "263": 1,
+            "14387": 1
+          }
+        },
+        {
+          "R": 79,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 79,
+          "a_factors": {
+            "2": 7,
+            "5": 1,
+            "112331": 1
+          }
+        },
+        {
+          "R": 83,
+          "status": "works"
+        },
+        {
+          "R": 87,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "11": 1,
+            "1187": 1,
+            "2753": 1
+          }
+        },
+        {
+          "R": 91,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 7,
+          "a_factors": {
+            "113": 1,
+            "636211": 1
+          }
+        },
+        {
+          "R": 95,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 2,
+            "3": 1,
+            "17": 1,
+            "352411": 1
+          }
+        },
+        {
+          "R": 99,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "5": 1,
+            "2287": 1,
+            "6287": 1
+          }
+        },
+        {
+          "R": 103,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 103,
+          "a_factors": {
+            "2": 1,
+            "13": 1,
+            "137": 1,
+            "20183": 1
+          }
+        },
+        {
+          "R": 107,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "3": 3,
+            "2662661": 1
+          }
+        }
+      ]
+    },
+    {
+      "p": 794037841,
+      "p_mod_840": 121,
+      "failures": 26,
+      "type_I": 16,
+      "type_II": 10,
+      "detail": [
+        {
+          "R": 3,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 3,
+          "a_factors": {
+            "31": 1,
+            "1699": 1,
+            "3769": 1
+          }
+        },
+        {
+          "R": 7,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 7,
+          "a_factors": {
+            "2": 1,
+            "79": 1,
+            "1256389": 1
+          }
+        },
+        {
+          "R": 11,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 11,
+          "a_factors": {
+            "3": 2,
+            "22056607": 1
+          }
+        },
+        {
+          "R": 15,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 3,
+            "24813683": 1
+          }
+        },
+        {
+          "R": 19,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 19,
+          "a_factors": {
+            "5": 1,
+            "7": 1,
+            "11": 1,
+            "199": 1,
+            "2591": 1
+          }
+        },
+        {
+          "R": 23,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 23,
+          "a_factors": {
+            "2": 1,
+            "3": 1,
+            "29": 1,
+            "1140859": 1
+          }
+        },
+        {
+          "R": 27,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 3,
+          "a_factors": {
+            "13": 1,
+            "15269959": 1
+          }
+        },
+        {
+          "R": 31,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 31,
+          "a_factors": {
+            "2": 2,
+            "71": 1,
+            "698977": 1
+          }
+        },
+        {
+          "R": 35,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "3": 1,
+            "66169823": 1
+          }
+        },
+        {
+          "R": 39,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "5": 1,
+            "19850947": 1
+          }
+        },
+        {
+          "R": 43,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "223": 1,
+            "890177": 1
+          }
+        },
+        {
+          "R": 47,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 47,
+          "a_factors": {
+            "2": 5,
+            "3": 2,
+            "7": 1,
+            "98467": 1
+          }
+        },
+        {
+          "R": 51,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "19": 1,
+            "113": 1,
+            "92459": 1
+          }
+        },
+        {
+          "R": 55,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "99254737": 1
+          }
+        },
+        {
+          "R": 59,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 59,
+          "a_factors": {
+            "3": 1,
+            "5": 2,
+            "2646793": 1
+          }
+        },
+        {
+          "R": 63,
+          "status": "works"
+        },
+        {
+          "R": 67,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 67,
+          "a_factors": {
+            "37": 1,
+            "5365121": 1
+          }
+        },
+        {
+          "R": 71,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 71,
+          "a_factors": {
+            "2": 1,
+            "3": 1,
+            "33084913": 1
+          }
+        },
+        {
+          "R": 75,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 3,
+          "a_factors": {
+            "7": 1,
+            "487": 1,
+            "58231": 1
+          }
+        },
+        {
+          "R": 79,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 79,
+          "a_factors": {
+            "2": 3,
+            "5": 1,
+            "13": 1,
+            "381749": 1
+          }
+        },
+        {
+          "R": 83,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 83,
+          "a_factors": {
+            "3": 3,
+            "23": 1,
+            "373": 1,
+            "857": 1
+          }
+        },
+        {
+          "R": 87,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "47": 1,
+            "2111803": 1
+          }
+        },
+        {
+          "R": 91,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 7,
+          "a_factors": {
+            "198509483": 1
+          }
+        },
+        {
+          "R": 95,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 2,
+            "3": 1,
+            "73": 1,
+            "226609": 1
+          }
+        },
+        {
+          "R": 99,
+          "status": "fails",
+          "type": "I",
+          "obstruction_prime": 11,
+          "a_factors": {
+            "5": 1,
+            "39701897": 1
+          }
+        },
+        {
+          "R": 103,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "2": 1,
+            "7": 2,
+            "53": 1,
+            "38219": 1
+          }
+        },
+        {
+          "R": 107,
+          "status": "fails",
+          "type": "II",
+          "obstruction_prime": null,
+          "a_factors": {
+            "3": 1,
+            "11": 1,
+            "6015439": 1
+          }
+        }
+      ]
+    }
+  ]
+}

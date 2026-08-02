@@ -40,13 +40,14 @@ from typing import Dict, List, Optional, Tuple
 
 HARD_RESIDUES = frozenset({1, 121, 169, 289, 361, 529})
 
-# Precomputed small primes for trial division. a < n/4; for n up to ~1.3e8,
-# a < ~3.25e7 and sqrt(a) < ~5700, so primes up to 6000 fully factor any a.
-# Bumped to 20000 for headroom if the max bound is raised.
+# Precomputed small primes for trial division of a = (n+R)/4 < n/4 + 100.
+# Correct full factorization needs primes up to sqrt(a): for n up to 1e10,
+# a <= ~2.5e9 and sqrt(a) < 50_100. The 60000 default covers n up to ~1.4e10;
+# raise the bound before pushing past that.
 _SMALL_PRIMES: List[int] = []
 
 
-def _init_small_primes(bound: int = 20000) -> None:
+def _init_small_primes(bound: int = 60000) -> None:
     global _SMALL_PRIMES
     if _SMALL_PRIMES and _SMALL_PRIMES[-1] >= bound:
         return

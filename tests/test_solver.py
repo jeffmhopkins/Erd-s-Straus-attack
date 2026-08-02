@@ -175,6 +175,62 @@ def test_rmap_dataset_reconstructs():
             )
 
 
+def test_jacobi_symbol():
+    from erdos_straus.theory import jacobi
+
+    # squares are residues
+    assert jacobi(4, 7) == 1 and jacobi(2, 7) == 1
+    # -1 is a non-residue mod primes ≡ 3 (mod 4)
+    for r in [3, 7, 11, 19, 23]:
+        assert jacobi(r - 1, r) == -1
+    # multiplicativity spot check
+    assert jacobi(3, 7) * jacobi(5, 7) == jacobi(15, 7)
+
+
+def test_theorem_A_R3_criterion_matches_solver():
+    """Theorem A: R=3 works iff (p+3)/4 has a prime factor ≡ 2 (mod 3)."""
+    from erdos_straus.bulk_generate import (
+        _init_small_primes, factorize, solve_residual,
+    )
+    from erdos_straus.solver import generate_hard_primes
+
+    _init_small_primes()
+    for p in generate_hard_primes(200000):
+        a = (p + 3) // 4
+        pred = any(q % 3 == 2 for q in factorize(a))
+        assert pred == (solve_residual(p, 3) is not None), p
+
+
+def test_theorem_Aprime_R7_finite_verification():
+    """Theorem A': the finite case analysis for R=7 has no violations."""
+    from erdos_straus.theory import verify_R7_finite
+
+    res = verify_R7_finite()
+    assert res["theorem_holds"], res["violations"][:3]
+    assert res["checked"] == 1536
+
+
+def test_character_obstruction_prop1():
+    """Prop 1: all-QR factor classes mod r|R (r≡3 mod 4) forces failure."""
+    from erdos_straus.bulk_generate import (
+        _init_small_primes, factorize, solve_residual,
+    )
+    from erdos_straus.theory import jacobi, obstruction_primes_of_R
+    from erdos_straus.solver import generate_hard_primes
+
+    _init_small_primes()
+    checked = 0
+    for p in generate_hard_primes(100000):
+        for R in [7, 11, 19, 23]:
+            a = (p + R) // 4
+            qs = set(factorize(a)) | {p}
+            for r in obstruction_primes_of_R(R):
+                if all(jacobi(q, r) == 1 for q in qs):
+                    assert solve_residual(p, R) is None, (p, R)
+                    checked += 1
+    assert checked > 10  # the obstruction does occur in range
+
+
 def test_bulk_generate_matches_stored_minimal_R():
     """The fast bulk solver reproduces the minimal R of stored certificates."""
     from erdos_straus.bulk_generate import _init_small_primes, minimal_certificate
