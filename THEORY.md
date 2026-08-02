@@ -2,7 +2,9 @@
 
 **Date:** 2026-08-02 (current through PR #31; this revision adds
 Theorem S and Theorem A‴; §2.10 adds the Burgess/reciprocity
-route and its full-population census).  
+route, its full-population census and failure anatomy, and the
+ladder theorems L₀ (rigorous, fixed length) and L₁ (almost-all,
+conditional on the measured Hypothesis B)).  
 **Status:** Proved: Theorems A, A′, A″, A‴ (exact criteria for
 R = 3, 7, 11, and now the first composite residual R = 15; A′/A″/A‴ by
 machine-verified finite case analysis), the meta-theorem (now including
@@ -968,6 +970,107 @@ a = (p+R)/4 simultaneously (i) has ≤ 5 non-identity classes mod R,
 reach misses one specific class — along a ladder whose rungs refresh
 a by +q each step. Each ingredient is a classical-flavored statement
 about prime factors of shifted integers in residue classes.
+
+#### Theorem L₀ (rigorous ladder chain, fixed length)
+
+*Let q ≥ 11 be prime and J ≥ 1 fixed. For a hard prime p with
+(p|q) = −1 let R₀ = (−p) mod 4q and R_j = R₀ + 4qj. Then the number
+of hard primes p ≤ x with (p|q) = −1 that fail every rung R_j,
+0 ≤ j < J is*
+
+    O_{q,J}( x / (log x)^{1 + J'/2} ),
+
+*where J' = #{j < J : ω(R_j) ≤ 2} is the number of usable rungs
+(J' = J for every ladder observed below 10⁹; rungs with three or more
+prime factors, possible from R = 105 on, are skipped).*
+
+**Proof sketch.** The rungs are admissible (R_j ≡ 3 mod 4 since
+p ≡ 1 mod 4), and the shifted forms a_j = (p+R_j)/4 = n + (R₀−3)/4 + qj
+(n = (p+3)/4) are distinct integer linear forms in n with pairwise
+distinct shifts. By Theorem S — part (ii) for prime rungs, part (iii)
+for composite rungs with ω ≤ 2 — failure at rung R_j forbids at least
+half the unit classes mod R_j for the prime factors of a_j, through
+finitely many maximal-support branches: a sifting condition of
+dimension ≥ 1/2 per rung, exactly as in the chain (Theorem 1.11),
+whose proof applies verbatim to the list {R_j} with constants
+depending on q and J. Dropping the character condition (p|q) = −1
+only enlarges the sifted set, so the upper bound survives it. ∎
+
+Theorem L₀ is the ladder-adapted chain: unlike the fixed-list chain it
+bounds failures of a **p-adapted** residual family, so it composes
+with the distribution of the least non-residue. Two remarks. (i) Rungs
+with ω(R_j) ≥ 3 (possible from R = 105 on) are simply skipped —
+Theorem S(iii) currently covers ω ≤ 2. (ii) For fixed J this adds no
+density strength over Theorem 1.11; its role is structural, as the
+rigorous base of the conditional theorem below.
+
+#### Hypothesis B and Theorem L₁ (the almost-all draft)
+
+The census makes the following counting hypothesis precise and
+falsifiable. For x, a prime q, and j ≥ 0 let E_j(x) be the set of
+hard primes p ≤ x with (p|q(p)) = −1, q(p) = q its least non-residue,
+that fail rungs R₀, …, R_j of their q-ladder.
+
+**Hypothesis B(δ, J(x)).** There are δ > 0 and x₀ such that for all
+x ≥ x₀, all q ≤ (log x)², and all 0 ≤ j < J(x):
+
+    #E_{j+1}(x)  ≤  (1 − δ) · #E_j(x)  +  O(√x).
+
+*Measured*: the census gives per-rung survival factors 1 − δ ≈
+0.05–0.14 at every scale tested (10⁹ exhaustively; 10¹⁰–10¹¹ sampled;
+the 10¹¹ deep tail completely), with no drift in p, through ~9 rungs
+and two q's. The anatomy subsection above is the proof target: a rung
+survives only via the triple coincidence (class-concentration ≤ 5,
+parity-minimal non-residue mass, one-class reach deficiency), and the
+rung map a ↦ a + q refreshes the factorization.
+
+**Lemma Q (least non-residue, large sieve).** The number of hard
+primes p ≤ x whose least non-residue exceeds y is
+≪ x · 2^{−(π(y) − 4)} for y ≤ exp(c√(log x)) (large sieve /
+Linnik-style: such p are quadratic residues modulo every prime in
+(7, y], a half-class condition per modulus; hard primes already
+satisfy it for 3, 5, 7). In particular the primes with
+q(p) > (log x)² number ≪ x·exp(−c(log x)²/log log x). (Observed:
+q ≤ 83 below 10¹¹; GRH puts q(p) ≪ (log p)² for every p.)
+
+**Theorem L₁ (conditional on B).** *Assume Hypothesis B(δ, J(x)).
+Then all but*
+
+    O( x · e^{−δ J(x)}  +  x · 2^{−π((log x)²)} )
+
+*hard primes p ≤ x satisfy R_min(p) ≤ 4 q(p) (J(x)+1) ≤
+(log x)^{2+o(1)} J(x). The second error term is
+exp(−c(log x)²/log log x)·x — negligible against the first at every
+calibration.*
+
+**Proof.** Lemma Q disposes of primes with q(p) > (log x)²
+(the second error term, which is ≪ x^{−A} for every A — negligible).
+For the rest, iterate B: after J(x) rungs the surviving count is
+≤ (1−δ)^{J(x)} x + O(J(x)√x). A survivor is the only way to have
+R_min > 4q(J+1) along the ladder; everything else has a certificate
+at some rung. ∎
+
+**Calibrations.** With J(x) = (log log x)² (a mild extrapolation of
+the measured 9 rungs): exceptional set ≪ x·exp(−δ(log log x)²) — past
+every fixed power of log x, i.e. past the entire chain and Theorem
+1.13, with the explicit residual bound R_min ≤ (log x)^{2+o(1)}. With
+J(x) = (log x)^θ, θ > 2/3 (a bold extrapolation): exceptional set
+≪ x·exp(−δ(log x)^θ) — past Vaughan. The hypothesis-strength needed
+scales exactly with the ambition, and every increment is testable
+before it is assumed.
+
+**What would remain.** Theorem L₁, under any calibration, is an
+almost-all statement: the emptiness wall (Remark 4.2 of the paper)
+is untouched, and a single conspiratorial prime — a super-record
+dodging J(x) rungs — is exactly what Hypothesis B cannot exclude
+per-p and what Dickson-type constructions suggest exists for fixed
+finite ladders. The full conjecture on this route = B plus the
+per-p statement "no prime dodges its first J(p) rungs", which is a
+simultaneous-multiplicative-structure assertion of prime-tuple
+difficulty. The honest reading: the route upgrades the program's
+frontier from fixed lists to p-adapted polylog ladders and localizes
+the conjecture's difficulty into one measured, falsifiable counting
+inequality — it does not remove that difficulty.
 
 #### The Ladder Hypothesis, and what it would give
 
