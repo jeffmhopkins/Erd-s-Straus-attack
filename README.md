@@ -104,8 +104,11 @@ configurations, exact two-case failure classification), and Lemma S at
 R = 19 and 23 (437,580 + 7,759,752 checks), all discharged by Lean's
 compiled evaluator — plus the proved discrete-log bridges (mask
 semantics as theorems), which carry each enumeration back into the
-multiplicative reach model with no coordinate caveat. Every
-declaration is sorry-free and
+multiplicative reach model with no coordinate caveat, and the
+reach ⟺ divisor-certificate bridge: reachability of the target class
+is equivalent to the existence of a divisor k | m² in that class and
+produces the explicit positive certificate (the meta-theorem's
+reduction, fully symbolic). Every declaration is sorry-free and
 axiom-audited via `#print axioms` (see `lean/README.md` for the trust
 base).
 

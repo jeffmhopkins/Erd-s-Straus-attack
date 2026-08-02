@@ -118,9 +118,12 @@ machine-verified structure, together with the exact criteria.
   divisor-class reachability model with its monotonicity reductions
   (Lemma~\ref{lem:mono}), the full finite verifications of
   Theorems~\ref{thm:Ap} and~\ref{thm:App}, the support-bound
-  checks of Lemma~\ref{lem:S} at $R = 19$ and $23$, and the proved
+  checks of Lemma~\ref{lem:S} at $R = 19$ and $23$, the proved
   discrete-log bridges carrying each enumeration into the
-  multiplicative model --- in the accompanying repository.
+  multiplicative model, and the reduction of Theorem~\ref{thm:meta}
+  itself (reachability in the model is equivalent to the existence of
+  a divisor certificate \eqref{eq:cert}, and produces one explicitly)
+  --- in the accompanying repository.
 \end{itemize}
 
 \subsection{The residual method}\label{sec:intro-method}
@@ -1008,7 +1011,16 @@ translation is itself a proved theorem (the mask semantics ---
 rotation is multiplication by $g^s$, the mask fold is the
 divisor-class reachability set), and the formal development derives
 each statement back in the multiplicative model, where it reports
-exactly its enumeration's single evaluator axiom. Every declaration
+exactly its enumeration's single evaluator axiom. The reduction of
+Theorem~\ref{thm:meta} is also formalized
+(\texttt{reach\_certificate}): membership of the target class in the
+reachability model is equivalent to the existence of a divisor
+$k \mid m^2$ in that class --- via the fundamental theorem of
+arithmetic --- and yields the explicit positive certificate
+$(k, b, c)$ with the identity of \eqref{eq:es}; this closes the loop
+between the abstract model that the enumerations check and the
+integer certificates the conjecture asks for, with no computational
+content to trust. Every declaration
 is audited with \texttt{\#print axioms}. For these enumerations the
 sixty-line trust base above is thus replaced by the Lean toolchain
 evaluating a formally stated proposition --- and the Python and Lean

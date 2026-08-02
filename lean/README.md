@@ -28,6 +28,10 @@ residual framework from the companion paper.
 | `reach_perm` / `reach_append_single` | `reach` is invariant under permutations of the configuration list (step is right-commutative) |
 | `lemmaS_finite_R19_mult` / `lemmaS_finite_R23_mult` | the support bounds **restated over `ZMod 19` / `ZMod 23` and the multiplicative `reach` model** (any duplicate-free enumeration of any 9- resp. 11-class support), derived from the mask checks via the bridge |
 | `theoremA''_finite_R11_mult` | Theorem A″'s exact criterion **restated over `ZMod 11`** — class-indexed multiplicities, consistency-determined p, reach membership ⟺ neither failure shape — derived via the bridge |
+| `IsSubprod` / `mem_reach_iff_subprod` (DivisorBridge.lean) | `reach` computes exactly the classes of bounded-exponent integer subproducts |
+| `isSubprod_primes_iff_dvd` | subproducts of a prime list (budget 1 per occurrence) are exactly the divisors of its product — the fundamental theorem of arithmetic in the form the model needs |
+| `mem_reach_iff_dvd` / `divisorConfig` | **the divisor bridge**: c ∈ reach(factor configuration of N) ⟺ ∃ k ∣ N with class c |
+| `reach_certificate` / `certificate_reach` | **the meta-theorem's reduction, capstone**: reach membership of the target −m (m = p·a, 4a = p+R) yields explicit positive k ∣ m², b, c with R·b = k+m, R·c = m²/k+m and 4abc = p(bc+ca+ab) — and conversely every divisor class is reached. Solvability ⟺ model reachability, machine-checked |
 
 Together these verify the elementary layer of the paper end to end —
 certificates are sound and integral, Theorem A is exact in both
@@ -46,6 +50,13 @@ multiplication by `g^s`, mask fold = `reach`) is a theorem, so
 `theoremA''_finite_R11_mult`, `lemmaS_finite_R19_mult`, and
 `lemmaS_finite_R23_mult` state the same results directly over
 `ZMod 11 / 19 / 23` and `reach`, with no coordinate caveat left.
+Finally, the reach ⟺ divisor-certificate bridge
+(`DivisorBridge.lean`) proves the model faithful to the integers:
+`reach` membership of a class is existence of a divisor of `m²` in
+that class (via the fundamental theorem of arithmetic), and reach
+membership of the target `−m` produces an explicit positive
+Erdős–Straus certificate (`reach_certificate`) — the meta-theorem's
+reduction itself, fully symbolic, standard axioms only.
 
 ### Trust base
 
@@ -77,9 +88,10 @@ against the same finite spaces, with identical results.
 - Lemma S past R = 23: C(25,13) × 26 ≈ 135M checks at R = 31 exceeds
   the evaluator's practical budget; the DP formulation (or a
   precompiled checker) would be needed.
-- The bridge theorems connecting `reach` to actual divisor
-  certificates (the meta-theorem's reduction itself, currently proved
-  in the paper): `reach` membership ⟺ ∃ k ∣ m² in the target class.
+- Budget-consolidation lemmas connecting `divisorConfig` (budget 1
+  per prime occurrence) to the enumeration-shaped configurations
+  (budget 2·multiplicity per distinct class), to compose
+  `reach_certificate` directly with the `_mult` theorems.
 - The sieve chapter is out of scope by design (see the paper's
   trusted-computing-base paragraph): the large-scale computations remain
   independently reproducible software with deterministic verification.
