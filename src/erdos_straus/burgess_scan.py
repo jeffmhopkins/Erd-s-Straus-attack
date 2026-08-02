@@ -26,12 +26,36 @@ ground-truth masks:
                         with no odd-failure states is pure a fortiori.
 
 Outputs are archived under data/analysis/burgess_scan_1e9.json.
+
+Archive regeneration (CLI)
+--------------------------
+Every archive under data/analysis/ produced by this module has a
+subcommand that regenerates it (``python -m erdos_straus.burgess_scan
+<command> --help`` for the knobs; defaults reproduce the archives):
+
+  census        -> data/analysis/burgess_scan_1e9.json
+                   Exhaustive 10^9 census + purity + config scans
+                   (default command; multi-hour runtime).
+  scaled        -> data/analysis/burgess_scan_1e10_1e11.json
+                   Window samples 10^9..10^11 plus the complete 10^11
+                   deep tail (needs data/hard_primes_1e11_minimalR.tail.json).
+  failures      -> data/analysis/burgess_failures_1e9.json
+                   Reach diagnostics of the selected-residual failures.
+  proxy         -> data/analysis/burgess_proxy_1e9.json
+                   Hypothesis-P proxy-ratio scan on the 10^9 masks.
+  proxy-scaled  -> data/analysis/burgess_proxy_scaled.json
+                   Mask-free Hypothesis-P scan on window samples to 10^11.
+
+Invoking the module with no arguments runs ``census`` (the historical
+behavior).
 """
 
 from __future__ import annotations
 
+import argparse
 import gzip
 import json
+import sys
 import time
 from typing import Dict, List, Optional, Tuple
 
@@ -239,43 +263,6 @@ def dichotomy_config_scan(r_list: Optional[List[int]] = None,
     return out
 
 
-def main() -> int:
-    _init_small_primes()
-    print("loading masks ...", flush=True)
-    with gzip.open("data/analysis/residual_masks_1e9.json.gz", "rt") as f:
-        masks = {int(k): int(v) for k, v in json.load(f).items()}
-    print(f"{len(masks):,} primes", flush=True)
-
-    result: Dict[str, object] = {}
-    print("\n=== generic configuration-space verdicts (prime R) ===",
-          flush=True)
-    result["config_scan"] = dichotomy_config_scan()
-    for R, v in result["config_scan"].items():
-        print(f"  R={R}: {v}", flush=True)
-
-    print("\n=== Jacobi purity scan (step 20) ===", flush=True)
-    result["purity"] = jacobi_purity_scan(masks, sample_step=20)
-    for R, v in result["purity"]["per_R"].items():
-        print(f"  R={R:>3}: C1-true {v['c1_true']:>6}, budget-in-wild "
-              f"{v['c1_true_fail']:>4}  pure={v['operationally_pure']}",
-              flush=True)
-
-    print("\n=== Burgess census (all primes) ===", flush=True)
-    result["census"] = burgess_census(masks, sample_step=1)
-    c = result["census"]
-    print(f"  success at selected R: {c['success_at_selected_R']:,} / "
-          f"{c['sampled']:,}  (failures: {c['failures']})", flush=True)
-
-    with open("data/analysis/burgess_scan_1e9.json", "w") as f:
-        json.dump(result, f, indent=1)
-    print("\nwrote data/analysis/burgess_scan_1e9.json", flush=True)
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
-
-
 # --- Scaled census: direct computation beyond the 10^9 masks --------------
 #
 # Above 10^9 there are no full solvability masks, so success at the
@@ -338,7 +325,7 @@ def window_sample_primes(lo: int, hi: int, n_windows: int,
         x = lo + i * step
         n = x - x % 840
         found = 0
-        while found < per_window:
+        while found < per_window and n < hi:
             for h in sorted(hard):
                 c = n + h
                 if c >= x and c < hi and sympy.isprime(c):
@@ -615,3 +602,302 @@ def proxy_ratio_scan_scaled(primes: List[int], workers: int = 4,
             "true_decay_rung1": f0f1 / f0 if f0 else None,
             "P_rung1_within_fail0": f0f1 / f0a1 if f0a1 else None,
             "secs": round(time.time() - t0, 1)}
+
+
+# --- CLI: regeneration of the data/analysis archives -----------------------
+
+_MASKS_1E9 = "data/analysis/residual_masks_1e9.json.gz"
+_TAIL_1E11 = "data/hard_primes_1e11_minimalR.tail.json"
+
+# Half-decade bins used for both scaled scans (window samples 10^9..10^11).
+_SCALED_BINS = [(10**9, 3163 * 10**6, "1e9-3.2e9"),
+                (3163 * 10**6, 10**10, "3.2e9-1e10"),
+                (10**10, 3163 * 10**7, "1e10-3.2e10"),
+                (3163 * 10**7, 10**11, "3.2e10-1e11")]
+
+
+def _load_masks(path: str) -> Dict[int, int]:
+    print(f"loading masks from {path} ...", flush=True)
+    with gzip.open(path, "rt") as f:
+        masks = {int(k): int(v) for k, v in json.load(f).items()}
+    print(f"{len(masks):,} primes", flush=True)
+    return masks
+
+
+def _write_json(result: object, path: str) -> None:
+    with open(path, "w") as f:
+        json.dump(result, f, indent=1)
+    print(f"\nwrote {path}", flush=True)
+
+
+def _cmd_census(args: argparse.Namespace) -> int:
+    """Regenerate burgess_scan_1e9.json (the historical default run)."""
+    masks = _load_masks(args.masks)
+
+    result: Dict[str, object] = {}
+    print("\n=== generic configuration-space verdicts (prime R) ===",
+          flush=True)
+    result["config_scan"] = dichotomy_config_scan()
+    for R, v in result["config_scan"].items():
+        print(f"  R={R}: {v}", flush=True)
+
+    print(f"\n=== Jacobi purity scan (step {args.purity_step}) ===",
+          flush=True)
+    result["purity"] = jacobi_purity_scan(masks,
+                                          sample_step=args.purity_step)
+    for R, v in result["purity"]["per_R"].items():
+        print(f"  R={R:>3}: C1-true {v['c1_true']:>6}, budget-in-wild "
+              f"{v['c1_true_fail']:>4}  pure={v['operationally_pure']}",
+              flush=True)
+
+    print("\n=== Burgess census (all primes) ===", flush=True)
+    result["census"] = burgess_census(masks, sample_step=args.sample_step)
+    c = result["census"]
+    print(f"  success at selected R: {c['success_at_selected_R']:,} / "
+          f"{c['sampled']:,}  (failures: {c['failures']})", flush=True)
+
+    # Second-q ladder for the first-q-unresolved primes (archive key
+    # "second_q_ladder"): rerun each through the full census_one ladder,
+    # which continues onto later non-residues q, rungs <= 400.
+    unresolved = c["unresolved_below_400"]
+    still: List[int] = []
+    for f in unresolved:
+        if census_one(f["p"], cap=400)["solved_R"] is None:
+            still.append(f["p"])
+    note = ("every first-q-unresolved prime solves on a later non-residue "
+            "q ladder, R <= 400" if not still else
+            f"{len(still)} primes remain unresolved at R <= 400 on all "
+            "candidate q ladders")
+    c["second_q_ladder"] = {"resolved": len(unresolved) - len(still),
+                            "still_unresolved": still, "note": note}
+    print(f"  second-q ladder: {len(unresolved) - len(still):,} resolved, "
+          f"{len(still)} still unresolved", flush=True)
+
+    _write_json(result, args.out)
+    return 0
+
+
+def _cmd_scaled(args: argparse.Namespace) -> int:
+    """Regenerate burgess_scan_1e10_1e11.json."""
+    result: Dict[str, object] = {}
+    for lo, hi, tag in _SCALED_BINS:
+        t0 = time.time()
+        print(f"=== sampling {tag} ===", flush=True)
+        primes = window_sample_primes(lo, hi, args.windows, args.per_window)
+        print(f"  {len(primes):,} primes sampled ({time.time()-t0:.0f}s)",
+              flush=True)
+        result[tag] = scaled_census(primes, workers=args.workers,
+                                    progress=False, tag=tag)
+        r = result[tag]
+        print(f"  first-shot {r['first_shot_rate']:.4f}  ladder "
+              f"{r['ladder_rate']:.5f}  unresolved "
+              f"{len(r['unresolved_cap400'])}", flush=True)
+
+    print("=== 10^11 deep tail (complete, R_min >= 43) ===", flush=True)
+    with open(args.tail) as f:
+        tail = json.load(f)
+    entries = (tail["entries"]
+               if isinstance(tail, dict) and "entries" in tail else tail)
+    tp: List[int] = []
+    rmin: Dict[int, int] = {}
+    for e in entries:
+        p = int(e["p"])
+        tp.append(p)
+        rmin[p] = int(e["R"])
+    print(f"  {len(tp):,} tail primes", flush=True)
+
+    # Integrity cross-check against the stored dataset: the engine must
+    # agree that the stored R_min works, on a systematic sample.
+    sample = tp[::200]
+    bad = [p for p in sample if not solvable_exact_general(p, rmin[p])]
+    print(f"  integrity check vs stored R_min: {len(sample)} sampled, "
+          f"{len(bad)} disagreements", flush=True)
+    assert not bad, bad[:5]
+
+    result["tail_1e11"] = scaled_census(tp, workers=args.workers,
+                                        progress=True, tag="tail")
+    r = result["tail_1e11"]
+    print(f"  tail: first-shot {r['first_shot_rate']:.4f}  ladder "
+          f"{r['ladder_rate']:.5f}  unresolved "
+          f"{len(r['unresolved_cap400'])}", flush=True)
+
+    # For unresolved tail primes (if any): stored R_min for context, plus
+    # an extended ladder with the rung cap raised past 400.
+    result["tail_unresolved_rmin"] = {str(p): rmin[p]
+                                      for p in r["unresolved_cap400"]}
+    result["integrity_check"] = {"sampled": len(sample),
+                                 "disagreements": len(bad)}
+    if r["unresolved_cap400"]:
+        ext: Dict[str, object] = {}
+        worst = 0
+        all_ok = True
+        for p in r["unresolved_cap400"]:
+            c1 = census_one(p, cap=args.extend_cap)
+            ext[str(p)] = {"rmin": rmin[p],
+                           "resolves_at_R": c1["solved_R"],
+                           "with_q": c1["solved_q"]}
+            if c1["solved_R"] is None:
+                all_ok = False
+            else:
+                worst = max(worst, c1["solved_R"])
+        ext["note"] = (f"all cap-400-unresolved primes resolve on an "
+                       f"extended ladder; coverage is 100% at cap {worst}"
+                       if all_ok else
+                       f"some primes remain unresolved at cap "
+                       f"{args.extend_cap}")
+        result["tail_unresolved_extended"] = ext
+
+    _write_json(result, args.out)
+    return 0
+
+
+def _cmd_failures(args: argparse.Namespace) -> int:
+    """Regenerate burgess_failures_1e9.json."""
+    masks = _load_masks(args.masks)
+    result = characterize_budget_failures(masks)
+    print(f"  failures profiled: {result['failures']['n']:,}  "
+          f"controls: {result['successes_control']['n']:,}", flush=True)
+    _write_json(result, args.out)
+    return 0
+
+
+def _cmd_proxy(args: argparse.Namespace) -> int:
+    """Regenerate burgess_proxy_1e9.json."""
+    masks = _load_masks(args.masks)
+    result = proxy_ratio_scan(masks, sample_step=args.sample_step)
+    print(f"  sampled {result['sampled']:,}  P_rung0={result['P_rung0']}",
+          flush=True)
+    _write_json(result, args.out)
+    return 0
+
+
+def _cmd_proxy_scaled(args: argparse.Namespace) -> int:
+    """Regenerate burgess_proxy_scaled.json."""
+    result: Dict[str, object] = {}
+    for lo, hi, tag in _SCALED_BINS:
+        print(f"=== sampling {tag} ===", flush=True)
+        primes = window_sample_primes(lo, hi, args.windows, args.per_window)
+        print(f"  {len(primes):,} primes sampled", flush=True)
+        result[tag] = proxy_ratio_scan_scaled(primes, workers=args.workers,
+                                              tag=tag)
+        r = result[tag]
+        print(f"  P_rung0 {r['P_rung0']}  proxy_decay "
+              f"{r['proxy_decay_rung1']}", flush=True)
+    _write_json(result, args.out)
+    return 0
+
+
+def _add_masks_out(sp: argparse.ArgumentParser, default_out: str) -> None:
+    sp.add_argument("--masks", default=_MASKS_1E9,
+                    help=f"ground-truth mask archive (default: {_MASKS_1E9})")
+    sp.add_argument("--out", default=default_out,
+                    help=f"output JSON path (default: {default_out})")
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    _init_small_primes()
+    parser = argparse.ArgumentParser(
+        prog="python -m erdos_straus.burgess_scan",
+        description="Burgess/reciprocity scans; each subcommand "
+                    "regenerates one archive under data/analysis/.",
+        epilog="With no arguments, runs 'census' (historical behavior).")
+    sub = parser.add_subparsers(dest="command", metavar="command")
+
+    sp = sub.add_parser(
+        "census",
+        help="regenerate burgess_scan_1e9.json (exhaustive 10^9 census; "
+             "multi-hour runtime)",
+        description="Exhaustive Burgess census over the complete 10^9 "
+                    "ground-truth masks, plus the Jacobi purity scan and "
+                    "the generic configuration-space verdicts. This is "
+                    "the default command and reproduces "
+                    "data/analysis/burgess_scan_1e9.json. WARNING: at the "
+                    "default sample-step 1 this walks all ~1.5M hard "
+                    "primes with factorization and retry ladders - expect "
+                    "a MULTI-HOUR runtime.")
+    sp.add_argument("--sample-step", type=int, default=1,
+                    help="census prime subsampling step (default: 1 = "
+                         "exhaustive; larger values for a quick look)")
+    sp.add_argument("--purity-step", type=int, default=20,
+                    help="purity-scan subsampling step (default: 20)")
+    _add_masks_out(sp, "data/analysis/burgess_scan_1e9.json")
+    sp.set_defaults(func=_cmd_census)
+
+    sp = sub.add_parser(
+        "scaled",
+        help="regenerate burgess_scan_1e10_1e11.json (window samples "
+             "10^9..10^11 + complete 10^11 deep tail)",
+        description="Scaled ladder census: systematic window samples in "
+                    "four half-decade bins 10^9..10^11 plus the COMPLETE "
+                    "10^11 deep tail (R_min >= 43). Requires "
+                    f"{_TAIL_1E11}. Reproduces "
+                    "data/analysis/burgess_scan_1e10_1e11.json.")
+    sp.add_argument("--workers", type=int, default=4,
+                    help="multiprocessing workers (default: 4)")
+    sp.add_argument("--windows", type=int, default=2500,
+                    help="sample windows per half-decade bin "
+                         "(default: 2500)")
+    sp.add_argument("--per-window", type=int, default=4,
+                    help="hard primes taken per window (default: 4)")
+    sp.add_argument("--tail", default=_TAIL_1E11,
+                    help=f"deep-tail dataset (default: {_TAIL_1E11})")
+    sp.add_argument("--extend-cap", type=int, default=640,
+                    help="extended rung cap for cap-400-unresolved tail "
+                         "primes (default: 640)")
+    sp.add_argument("--out",
+                    default="data/analysis/burgess_scan_1e10_1e11.json",
+                    help="output JSON path (default: "
+                         "data/analysis/burgess_scan_1e10_1e11.json)")
+    sp.set_defaults(func=_cmd_scaled)
+
+    sp = sub.add_parser(
+        "failures",
+        help="regenerate burgess_failures_1e9.json "
+             "(characterize_budget_failures)",
+        description="Structural characterization of the selected-residual "
+                    "failures below 10^9 (reach diagnostics, with a "
+                    "matched success control group). Reproduces "
+                    "data/analysis/burgess_failures_1e9.json.")
+    _add_masks_out(sp, "data/analysis/burgess_failures_1e9.json")
+    sp.set_defaults(func=_cmd_failures)
+
+    sp = sub.add_parser(
+        "proxy",
+        help="regenerate burgess_proxy_1e9.json (proxy_ratio_scan)",
+        description="Hypothesis-P proxy-ratio measurement at rungs 0/1 of "
+                    "the selected ladder, on the 10^9 masks. Reproduces "
+                    "data/analysis/burgess_proxy_1e9.json.")
+    sp.add_argument("--sample-step", type=int, default=20,
+                    help="prime subsampling step (default: 20)")
+    _add_masks_out(sp, "data/analysis/burgess_proxy_1e9.json")
+    sp.set_defaults(func=_cmd_proxy)
+
+    sp = sub.add_parser(
+        "proxy-scaled",
+        help="regenerate burgess_proxy_scaled.json "
+             "(proxy_ratio_scan_scaled)",
+        description="Mask-free Hypothesis-P measurement over window "
+                    "samples in four half-decade bins 10^9..10^11. "
+                    "Reproduces data/analysis/burgess_proxy_scaled.json.")
+    sp.add_argument("--workers", type=int, default=4,
+                    help="multiprocessing workers (default: 4)")
+    sp.add_argument("--windows", type=int, default=2500,
+                    help="sample windows per half-decade bin "
+                         "(default: 2500)")
+    sp.add_argument("--per-window", type=int, default=4,
+                    help="hard primes taken per window (default: 4)")
+    sp.add_argument("--out", default="data/analysis/burgess_proxy_scaled.json",
+                    help="output JSON path (default: "
+                         "data/analysis/burgess_proxy_scaled.json)")
+    sp.set_defaults(func=_cmd_proxy_scaled)
+
+    if argv is None:
+        argv = sys.argv[1:]
+    if not argv:  # historical behavior: bare invocation runs the census
+        argv = ["census"]
+    args = parser.parse_args(argv)
+    return args.func(args)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

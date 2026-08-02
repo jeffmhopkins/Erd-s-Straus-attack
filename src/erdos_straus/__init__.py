@@ -23,6 +23,10 @@ analyze
 theory
     Obstruction theory: exact-criteria engines, support-bound verifiers,
     aggregate identities, calibrated models.
+burgess_scan
+    Burgess/reciprocity ladder scans: selected-residual census (10^9
+    masks and scaled window samples), failure anatomy, Hypothesis-P
+    proxy ratios; CLI regenerates the burgess_* analysis archives.
 verify
     Independent verification of the certificate datasets in ``data/``.
 """

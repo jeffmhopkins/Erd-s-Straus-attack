@@ -1,5 +1,5 @@
 # Erdős–Straus Conjecture Attack — Current State
-**Date:** 2026-08-02 (current through PR #30)  
+**Date:** 2026-08-02 (current through PR #42)  
 **Focus:** Hard-class primes (Mordell exceptional residues mod 840)
 
 ## The Problem
@@ -38,7 +38,7 @@ at $10^{11}$ scale).
 | $< 10^6$     | 2 370         | Yes         | 59                | Full explicit solutions saved |
 | $< 2 \times 10^6$ | 4 519     | Yes         | 59                | — |
 | $< 5 \times 10^6$ | 10 711    | Yes         | 59                | — |
-| $< 10^7$     | 20 513        | Yes         | 107               | First appearance of $R=107$ at $p=8803369$ |
+| $< 10^7$     | 20 513        | Yes         | 107               | First appearance of $R=107$ at $p=8\,803\,369$ |
 | $< 2 \times 10^7$ | ~39k     | Yes         | 107               | — |
 | $< 3 \times 10^7$ | ~57k     | Yes         | 107               | — |
 | $< 5 \times 10^7$ | ~93k     | Yes         | 107               | — |
@@ -71,10 +71,10 @@ newest-first.)*
 | 15 | 60 708  | 3.8 %  | 95.2 % | | 55 | 51 |
 | 19 | 43 687  | 2.8 %  | 97.9 % | | 59 | 46 |
 | 23 | 22 167  | 1.4 %  | 99.3 % | | 63 | 10 |
-| 27 | 3 909   | 0.25 % | 99.56 %| | 67, 75, 83 | 2 each |
-| 31 | 4 820   | 0.30 % | 99.87 %| | 71 | 6 |
-| 35 | 708     | 0.045 %| 99.91 %| | 79 | 1 |
-| 39 | 755     | 0.048 %| 99.96 %| | 107 | 1 ($p=8\,803\,369$) |
+| 27 | 3 909   | 0.25 % | 99.56 % | | 67, 75, 83 | 2 each |
+| 31 | 4 820   | 0.30 % | 99.87 % | | 71 | 6 |
+| 35 | 708     | 0.045 % | 99.91 % | | 79 | 1 |
+| 39 | 755     | 0.048 % | 99.96 % | | 107 | 1 ($p=8\,803\,369$) |
 
 ### Burgess/reciprocity census (newest)
 
@@ -99,15 +99,17 @@ $R = 435$. No drift in the per-rung budget-failure rate with $p$. **Failure
 anatomy** (`burgess_failures_1e9.json`): 97.5 % of failures are true
 budget misses (29 % miss only the target class); no failure has more
 than 5 non-identity factor classes, with $P(\text{fail} \mid s)$
-falling $\sim 7\times$ per class ($27\% \to 8\% \to 1.2\% \to
-0.08\% \to 0$); non-residue mass sits at its consistency-parity
-minimum in 97.9 % of failures. **Drafted** (THEORY.md §2.10):
+falling $\sim 7\times$ per class
+($27\% \to 8\% \to 1.2\% \to 0.08\% \to 0$); non-residue mass sits
+at its consistency-parity minimum in 97.9 % of failures. **Drafted** (THEORY.md §2.10):
 Theorem L₀ — the rigorous fixed-length ladder chain (dimension 1/2
 per rung via Theorem S, p-adapted residuals); Hypothesis B — the
 falsifiable per-rung counting inequality the census measures
-(survival factor 0.86–0.95 per rung, no drift); **Theorem B₁ proved**: B's first rung — for every fixed $q$ the
-selected-rung failing fraction is $\ll_q (\log x)^{-1/\varphi(4q)}
-\to 0$ (Prop 2.2's universal class + Fundamental Lemma), uniformly
+(per-rung survival factor 0.05–0.14 — 86–95 % of surviving failures
+resolve at each rung — no drift); **Theorem B₁ proved**: B's first rung — for every fixed $q$ the
+selected-rung failing fraction is
+$\ll_q (\log x)^{-1/\varphi(R_0)} \to 0$ (Prop 2.2's universal
+class + Fundamental Lemma), uniformly
 for $q \ll \log\log x$; mechanism exact in data (0 violations /
 11 816 failures) and 25.5 % of primes get the closed-form
 $k = q p^2$. **Theorem B₂ proved** (two-sided proxy ladder: beta-sieve lower +
@@ -214,7 +216,7 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 
 ### Key observations ($10^9$)
 - Minimal residual $R$ grows very slowly.
-- Distribution is heavily concentrated: $R=3$ (49.1 % at $10^9$, 54.4 % at $10^{11}$), $R=7$ and $R=11$ together cover the large majority.
+- Distribution is heavily concentrated: $R=3$ alone covers 49.1 % at $10^9$ (54.4 % at $10^{11}$); $R = 3, 7, 11$ together cover 91.3 %.
 - When $R=3$ succeeds, the smallest usable divisor $k$ is typically a small prime factor of $a$.
 - A fixed short list of residuals $\{3,7,11,\dots,107\}$ covers all hard primes examined so far.
 
@@ -235,7 +237,7 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 - `data/hard_primes_1e10_minimalR.json.gz` — minimal-$R$ map for all 14 215 707 hard primes $< 10^{10}$
 - `data/hard_primes_1e11_minimalR.{rvals.u8.gz, meta.json, tail.json}` — R-sequence dataset for all 128 671 219 hard primes $< 10^{11}$ (uint8 minimal-$R$ values in ascending-prime order + sha256-pinned metadata + explicit verified tail $R \ge 43$)
 - `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
-- `tests/test_solver.py` — 53 tests: unit, certificate validation, theorem checks (A/A′/A″/A‴/J/meta incl. composite R), support-bound lemmas (DP + strong Kneser form, cyclic and general abelian), aggregate identities
+- `tests/test_solver.py` — 56 tests: unit, certificate validation, theorem checks (A/A′/A″/A‴/J/meta incl. composite R), support-bound lemmas (DP + strong Kneser form, cyclic and general abelian), aggregate identities
 - `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 27 pp.
 - `lean/ErdosStraus/` — Lean 4 + mathlib formalization, elementary layer + finite enumerations (`lake exe cache get && lake build`)
 - `THEORY.md` — full theoretical development; `STATUS.md` — this document
@@ -349,7 +351,8 @@ full tail minimality.
 - The fixed-finite-list reduction is conditionally **false** (Theorem K):
   the correctly-posed open problem is an unconditional bound on
   $R_{\min}(p)$ — which, by completeness, *is* the conjecture.
-- Almost-all coverage is settled with mechanism: exponent 19/2 chain,
+- Almost-all coverage is settled with mechanism: exponent 29/2 chain
+  (31/2 with the aggregate families),
   exact criteria for R = 3, 7, 11, and per-residual finite-state criteria
   for every fixed R (meta-theorem).
 
@@ -379,7 +382,9 @@ full tail minimality.
    exploit the subgroup-trapped structure of failing supports
    *uniformly in R* (p-independent branches — the remaining gap on the
    conditionally-past-Vaughan route); formalize Theorem S and A‴ in
-   Lean; the unconditional $R_{\min}$ bound (= the conjecture).
+   Lean (in progress: ladder Lemmas J°/N, an R = 15 product-index
+   bridge, and a Kneser port are the planned sequence); the
+   unconditional $R_{\min}$ bound (= the conjecture).
 
 ---
 *Attack ongoing. Framework and data are ready for further extension or theoretical work.*

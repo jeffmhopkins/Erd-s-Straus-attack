@@ -1,10 +1,12 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
-**Date:** 2026-08-02 (current through PR #31; this revision adds
+**Date:** 2026-08-02 (current through PR #42; this revision adds
 Theorem S and Theorem A‴; §2.10 adds the Burgess/reciprocity
-route, its full-population census and failure anatomy, and the
+route, its full-population census and failure anatomy, the
 ladder theorems L₀ (rigorous, fixed length) and L₁ (almost-all,
-conditional on the measured Hypothesis B)).  
+conditional on the measured Hypothesis B), Theorem B₁ (proved),
+Theorems B₂ and P₁ (proof sketches), and Hypothesis P with
+Corollary B₃).  
 **Status:** Proved: Theorems A, A′, A″, A‴ (exact criteria for
 R = 3, 7, 11, and now the first composite residual R = 15; A′/A″/A‴ by
 machine-verified finite case analysis), the meta-theorem (now including
@@ -13,9 +15,11 @@ Theorem E and the chain F/G/G′/H, **Theorem S** — the support bound
 (formerly "Lemma S") proved unconditionally for EVERY residual via
 Kneser's addition theorem, with no upper limit and composite residuals
 included, upgrading the chain to arbitrary finite residual lists
-(exponent 31/2 for the full 27-residual list ≤ 107) — Theorem I
-(aggregate families), Theorem J (reciprocity structure), and Theorem D
-(full proof in the paper). Theorem K is a conditional sketch under
+(exponent 29/2 for the full 27-residual list ≤ 107; 31/2 with the
+two aggregate identity families adjoined) — Theorem I
+(aggregate families), Theorem J (reciprocity structure), Theorem D
+(full proof in the paper), and Theorem B₁ (the ladder's first rung,
+§2.10). Theorem K is a conditional sketch under
 Dickson's conjecture. Section 6 is heuristic, validated against the
 complete solvability data below 10⁹ and the 10¹⁰/10¹¹ minimal-R data.
 §2.8 records two executed attempts at totality and their
@@ -42,7 +46,7 @@ The dictionary (paper labels in parentheses):
 | Theorem B (finite covering reduction) | Remark 4.4 (unlabeled in source) |
 | Theorem C | not carried into the paper |
 | Theorem D (density reduction) | Theorem 1.13 (`thm:D`) |
-| Theorems E/F/G/G′/H (the chain) | the single Theorem 1.11 (`thm:FG`) |
+| Theorems E/F/G/G′/H (the chain) | the single Theorem 1.11 (`thm:FG`) (G/G′ use the legacy lists {3,7,11,19}/{3,7,11,19,23}; the paper's chain runs {3,7}, {3,7,11}, {3,7,11,15}, {3,7,11,15,19}) |
 | Theorem I (aggregate families) | Proposition 1.12 (`prop:agg`) |
 | Theorem J (reciprocity) | Theorem 1.8 (`thm:J`) |
 | Corollaries J1/J2 | Corollary 2.3(i)/(ii) (`cor:J`) |
@@ -55,8 +59,11 @@ The dictionary (paper labels in parentheses):
 | Theorem B₁ (first rung) | Theorem 5.4 (`thm:B1`) |
 | Theorem B₂ (proxy ladder) | Theorem 5.5 (`thm:B2`) |
 | Hypothesis P / Hypothesis B | Hypotheses 5.6 / 5.8 |
+| Corollary B₃ (second rung under P) | the unnumbered display following Hypothesis 5.6 |
 | Theorem P₁ (half-dimensional failures) | Theorem 5.7 (`thm:P1`) |
 | Theorem L₁ (conditional almost-all) | Theorem 5.9 (`thm:L1`) |
+| Lemma Q (least non-residue) | not carried into the paper (used unnamed in the proof of Theorem 5.9) |
+| Hypothesis L (ladder) | not carried into the paper |
 | monotonicity reduction | Lemma 4.1 (`lem:mono`) |
 
 ---
@@ -81,7 +88,8 @@ Two elementary but decisive congruences:
 
     4a ≡ p (mod R)    ⟹    a ≡ 4⁻¹p,   m ≡ 4⁻¹p²  (mod R).      (∗)
 
-Since gcd(p, R) = 1 (p > R prime), (∗) gives gcd(a, R) = gcd(m, R) = 1
+Since gcd(p, R) = 1 (R ≡ 3 ≢ 1 ≡ p (mod 4), so R ≠ p and p ∤ R),
+(∗) gives gcd(a, R) = gcd(m, R) = 1
 **automatically** — the setting is always "unit" mod R.
 
 Consequence of (∗): **m is a square modulo every prime r | R.** Hence for
@@ -191,7 +199,7 @@ exceed a full cycle). D_R(p) as defined is exactly what the computation
 verifies. The computational statement stands: **S₀ = {3, 7, 11, …, 107}
 (all R ≡ 3 mod 4) satisfies the hypothesis for every hard prime below
 10¹¹** (complete per-residual solvability masks verified below 10⁹;
-minimal-R data to 10¹¹). The paper (Remark 4.3) states the implication
+minimal-R data to 10¹¹). The paper (Remark 4.4) states the implication
 in this direction only: a finite covering set would imply the conjecture
 for hard primes, while the conjecture itself bounds R_min(p) by 2p and
 does not produce a uniform finite S.
@@ -276,7 +284,8 @@ forbidden classes 0, −1, 3·4⁻¹ mod q, pairwise distinct for q ∤ 21. By
 Dirichlet, ω has average value κ = ½ + ½ + 1 = 2 over primes (in the
 Halberstam–Richert sense Σ_{q ≤ w} ω(q) log q / q = κ log w + O(1)). The
 Fundamental Lemma of sieve theory (e.g. Halberstam–Richert Thm 2.5, or
-Friedlander–Iwaniec Lemma 6.3) with sifting range z = x^{1/10} gives
+Friedlander–Iwaniec, Opera de Cribro, Ch. 6) with sifting range
+z = x^{1/10} gives
 
     |E(x)|  ≪  x · Π_{7 < q ≤ z} (1 − ω(q)/q)
             ≍  x · Π_{q≤z}(1 − 1/q) · Π_{q ≡ 2(3), q≤z}(1 − 1/q)
@@ -288,7 +297,7 @@ using Mertens' theorem and its arithmetic-progression form. ∎
 
 **Empirical confirmation.** The proportion of hard primes failing both
 residuals should decay as C/log x. Measured from the complete 10⁹ masks, the
-product (relative density) × (log x) is constant to within 2 % across three
+product (relative density) × (log x) is constant to within 1 % across three
 decades:
 
 | bin (p) | rel. density of joint failure | × log x |
@@ -440,14 +449,14 @@ which previously required B = 19.
 
 ---
 
-### 2.7 The chain: Theorem S, Theorems F/G/G′/H, Theorem I (exponents 5/2 … 19/2)
+### 2.7 The chain: Theorem S, Theorems F/G/G′/H, Theorem I (exponents 5/2 … 31/2)
 
 The exponent bookkeeping to keep straight: each residual with an
 exact-criterion-grade handle contributes sifting density **½** (its failure
 forbids half the unit classes on its shifted form), and primality of
 p = 4n − 3 contributes 1. Three residuals therefore give dimension 5/2 —
-**not 3**; exponent 3 requires a fourth residual. Both theorems below are
-now fully proven.
+**not 3**; exponent 3 requires a fourth residual. The results below are
+fully proven.
 
 #### Theorem S (the support bound, proved unconditionally for EVERY residual — the Kneser/Olson route)
 
@@ -517,8 +526,12 @@ has |{1, v, v²}| = 2, losing one unit) and h ranges over proper subgroup
 orders. For G = (Z/R)\* with ω(R) ≤ 2 distinct prime factors —
 **every** composite admissible R ≤ 107 — t = 2^ω − 1 ≤ 3, so failure at
 R forbids at least φ(R)/2 unit classes: **the composite residuals join
-the chain on equal footing, dimension ≥ ½ each.** Numerical
-confirmation (`theory.kneser_support_general`): the maximum support of a
+the chain on equal footing, dimension ≥ ½ each.** Caveat: Kneser alone
+gives support ≤ g/2, i.e. only φ(R)/2 − 1 forbidden classes (dimension
+½ − 1/φ(R)); the upgrade to support ≤ g/2 − 1 — the full φ(R)/2,
+dimension ½ — is at present verified numerically only for the
+composite R ≤ 107, via `theory.kneser_support_general`: the maximum
+support of a
 proper product-set is *exactly* g/2 − 1 for every composite admissible
 R ≤ 107 (e.g. R = 15: g = 8, max 3; R = 91: g = 72, max 35; R = 95:
 g = 72, max 35 — DP over 427 266 resp. 583 455 realizable product-sets).
@@ -550,9 +563,7 @@ mod 11 (density 3/5). Each branch is a four-form sieve problem
 (n, n+1, n+2, 4n−3) as in Theorem E, of dimension 1+½+½+½ = 5/2, resp.
 1+½+½+3/5 = 13/5. The Fundamental Lemma bounds branch (a) by
 O(x/(log x)^{5/2}) and branch (b) by O(x/(log x)^{13/5}) = o(the former).
-Sum over the two branches and the six hard classes. ∎ (At {3,7,11,19}
-the paper's proof also carries the Type-II cross-branch at exponent
-31/10; see the proof of Theorem 1.11 there.)
+Sum over the two branches and the six hard classes. ∎
 
 #### Theorem G ({3,7,11,19}; exponent 3)
 
@@ -939,7 +950,7 @@ primes with R_min ≥ 43, which by construction fail every small residual
 non-residues q₁ = 67, 83) exhaust the 400-cap, and both resolve at
 R = 407 resp. 435 — so tail coverage is also 100 % at cap 435. The
 budget-failure probability per rung shows no growth with p, which is
-what Hypothesis L needs.
+what Hypothesis B needs.
 
 #### Anatomy of budget failures (archive: `burgess_failures_1e9.json`)
 
@@ -990,7 +1001,8 @@ of hard primes p ≤ x with (p|q) = −1 that fail every rung R_j,
 
 *where J' = #{j < J : ω(R_j) ≤ 2} is the number of usable rungs
 (J' = J for every ladder observed below 10⁹; rungs with three or more
-prime factors, possible from R = 105 on, are skipped).*
+prime factors — the smallest admissible case, R ≡ 3 (mod 4) with
+ω(R) ≥ 3, is R = 195 = 3·5·13 — are skipped).*
 
 **Proof sketch.** The rungs are admissible (R_j ≡ 3 mod 4 since
 p ≡ 1 mod 4), and the shifted forms a_j = (p+R_j)/4 = n + (R₀−3)/4 + qj
@@ -1007,29 +1019,35 @@ only enlarges the sifted set, so the upper bound survives it. ∎
 Theorem L₀ is the ladder-adapted chain: unlike the fixed-list chain it
 bounds failures of a **p-adapted** residual family, so it composes
 with the distribution of the least non-residue. Two remarks. (i) Rungs
-with ω(R_j) ≥ 3 (possible from R = 105 on) are simply skipped —
-Theorem S(iii) currently covers ω ≤ 2. (ii) For fixed J this adds no
+with ω(R_j) ≥ 3 (the smallest admissible such rung is
+R = 195 = 3·5·13) are simply skipped —
+Theorem S(iii) currently covers ω ≤ 2; and composite rungs beyond 107
+carry only the unconditional Kneser tier of S(iii) — dimension
+½ − 1/φ(R_j) instead of ½ — which changes no divergence or
+summability conclusion. (ii) For fixed J this adds no
 density strength over Theorem 1.11; its role is structural, as the
 rigorous base of the conditional theorem below.
 
 #### Theorem B₁ (the first rung of B, proved)
 
 *Fix a prime q ≥ 11 and δ ∈ (0, 1). For x ≥ x₀(q, δ), among the hard
-primes p ≤ x with least non-residue q(p) = q, those failing their
-selected residual R₀ = (−p) mod 4q number at most*
+primes p ≤ x with least non-residue q(p) = q, the proportion of hard
+primes failing their selected residual R₀ = (−p) mod 4q is*
 
-    (1 − δ) · #E₀(x)   —   indeed   #E₁(x) ≪_q #E₀(x) · (log x)^{−1/φ(4q)} = o(#E₀(x)).
+    ≪_q  (log x)^{−1/φ(R₀)}  →  0
 
-*So Hypothesis B's inequality holds at j = 0, for every fixed q, with
-any δ < 1 eventually.*
+*per class fixing R₀; over all classes the proportion is governed by
+the worst class, i.e. by min 1/φ(R₀) over the admissible R₀ < 4q that
+occur. So Hypothesis B's inequality holds at j = 0, for every fixed
+q, with any δ < 1 eventually.*
 
 **Proof.** The condition q(p) = q is a conjunction of quadratic-residue
 conditions at the primes 11, …, q, i.e. a union U of reduced residue
 classes mod M = 840·∏_{11 ≤ ℓ ≤ q} ℓ; fix one class c ∈ U (mod
 lcm(M, 4q)), which fixes R₀ = R(c) and forces q | (p+R₀)/4. By
 Dirichlet/Siegel–Walfisz, primes in the class number
-∼ x/(φ(M')·log x) — a positive proportion of E₀ per class, finitely
-many classes.
+∼ x/(φ(M')·log x) — a positive proportion of E₀ per class (notation
+defined below with Hypothesis B), finitely many classes.
 
 Key step (Proposition 2.2, universal class): if n = (p+R₀)/4 has any
 prime factor u ≡ −4⁻¹ (mod R₀), then k = u·p² is a certificate and
@@ -1046,15 +1064,18 @@ is κ = 1 + 1/φ(R₀), and the Fundamental Lemma gives
 
 Dividing by the class's ∼ x/(φ(M')·log x) primes and summing the
 finitely many classes: the failing fraction is
-≪_q (log x)^{−1/φ(4q)} → 0. ∎
+≪_q (log x)^{−1/φ(R₀)} → 0 per class, hence over all classes
+≪_q (log x)^{−min 1/φ(R₀)} (minimum over the admissible R₀ < 4q
+that occur). ∎
 
 **Corollary (uniform range).** Since M = e^{O(q)} ≤ (log x)^{O(1)} for
 q ≤ c₀ log log x, Siegel–Walfisz and the Fundamental Lemma apply
 uniformly there, and the failing fraction is
 ≤ exp(−c₁ log log x / q) ≤ 1 − δ₀ for q ≤ c₂ log log x: **B's first
 rung holds with a uniform δ₀ for all q up to c log log x** (which by
-Lemma Q covers all hard primes outside a set of relative density
-2^{−π(c log log x)}). The x₀ is ineffective (Siegel–Walfisz).
+Lemma Q, stated below, covers all hard primes outside a set of
+relative density 2^{−π(c log log x)}). The x₀ is ineffective
+(Siegel–Walfisz).
 
 **Data checks.** (i) The proof's mechanism is exact in the census:
 across 11,816 sampled selected-rung failures below 10⁹, *none* has a
@@ -1132,7 +1153,7 @@ scales exactly with the ambition, and every increment is testable
 before it is assumed.
 
 **What would remain.** Theorem L₁, under any calibration, is an
-almost-all statement: the emptiness wall (Remark 4.2 of the paper)
+almost-all statement: the emptiness wall (Remark 4.3 of the paper)
 is untouched, and a single conspiratorial prime — a super-record
 dodging J(x) rungs — is exactly what Hypothesis B cannot exclude
 per-p and what Dickson-type constructions suggest exists for fixed
@@ -1211,7 +1232,7 @@ primes each; archive `burgess_proxy_scaled.json`):
 | 3.2×10¹⁰–10¹¹ | 43.1 % | 9.9 % | 84.5 % | 14.8 % |
 
 Every quantity Hypothesis P needs bounded is flat across two decades:
-c_P sits at 10–12 % (rung 0) and 13–16 % (rung 1) with no sign of
+c_P sits at 9.7–12 % (rung 0) and 13–16 % (rung 1) with no sign of
 vanishing, the avoidance density is constant at 43 %, and the proxy
 decay matches the 10⁹ mask measurement. P's empirical standing now
 equals B's before it: measured at every accessible scale, drift-free.
@@ -1479,6 +1500,22 @@ sampling plus full tail checks; exhaustive below 10⁹):**
    coins; the record is a ≈4σ coin fluctuation; pure-Type-I record growth
    ≍ log x/log log x. Remaining here: fold the Type-II escape layer into
    the growth law quantitatively.
+
+### Research outlook (August 2026)
+
+Two external developments bear on the two walls above. **Conspiracy
+wall:** Matomäki–Teräväinen's pretension dichotomy (arXiv:2605.27833)
+together with Basak–Pratt's Page-type zero repulsion
+(arXiv:2607.06433) suggests a route from "almost all" to a bounded —
+possibly finite — exceptional set, IF total ladder failure can be
+reduced to a character-pretension statement. That reduction is open;
+it is plausible because the ladder's failure events enter through
+Lemma N as Jacobi-symbol — i.e. character — conditions. **Parity
+wall:** Nath–Xie's vector sieve (Acta Arith. 223 (2026)) is a
+template for an almost-prime relaxation of Hypothesis P, targeting an
+unconditional weakened form of Theorem L₁. Honestly: neither route
+can prove the full conjecture — parity and prime-tuple strength
+remain out of reach.
 
 ---
 
