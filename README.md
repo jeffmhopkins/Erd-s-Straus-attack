@@ -58,14 +58,23 @@ data/
                                        primes < 10^9
   hard_primes_1.2e8_solutions.json.gz  explicit (R,a,b,c) for all 213,131
                                        hard primes < 1.2*10^8 (gzip-compressed)
-  hard_primes_1e6_solutions.json   explicit (R,a,b,c) for all hard primes < 10^6
-  hard_primes_2e5_solutions.json   smaller explicit set
-  high_R_primes_5e6.json           primes that needed larger residuals
-  analysis/                        distribution, covering-set, per-prime
-                                   residual masks, high-R tail, and
-                                   theory-validation reports
+  hard_primes_1e6_solutions.json       explicit (R,a,b,c) for all hard
+                                       primes < 10^6
+  hard_primes_2e5_solutions.json       smaller explicit set
+  high_R_primes_5e6.json               primes that needed larger residuals
+  analysis/                            distribution, covering-set, per-prime
+                                       residual masks, high-R tail, and
+                                       theory-validation reports
+    burgess_scan_1e9.json              Burgess-route selected-residual census
+                                       (all hard primes < 10^9)
+    burgess_scan_1e10_1e11.json        scaled census 10^10-10^11 (window
+                                       samples) + the complete deep tail
+    burgess_failures_1e9.json          budget-failure anatomy
+    burgess_proxy_1e9.json             proxy / Hypothesis-P measurement
+                                       at 10^9
+    burgess_proxy_scaled.json          scaled proxy measurement (10^9-10^11)
 tests/
-  test_solver.py       53 tests: units, certificates, theorem checks
+  test_solver.py       56 tests: units, certificates, theorem checks
 paper/
   erdos_straus_residuals.tex/.pdf   the manuscript (27 pp.)
   make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
@@ -74,6 +83,14 @@ lean/
                        Families, TheoremA, Enumerations, Bridges,
                        DivisorBridge, LemmaS31) — sorry-free,
                        axiom-audited; see lean/README.md
+.github/workflows/
+  ci.yml               Python CI: test suite + proof-component smoke checks
+  lean.yml             Lean build (triggered by changes under lean/)
+conftest.py            pytest path setup (src layout importable uninstalled)
+pyproject.toml         package metadata, editable install, dev/fig extras
+CITATION.cff           citation metadata (GitHub "Cite this repository")
+.zenodo.json           Zenodo metadata for release DOIs
+LICENSE                MIT
 STATUS.md              full status of the attack
 THEORY.md              theoretical development with proofs
 ```
@@ -93,17 +110,22 @@ minimal residual is **R = 107**, attained at a *single* prime
 calibrated model predicted** — 18 new deep-tail primes, none passing 103.
 
 **Theory** (see [THEORY.md](THEORY.md) and `paper/`): exact solvability criteria are
-proved for R = 3, 7, and 11 (the latter two by machine-verified finite case
-analysis, with a meta-theorem making every fixed R decidable); a chain of
-sieve bounds reaches exponent 19/2 via the support-bound lemma (verified
-for every prime residual to 107) and two aggregate identity families
-(R | p+1 or R | p+4 always certifies); the reciprocity structure theorem
-(q|R) = (p|q) explains joint failure and the static record; and under
-Dickson's conjecture no fixed finite residual list suffices (Theorem K of
-`THEORY.md`) — the
-correctly-posed open problem, by completeness of the residual formulation,
-is the conjecture itself. Densities are calibrated against Vaughan's
-classical bound; the contribution is mechanism, not raw density.
+proved for R = 3, 7, 11, and 15 — the first composite residual (R = 7, 11,
+and 15 by machine-verified finite case analysis in Python, with a
+meta-theorem making every fixed R decidable); Theorem S (Kneser's addition
+theorem) proves the support bound unconditionally for every residual, with
+the DP runs as independent confirmations, so the chain of sieve bounds
+reaches exponent 29/2 on the full 27-residual list — 31/2 with the two
+aggregate identity families (R | p+1 or R | p+4 always certifies); the
+reciprocity structure theorem (q|R) = (p|q) explains joint failure and the
+static record; and under Dickson's conjecture no fixed finite residual
+list suffices (Theorem K of `THEORY.md`) — the correctly-posed open
+problem, by completeness of the residual formulation, is the conjecture
+itself. The §5 Burgess–reciprocity ladder program (Theorems L₀/B₁/B₂/P₁
+and Hypothesis P) organizes the endgame: the almost-all Theorem L₁ is
+conditional on the measured per-rung decay. Densities are calibrated
+against Vaughan's classical bound; the contribution is mechanism, not raw
+density.
 
 **Formal verification** (`lean/`): the elementary layer is machine-checked
 in Lean 4 + mathlib — certificate soundness and integrality, Theorem A in
@@ -196,6 +218,10 @@ python -m erdos_straus.analyze cover --rmap data/hard_primes_1e9_minimalR.json.g
 python -m erdos_straus.analyze tail  --rmap data/hard_primes_1e9_minimalR.json.gz --min-R 59
 ```
 
+The Burgess-route archives in `data/analysis/` (`burgess_*.json`) are
+regenerated via the `python -m erdos_straus.burgess_scan` CLI (see
+`python -m erdos_straus.burgess_scan --help`).
+
 From Python:
 
 ```python
@@ -238,10 +264,10 @@ minimality beyond.
 
 ## Scope & prior work
 
-Documented verification rules out counterexamples to $10^{14}$ (Swett), and beyond — $10^{17}$ (Salez), $10^{18}$ (Mihnea–Bogdan) — and
-$10^{17}$ (Salez), and Vaughan (1970) bounds the exceptional set by
-$x\exp(-c(\log x)^{2/3})$ — stronger in density than any fixed power of
-$\log x$. This project does not compete on either axis: it contributes the
+Documented verification rules out counterexamples to $10^{14}$ (Swett),
+$10^{17}$ (Salez), and $10^{18}$ (Mihnea–Bogdan), and Vaughan (1970)
+bounds the exceptional set by $x\exp(-c(\log x)^{2/3})$ — stronger in
+density than any fixed power of $\log x$. This project does not compete on either axis: it contributes the
 **mechanism** — explicit verified certificates at the largest scale
 computed, exact solvability criteria, machine-verified sieve lemmas, and
 the reciprocity structure theory of joint failure. The fixed-finite-list
@@ -249,3 +275,7 @@ reduction is conditionally false (Theorem K of `THEORY.md`; Open
 Problem 5 in the paper); by completeness of the
 residual formulation, an unconditional bound on the minimal residual is
 equivalent to the conjecture itself.
+
+## License
+
+MIT — see [`LICENSE`](LICENSE).
