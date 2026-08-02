@@ -101,7 +101,15 @@ budget misses (29 % miss only the target class); no failure has more
 than 5 non-identity factor classes, with $P(\text{fail} \mid s)$
 falling $\sim 7\times$ per class ($27\% \to 8\% \to 1.2\% \to
 0.08\% \to 0$); non-residue mass sits at its consistency-parity
-minimum in 97.9 % of failures.
+minimum in 97.9 % of failures. **Drafted** (THEORY.md §2.10):
+Theorem L₀ — the rigorous fixed-length ladder chain (dimension 1/2
+per rung via Theorem S, p-adapted residuals); Hypothesis B — the
+falsifiable per-rung counting inequality the census measures
+(survival factor 0.86–0.95 per rung, no drift); Theorem L₁ — under
+B, all but $O(x e^{-\delta J(x)})$ hard primes have
+$R_{\min}(p) \le (\log x)^{2+o(1)} J(x)$; calibrations from
+$J = (\log\log x)^2$ (past the entire chain) to
+$J = (\log x)^{\theta}$, $\theta > 2/3$ (past Vaughan).
 
 ### $10^{11}$ update (the gap fills; the record stands)
 
