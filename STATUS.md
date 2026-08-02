@@ -178,7 +178,7 @@ residuals \(R \equiv 3 \pmod 4\), \(R \le 107\) that yield a solution
 - `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
 - `tests/test_solver.py` — 46 tests: unit, certificate validation, theorem checks (A/A′/A″/J/meta), support-bound lemmas, aggregate identities
 - `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 16 pp.
-- `lean/ErdosStraus/` — Lean 4 + mathlib formalization (ten verified declarations; `lake exe cache get && lake build`)
+- `lean/ErdosStraus/` — Lean 4 + mathlib formalization, elementary layer + finite enumerations (`lake exe cache get && lake build`)
 - `THEORY.md` — full theoretical development; `STATUS.md` — this document
 
 All 1 803 722 certificates in the `es-verify` defaults pass exhaustively
@@ -234,9 +234,14 @@ full tail minimality.
 - **Lean formalization** (`lean/ErdosStraus`) — the elementary layer is
   machine-checked in Lean 4 + mathlib: certificate soundness and
   integrality, Theorem A both directions, both Theorem I families,
-  Theorem J, and the hard-class lemmas — ten sorry-free declarations,
-  axiom-audited. Next tier: the meta-theorem / finite enumerations via
-  `Decidable` instances.
+  Theorem J, and the hard-class lemmas. The finite-enumeration layer is
+  also formalized: the meta-theorem's divisor-class reachability model
+  (`reach`), both halves of the monotonicity reduction (`reach_mono`,
+  `reach_sublist`), the full 1,536-configuration verification of
+  Theorem A′ at R = 7, and Lemma S at R = 19 (437,580 checks), both
+  via `native_decide`. All declarations sorry-free and
+  axiom-audited; see `lean/README.md` for the trust base. Next tier:
+  Theorem A″ (R = 11) and the reach ⟺ divisor-certificate bridge.
 
 ## Current Assessment
 - No counterexample; all 128 671 219 hard primes below \(10^{11}\) have

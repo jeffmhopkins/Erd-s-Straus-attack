@@ -81,8 +81,8 @@ conjecture far beyond any range considered here: to $10^{14}$ by Swett
 Mihnea and Bogdan \cite{MihneaBogdan}; the present paper is logically
 independent of those bounds. The structure of
 the solution count was analyzed by Elsholtz and Tao \cite{ElsholtzTao}.
-Verification, however, exhibits no mechanism; the aim here is a
-quantitative structural reduction. For calibration, Vaughan's classical
+Verification, however, carries no structural information; the aim here
+is a quantitative structural reduction. For calibration, Vaughan's classical
 mean-value bound \cite{Vaughan} gives an exceptional set
 $\ll x \exp(-c(\log x)^{2/3})$ for \eqref{eq:es} --- asymptotically
 stronger than any fixed power of $\log x$; the value of the present
@@ -101,7 +101,7 @@ machine-verified structure, together with the exact criteria.
   finite computable exact criterion.
 \item A reciprocity principle (Theorem~\ref{thm:J}) collapsing the
   per-residual conditions into one global statement about $p$ — the
-  mechanism of correlated failure and of the record prime.
+  organizing principle behind correlated failure and the record prime.
 \item A constructive sieve chain built on these criteria
   (Lemma~\ref{lem:S}, Theorem~\ref{thm:FG},
   Proposition~\ref{prop:agg}): explicit, certificate-producing
@@ -114,7 +114,11 @@ machine-verified structure, together with the exact criteria.
 \item A machine-checked (Lean~4/mathlib) verification of the elementary
   layer --- certificate soundness and integrality, Theorem~\ref{thm:A}
   in both directions, both families of Proposition~\ref{prop:agg}, and
-  Theorem~\ref{thm:J} --- in the accompanying repository.
+  Theorem~\ref{thm:J} --- and of the finite-enumeration layer: the
+  divisor-class reachability model with its monotonicity reductions
+  (Lemma~\ref{lem:mono}), the full $1{,}536$-configuration verification
+  of Theorem~\ref{thm:Ap}, and the support-bound check of
+  Lemma~\ref{lem:S} at $R = 19$ --- in the accompanying repository.
 \end{itemize}
 
 \subsection{The residual method}\label{sec:intro-method}
@@ -170,6 +174,25 @@ $c = (m^2/k+m)/3 = 1{,}974{,}822{,}872$, and indeed
 Had every prime factor of $a$ been $\equiv 1 \pmod 3$, every divisor of
 $m^2$ would be $\equiv 1 \pmod 3$ and the required class $2$ would be
 unreachable --- the prototype of all the obstructions studied below.
+
+\paragraph{The shape of what follows.} Everything in this paper grows
+out of the picture just seen, read at three levels. \emph{Locally}
+(one residual): whether the target class $-m$ is attainable from the
+factor classes of $a$ is a question about a finite multiplicative
+state --- the multiset of classes with bounded exponent budgets --- so
+each fixed $R$ admits an exact, machine-enumerable solvability
+criterion (Theorems~\ref{thm:A}--\ref{thm:App} below).
+\emph{Globally} (all residuals at once): the conditions entering these
+criteria are quadratic characters, and reciprocity folds the condition
+at every residual into signs $\legendre{p}{q}$ indexed by the primes
+$q$ dividing the shifted values $(p+R)/4$ --- failures at different
+residuals correlate because shifted values share prime factors
+(Theorem~\ref{thm:J}). \emph{Quantitatively}: each criterion says that
+failure forces $(p+R)/4$ to avoid prime factors in many residue
+classes, a sifting condition; stacking residuals multiplies the
+savings (Theorem~\ref{thm:FG}), though it provably cannot reach
+emptiness (Remark~\ref{rem:emptiness}) --- the honest endpoint of the
+method, discussed in Section~\ref{sec:open}.
 
 \subsection{Main results}
 
@@ -229,12 +252,18 @@ exponents). The checks are short (seconds each, up to $331$\,s for the largest,
 $R = 107$), involve only exact integer arithmetic, and the code is
 available in the
 accompanying repository; Appendix~\ref{app:verif} records the exact
-configuration counts and entry points.
+configuration counts and entry points. Two of the enumerations are
+additionally formalized in Lean~4: the $R = 7$ verification of
+Theorem~\ref{thm:Ap} (re-stated multiplicatively over
+$(\mathbb{Z}/7)^\times$) and the $R = 19$ case of Lemma~\ref{lem:S}
+(in the discrete-log coordinates of its proof) are discharged by
+Lean's compiled evaluator, with the monotonicity reductions
+(Lemma~\ref{lem:mono}) proved as theorems (Appendix~\ref{app:verif}).
 \end{remark}
 
 The obstruction framework of Section~\ref{sec:obstruction} yields a
 reciprocity identity that converts the per-residual conditions into a
-single global statement about $p$ --- the structural explanation of
+single global statement about $p$ --- a structural interpretation of
 joint failure across residuals:
 
 \begin{theorem}[reciprocity structure]\label{thm:J}
@@ -372,8 +401,8 @@ Theorem~\ref{thm:D}: failure at $R$ forces $(p+R)/4$ to avoid prime
 factors in up to three explicit classes modulo $R$.
 
 The next identity converts the per-residual character conditions into a
-single global statement about $p$, and is the structural explanation of
-joint failure across residuals.
+single global statement about $p$, and is the organizing principle
+behind joint failure across residuals.
 
 \begin{proof}[Proof of Theorem~\ref{thm:J}]
 From $q \mid p+R$ we get $R \equiv -p \pmod q$. By quadratic
@@ -431,6 +460,27 @@ class and the consistency relation $\prod (\text{classes}) \equiv a \equiv
 4^{-1} p \pmod R$ are functions of $p \bmod R$ by \eqref{eq:star}. Hence
 solvability is a function of the capped class multiset and $p \bmod R$, a
 finite amount of data. \qed
+
+\begin{remark}[why the cap works, and the size of the space]
+\label{rem:cap}
+The one step above that is not pure bookkeeping is the multiplicity
+cap, and a small example shows both why it is harmless and what it
+buys. Take $R = 7$ and a factor of $a$ in a class $x$ of order $6$
+(say $x = 3$): a factor of multiplicity $\mu$ may enter a divisor of
+$m^2$ with any exponent $0, 1, \dots, 2\mu$, and once $2\mu \ge 6$
+these powers already sweep out the full cyclic group
+$\langle x \rangle$ --- raising $\mu$ past
+$\lceil (R-1)/2 \rceil = 3$ enlarges nothing that a divisor subproduct
+can reach. For classes of smaller order the cap is generous rather
+than tight (a class of order $2$ stabilizes at $\mu = 1$), which is
+fine: the enumeration ranges over a finite over-approximation. What
+finiteness buys is concrete: at $R = 7$ the capped space has
+$4^6$ multisets before the structural constraints of
+Section~\ref{sec:exact} and $1{,}536$ consistent configurations after
+them; at $R = 11$ it compresses to $25$ equivalence states. The
+enumeration is decidable, not merely heuristic, precisely because the
+cap and the consistency relation are proved before any code runs.
+\end{remark}
 
 \subsection{Proof of Theorem~\ref{thm:Ap}}
 
@@ -833,7 +883,7 @@ $\varphi(R)$ grows harder while the character dichotomy stays binary.
 Taken together, the data of this section is the empirical face of
 Sections~\ref{sec:obstruction}--\ref{sec:sieve}: every distributional
 feature --- the head, the geometric tail, the once-empty band, the
-static record --- now has a mechanism attached.
+static record --- now has a structural interpretation attached.
 
 \section{Open problems}\label{sec:open}
 
@@ -934,7 +984,25 @@ $1{,}587{,}581$ primes with zero discrepancies. Third, every check is
 deterministic, uses exact integer arithmetic only (no floating point,
 randomness, or external libraries), and completes in seconds from the
 repository --- an independent re-implementation is an afternoon's work,
-and we would welcome one.
+and we would welcome one. Fourth, part of the enumeration layer is
+formalized in Lean~4/mathlib in the accompanying repository
+(\texttt{lean/}): the reachability model underlying
+Theorem~\ref{thm:meta} is defined over $(\mathbb{Z}/R)^\times$
+directly, both halves of Lemma~\ref{lem:mono} are proved as theorems
+(\texttt{reach\_mono}, \texttt{reach\_sublist}) with no computational
+content to trust, and the full enumerations behind
+Theorem~\ref{thm:Ap} ($1{,}536$ configurations, stated in the
+multiplicative model itself) and the $R = 19$ case of
+Lemma~\ref{lem:S} ($437{,}580$ checks, stated in the discrete-log
+coordinates in which the proof and \texttt{verify\_support\_bound}
+work) are discharged by Lean's compiled evaluator
+(\texttt{native\_decide}, which trusts the Lean compiler in addition
+to the kernel); every declaration is audited with
+\texttt{\#print axioms}. For these two enumerations the sixty-line
+trust base above is thus replaced by the Lean toolchain evaluating a
+formally stated proposition --- and the Python and Lean
+implementations, written independently against the same statements,
+agree.
 
 \begin{center}
 \small
@@ -1050,7 +1118,10 @@ verify a dataset exhaustively &
 distribution / covering / taxonomy &
 \texttt{python -m erdos\_straus.analyze} \{\texttt{dist},
 \texttt{cover}, \texttt{tail}\}; \texttt{python -m erdos\_straus.theory}
-\\
+\\ \hline
+Lean formalization (elementary + enumeration layers) &
+\texttt{cd lean/ErdosStraus \&\&} \newline
+\texttt{lake exe cache get \&\& lake build} \\
 \end{tabular}
 \end{center}
 

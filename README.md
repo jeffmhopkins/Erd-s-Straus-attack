@@ -61,9 +61,10 @@ tests/
 paper/
   erdos_straus_residuals.tex/.pdf   the manuscript (16 pp.)
 lean/
-  ErdosStraus/         Lean 4 + mathlib formalization: ten sorry-free,
+  ErdosStraus/         Lean 4 + mathlib formalization: sorry-free,
                        axiom-audited declarations covering the paper's
-                       elementary layer (see lean/README.md)
+                       elementary layer and the finite-enumeration
+                       layer (see lean/README.md)
 STATUS.md              full status of the attack
 THEORY.md              theoretical development with proofs
 ```
@@ -95,8 +96,13 @@ classical bound; the contribution is mechanism, not raw density.
 **Formal verification** (`lean/`): the elementary layer is machine-checked
 in Lean 4 + mathlib — certificate soundness and integrality, Theorem A in
 both directions, both aggregate identity families, the reciprocity
-structure theorem, and the hard-class lemmas. Ten sorry-free declarations,
-each axiom-audited via `#print axioms`.
+structure theorem, and the hard-class lemmas — plus the finite-enumeration
+layer: the meta-theorem's divisor-class reachability model, both halves of
+the monotonicity reduction, the full 1,536-configuration verification of
+Theorem A′ (R = 7), and Lemma S at R = 19 (437,580 checks), both
+discharged by Lean's compiled evaluator. Every declaration is sorry-free and
+axiom-audited via `#print axioms` (see `lean/README.md` for the trust
+base).
 
 ## Setup
 
