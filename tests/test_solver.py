@@ -412,3 +412,24 @@ def test_bulk_generate_matches_stored_minimal_R():
         a, b, c, R = res
         assert is_solution(n, a, b, c)
         assert R == rec["R"]
+
+
+def test_burgess_selected_residual_reciprocity():
+    """Burgess-route invariants (THEORY.md §2.10): for hard p, the least
+    Legendre non-residue q is >= 11 (hard primes are QRs mod 3, 5, 7), the
+    selected residual R = -p mod 4q is admissible with q | (p+R)/4, and the
+    composite Jacobi reciprocity (q|R) = (p|q) = -1 holds at it."""
+    from erdos_straus.bulk_generate import _init_small_primes
+    from erdos_straus.burgess_scan import (least_legendre_nonresidue,
+                                           selected_residual)
+    from erdos_straus.solver import generate_hard_primes
+    from erdos_straus.theory import jacobi
+
+    _init_small_primes()
+    for p in generate_hard_primes(100000):
+        q = least_legendre_nonresidue(p)
+        assert q is not None and q >= 11, (p, q)
+        assert jacobi(p % q, q) == -1
+        R = selected_residual(p, q)
+        assert R % 4 == 3 and (p + R) % (4 * q) == 0
+        assert jacobi(q % R, R) == -1, (p, q, R)
