@@ -37,10 +37,13 @@ src/erdos_straus/
   solver.py            core utilities: is_solution, hard_residue,
                        generate_hard_primes, classical identities, brute search
   residual_solver.py   residual engine (R = 4a - n) with sympy divisor factoring
-  bulk_generate.py     fast integer-only solver + numpy sieve + parallel driver
+  bulk_generate.py     fast integer-only solver + segmented sieve + parallel driver
+  analyze.py           distribution/CDF, covering-set, and high-R tail analysis
   parametric_search.py fixed-residual parametric experiments per hard class
   verify.py            independent verification of the JSON certificates
 data/
+  hard_primes_1e9_minimalR.json.gz     minimal-R map for all 1,587,581 hard
+                                       primes < 10^9 (triples reconstruct)
   hard_primes_1.2e8_solutions.json.gz  explicit (R,a,b,c) for all 213,131
                                        hard primes < 1.2*10^8 (gzip-compressed)
   hard_primes_1e6_solutions.json   explicit (R,a,b,c) for all hard primes < 10^6
@@ -53,11 +56,14 @@ STATUS.md              full status of the attack
 
 ## Current results
 
-All **213,131** hard primes below **1.2 × 10⁸** have explicit, independently
-verified solutions. The maximal minimal residual is still **R = 107** (at a
-single prime, 8,803,369, below 10⁷) — doubling the search bound produced no new
-record, reinforcing the slow-growth signal. `R = 3` covers 46 % of hard primes
-and `R ∈ {3, 7, 11}` covers 89 %.
+All **1,587,581** hard primes below **10⁹** have verified solutions: full
+explicit triples up to 1.2 × 10⁸, and a compact minimal-R map (`n → R`) up to
+10⁹ from which triples reconstruct deterministically (and are re-derived and
+exactly checked by `es-verify`). The maximal minimal residual is **R = 107**,
+attained at a *single* prime (8,803,369 < 10⁷) — a 20× extension of the bound
+produced no new record. `R = 3` covers 49 % of hard primes, `R ∈ {3, 7, 11}`
+covers 91.3 %, and no prime has minimal R in {87, 91, 95, 99, 103}: the
+distribution jumps from 83 straight to 107.
 
 ## Setup
 
@@ -98,9 +104,22 @@ python -m erdos_straus.bulk_generate --max 120000000 \
     --out data/hard_primes_1.2e8_solutions.json.gz
 ```
 
-Output is gzip-compressed when the path ends in `.gz`. Pushing past $10^9$ is
-only a matter of runtime; at that scale swap the numpy sieve for a segmented
-one (noted in `STATUS.md`).
+Output is gzip-compressed when the path ends in `.gz`. At $10^9$ scale use the
+segmented sieve and the compact minimal-R storage (~49 s on 4 cores):
+
+```bash
+python -m erdos_straus.bulk_generate --max 1000000000 --segmented \
+    --store rmap --out data/hard_primes_1e9_minimalR.json.gz
+```
+
+Analyze the results — distribution/CDF, smallest covering residual list
+(set cover over full per-prime residual masks), and the high-R tail:
+
+```bash
+python -m erdos_straus.analyze dist  --rmap data/hard_primes_1e9_minimalR.json.gz
+python -m erdos_straus.analyze cover --rmap data/hard_primes_1e9_minimalR.json.gz
+python -m erdos_straus.analyze tail  --rmap data/hard_primes_1e9_minimalR.json.gz --min-R 59
+```
 
 From Python:
 

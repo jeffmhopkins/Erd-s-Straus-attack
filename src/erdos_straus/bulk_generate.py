@@ -156,16 +156,34 @@ def minimal_certificate(n: int, max_R: int = 400
 
 # --- sieving ---------------------------------------------------------------
 
-def hard_primes_upto(limit: int) -> List[int]:
-    """All primes p <= limit with p mod 840 in the hard residue set."""
+def _require_numpy():
     try:
-        import numpy as np
+        import numpy as np  # noqa: F401
+        return np
     except ImportError as exc:  # pragma: no cover
         raise ImportError(
             "bulk_generate needs numpy for sieving; install with "
             "`pip install -e \".[gen]\"` or `pip install numpy`."
         ) from exc
 
+
+def _base_primes(bound: int) -> List[int]:
+    """Simple sieve returning all primes <= bound (bytearray, low memory)."""
+    sieve = bytearray([1]) * (bound + 1)
+    sieve[0] = sieve[1] = 0
+    for i in range(2, int(bound ** 0.5) + 1):
+        if sieve[i]:
+            sieve[i * i :: i] = bytearray(len(range(i * i, bound + 1, i)))
+    return [i for i in range(2, bound + 1) if sieve[i]]
+
+
+def hard_primes_upto(limit: int) -> List[int]:
+    """All primes p <= limit with p mod 840 in the hard residue set.
+
+    Monolithic numpy sieve — simplest, but allocates one bool per integer
+    (~1 GB at 10^9). Prefer :func:`hard_primes_upto_segmented` at large scale.
+    """
+    np = _require_numpy()
     sieve = np.ones(limit + 1, dtype=bool)
     sieve[:2] = False
     for i in range(2, int(math.isqrt(limit)) + 1):
@@ -175,6 +193,46 @@ def hard_primes_upto(limit: int) -> List[int]:
     residues = primes % 840
     mask = np.isin(residues, np.array(sorted(HARD_RESIDUES)))
     return primes[mask].tolist()
+
+
+def hard_primes_upto_segmented(limit: int, segment_size: int = 1 << 23,
+                               progress: bool = False) -> List[int]:
+    """All hard-residue primes p <= limit via a segmented sieve.
+
+    Memory is bounded by the base-prime table (primes up to sqrt(limit)) plus
+    one bool array of ``segment_size`` — a few MB regardless of ``limit``.
+    """
+    np = _require_numpy()
+    hard_res = np.array(sorted(HARD_RESIDUES))
+    base = _base_primes(int(math.isqrt(limit)) + 1)
+    base_arr = np.array(base, dtype=np.int64)
+
+    hard_list: List[int] = []
+    lo = 2
+    n_seg = (limit - 1) // segment_size + 1
+    seg_idx = 0
+    while lo <= limit:
+        hi = min(lo + segment_size - 1, limit)
+        seg = np.ones(hi - lo + 1, dtype=bool)
+        # Cross off multiples of each base prime within [lo, hi].
+        for p in base:
+            if p * p > hi:
+                break
+            start = max(p * p, ((lo + p - 1) // p) * p)
+            seg[start - lo::p] = False
+        idx = np.nonzero(seg)[0]
+        primes = idx + lo
+        if primes.size:
+            res = primes % 840
+            mask = np.isin(res, hard_res)
+            if mask.any():
+                hard_list.extend(primes[mask].tolist())
+        seg_idx += 1
+        if progress:
+            print(f"[sieve] segment {seg_idx}/{n_seg} "
+                  f"(up to {hi:,}), {len(hard_list):,} hard so far", flush=True)
+        lo = hi + 1
+    return hard_list
 
 
 # --- parallel driver -------------------------------------------------------
@@ -193,12 +251,26 @@ def _worker(chunk: List[int]) -> List[Tuple[int, int, int, int, int]]:
 
 
 def generate(limit: int, out_path: str, workers: Optional[int] = None,
-             progress: bool = True) -> Dict[str, object]:
+             progress: bool = True, segmented: bool = False,
+             store: str = "full") -> Dict[str, object]:
+    """Generate certificates for all hard primes <= limit.
+
+    ``store="full"`` writes ``{n: {R,a,b,c}}``; ``store="rmap"`` writes the
+    compact minimal-R map ``{n: R}`` (explicit triples reconstruct
+    deterministically from (n, R) and are re-derived during verification).
+    ``segmented=True`` uses the low-memory segmented sieve (required at 10^9).
+    """
+    if store not in ("full", "rmap"):
+        raise ValueError("store must be 'full' or 'rmap'")
     _init_small_primes()
     t0 = time.time()
     if progress:
-        print(f"[sieve] hard primes up to {limit:,} ...", flush=True)
-    primes = hard_primes_upto(limit)
+        print(f"[sieve] hard primes up to {limit:,} "
+              f"({'segmented' if segmented else 'monolithic'}) ...", flush=True)
+    if segmented:
+        primes = hard_primes_upto_segmented(limit, progress=progress)
+    else:
+        primes = hard_primes_upto(limit)
     if progress:
         print(f"[sieve] {len(primes):,} hard primes "
               f"({time.time() - t0:.1f}s)", flush=True)
@@ -226,7 +298,7 @@ def generate(limit: int, out_path: str, workers: Optional[int] = None,
 
     results.sort(key=lambda r: r[0])
 
-    solutions: Dict[str, Dict[str, int]] = {}
+    solutions: Dict[str, object] = {}
     unsolved: List[int] = []
     R_counter: Dict[int, int] = {}
     max_R = 0
@@ -235,7 +307,10 @@ def generate(limit: int, out_path: str, workers: Optional[int] = None,
         if R == -1:
             unsolved.append(n)
             continue
-        solutions[str(n)] = {"R": R, "a": a, "b": b, "c": c}
+        if store == "rmap":
+            solutions[str(n)] = R
+        else:
+            solutions[str(n)] = {"R": R, "a": a, "b": b, "c": c}
         R_counter[R] = R_counter.get(R, 0) + 1
         if R > max_R:
             max_R = R
@@ -279,11 +354,16 @@ def main(argv: Optional[List[str]] = None) -> int:
                     default="data/hard_primes_1.2e8_solutions.json.gz",
                     help="output path; gzip-compressed when it ends in .gz")
     ap.add_argument("--workers", type=int, default=None)
+    ap.add_argument("--segmented", action="store_true",
+                    help="use the low-memory segmented sieve (needed at 10^9)")
+    ap.add_argument("--store", choices=["full", "rmap"], default="full",
+                    help="'full' writes {n:{R,a,b,c}}; 'rmap' writes compact {n:R}")
     ap.add_argument("--stats-out", type=str, default=None,
                     help="optional path to write JSON run statistics")
     args = ap.parse_args(argv)
 
-    stats = generate(args.max, args.out, workers=args.workers)
+    stats = generate(args.max, args.out, workers=args.workers,
+                     segmented=args.segmented, store=args.store)
     if args.stats_out:
         with open(args.stats_out, "w") as f:
             json.dump(stats, f, indent=2)

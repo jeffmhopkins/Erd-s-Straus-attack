@@ -38,6 +38,9 @@ DEFAULT_FILES = [
     "hard_primes_1e6_solutions.json",
     "high_R_primes_5e6.json",
     "hard_primes_1.2e8_solutions.json.gz",
+    # Minimal-R map: verification reconstructs each triple from (n, R) and
+    # checks it exactly (slow but exhaustive: ~15 min single-threaded).
+    "hard_primes_1e9_minimalR.json.gz",
 ]
 
 
@@ -61,9 +64,31 @@ class FileReport:
         return not self.failures
 
 
-def verify_record(n: int, rec: Dict) -> List[str]:
-    """Return a list of human-readable problems with a single certificate."""
+def verify_record(n: int, rec) -> List[str]:
+    """Return a list of human-readable problems with a single certificate.
+
+    ``rec`` is either a full record ``{R, a, b, c}`` or, for compact R-map
+    files, an integer minimal ``R``. In the R-map case the explicit triple is
+    reconstructed from (n, R) with the solver and then checked exactly, so the
+    map is verified as a genuine certificate — not taken on faith.
+    """
     problems: List[str] = []
+
+    # Compact R-map entry: rec is the minimal residual R.
+    if isinstance(rec, int):
+        R = rec
+        if R <= 0 or (n + R) % 4 != 0:
+            return [f"n={n}: invalid R={R} (need R>0, n+R divisible by 4)"]
+        from erdos_straus.bulk_generate import solve_residual, _init_small_primes
+        _init_small_primes()
+        sol = solve_residual(n, R)
+        if sol is None:
+            return [f"n={n}: R={R} does not yield a solution on reconstruction"]
+        a, b, c = sol
+        if not is_solution(n, a, b, c):
+            problems.append(f"n={n}: reconstructed triple invalid")
+        return problems
+
     try:
         a, b, c = int(rec["a"]), int(rec["b"]), int(rec["c"])
     except (KeyError, TypeError, ValueError) as exc:

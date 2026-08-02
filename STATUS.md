@@ -35,29 +35,44 @@ This is implemented in `residual_solver.py` (factoring via sympy) and supported 
 | \(< 2 \times 10^7\) | ~39k     | Yes         | 107               | — |
 | \(< 3 \times 10^7\) | ~57k     | Yes         | 107               | — |
 | \(< 5 \times 10^7\) | ~93k     | Yes         | 107               | — |
-| \(< 1.2 \times 10^8\) | **213 131** | **Yes** | **107**        | Full explicit solutions saved (gzip); current verified bound |
+| \(< 1.2 \times 10^8\) | 213 131 | Yes | 107               | Full explicit solutions saved (gzip) |
+| \(< 10^9\)     | **1 587 581** | **Yes** | **107**       | Minimal-\(R\) map saved (gzip); current verified bound |
 
 The \(1.2 \times 10^8\) pass was produced by `erdos_straus.bulk_generate`
 (integer-only trial-division solver, numpy sieve, 4-way parallel) in **≈9 s**
-and independently re-verified with exact integer arithmetic
-(`es-verify`, 216 141 certificates total across all files).
+and independently re-verified with exact integer arithmetic.
 
-### Minimal-\(R\) distribution up to \(1.2 \times 10^8\)
+The \(10^9\) pass used the **segmented sieve** (bounded memory) and completed
+in **≈49 s** on 4 cores. It is stored as a compact minimal-\(R\) map
+(`n → R`); explicit triples \((a,b,c)\) reconstruct deterministically from
+\((n, R)\), and verification (`es-verify`) re-derives and exactly checks every
+triple, so the map is a full certificate set, not a summary.
 
-| \(R\) | count | | \(R\) | count |
-|------:|------:|-|------:|------:|
-| 3  | 98 179 | | 31  | 920 |
-| 7  | 51 306 | | 35  | 117 |
-| 11 | 41 515 | | 39  | 145 |
-| 15 | 9 058  | | 43  | 32  |
-| 19 | 7 141  | | 47  | 77  |
-| 23 | 3 911  | | 51–71 | 32 (total) |
-| 27 | 696    | | 107 | 1 (\(p=8\,803\,369\)) |
+### Minimal-\(R\) distribution up to \(10^9\) (1 587 581 hard primes)
 
-\(R=3\) alone covers **46 %**; \(R \in \{3,7,11\}\) covers **89 %**.
-Crucially, extending the bound by more than 2× (from \(5 \times 10^7\) to
-\(1.2 \times 10^8\)) produced **no new maximal \(R\)**: the record \(R=107\)
-still comes from a single prime below \(10^7\).
+| \(R\) | count | share | cumul. | | \(R\) | count |
+|------:|------:|------:|-------:|-|------:|------:|
+| 3  | 779 745 | 49.1 % | 49.1 % | | 43 | 197 |
+| 7  | 386 431 | 24.3 % | 73.5 % | | 47 | 318 |
+| 11 | 283 978 | 17.9 % | 91.3 % | | 51 | 37 |
+| 15 | 60 708  | 3.8 %  | 95.2 % | | 55 | 51 |
+| 19 | 43 687  | 2.8 %  | 97.9 % | | 59 | 46 |
+| 23 | 22 167  | 1.4 %  | 99.3 % | | 63 | 10 |
+| 27 | 3 909   | 0.25 % | 99.56 %| | 67, 75, 83 | 2 each |
+| 31 | 4 820   | 0.30 % | 99.87 %| | 71 | 6 |
+| 35 | 708     | 0.045 %| 99.91 %| | 79 | 1 |
+| 39 | 755     | 0.048 %| 99.96 %| | 107 | 1 (\(p=8\,803\,369\)) |
+
+**Key facts at \(10^9\):**
+- Extending the bound by \(20\times\) (from \(5\times 10^7\)) produced
+  **no new maximal \(R\)**: the record 107 still comes from the single prime
+  \(8\,803\,369 < 10^7\).
+- There is a conspicuous **gap**: no prime has minimal \(R \in
+  \{87, 91, 95, 99, 103\}\) — the distribution jumps from 83 straight to 107.
+- The record prime is genuinely exceptional: no residual below 107 works for
+  it **even allowing \(R\) up to 400**; its \(a = (p+107)/4 = 3^2 \cdot 11^2
+  \cdot 43 \cdot 47\) is fully smooth, whereas typical high-\(R\) primes have
+  an \(a\) with one large prime factor.
 
 **Key observations:**
 - Minimal residual \(R\) grows very slowly.
@@ -69,8 +84,10 @@ still comes from a single prime below \(10^7\).
 - `src/erdos_straus/solver.py` — core utilities, hard-residue detector, classical identities, prime generation helpers
 - `src/erdos_straus/residual_solver.py` — main residual + factoring engine
 - `src/erdos_straus/parametric_search.py` — early experiments with fixed-residual parametric searches
-- `src/erdos_straus/bulk_generate.py` — fast integer-only solver + numpy sieve + parallel driver for large-scale generation
-- `src/erdos_straus/verify.py` — independent verification of the stored certificates
+- `src/erdos_straus/bulk_generate.py` — fast integer-only solver + monolithic/segmented sieves + parallel driver for large-scale generation
+- `src/erdos_straus/analyze.py` — minimal-\(R\) distribution/CDF, covering-set (set cover over full residual masks), and high-\(R\) tail structure analysis
+- `src/erdos_straus/verify.py` — independent verification of the stored certificates (full triples and minimal-\(R\) maps)
+- `data/hard_primes_1e9_minimalR.json.gz` — minimal-\(R\) map for all 1 587 581 hard primes \(< 10^9\) (gzip; triples reconstruct deterministically)
 - `data/hard_primes_1.2e8_solutions.json.gz` — explicit \((R,a,b,c)\) for all 213 131 hard primes \(< 1.2 \times 10^8\) (gzip)
 - `data/hard_primes_1e6_solutions.json` — explicit \((R,a,b,c)\) for all hard primes \(< 10^6\)
 - `data/hard_primes_2e5_solutions.json` — smaller explicit set
@@ -92,14 +109,22 @@ All 216 141 bundled certificates pass `es-verify` (exact integer arithmetic).
 - Parametric constructions with constant \(k\) give positive-density coverage inside each hard class; full arithmetic-progression coverings require more sophisticated (higher-degree or residual-dependent) factors.
 
 ## Next Natural Steps
-1. ~~Extend explicit residual solutions past \(10^8\).~~ **Done** — all 213 131 hard
-   primes \(< 1.2 \times 10^8\) now have explicit, verified solutions; still no
-   growth in the maximal minimal \(R\) (107). The `bulk_generate` engine makes
-   pushing to \(10^9\)+ a matter of runtime (the sieve is the bottleneck at that
-   scale — switch to a segmented sieve).
+1. ~~Extend explicit residual solutions past \(10^8\).~~ **Done** at
+   \(1.2 \times 10^8\) (full triples) and \(10^9\) (minimal-\(R\) map,
+   segmented sieve). Maximal minimal \(R\) unchanged at 107 across a
+   \(20\times\) extension of the bound.
 2. Prove (or disprove) that a short fixed list of residuals always suffices.
+   The full residual-mask/set-cover analysis (`analyze.py cover`) identifies
+   which residuals are unavoidable and the smallest covering list up to
+   \(10^9\).
 3. Construct a parametric family that covers an entire hard residue class for a fixed small \(R\).
 4. Analyze the algebraic conditions (divisor distribution / Jacobi barriers) that force larger \(R\).
+   First data point: the record prime's \(a\) is fully smooth
+   (\(3^2 11^2 43 \cdot 47\)) — the failure of all \(R < 107\) despite many
+   divisors suggests a congruence obstruction rather than a scarcity of
+   divisors. The `analyze.py tail` output is the raw material here.
+5. Push the minimal-\(R\) map to \(10^{10}\) (runtime scales linearly;
+   ~8 min on 4 cores).
 
 ---
 *Attack ongoing. Framework and data are ready for further extension or theoretical work.*

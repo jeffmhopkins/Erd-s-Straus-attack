@@ -138,6 +138,43 @@ def test_large_gz_dataset_sampled():
         assert 4 * int(rec["a"]) - n == int(rec["R"])
 
 
+def test_segmented_sieve_matches_monolithic():
+    from erdos_straus.bulk_generate import (
+        hard_primes_upto,
+        hard_primes_upto_segmented,
+    )
+
+    mono = hard_primes_upto(300_000)
+    seg = hard_primes_upto_segmented(300_000, segment_size=1 << 14)
+    assert mono == seg
+
+
+def test_rmap_dataset_reconstructs():
+    """Sampled check: every stored minimal R reconstructs to a valid triple
+    and no smaller admissible R works (i.e. R really is minimal)."""
+    from erdos_straus.bulk_generate import (
+        _init_small_primes,
+        solve_residual as fast_solve,
+    )
+    from erdos_straus.verify import load_solutions
+
+    _init_small_primes()
+    path = DATA_DIR / "hard_primes_1e9_minimalR.json.gz"
+    data = load_solutions(path)
+    assert len(data) > 1_500_000
+    items = list(data.items())
+    for key, R in items[::5000]:
+        n = int(key)
+        assert hard_residue(n)
+        sol = fast_solve(n, int(R))
+        assert sol is not None, f"R={R} fails to reconstruct for n={n}"
+        assert is_solution(n, *sol)
+        for smaller in range(3, int(R), 4):
+            assert fast_solve(n, smaller) is None, (
+                f"n={n}: stored R={R} not minimal, R={smaller} works"
+            )
+
+
 def test_bulk_generate_matches_stored_minimal_R():
     """The fast bulk solver reproduces the minimal R of stored certificates."""
     from erdos_straus.bulk_generate import _init_small_primes, minimal_certificate
