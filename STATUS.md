@@ -115,7 +115,7 @@ Fundamental-Lemma upper give $\#\tilde E_J \asymp x/(\log x)^{1+\kappa}$,
 so the avoidance ladder decays exactly as B prescribes), and
 **B reduces to Hypothesis P** (failures ≥ $c_P$ · avoiders; measured
 $c_P$ = 12.0 % at rung 0, 15.9 % at rung 1, archive
-`burgess_proxy_1e9.json`): under P, B holds at every fixed rung — the
+`burgess_proxy_1e9.json`; **stable at scale**: $c_P$ = 9.7–11.6 % across four half-decade bins to $10^{11}$, `burgess_proxy_scaled.json`): under P, B holds at every fixed rung — the
 program is L₀ ✓, B₁ ✓, B₂ ✓, B ⟸ P, L₁ ⟸ B, with P the single
 unproved ingredient. Theorem L₁ — under
 B, all but $O(x e^{-\delta J(x)})$ hard primes have

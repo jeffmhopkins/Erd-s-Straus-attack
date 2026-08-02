@@ -1192,6 +1192,22 @@ avoiders. Proxy decay per rung 84.6 % (heading to the theorem's
 (log x)^{−κ} asymptotically), true decay 13.5 %. Zero sanity
 violations (E ⊆ Ẽ exact).
 
+**P at scale** (mask-free, half-decade window samples of 10,000
+primes each; archive `burgess_proxy_scaled.json`):
+
+| range | avoid₀ | P₀ = fail/avoid | proxy decay | P₁ (within fail₀) |
+|---|---:|---:|---:|---:|
+| 10⁹–3.2×10⁹ | 43.1 % | 10.8 % | 83.4 % | 13.2 % |
+| 3.2×10⁹–10¹⁰ | 42.9 % | 11.6 % | 84.2 % | 16.2 % |
+| 10¹⁰–3.2×10¹⁰ | 43.3 % | 9.7 % | 84.1 % | 14.5 % |
+| 3.2×10¹⁰–10¹¹ | 43.1 % | 9.9 % | 84.5 % | 14.8 % |
+
+Every quantity Hypothesis P needs bounded is flat across two decades:
+c_P sits at 10–12 % (rung 0) and 13–16 % (rung 1) with no sign of
+vanishing, the avoidance density is constant at 43 %, and the proxy
+decay matches the 10⁹ mask measurement. P's empirical standing now
+equals B's before it: measured at every accessible scale, drift-free.
+
 **The wall, isolated.** P is a *lower* bound on budget failures inside
 a sieve-thin set — conditional on universal-class avoidance, the
 class-concentration event of the anatomy must retain positive
