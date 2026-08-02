@@ -36,8 +36,12 @@ DIST = {
 fig, ax = plt.subplots(figsize=(8.4, 4.2))
 xs = list(DIST.keys())
 ys = [DIST[r] for r in xs]
+# The band 87-103 was empty below 10^10 (Section 5.1 of the paper).
+ax.axvspan(85, 105, color="0.88", zorder=0)
+ax.text(95, 5e6, "band empty\nbelow $10^{10}$", ha="center",
+        fontsize=8.5, color="0.35")
 ax.bar(xs, ys, width=3.0, color="#3b5b92", edgecolor="black",
-       linewidth=0.4, log=True)
+       linewidth=0.4, log=True, zorder=2)
 ax.set_xlabel(r"minimal residual $R_{\min}$")
 ax.set_ylabel("hard primes (log scale)")
 ax.set_xticks(xs)

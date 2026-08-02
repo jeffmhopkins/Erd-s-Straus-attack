@@ -4,10 +4,8 @@ Erdős–Straus Attack Harness
 Framework for searching solutions, testing parametric families, and analyzing hard cases.
 """
 
-from typing import Optional, Tuple, List, Dict
+from typing import Optional, Tuple, List
 import math
-from fractions import Fraction
-import itertools
 
 def is_solution(n: int, a: int, b: int, c: int) -> bool:
     """Check if 4/n = 1/a + 1/b + 1/c exactly."""
@@ -42,8 +40,8 @@ def solve_for_fixed_a(n: int, a: int) -> Optional[Tuple[int, int]]:
     if d <= 0:
         return None
     m = n * a
-    # We need positive divisors k of m*m such that (k + m) % d == 0 and b = (k + m)//d >= a (or 1)
-    # Then c = (m^2 / k + m) // d
+    # Scan b upward from the smallest value making c positive (naive fallback;
+    # see the docstring NOTE).
     target = m * m
     min_b = (m // d) + 1
     max_b = (2 * m) // d   # rough for b <= c
