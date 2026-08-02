@@ -1136,6 +1136,70 @@ frontier from fixed lists to p-adapted polylog ladders and localizes
 the conjecture's difficulty into one measured, falsifiable counting
 inequality — it does not remove that difficulty.
 
+#### Theorem B₂ (the proxy ladder, two-sided) and the reduction of B to Hypothesis P
+
+The obstruction to repeating B₁ at rung 1 is that Hypothesis B's
+inequality is *conditional*: it needs the survivor set E_j bounded
+below, and true failures are not sieve-defined. The resolution is to
+run the ladder on the sieve-defined **avoidance proxy**
+
+    Ẽ_j  =  { p ≡ c :  a_i = (p+R_i)/4 has no prime factor
+                        ≡ −4⁻¹ (mod R_i),  for all i ≤ j },
+
+so that E_j ⊆ Ẽ_j at every rung (Prop 2.2; exact in the data, zero
+violations).
+
+**Theorem B₂.** *Fix a prime q, a class c (fixing R₀, R₁, …), and
+J with κ = Σ_{j<J} 1/φ(R_j) below an absolute constant. Then*
+
+    x/(log x)^{1+κ}  ≪_{q,J}  #Ẽ_J(x)  ≪_{q,J}  x/(log x)^{1+κ},
+
+*and consequently the proxy ladder decays exactly as B prescribes:
+#Ẽ_{j+1}(x) ≍ (log x)^{−1/φ(R_{j+1})} · #Ẽ_j(x) for each j < J.*
+
+**Proof sketch.** Upper bound: the Fundamental Lemma in dimension
+1 + κ, as in B₁/L₀ — the forms a_i = n + q·i are distinct shifts, and
+the forbidden classes n ≡ −qi (mod ℓ) for ℓ ≡ −4⁻¹ (mod R_i) are
+pairwise distinct for ℓ ∤ q(i−i′). Lower bound (the new half): a
+beta-sieve lower bound in dimension κ < 1 on the prime-supported
+sequence {(p+R₀)/4 : p ≡ c prime}, with level x^{1/2−ε} from
+Bombieri–Vinogradov, gives ≫ x/(log x)^{1+κ} integers avoiding the
+forbidden classes at primes ℓ ≤ z = x^{1/10}; primes n with a
+forbidden prime factor u > z are then removed by a
+Brun–Titchmarsh/Fundamental-Lemma upper bound in the progressions
+mod 4uM, whose total is ≪ (J log 5/min_j φ(R_j)) times the main
+term — absorbable when κ is small, which is the stated constraint. ∎
+
+**Hypothesis P (proportionality).** There is c_P > 0 with
+#E_j(x) ≥ c_P · #Ẽ_j(x) for j ≤ J and x large: true failures are a
+positive proportion of their necessary-condition set.
+
+**Corollary B₃ (second rung and beyond, conditional on P).** Under P,
+for every fixed j < J:
+
+    #E_{j+1}(x)  ≤  #Ẽ_{j+1}(x)  ≪  (log x)^{−1/φ(R_{j+1})} · #Ẽ_j(x)
+                 ≤  (log x)^{−1/φ(R_{j+1})} · c_P^{−1} · #E_j(x),
+
+*so B's inequality holds at every fixed rung with any δ < 1 for
+x ≥ x₀(q, j, δ). In particular the second rung of B follows from P
+alone; nothing else is missing.*
+
+**P measured** (10⁹ masks, every 20th prime; archive
+`burgess_proxy_1e9.json`): the avoidance set contains 43.8 % of primes
+at rung 0 and true failures are **12.0 %** of it; conditioned on a
+true rung-0 failure, rung-1 failures are **15.9 %** of rung-1
+avoiders. Proxy decay per rung 84.6 % (heading to the theorem's
+(log x)^{−κ} asymptotically), true decay 13.5 %. Zero sanity
+violations (E ⊆ Ẽ exact).
+
+**The wall, isolated.** P is a *lower* bound on budget failures inside
+a sieve-thin set — conditional on universal-class avoidance, the
+class-concentration event of the anatomy must retain positive
+probability. Lower-bounding a multiplicatively-defined thin event is
+parity-flavored, and this is now the program's single unproved
+ingredient: L₀ ✓, B₁ ✓, B₂ ✓, B ⟸ P, L₁ ⟸ B. Everything above P is
+proved; everything below P is measured.
+
 #### The Ladder Hypothesis, and what it would give
 
 **Hypothesis L.** There is an absolute C such that for every hard

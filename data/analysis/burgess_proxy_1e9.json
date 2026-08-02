@@ -1,0 +1,10 @@
+{
+ "sampled": 79380,
+ "sanity_violations": 0,
+ "avoid0": 34777,
+ "fail0": 4177,
+ "P_rung0": 0.12010811743393622,
+ "proxy_decay_rung1": 0.8463064669177905,
+ "true_decay_rung1": 0.13478573138616232,
+ "P_rung1_within_fail0": 0.15935465609963204
+}

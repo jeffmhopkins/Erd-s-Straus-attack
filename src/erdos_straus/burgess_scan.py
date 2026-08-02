@@ -513,3 +513,50 @@ def characterize_budget_failures(masks: Dict[int, int],
         byq.setdefault(q, []).append(p)
     out["failures_by_q1"] = {str(q): len(v) for q, v in sorted(byq.items())}
     return out
+
+
+def proxy_ratio_scan(masks: Dict[int, int], sample_step: int = 20) -> Dict:
+    """Measure Hypothesis P (THEORY.md 2.10): the ratio of true rung
+    failures to their sieve-defined necessary condition (avoidance of the
+    Prop 2.2 classes), at rungs 0 and 1 of the selected ladder."""
+    _init_small_primes()
+
+    def sclasses(p, R):
+        t = (-pow(4, -1, R) * p * p) % R
+        pinv = pow(p, -1, R)
+        return {t, t * pinv % R, t * pinv * pinv % R}
+
+    def avoid(p, R):
+        S = sclasses(p, R)
+        return not any(u % R in S for u in factorize((p + R) // 4))
+
+    def fails(p, R):
+        if R <= 107 and R in R_INDEX:
+            return not (masks[p] >> R_INDEX[R] & 1)
+        return not solvable_exact_general(p, R)
+
+    n = av0 = f0 = av01 = e1_av1 = e1_f1 = sanity = 0
+    for p in sorted(masks)[::sample_step]:
+        q = least_legendre_nonresidue(p)
+        R0 = selected_residual(p, q)
+        R1 = R0 + 4 * q
+        n += 1
+        a0, ff0 = avoid(p, R0), fails(p, R0)
+        if ff0 and not a0:
+            sanity += 1
+        if a0:
+            av0 += 1
+            if avoid(p, R1):
+                av01 += 1
+        if ff0:
+            f0 += 1
+            if avoid(p, R1):
+                e1_av1 += 1
+            if fails(p, R1):
+                e1_f1 += 1
+    return {"sampled": n, "sanity_violations": sanity,
+            "avoid0": av0, "fail0": f0,
+            "P_rung0": f0 / av0 if av0 else None,
+            "proxy_decay_rung1": av01 / av0 if av0 else None,
+            "true_decay_rung1": e1_f1 / f0 if f0 else None,
+            "P_rung1_within_fail0": e1_f1 / e1_av1 if e1_av1 else None}

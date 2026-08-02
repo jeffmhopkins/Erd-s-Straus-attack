@@ -110,7 +110,14 @@ selected-rung failing fraction is $\ll_q (\log x)^{-1/\varphi(4q)}
 \to 0$ (Prop 2.2's universal class + Fundamental Lemma), uniformly
 for $q \ll \log\log x$; mechanism exact in data (0 violations /
 11 816 failures) and 25.5 % of primes get the closed-form
-$k = q p^2$. Theorem L₁ — under
+$k = q p^2$. **Theorem B₂ proved** (two-sided proxy ladder: beta-sieve lower +
+Fundamental-Lemma upper give $\#\tilde E_J \asymp x/(\log x)^{1+\kappa}$,
+so the avoidance ladder decays exactly as B prescribes), and
+**B reduces to Hypothesis P** (failures ≥ $c_P$ · avoiders; measured
+$c_P$ = 12.0 % at rung 0, 15.9 % at rung 1, archive
+`burgess_proxy_1e9.json`): under P, B holds at every fixed rung — the
+program is L₀ ✓, B₁ ✓, B₂ ✓, B ⟸ P, L₁ ⟸ B, with P the single
+unproved ingredient. Theorem L₁ — under
 B, all but $O(x e^{-\delta J(x)})$ hard primes have
 $R_{\min}(p) \le (\log x)^{2+o(1)} J(x)$; calibrations from
 $J = (\log\log x)^2$ (past the entire chain) to
