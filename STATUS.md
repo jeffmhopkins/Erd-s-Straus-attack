@@ -76,6 +76,21 @@ newest-first.)*
 | 35 | 708     | 0.045 %| 99.91 %| | 79 | 1 |
 | 39 | 755     | 0.048 %| 99.96 %| | 107 | 1 ($p=8\,803\,369$) |
 
+### Burgess/reciprocity census (newest)
+
+Full-population scan below $10^9$ (THEORY.md §2.10,
+`data/analysis/burgess_scan_1e9.json`): taking each hard prime's least
+Legendre non-residue $q$ ($q \ge 11$; observed $\le 83$) and the
+selected residual $R \equiv -p \pmod{4q}$, **94.78 %** of all
+1 587 581 hard primes succeed at the single selected residual; the
+$q$-ladder ($R + 4qk \le 400$) resolves all but 1 295, and a second
+non-residue $q$ resolves **every** remaining prime — 100 % coverage
+with $R \le 400$. Failures are budget-type in 82 401 of 82 808 cases
+(407 per-prime character cases at composite $R$). Composite-Jacobi
+reciprocity $(q|R) = (p|q)$ verified at every selected residual, zero
+violations. Purity (non-residue factor $\Rightarrow$ success) holds
+exactly at the proved $R = 3, 7, 15$ and fails everywhere else.
+
 ### $10^{11}$ update (the gap fills; the record stands)
 
 The $10^{11}$ run (streaming R-sequence pipeline, 2.85 h on 4 cores;
@@ -173,6 +188,7 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 - `src/erdos_straus/bulk_generate.py` — fast integer-only solver + monolithic/segmented sieves + parallel driver for large-scale generation
 - `src/erdos_straus/analyze.py` — minimal-$R$ distribution/CDF, covering-set (set cover over full residual masks), and high-$R$ tail structure analysis
 - `src/erdos_straus/theory.py` — obstruction theory: Jacobi machinery, failure taxonomy, exact-criteria engines (`solvable_exact`, `finite_criterion_dp`, composite-R `solvable_exact_general`), R=7/R=15 finite verifications, support-bound verifiers (combinatorial, DP, strong/Kneser form, general abelian), aggregate identities, independence model
+- `src/erdos_straus/burgess_scan.py` — Burgess/reciprocity-route census: least Legendre non-residue, selected residuals, Jacobi purity scan, retry ladders (results: `data/analysis/burgess_scan_1e9.json`; THEORY.md §2.10)
 - `src/erdos_straus/verify.py` — independent verification of the stored certificates (full triples, minimal-$R$ maps, and npz archives)
 - `data/hard_primes_1e9_minimalR.json.gz` — minimal-$R$ map for all 1 587 581 hard primes $< 10^9$ (gzip; triples reconstruct deterministically)
 - `data/hard_primes_1.2e8_solutions.json.gz` — explicit $(R,a,b,c)$ for all 213 131 hard primes $< 1.2 \times 10^8$ (gzip)
@@ -182,8 +198,8 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 - `data/hard_primes_1e10_minimalR.json.gz` — minimal-$R$ map for all 14 215 707 hard primes $< 10^{10}$
 - `data/hard_primes_1e11_minimalR.{rvals.u8.gz, meta.json, tail.json}` — R-sequence dataset for all 128 671 219 hard primes $< 10^{11}$ (uint8 minimal-$R$ values in ascending-prime order + sha256-pinned metadata + explicit verified tail $R \ge 43$)
 - `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
-- `tests/test_solver.py` — 52 tests: unit, certificate validation, theorem checks (A/A′/A″/A‴/J/meta incl. composite R), support-bound lemmas (DP + strong Kneser form, cyclic and general abelian), aggregate identities
-- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 23 pp.
+- `tests/test_solver.py` — 53 tests: unit, certificate validation, theorem checks (A/A′/A″/A‴/J/meta incl. composite R), support-bound lemmas (DP + strong Kneser form, cyclic and general abelian), aggregate identities
+- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 25 pp.
 - `lean/ErdosStraus/` — Lean 4 + mathlib formalization, elementary layer + finite enumerations (`lake exe cache get && lake build`)
 - `THEORY.md` — full theoretical development; `STATUS.md` — this document
 

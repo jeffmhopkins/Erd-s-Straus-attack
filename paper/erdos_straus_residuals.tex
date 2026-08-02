@@ -51,29 +51,21 @@ concentrate on primes in six residue classes mod $840$ (\emph{hard
 primes}). We develop the \emph{residual method}: a solution with first
 denominator $a = (p+R)/4$ exists if and only if some divisor
 $k \mid m^2$, $m = pa$, satisfies $k \equiv -m \pmod R$, and every
-solution arises this way, so the least workable residual
-$R_{\min}(p)$ controls the conjecture at $p$. Solvability at any fixed
-residual --- prime or composite --- is a computable function of finite
-data (a meta-theorem), yielding exact criteria at $R = 3, 7, 11$ and
-at the first composite residual $R = 15$ (a clean Jacobi-character
-dichotomy), and a reciprocity identity
-$\smash{\legendre{q}{R}} = \smash{\legendre{p}{q}}$ that governs how
-failures correlate across residuals. The per-residual sieve input ---
-failure at $R$ forbids at least half the unit classes mod $R$ on the
-shifted form $(p+R)/4$ --- is proved unconditionally for every
-residual at once via Kneser's addition theorem, giving an
-unconditional chain of sieve bounds: exceptional sets
+solution arises this way. Solvability at any fixed residual --- prime
+or composite --- is a computable function of finite data, yielding
+exact criteria at $R = 3, 7, 11, 15$, and a reciprocity identity
+$\smash{\legendre{q}{R}} = \smash{\legendre{p}{q}}$ governs how
+failures correlate across residuals. Failure at $R$ forbids at least
+half the unit classes mod $R$ on the shifted form $(p+R)/4$ --- proved
+for every residual at once via Kneser's addition theorem --- giving
+exceptional sets
 $O_{\mathcal{P}}(x/(\log x)^{1+|\mathcal{P}|/2})$ for every finite
-admissible residual list $\mathcal{P}$, reaching exponent $31/2$ on
-the $27$ residuals up to $107$ --- weaker in
-density than Vaughan's classical $x\exp(-c(\log x)^{2/3})$ but
-explicit and certificate-producing; the elementary and
-finite-enumeration layers of the proofs are machine-checked in
-Lean~4/\mbox{mathlib}. Computationally we exhibit certificates for
-all $128{,}671{,}219$ hard primes below $10^{11}$; the record minimal
-residual, $107$, is attained by a single prime below $10^7$, and the
-calibrated model correctly predicted the population of the last empty
-band of minimal residuals between $10^{10}$ and $10^{11}$.
+admissible residual list $\mathcal{P}$: weaker in density than
+Vaughan's classical $x\exp(-c(\log x)^{2/3})$, but explicit and
+certificate-producing, with the elementary and finite-enumeration
+layers of the proofs machine-checked in Lean~4/\mbox{mathlib}.
+Computationally we exhibit certificates for all $128{,}671{,}219$
+hard primes below $10^{11}$; the record minimal residual is $107$.
 \end{abstract}
 
 \medskip
@@ -160,6 +152,19 @@ machine-verified structure, together with the exact criteria.
   inventory, and what each layer contributes to the trusted base, is
   in Appendix~\ref{app:verif}.
 \end{itemize}
+
+Conceptually, the paper has three layers: \textup{(1)}~an exact
+reformulation of solvability --- every solution of \eqref{eq:es} at a
+hard prime is a residual certificate
+(Proposition~\ref{prop:complete}); \textup{(2)}~finite,
+machine-checkable inputs for individual residuals --- the exact
+criteria (Theorems~\ref{thm:A}--\ref{thm:R15}), the reciprocity
+identity (Theorem~\ref{thm:J}), and the support bounds
+(Lemma~\ref{lem:S}, Theorem~\ref{thm:S}); and \textup{(3)}~sieve
+consequences obtained by combining those inputs
+(Theorems~\ref{thm:FG}--\ref{thm:D}). The computations of
+Section~\ref{sec:comp} calibrate layer~(3) and test its predictions;
+the formal development machine-checks the core of layers (1)--(2).
 
 \subsection{The residual method}\label{sec:intro-method}
 
@@ -460,6 +465,35 @@ reduction (Lemma~\ref{lem:mono}), Lemma~\ref{lem:S} and its
 unconditional upgrade Theorem~\ref{thm:S}, the higher
 exponents --- followed by Proposition~\ref{prop:agg} and
 Theorem~\ref{thm:D}.
+
+Table~\ref{tab:deps} records, for each main result, exactly what its
+proof consumes and its formal-verification status, so that each layer
+can be audited independently.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{2.6cm}>{\raggedright\arraybackslash}p{5.3cm}l>{\raggedright\arraybackslash}p{3.6cm}}
+\toprule
+result & proof inputs & proved in & machine-checked? \\ \midrule
+Prop.~\ref{prop:complete} & elementary & \S\ref{sec:intro-method} & --- \\ \addlinespace
+Thm.~\ref{thm:A} ($R{=}3$) & elementary & \S\ref{sec:exact} & Lean, both directions \\ \addlinespace
+Thm.~\ref{thm:meta} & elementary & \S\ref{sec:exact} & model + reduction in Lean \\ \addlinespace
+Thm.~\ref{thm:Ap} ($R{=}7$) & Thm.~\ref{thm:meta} + enumeration ($1{,}536$) & \S\ref{sec:exact} & Lean (\texttt{native\_decide}) \\ \addlinespace
+Thm.~\ref{thm:App} ($R{=}11$) & Thm.~\ref{thm:meta} + enumeration ($497{,}664$) & \S\ref{sec:exact} & Lean (\texttt{native\_decide}) \\ \addlinespace
+Thm.~\ref{thm:R15} ($R{=}15$) & Thm.~\ref{thm:meta}, composite form + enumeration ($349{,}920$) & \S\ref{sec:exact} & Python only \\ \addlinespace
+Thm.~\ref{thm:J} & quadratic reciprocity & \S\ref{sec:obstruction} & Lean \\ \addlinespace
+Lem.~\ref{lem:S} & Lem.~\ref{lem:mono} + enumerations / DP & \S\ref{sec:sieve} & Lean at $R = 19, 23, 31$ \\ \addlinespace
+Thm.~\ref{thm:S} & Kneser's theorem & \S\ref{sec:sieve} & no \\ \addlinespace
+Thm.~\ref{thm:FG} & Thms.~\ref{thm:A}, \ref{thm:Ap}--\ref{thm:R15}, \ref{thm:S} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
+Prop.~\ref{prop:agg} & elementary + Thm.~\ref{thm:FG} & \S\ref{sec:sieve} & families in Lean \\ \addlinespace
+Thm.~\ref{thm:D} & Prop.~\ref{prop:succ} + Fundamental Lemma & \S\ref{sec:sieve} & no \\
+\bottomrule
+\end{tabular}
+\caption{Audit map: what each main result depends on, where it is
+proved, and its formal-verification status.}
+\label{tab:deps}
+\end{table}
 
 Computations (Section~\ref{sec:comp}) provide verified certificates for
 all hard primes below $10^{11}$ and calibrate the base-case constant and
@@ -1510,9 +1544,40 @@ module \texttt{erdos\_straus.theory}.}
 \label{tab:repro}
 \end{table}
 
-The full test suite (\texttt{python -m pytest}; $52$ tests) exercises the
+The full test suite (\texttt{python -m pytest}; $53$ tests) exercises the
 proof-component checks, the exact criteria against ground truth, and
 sampled dataset validation on every run.
+Table~\ref{tab:env} summarizes the computational environment.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{3.6cm}>{\raggedright\arraybackslash}p{9.2cm}}
+\toprule
+implementation & Python~3, exact integer arithmetic only; no external
+libraries in any proof-component check (\texttt{sympy} appears only in
+the reference solver) \\ \addlinespace
+factorization & trial division by sieved primes up to $\sqrt{n}$
+(numpy-sieved prime tables for bulk generation) \\ \addlinespace
+wall-clock times & $10^{11}$ generation: $2.85$\,h on 4 cores;
+$10^{10}$: $656$\,s; $10^9$: $49$\,s; largest proof-component check
+($R = 107$ dynamic program): $331$\,s \\ \addlinespace
+verification & every certificate re-checked via
+$4abc = p(bc{+}ca{+}ab)$; exhaustive below $10^9$; $257{,}343$
+samples plus all $20{,}151$ tail entries at $10^{11}$
+(Table~\ref{tab:datasets}) \\ \addlinespace
+integrity & datasets archived in the repository;
+the $10^{11}$ prime array and $R$-sequence are pinned by SHA-256 in
+\texttt{meta.json} (prefixes \texttt{53cf17c4\ldots},
+\texttt{2a69f3aa\ldots}) \\ \addlinespace
+formal layer & Lean 4.32.2 + mathlib (pinned toolchain); five
+\texttt{native\_decide} checks; every main theorem audited by
+\texttt{\#print axioms} \\
+\bottomrule
+\end{tabular}
+\caption{Computational environment and integrity summary.}
+\label{tab:env}
+\end{table}
 
 \subsection*{Data and code availability}
 \phantomsection\addcontentsline{toc}{subsection}{Data and code availability}
