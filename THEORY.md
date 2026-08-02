@@ -1,7 +1,8 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
 **Date:** 2026-08-02 (current through PR #31; this revision adds
-Theorem S and Theorem A‴).  
+Theorem S and Theorem A‴; §2.10 adds the Burgess/reciprocity
+route and its full-population census).  
 **Status:** Proved: Theorems A, A′, A″, A‴ (exact criteria for
 R = 3, 7, 11, and now the first composite residual R = 15; A′/A″/A‴ by
 machine-verified finite case analysis), the meta-theorem (now including
@@ -819,6 +820,111 @@ combinatorics question rather than a computation; (ii)
 bilinear/dispersion estimates treating p and the factors of p+R
 symmetrically; (iii) a mean-value treatment of the certificate count
 itself (the Vaughan route) upgraded with the residual structure.
+
+### 2.10 The Burgess/reciprocity route: Jacobi necessity, purity, and the selected-residual census
+
+Theorem S closed the fixed-list axis; this section records the route
+that opened in its place, together with the Step-1 census that tests it
+(entry point: `erdos_straus.burgess_scan`; archive:
+`data/analysis/burgess_scan_1e9.json`).
+
+#### Lemma J° (composite reciprocity)
+
+*Let R ≡ 3 (mod 4) be any admissible residual (prime or composite), and
+q an odd prime with q | (p+R)/4 and gcd(q, R) = 1. Then the Jacobi
+symbol satisfies (q|R) = (p|q).*
+
+**Proof.** q | p + R gives R ≡ −p (mod q). Jacobi reciprocity with
+R ≡ 3 (mod 4): (q|R) = (−1)^((q−1)/2) (R|q) =
+(−1)^((q−1)/2) (−1|q)(p|q) = (p|q). ∎ (For prime R this is Theorem J;
+the proof never used primality. Verified mechanically at every selected
+residual over all 1,587,581 hard primes below 10⁹ — zero violations —
+and as a permanent test in the suite.)
+
+#### Lemma N (Jacobi necessity — the dichotomy's easy half, all R)
+
+*For every admissible R: if no prime factor of a = (p+R)/4 has Jacobi
+symbol (q|R) = −1, then residual R fails at p.*
+
+**Proof.** All factors of a Jacobi-QR ⟹ (a|R) = +1; consistency
+a ≡ 4⁻¹p (mod R) gives (p|R) = (4a|R) = (a|R) = +1 — so *every* prime
+factor of m = pa has symbol +1, hence every divisor k of m² has
+(k|R) = +1, while the target has (−m|R) = (−1|R) = −1 for R ≡ 3
+(mod 4). ∎
+
+Empirically the converse direction never failed in the other sense
+either: across all 27 residuals × ~80,000 sampled primes, **zero**
+successes occurred without a Jacobi non-residue factor — Lemma N is
+sharp in the data. Call R **C1-pure** (at hard primes) when the
+converse implication also holds: a Jacobi non-residue factor present ⟹
+success. Pure residuals are proved for R = 3, 7, 15 (Theorems A, A′,
+A‴).
+
+#### Purity census (10⁹ masks, every 20th prime)
+
+Only the three proven residuals are pure; everywhere else the
+"budget-in-the-wild" rate (fraction of primes with a non-residue factor
+at which R still fails) is:
+
+| R | rate | R | rate | R | rate |
+|---:|---:|---:|---:|---:|---:|
+| 3 | **0** | 39 | 6.9 % | 75 | 47.1 % |
+| 7 | **0** | 43 | 63.8 % | 79 | 29.6 % |
+| 11 | 4.3 % | 47 | 4.9 % | 83 | 40.3 % |
+| 15 | **0** | 51 | 47.2 % | 87 | 26.4 % |
+| 19 | 21.7 % | 55 | 18.5 % | 91 | 66.4 % |
+| 23 | 1.3 % | 59 | 19.8 % | 95 | 12.6 % |
+| 27 | 22.6 % | 63 | 14.5 % | 99 | 66.2 % |
+| 31 | 8.7 % | 67 | 73.0 % | 103 | 38.6 % |
+| 35 | 11.9 % | 71 | 7.5 % | 107 | 57.0 % |
+
+So the naive hypothesis "a pure residual exists in every needed
+progression" is false — purity is rare and (per the generic
+configuration scan) it is a *hard-prime* phenomenon: even R = 7 has
+budget-failure states before the forced factor 2 kills them.
+
+#### The selected-residual census (all 1,587,581 hard primes < 10⁹)
+
+For each hard prime take the **least Legendre non-residue** q (hard
+primes are QRs mod 3, 5, 7, so q ≥ 11; observed range 11…83, GRH-scale
+(log p)²) and the **selected residual** R = (−p) mod 4q — the least
+R ≡ 3 (mod 4) with q | (p+R)/4. By Lemma J°, (q|R) = (p|q) = −1, so
+the all-Jacobi-QR failure mode of Lemma N is impossible at R. Results:
+
+- **Single shot: 94.78 %** of hard primes succeed at the selected R
+  (1,504,773 / 1,587,581).
+- **Failure anatomy:** of 82,808 failures, 82,401 are budget failures
+  and only 407 are per-prime character obstructions at composite R
+  (all factors QR mod some prime r | R despite the Jacobi non-residue)
+  — the construction almost never strands a prime on characters.
+- **The q-ladder** (retry R + 4q, R + 8q, … ≤ 400, same q): resolves
+  86 % of failures on the second rung, 99.98 % of all primes within
+  the histogram 2:71,350 / 3:7,595 / 4:1,801 / 5:670 / 6–9:97;
+  1,295 primes exhaust the first-q ladder below 400.
+- **The second-q ladder:** every one of those 1,295 resolves with a
+  later non-residue q (same construction, R ≤ 400). **Coverage below
+  10⁹ is 100.0 % with R ≤ 400** across at most two q's.
+
+#### The Ladder Hypothesis, and what it would give
+
+**Hypothesis L.** There is an absolute C such that for every hard
+prime p, some Legendre non-residue q of p and some rung
+R ≡ −p (mod 4q) with R ≤ C (log p)^C admits a certificate.
+
+Hypothesis L implies R_min(p) ≪ (log p)^C — far beyond every sieve
+bound in this development, and (dropping the quantitative bound) it
+*is* the conjecture for hard primes, now organized as: along the
+q-ladder, each rung fails only by a budget event of empirical
+probability ≈ 5–14 % per rung, decaying geometrically (82,808 → 1,295
+→ 0 in the data). The route's open mathematical content is precisely
+to bound budget failures along Burgess-selected ladders — a
+structured, local question about exponent budgets in (Z/R)*, in
+contrast to the unstructured "some residual works". Wall 1 of §2.8
+(p-dependent branches) does not apply here: the ladder is
+p-adapted by construction. What stands between the census and a
+theorem is the same object as in the Verdict above: control of budget
+failures, now localized to explicit two-parameter families.
+
 
 ## 3. Empirical validation
 

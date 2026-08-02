@@ -2,7 +2,7 @@
 
 Log-scale histogram of the minimal-residual distribution over all
 128,671,219 hard primes below 10^11, from the distribution of
-Table 1 (data/hard_primes_1e11_minimalR.*). The figure is built at
+Table 2 (data/hard_primes_1e11_minimalR.*). The figure is built at
 its final printed size (6.3 in = the paper's text width, included at
 width=\\linewidth), so font sizes below are true on-page sizes, and
 fonts are embedded as vector outlines (pdf.fonttype 42), matching the
@@ -30,7 +30,7 @@ plt.rcParams.update(
     }
 )
 
-# Table 1 of the paper (10^11 data).
+# Table 2 of the paper (10^11 data).
 DIST = {
     3: 69951190, 7: 31335473, 11: 19439771, 15: 3974286, 19: 2441687,
     23: 1070808, 27: 187963, 31: 193848, 35: 30784, 39: 25258,

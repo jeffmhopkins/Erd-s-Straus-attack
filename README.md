@@ -43,6 +43,8 @@ src/erdos_straus/
   theory.py            obstruction theory: exact-criteria engines, support-
                        bound verifiers (DP), aggregate identities, models
   parametric_search.py fixed-residual parametric experiments per hard class
+  burgess_scan.py      Burgess/reciprocity-route census: least non-residue,
+                       selected residuals, purity + ladder scans (THEORY 2.10)
   verify.py            independent verification (JSON, minimal-R maps, npz)
 data/
   hard_primes_1e11_minimalR.*          R-sequence dataset for all 128,671,219
@@ -61,9 +63,9 @@ data/
                                    residual masks, high-R tail, and
                                    theory-validation reports
 tests/
-  test_solver.py       52 tests: units, certificates, theorem checks
+  test_solver.py       53 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (23 pp.)
+  erdos_straus_residuals.tex/.pdf   the manuscript (25 pp.)
   make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
 lean/
   ErdosStraus/         Lean 4 + mathlib formalization (7 modules: Basic,
