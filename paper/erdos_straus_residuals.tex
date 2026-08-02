@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 
 \usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
 \usepackage[margin=1.1in]{geometry}
 \usepackage{hyperref}
 
@@ -20,7 +21,7 @@
 
 \title{Residual certificates for the Erd\H{o}s--Straus conjecture:\\
 exact solvability criteria, a sieve bound,\\
-and computations to $10^{10}$}
+and computations to $10^{11}$}
 
 \author{Jeff M.\ Hopkins\thanks{\texttt{jeff.m.hopkins@gmail.com}.
 Computations and computer-assisted case analyses were carried out with the
@@ -34,38 +35,28 @@ code repository accompanying this paper
 
 \begin{abstract}
 The Erd\H{o}s--Straus conjecture asserts that $4/n = 1/a+1/b+1/c$ is
-solvable in positive integers for every $n \ge 2$. The open cases
-concentrate on primes in the six residue classes
-$\{1, 121, 169, 289, 361, 529\} \bmod 840$ (\emph{hard primes}). We study
-the \emph{residual method}: for $R \equiv 3 \pmod 4$ set $a = (p+R)/4$,
-$m = pa$; a solution with first denominator $a$ exists if and only if some
-divisor $k \mid m^2$ satisfies $k \equiv -m \pmod R$. Our main theoretical
-results are: (i)~\emph{exact} solvability criteria for the residuals
-$R = 3$, $7$, and $11$ at hard primes, the latter two established by
-machine-verified finite case analyses; (ii)~a meta-theorem showing such a
-finite exact criterion exists and is computable for every fixed $R$;
-(iii)~an unconditional chain of sieve bounds, via a machine-verified
-\emph{support-bound lemma} that makes every failure at each prime
-residual a sifting condition of dimension $\ge \tfrac12$: the number of
-hard primes $p \le x$ solved by no residual in $\{3,7\}$ is
-$O\!\left(x/(\log x)^{2}\right)$, by no residual in $\{3,7,11\}$ is
-$O\!\left(x/(\log x)^{5/2}\right)$, and --- with the lemma verified for
-\emph{all fifteen} primes $R \equiv 3 \pmod 4$, $R \le 107$ --- by no
-residual among those fifteen is $O\!\left(x/(\log x)^{17/2}\right)$;
-(iv)~a general
-density reduction: for every $A$ there is a finite residual list whose
-joint exceptional set has relative density $O((\log x)^{-A})$ among hard
-primes. These densities are deliberately not the point: Vaughan's
-classical bound $\ll x\exp(-c(\log x)^{2/3})$ is asymptotically far
-stronger. What the chain contributes is \emph{mechanism} --- each bound
-is explicit, produces verifiable certificates, and rests on exact
-criteria and machine-checked lemmas rather than mean-value estimates. Computationally, we exhibit verified residual certificates for all
-$14{,}215{,}707$ hard primes below $10^{10}$: the maximal minimal residual
-is $107$, attained at the single prime $8{,}803{,}369$ and unchanged from
-$5\times 10^{7}$ to $10^{10}$; a fixed list of $18$ residuals covers every
-hard prime below $10^9$. The measured density of the joint
-$\{3,7\}$-exceptional set is $\approx 5.17/\log x$, matching the sieve
-exponent exactly.
+solvable in positive integers for every $n \ge 2$; the open cases
+concentrate on primes in six residue classes mod $840$ (\emph{hard
+primes}). We develop the \emph{residual method}: a solution with first
+denominator $a = (p+R)/4$ exists if and only if some divisor
+$k \mid m^2$, $m = pa$, satisfies $k \equiv -m \pmod R$. Our central
+results make this criterion exact and finite: solvability at any fixed
+residual $R$ is a computable function of the factor classes of $(p+R)/4$
+and of $p \bmod R$ (a finite-state meta-theorem), yielding closed-form
+criteria at $R = 3, 7, 11$ and a reciprocity identity
+$\smash{\legendre{q}{R}} = \smash{\legendre{p}{q}}$ that explains how
+failures correlate across residuals. Consequences include an
+unconditional chain of sieve bounds --- exceptional sets
+$O(x/(\log x)^{\kappa})$ with $\kappa$ up to $19/2$, each cut out by
+explicit conditions with constructive certificates. These are weaker in
+density than Vaughan's classical $x\exp(-c(\log x)^{2/3})$, but
+mechanistic where mean-value methods are not: every bound produces
+certificates and exact local criteria. Computationally we exhibit
+verified certificates for all $128{,}671{,}219$ hard primes below
+$10^{11}$; the maximal minimal residual is $107$, unchanged from
+$5 \times 10^7$, and the calibrated model correctly predicted the
+population of the last empty band of minimal residuals between $10^{10}$
+and $10^{11}$.
 \end{abstract}
 
 \section{Introduction}
@@ -128,6 +119,21 @@ $r \mid R$; hence for every prime $r \mid R$ with $r \equiv 3 \pmod 4$
   \legendre{-m}{r} \;=\; \legendre{-1}{r} \;=\; -1 :
 \end{equation}
 \emph{the target class $-m$ is a quadratic non-residue mod $r$.}
+
+\paragraph{A worked example.} Take the hard prime $p = 1009$
+($\equiv 169 \bmod 840$) and the smallest admissible residual $R = 3$.
+Then $a = (1009+3)/4 = 253 = 11 \cdot 23$ and $m = pa = 255{,}277$.
+Since $11 \equiv 2 \pmod 3$, Theorem~\ref{thm:A} below promises a
+certificate: take $k = 11$, a divisor of $m^2$ with
+$k \equiv -m \equiv 2 \pmod 3$. Then $b = (k+m)/3 = 85{,}096$ and
+$c = (m^2/k+m)/3 = 1{,}974{,}822{,}872$, and indeed
+\[
+  \frac{4}{1009} \;=\; \frac{1}{253} + \frac{1}{85{,}096}
+  + \frac{1}{1{,}974{,}822{,}872}.
+\]
+Had every prime factor of $a$ been $\equiv 1 \pmod 3$, every divisor of
+$m^2$ would be $\equiv 1 \pmod 3$ and the required class $2$ would be
+unreachable --- the prototype of all the obstructions studied below.
 
 \subsection{Main results}
 
@@ -203,14 +209,10 @@ prime factor of $a = (p+R)/4$ (necessarily $q \ne R$). Then
 
 The anchor result converts the exact criteria into an unconditional bound.
 
-\begin{theorem}[sieve bound]\label{thm:E}
-The number of hard primes $p \le x$ with $R_{\min}(p) \ge 11$ (that is,
-solved by neither $R = 3$ nor $R = 7$) is $O\!\left(x/(\log x)^2\right)$.
-\end{theorem}
-
-The exponent grows by $\tfrac12$ for each further residual with a
-sieve-grade handle. For $R = 11$ this handle is Theorem~\ref{thm:App};
-for larger $R$ it is the following machine-verified lemma
+The sieve consequences need one input per residual: a ``sieve-grade
+handle'' making failure at $R$ a positive-density multiplicative
+restriction. For $R = 3, 7, 11$ the handles are the exact criteria; for
+larger $R$ it is the following machine-verified lemma
 (Section~\ref{sec:sieve}).
 
 \begin{lemma}[support bound; verified for every prime
@@ -226,9 +228,10 @@ finitely many maximal-support branches.
 
 \begin{theorem}[the chain]\label{thm:FG}
 The number of hard primes $p \le x$ failing every residual in
-$\{3, 7, 11\}$, in $\{3, 7, 11, 19\}$, and in $\{3, 7, 11, 19, 23\}$ is,
-respectively,
+$\{3, 7\}$, in $\{3, 7, 11\}$, in $\{3, 7, 11, 19\}$, and in
+$\{3, 7, 11, 19, 23\}$ is, respectively,
 \[
+  O\!\left(\frac{x}{(\log x)^{2}}\right), \qquad
   O\!\left(\frac{x}{(\log x)^{5/2}}\right), \qquad
   O\!\left(\frac{x}{(\log x)^{3}}\right), \qquad
   O\!\left(\frac{x}{(\log x)^{7/2}}\right).
@@ -282,7 +285,7 @@ develops the obstruction framework (Propositions~\ref{prop:char},
 Section~\ref{sec:exact} proves Theorem~\ref{thm:A}, then
 Theorem~\ref{thm:meta}, then Theorems~\ref{thm:Ap} and~\ref{thm:App},
 which rest on it; Section~\ref{sec:sieve} proves
-Theorems~\ref{thm:E}, \ref{thm:FG}, Lemma~\ref{lem:S},
+Theorem~\ref{thm:FG}, Lemma~\ref{lem:S},
 Proposition~\ref{prop:agg}, and Theorem~\ref{thm:D}.
 
 Computations (Section~\ref{sec:comp}) provide verified certificates for
@@ -440,7 +443,7 @@ tested below $10^9$. \qed
 
 \section{The sieve bound}\label{sec:sieve}
 
-\begin{proof}[Proof of Theorem \ref{thm:E}]
+\begin{proof}[Proof of Theorem \ref{thm:FG}, base case $\{3,7\}$]
 \emph{Step 1 (exact criteria).} Let $p$ be a hard prime and set
 $n = (p+3)/4$, so that $(p+7)/4 = n + 1$: \emph{the two shifted forms are
 consecutive integers}. By Theorems~\ref{thm:A} and~\ref{thm:Ap}, $p$ is
@@ -543,7 +546,7 @@ in Appendix~\ref{app:verif}. The bound is tight: the all-residue
 (Type~I) configurations occupy exactly $(R-3)/2$ nonzero classes.
 \end{proof}
 
-\begin{proof}[Proof of Theorem \ref{thm:FG}]
+\begin{proof}[Proof of Theorem \ref{thm:FG}, higher exponents]
 Write $n = (p+3)/4$; the relevant forms are $n$, $n+1$, $n+2 = (p+11)/4$,
 $n+4 = (p+19)/4$, $n+5 = (p+23)/4$, and $4n-3 = p$. Joint failure of
 $\{3,7,11\}$ implies, by Theorems~\ref{thm:A}, \ref{thm:Ap},
@@ -694,7 +697,7 @@ integer arithmetic, $4abc = n(bc + ac + ab)$.
 
 Every one of the $128{,}671{,}219$ hard primes $p < 10^{11}$ possesses a
 residual certificate with $R \le 107$. The minimal residuals distribute as
-follows ($10^{11}$ data):
+follows ($10^{11}$ data; Figure~\ref{fig:hist}):
 
 \begin{center}
 \begin{tabular}{rr|rr|rr}
@@ -711,6 +714,16 @@ $R$ & count & $R$ & count & $R$ & count \\ \hline
    &              & 75 & 29      &     &   \\
 \end{tabular}
 \end{center}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=.92\linewidth]{fig_minR_hist}
+\caption{Distribution of the minimal residual $R_{\min}$ over the
+$128{,}671{,}219$ hard primes below $10^{11}$ (logarithmic count scale).
+The head is dominated by $R = 3, 7, 11$; the tail thins geometrically;
+the record $R = 107$ is attained by a single prime below $10^7$.}
+\label{fig:hist}
+\end{figure}
 
 Salient features:
 \begin{itemize}
@@ -736,7 +749,7 @@ Salient features:
   bound of $12$.
 \end{itemize}
 
-\subsection{Calibration of Theorem \ref{thm:E}}
+\subsection{Calibration of the base case of Theorem \ref{thm:FG}}
 
 The proportion of hard primes failing both $R = 3$ and $R = 7$, multiplied
 by $\log x$, is constant to within $2\%$ across three decades of the
@@ -750,7 +763,7 @@ density $\times \log x$ & 5.14 & 5.19 & 5.18 & 5.17 & 5.16
 \end{center}
 
 That is, the joint exceptional density is $\approx 5.17 / \log x$: the
-sieve exponent of Theorem~\ref{thm:E} is exactly right, and $5.17$
+sieve exponent of Theorem~\ref{thm:FG}'s base case is exactly right, and $5.17$
 estimates the (conjectural) Selberg--Delange constant. The exceptional
 set is density zero but decays slowly: $26.5\%$ of hard primes below
 $10^9$ fail both residuals; all are settled by deeper residuals of the
@@ -781,6 +794,28 @@ $\varphi(R)$ grows harder while the character dichotomy stays binary.
   fixed-list format itself cannot reach emptiness (see the remark after
   Theorem~\ref{thm:FG}): the structurally right target is a slowly
   growing bound on $R_{\min}(p)$.
+\item \textbf{The constant $5.17$.} The joint $\{3,7\}$-exceptional
+  density is measured as $\approx 5.17/\log x$, stable to $2\%$ across
+  three decades. Conjecturally $5.17$ is a Selberg--Delange-type
+  constant: the count should satisfy
+  $E(x) \sim C\, x/(\log x)^2$ with
+  $C = c_0 \prod_q \delta_q$, the local factors $\delta_q$ recording,
+  for each prime $q$, the probability that $q$ divides neither form in a
+  forbidden class. Proving the asymptotic (not just the upper bound)
+  requires a two-form Selberg--Delange or shifted-convolution analysis
+  --- open, and a natural test problem for such methods.
+\item \textbf{Structural reformulations and complexity.} Theorem~\ref{thm:J}
+  invites a graph formulation: on the bipartite graph joining primes $q$
+  to residuals $R$ by $q \mid (p+R)/4$, the edge characters
+  $\smash{\legendre{q}{R}}$ collapse to vertex signs
+  $\smash{\legendre{p}{q}}$, and joint Type-I failure is an all-plus
+  vertex assignment --- a percolation-style object whose structure could
+  organize the growth law. Separately, the meta-theorem's enumeration
+  complexity is unresolved: the DP state count grows empirically by
+  $\approx 2\times$ per successive prime residual ($271$ at $R = 19$ to
+  $1.95 \times 10^7$ at $R = 107$); is the equivalence-state complexity
+  genuinely exponential in $R$, and is there a polynomial-size
+  certificate for the support-bound property?
 \item \textbf{The record and the covering hypothesis.}
   Theorem~\ref{thm:J} explains the record prime quantitatively (see
   Corollary~\ref{cor:J}) and yields a conditional resolution of the
@@ -825,6 +860,25 @@ reachability of the target in support and multiplicities, checked at
 minimal exponents).
 Each run completes in seconds on commodity hardware; the entry points
 named are in the module \texttt{erdos\_straus.theory}.
+
+\paragraph{Trusted computing base.} The certificate data does not rest
+on the solver: every certificate claim is re-checked by evaluating the
+integer identity $4abc = p(bc+ca+ab)$ directly, so the trusted base for
+the data is a bignum multiply-and-compare (the host language's built-in
+integers), not the search pipeline. The finite case analyses trust more
+--- the enumeration code itself, roughly sixty lines per check. Three
+mitigations apply. First, the enumerated spaces are defined by
+statements proved in the text (Theorem~\ref{thm:meta},
+Lemma~\ref{lem:mono}), and the code mirrors those definitions
+one-to-one. Second, independent implementations agree where they
+overlap: the subset dynamic program and the direct binomial enumeration
+verify identical claims at $R = 19, 23$, and the exact criteria are
+cross-checked against ground-truth divisor search on up to
+$1{,}587{,}581$ primes with zero discrepancies. Third, every check is
+deterministic, uses exact integer arithmetic only (no floating point,
+randomness, or external libraries), and completes in seconds from the
+repository --- an independent re-implementation is an afternoon's work,
+and we would welcome one.
 
 \begin{center}
 \small
