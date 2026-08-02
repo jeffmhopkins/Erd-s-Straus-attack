@@ -387,6 +387,172 @@ def verify_R7_finite() -> Dict:
             "theorem_holds": not violations}
 
 
+# --- Meta-theorem machinery: exact finite criteria for any prime R ---------
+#
+# META-THEOREM. For every fixed prime R ≡ 3 (mod 4), success of residual R
+# at a hard prime p depends only on (i) the multiset of classes mod R of the
+# prime factors of a = (p+R)/4, with multiplicities capped at ⌈(R−1)/2⌉, and
+# (ii) the class of p mod R. Hence an exact solvability criterion exists for
+# each R and is computable by finite enumeration.
+#
+# Proof: a certificate is a divisor k | m² in class −m mod R; the set of
+# divisor classes is determined by the factor classes with exponents capped
+# at twice the multiplicities, and exponents are only meaningful modulo
+# ord_R(class) ≤ R−1. Everything else (the target class, consistency
+# Σ classes = a ≡ 4⁻¹p) is determined by p mod R.  ∎
+
+def _dlog_table(R: int) -> Tuple[int, Dict[int, int]]:
+    """Primitive root g mod prime R and the discrete-log table."""
+    d = R - 1
+    fac = list(factorize(d))
+    for g in range(2, R):
+        if all(pow(g, d // f, R) != 1 for f in fac):
+            break
+    log = {}
+    x = 1
+    for e in range(d):
+        log[x] = e
+        x = x * g % R
+    return g, log
+
+
+def reachable_divisor_logs(class_mults: List[Tuple[int, int]], p_log: int,
+                           d: int, p_budget: int = 2) -> set:
+    """Set of discrete logs of divisor classes of m², given a's factor
+    classes as (log, multiplicity) pairs and p's log."""
+    sums = {0}
+    for v, mult in class_mults:
+        cap = min(2 * mult, d - 1)
+        sums = {(s + e * v) % d for s in sums for e in range(cap + 1)}
+    return {(s + i * p_log) % d for s in sums for i in range(p_budget + 1)}
+
+
+def solvable_exact(p: int, R: int) -> bool:
+    """Exact solvability of residual R at p via the meta-theorem —
+    factor-class computation only, no divisor search."""
+    _, LOG = _dlog_table(R)
+    d = R - 1
+    a = (p + R) // 4
+    cm = Counter()
+    for q, e in factorize(a).items():
+        cm[LOG[q % R]] += e
+    p_log = LOG[p % R]
+    inv4_log = LOG[pow(4, -1, R)]
+    t = (d // 2 + 2 * p_log + inv4_log) % d  # log(−4⁻¹p²); log(−1)=d/2
+    return t in reachable_divisor_logs(list(cm.items()), p_log, d)
+
+
+def finite_criterion_dp(R: int, forced_logs: Optional[List[int]] = None,
+                        p_res_set: Optional[List[int]] = None) -> Dict:
+    """Enumerate ALL consistent factor-class configurations for residual R
+    (hard primes) by dynamic programming, and classify each as:
+
+      success            — target reachable within exponent budgets
+      fail_all_even      — Prop-1 character obstruction (all classes QR)
+      fail_subgroup_odd  — an NQR class present, but the target lies outside
+                           the SUBGROUP generated (unbounded budgets can't
+                           reach it either)
+      fail_budget        — target in the generated subgroup but unreachable
+                           within the bounded exponents (pure budget miss)
+
+    State: (bounded-mask, unbounded-mask, Σ class·mult mod d, has-odd flag).
+    """
+    d = R - 1
+    _, LOG = _dlog_table(R)
+    forced = set(forced_logs or [])
+    p_set = p_res_set if p_res_set is not None else list(range(1, R))
+    inv4_log = LOG[pow(4, -1, R)]
+
+    mmax = (d + 1) // 2  # cap: 2*mmax >= d
+    # DP over class types 1..d-1 (type 0 contributes nothing).
+    # state: (bmask, umask, ssum, hasodd) -> exists (bool; counts not needed)
+    init = (1, 1, 0, False)  # masks as bitsets over Z/d, bit 0 set
+    states = {init}
+    for v in range(1, d):
+        sub = d // math.gcd(v, d)   # order of v in Z/d
+        new_states = set()
+        for (bm, um, ss, ho) in states:
+            for m in range(mmax + 1):
+                if m == 0:
+                    new_states.add((bm, um, ss, ho))
+                    continue
+                cap = min(2 * m, d - 1)
+                nbm = 0
+                for e in range(cap + 1):
+                    shift = (e * v) % d
+                    nbm |= ((bm << shift) | (bm >> (d - shift))) & ((1 << d) - 1)
+                num = 0
+                for e in range(sub):
+                    shift = (e * v) % d
+                    num |= ((um << shift) | (um >> (d - shift))) & ((1 << d) - 1)
+                nho = ho or (v % 2 == 1)
+                nss = (ss + m * v) % d
+                new_states.add((nbm, num, nss, nho))
+        states = new_states
+
+    # forced classes: keep only states derivable with forced mult >= 1 —
+    # handled by re-running: simpler to filter at classification time is not
+    # possible from state alone, so instead do the forced pass here:
+    if forced:
+        # redo DP tracking whether each forced class was used
+        states = {(1, 1, 0, False, frozenset())}
+        for v in range(1, d):
+            sub = d // math.gcd(v, d)
+            new_states = set()
+            for (bm, um, ss, ho, used) in states:
+                for m in range(mmax + 1):
+                    if m == 0:
+                        new_states.add((bm, um, ss, ho, used))
+                        continue
+                    cap = min(2 * m, d - 1)
+                    nbm = 0
+                    for e in range(cap + 1):
+                        shift = (e * v) % d
+                        nbm |= ((bm << shift) | (bm >> (d - shift))) & ((1 << d) - 1)
+                    num = 0
+                    for e in range(sub):
+                        shift = (e * v) % d
+                        num |= ((um << shift) | (um >> (d - shift))) & ((1 << d) - 1)
+                    nused = frozenset(used | {v}) if v in forced else used
+                    new_states.add((nbm, num, (ss + m * v) % d,
+                                    ho or (v % 2 == 1), nused))
+            states = new_states
+        states = {(bm, um, ss, ho) for (bm, um, ss, ho, used) in states
+                  if forced <= set(used)}
+
+    tally = Counter()
+    examples = defaultdict(list)
+    for (bm, um, ss, ho) in states:
+        for p_res in p_set:
+            p_log = LOG[p_res]
+            # consistency: Σ class·mult ≡ log a ≡ log(4⁻¹ p) (mod d)
+            if ss != (inv4_log + p_log) % d:
+                continue
+            t = (d // 2 + 2 * p_log + inv4_log) % d
+            fbm = 0
+            for i in range(3):
+                shift = (i * p_log) % d
+                fbm |= ((bm << shift) | (bm >> (d - shift))) & ((1 << d) - 1)
+            subp = d // math.gcd(p_log, d) if p_log else 1
+            fum = 0
+            for i in range(subp):
+                shift = (i * p_log) % d
+                fum |= ((um << shift) | (um >> (d - shift))) & ((1 << d) - 1)
+            if fbm >> t & 1:
+                tally["success"] += 1
+            elif not ho:
+                tally["fail_all_even"] += 1
+            elif not (fum >> t & 1):
+                tally["fail_subgroup_odd"] += 1
+            else:
+                tally["fail_budget"] += 1
+                if len(examples["fail_budget"]) < 5:
+                    examples["fail_budget"].append(
+                        {"bmask": bm, "sum": ss, "p_res": p_res})
+    return {"R": R, "states": len(states), "tally": dict(tally),
+            "budget_examples": examples.get("fail_budget", [])}
+
+
 # --- the four critical primes ---------------------------------------------
 
 CRITICAL = [8803369, 142361209, 287567281, 794037841]

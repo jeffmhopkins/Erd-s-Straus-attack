@@ -153,6 +153,22 @@ All 216 141 bundled certificates pass `es-verify` (exact integer arithmetic).
 - Residual-certificate theory (2026 notes) already formalizes the \(R=4a-n\) framework and proves that \(R=3\) or \(7\) covers many non-hard cases.
 - This attack supplies large-scale *explicit* residual solutions and systematic statistics on the growth of minimal \(R\) for hard primes (up to \(5 \times 10^7\)).
 
+## Theoretical Results (see THEORY.md)
+
+- **Theorem A** (R=3 exact criterion) and **Theorem A′** (R=7, hard primes,
+  machine-verified) — proved and verified against all data.
+- **Theorem A″** (R=11 exact criterion) — the first case beyond the
+  character dichotomy: failure ⟺ all factors QR mod 11, *or* one of three
+  explicit exponent-budget patterns (verified on 158 759/158 759 primes).
+- **Meta-theorem** — every fixed R admits a computable exact finite-state
+  criterion (`theory.solvable_exact`, `theory.finite_criterion_dp`).
+- **Theorem E** (unconditional, full proof) — hard primes failing both
+  R=3 and R=7 number O(x/(log x)²); empirically density ≈ 5.17/log x,
+  constant to 2 % across three decades. With A″, the {3,7,11} exceptional
+  set is O(x/(log x)^{5/2}).
+- **Theorem D** (sieve reduction) — for every A, a finite residual list
+  covers all hard primes except relative density O((log x)^{−A}).
+
 ## Current Assessment
 - No counterexample found; all hard primes up to 50 million possess explicit solutions with \(R \le 107\).
 - The slow growth of minimal residual is the most interesting structural signal.
