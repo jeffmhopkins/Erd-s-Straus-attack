@@ -274,3 +274,119 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+# --- Scaled census: direct computation beyond the 10^9 masks --------------
+#
+# Above 10^9 there are no full solvability masks, so success at the
+# selected residual is computed directly with the composite-R exact engine
+# (solvable_exact_general; factorization by trial division works to
+# p < 10^11 since a = (p+R)/4 < 158,200^2).  Primes are drawn (i) as a
+# systematic window sample across each decade and (ii) as the COMPLETE
+# 10^11 deep tail (R_min >= 43), whose primes fail every small residual
+# and are the ladder's adversarial population.
+
+def census_one(p: int, cap: int = 400) -> Dict:
+    """Full ladder outcome for a single hard prime: first-q selected
+    residual, same-q ladder, then subsequent non-residues, rungs <= cap."""
+    q1 = least_legendre_nonresidue(p)
+    assert q1 is not None
+    R1 = selected_residual(p, q1)
+    ok1 = solvable_exact_general(p, R1)
+    shots = 1
+    solved_R: Optional[int] = R1 if ok1 else None
+    solved_q = q1
+    if solved_R is None:
+        Rk = R1 + 4 * q1
+        while Rk <= cap and solved_R is None:
+            shots += 1
+            if solvable_exact_general(p, Rk):
+                solved_R = Rk
+            else:
+                Rk += 4 * q1
+        if solved_R is None:
+            for q in _Q_CANDIDATES:
+                if q <= q1 or jacobi(p % q, q) != -1:
+                    continue
+                Rk = selected_residual(p, q)
+                while Rk <= cap:
+                    shots += 1
+                    if solvable_exact_general(p, Rk):
+                        solved_R, solved_q = Rk, q
+                        break
+                    Rk += 4 * q
+                if solved_R is not None:
+                    break
+    return {"p": p, "q1": q1, "R1": R1, "first_shot": ok1,
+            "solved_R": solved_R, "solved_q": solved_q, "shots": shots}
+
+
+def _census_worker(chunk: List[int]) -> List[Dict]:
+    _init_small_primes()
+    return [census_one(p) for p in chunk]
+
+
+def window_sample_primes(lo: int, hi: int, n_windows: int,
+                         per_window: int = 4) -> List[int]:
+    """Systematic sample: the first `per_window` hard primes at or after
+    each of n_windows evenly spaced points of [lo, hi)."""
+    import sympy
+    hard = {1, 121, 169, 289, 361, 529}
+    out: List[int] = []
+    step = (hi - lo) // n_windows
+    for i in range(n_windows):
+        x = lo + i * step
+        n = x - x % 840
+        found = 0
+        while found < per_window:
+            for h in sorted(hard):
+                c = n + h
+                if c >= x and c < hi and sympy.isprime(c):
+                    out.append(c)
+                    found += 1
+                    if found >= per_window:
+                        break
+            n += 840
+    return out
+
+
+def scaled_census(primes: List[int], workers: int = 4,
+                  progress: bool = True, tag: str = "") -> Dict:
+    """Aggregate ladder census over an explicit prime list (any size)."""
+    from multiprocessing import Pool
+    t0 = time.time()
+    cs = max(1, len(primes) // (workers * 16))
+    chunks = [primes[i:i + cs] for i in range(0, len(primes), cs)]
+    rows: List[Dict] = []
+    with Pool(workers) as pool:
+        for out in pool.imap_unordered(_census_worker, chunks):
+            rows.extend(out)
+            if progress:
+                print(f"[scaled{('/' + tag) if tag else ''}] "
+                      f"{len(rows):,}/{len(primes):,} "
+                      f"({time.time()-t0:.0f}s)", flush=True)
+    n = len(rows)
+    first = sum(r["first_shot"] for r in rows)
+    solved = sum(r["solved_R"] is not None for r in rows)
+    q1_hist: Dict[int, int] = {}
+    shots_hist: Dict[int, int] = {}
+    second_q = 0
+    unresolved: List[int] = []
+    for r in rows:
+        q1_hist[r["q1"]] = q1_hist.get(r["q1"], 0) + 1
+        if r["solved_R"] is None:
+            unresolved.append(r["p"])
+        else:
+            shots_hist[r["shots"]] = shots_hist.get(r["shots"], 0) + 1
+            if r["solved_q"] != r["q1"]:
+                second_q += 1
+    return {"tag": tag, "sampled": n,
+            "first_shot_success": first,
+            "first_shot_rate": first / n if n else None,
+            "ladder_solved": solved,
+            "ladder_rate": solved / n if n else None,
+            "resolved_by_later_q": second_q,
+            "unresolved_cap400": unresolved,
+            "q1_histogram": dict(sorted(q1_hist.items())),
+            "shots_histogram": dict(sorted(shots_hist.items())),
+            "secs": round(time.time() - t0, 1)}
