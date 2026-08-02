@@ -68,6 +68,9 @@ density than
 Vaughan's classical $x\exp(-c(\log x)^{2/3})$, but explicit and
 certificate-producing, with the elementary layer and the core finite
 enumerations of the proofs machine-checked in Lean~4/\mbox{mathlib}.
+Letting the residual list grow with $x$ yields an unconditional
+almost-all theorem: all but $O(x\exp(-c(\log\log x)^2))$ hard primes
+$p \le x$ satisfy $R_{\min}(p) \le \varepsilon \log\log x$.
 A reciprocity-selected \emph{ladder} of $p$-adapted residuals then
 localizes the conjecture for hard primes into a single measured
 counting inequality, with the first rung proved and a matching
@@ -148,10 +151,16 @@ machine-verified structure, together with the exact criteria.
   of primes and of composites up to $107$, with marginally smaller
   exponents for larger composites with $\omega(R) \le 2$ ($29/2$ on
   the $27$ residuals up to $107$; $31/2$ with the two identity
-  families of Proposition~\ref{prop:agg} adjoined); and an
+  families of Proposition~\ref{prop:agg} adjoined); an
   unconditional
   density reduction (Theorem~\ref{thm:D}): for every $A$, a finite
-  residual set whose joint failure set is $O_A(x/(\log x)^{1+A})$.
+  residual set whose joint failure set is $O_A(x/(\log x)^{1+A})$;
+  and the \emph{uniform chain} (Theorem~\ref{thm:U}), the strongest
+  unconditional statement here: all but
+  $O(x e^{-c(\log\log x)^2})$ hard primes $p \le x$ have
+  $R_{\min}(p) \le \varepsilon\log\log x$, with the three walls that
+  make $\exp(-c(\log\log x)^2)$ the ceiling of the method identified
+  (Remark~\ref{rem:ceiling}).
 \item Computed and verified residual certificates for all
   $128{,}671{,}219$ hard primes below $10^{11}$, with a calibrated model
   whose deep-tail predictions were subsequently confirmed
@@ -424,7 +433,14 @@ $R \le 107$ an exhaustive enumeration
 (\texttt{kneser\_support\_general}, a proof component of this clause)
 sharpens the maximal failing support to $g/2 - 1$, so those residuals
 forbid at least $\varphi(R)/2$ classes and join the chain with full
-dimension $\ge \tfrac12$ each.
+dimension $\ge \tfrac12$ each. For arbitrary $\omega(R)$ the same
+bound reads $|S| \le \max(\lfloor (g+t-2)/2 \rfloor,\, g/2 - 1)$ with
+$t = 2^{\omega(R)} - 1$, so failure forbids at least
+$(g-t)/2 - 1 \ge \varphi(R)/2 - 2^{\omega(R)-1} - 1$ unit classes ---
+dimension $\ge \tfrac12 - (2^{\omega(R)-1}+1)/\varphi(R)$, and since
+$2^{\omega(R)} = R^{o(1)}$ this is $\ge 0.44$ for every admissible
+$R$ beyond an absolute bound: \emph{every} residual, with no
+restriction on $\omega$, is a usable sieve input.
 \end{theorem}
 
 \begin{theorem}[the chain]\label{thm:FG}
@@ -497,8 +513,9 @@ and~\ref{thm:R15}, which rest on it. Section~\ref{sec:sieve} proves
 Theorem~\ref{thm:FG} --- base case first, then, after the monotonicity
 reduction (Lemma~\ref{lem:mono}), Lemma~\ref{lem:S} and its
 unconditional upgrade Theorem~\ref{thm:S}, the higher
-exponents --- followed by Proposition~\ref{prop:agg} and
-Theorem~\ref{thm:D}. Section~\ref{sec:ladder} develops the
+exponents --- followed by Proposition~\ref{prop:agg},
+Theorem~\ref{thm:D}, and the uniform chain
+(Theorem~\ref{thm:U}). Section~\ref{sec:ladder} develops the
 Burgess--reciprocity ladder on top of Theorem~\ref{thm:S}, with its
 own ladder census (Table~\ref{tab:ladder}).
 
@@ -524,6 +541,7 @@ Thm.~\ref{thm:S} & Kneser's theorem + Lem.~\ref{lem:mono}; (iii) upgrade at $R \
 Thm.~\ref{thm:FG} & Thms.~\ref{thm:A}, \ref{thm:Ap}--\ref{thm:R15}, \ref{thm:S} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
 Prop.~\ref{prop:agg} & elementary + Thm.~\ref{thm:FG} & \S\ref{sec:sieve} & families in Lean \\ \addlinespace
 Thm.~\ref{thm:D} & Prop.~\ref{prop:succ} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
+Thm.~\ref{thm:U} & Thm.~\ref{thm:S}(iii), general tier + Brun's sieve, uniform constants & \S\ref{sec:sieve} & no \\ \addlinespace
 Lems.~\ref{lem:Jcomp}--\ref{lem:N} & Jacobi reciprocity, elementary & \S\ref{sec:ladder} & Lean \\ \addlinespace
 Thms.~\ref{thm:L0}--\ref{thm:B2} & Thm.~\ref{thm:S} / Prop.~\ref{prop:succ} + sieve & \S\ref{sec:ladder} & no \\ \addlinespace
 Thm.~\ref{thm:P1} & Prop.~\ref{prop:char} + half-dim.\ sieve~\cite{IwaniecHalfDim} & \S\ref{sec:ladder} & no \\ \addlinespace
@@ -937,7 +955,12 @@ verbatim, giving $k \le h + g/h - 3 \le g/2 - 1$ over proper
 subgroups. For $G = (\mathbb{Z}/R)^*$, $t = 2^{\omega(R)} - 1$; with
 $\omega(R) \le 2$, $t \le 3$ and the bound is $\le g/2$, so failure
 forbids at least $(g - 1) - g/2 = \varphi(R)/2 - 1$ non-identity unit
-classes --- dimension $\ge \tfrac12 - 1/\varphi(R)$. The upgrade to
+classes --- dimension $\ge \tfrac12 - 1/\varphi(R)$. The general-$t$
+clause is the same computation without the specialization: failure
+forbids at least $(g-1) - (g+t-2)/2 = (g-t)/2$ non-identity classes
+(minus one when the max is attained by $g/2-1$), and
+$2^{\omega(R)} \le R^{O(1/\log\log R)} = R^{o(1)}$ gives the stated
+$0.44$ threshold beyond an absolute bound. The upgrade to
 $\varphi(R)/2$ forbidden classes for $R \le 107$ is the enumeration
 cited in the statement: the maximum support of a proper product-set is
 exactly $g/2 - 1$ for every composite admissible $R \le 107$
@@ -1120,12 +1143,123 @@ $S = \{3, 7, 11, \dots, 107\}$ --- yet both the calibration
 Section~\ref{sec:open} predict that any fixed list eventually fails.
 \end{remark}
 
+\subsection{The uniform chain}\label{sec:uniform}
+
+Theorem~\ref{thm:D} fixes the list $S(A)$ once $A$ is fixed; letting
+the list \emph{grow with $x$} is purely a question of uniformity in
+the constants of Theorem~\ref{thm:FG} --- the branch count per
+residual, the class modulus, and the sieve constants in growing
+dimension. Auditing those constants shows the growth is affordable
+for lists of length a small multiple of $\log\log x$, which yields
+the strongest unconditional statement of this paper.
+
+\begin{theorem}[uniform chain]\label{thm:U}
+There are absolute constants $\varepsilon, c > 0$ and an
+(ineffective) $x_0$ such that for all $x \ge x_0$,
+\[
+  \#\bigl\{\text{hard primes } p \le x :
+  R_{\min}(p) > \varepsilon \log\log x\bigr\}
+  \;\le\; x\,\exp\!\bigl(-c\,(\log\log x)^2\bigr).
+\]
+In particular, all but $O(x e^{-c(\log\log x)^2})$ hard primes
+$p \le x$ possess an explicit, divisor-exhibited residual certificate
+at some admissible $R \le \varepsilon\log\log x$ ---
+unconditionally.
+\end{theorem}
+
+\begin{proof}
+Write $L = \log\log x$, $B = \varepsilon L$, and let $\mathcal{R}$ be
+the admissible residuals $3 \le R \le B$
+($|\mathcal{R}| \sim B/4$). Discard the $O(\sqrt x)$ primes
+$p \le \sqrt x$. A hard prime with $R_{\min}(p) > B$ fails every
+$R \in \mathcal{R}$; we bound the count of such $p$ by a single
+sieve application per \emph{branch}, as follows.
+
+\emph{Dimensions.} Each $R \in \mathcal{R}$ contributes a sifting
+dimension $\delta_R$: the exact criteria at $R = 3, 7, 11, 15$ and
+Theorem~\ref{thm:S}(ii) at primes give $\delta_R = \tfrac12$;
+composites $\le 107$ give $\tfrac12$ by the sharpened tier of
+Theorem~\ref{thm:S}(iii); and every remaining composite --- with
+\emph{no} restriction on $\omega(R)$ --- gives
+$\delta_R \ge \tfrac12 - (2^{\omega(R)-1}+1)/\varphi(R) \ge 0.44$
+beyond an absolute bound $R_1$, by the general-$t$ clause of
+Theorem~\ref{thm:S}(iii). Hence
+$\kappa := 1 + \sum_{R \in \mathcal{R}} \delta_R
+\ge 1 + 0.44(|\mathcal{R}| - R_1) \ge 1 + B/10$ for $B$ large.
+
+\emph{Branches.} For each $R$, failure confines the support of
+$(p+R)/4$ to one of at most $2^{\varphi(R)}$ failing supports
+$S_R$ (crudely, all subsets); fixing $(S_R)_{R \in \mathcal{R}}$
+and the class $n_0$ of $n = (p+3)/4$ modulo
+$\widetilde M = \mathrm{lcm}(840, \prod_{\ell \le B} \ell) =
+e^{O(B)}$ costs a factor
+$\prod_R 2^{\varphi(R)} \cdot e^{O(B)} = e^{O(B^2)}$ branches.
+
+\emph{Sieve.} Within a branch, sift the integers
+$n \le (x+3)/4$, $n \equiv n_0 \pmod{\widetilde M}$, by the primes
+$\ell \in (B, z]$, $z = x^{1/s}$: the forbidden classes mod $\ell$
+are $n \equiv 3 \cdot 4^{-1}$ (so that $p = 4n-3$ keeps no factor
+$\le z$) and, for each $R$ with $\ell \bmod R$ outside $S_R$,
+$n \equiv -(R-3)/4$ --- pairwise distinct for $\ell > B$, so
+$\omega(\ell) \le |\mathcal{R}| + 1 < \ell/2$. The density
+condition holds with the dimension $\kappa$ above and
+$(\Omega)$-constant $O(B \log B)$, by Mertens' theorem in the
+progressions modulo $R \le B$ (Siegel--Walfisz range, whence the
+ineffective $x_0$). Apply Brun's sieve of order $r \asymp \kappa$
+\cite[Ch.~2]{HalberstamRichert} at $s \asymp \kappa$: since the
+sifted sequence consists of \emph{integers} in a progression --- no
+primality is detected anywhere --- the remainder is
+$\sum_{d \le z^r} (B+2)^{\omega(d)} \ll x^{1/10} e^{O(BL)} =
+x^{1/10 + o(1)}$ for a suitable absolute choice of the implied
+constants, and the main term is
+\[
+  \ll \frac{x}{\widetilde M} \prod_{B < \ell \le z}
+  \Bigl(1 - \frac{\omega(\ell)}{\ell}\Bigr)
+  \;\le\; x \exp\bigl(-\kappa (L - O(\log B)) + O(B\log B)\bigr).
+\]
+
+\emph{Accounting.} Multiplying by the branch count,
+\[
+\begin{aligned}
+  \#\{p \le x : R_{\min}(p) > B\}
+  \;&\le\; e^{O(B^2)}\, x\, \exp\bigl(-\kappa L + O(B \log B) +
+  O(\kappa \log B)\bigr) \\
+  &\le\; x\,\exp\bigl(-BL/10 + O(B^2)\bigr),
+\end{aligned}
+\]
+and with $B = \varepsilon L$ the exponent is
+$-\varepsilon L^2/10 + O(\varepsilon^2 L^2) \le
+-\varepsilon L^2/20$ for $\varepsilon$ below an absolute threshold.
+\end{proof}
+
+\begin{remark}[the ceiling, and what lies beyond]\label{rem:ceiling}
+Theorem~\ref{thm:U} sits at the exact boundary of this method
+family: the branch factor $e^{\Theta(B^2)}$ against the sieve gain
+$e^{-BL/10}$ forces $B \ll L$, and independently the class modulus
+$\widetilde M = e^{O(B)}$ and the Mertens-in-progressions inputs
+leave their valid ranges at $B \gg L$ --- three walls detonating at
+the same scale, so $\exp(-cL^2)$ is the honest unconditional
+frontier here even under substantial improvements to the branch
+count. Vaughan's bound $x\exp(-c(\log x)^{2/3})$~\cite{Vaughan}
+remains far stronger as a pure density statement; what
+Theorem~\ref{thm:U} adds is structural: an explicit certificate at a
+residual of size $O(\log\log x)$ for almost every hard prime, a
+statement mean-value methods do not address. Passing the
+$\exp(-cL^2)$ ceiling toward Vaughan and beyond is exactly what the
+measured hypotheses of the ladder program
+(Section~\ref{sec:ladder}) would buy: the calibrations
+$J = (\log x)^{\theta}$ of Theorem~\ref{thm:L1} are out of reach of
+every unconditional variant considered here.
+\end{remark}
+
 \section{The Burgess--reciprocity ladder}\label{sec:ladder}
 
-Theorem~\ref{thm:S} closed the fixed-list axis: every residual
-contributes its maximal sieve input, and no fixed finite list can
-reach emptiness (Remark~\ref{rem:emptiness}). This section develops
-the program that opens in its place: a \emph{$p$-adapted} family of
+Theorem~\ref{thm:S} closed the fixed-list axis, and
+Theorem~\ref{thm:U} pushed the growing-list axis to its
+unconditional ceiling $\exp(-c(\log\log x)^2)$
+(Remark~\ref{rem:ceiling}); no list-based bound can reach emptiness
+(Remark~\ref{rem:emptiness}). This section develops
+the program that opens past the ceiling: a \emph{$p$-adapted} family of
 residuals, chosen through quadratic reciprocity, along which the
 failure modes are localized, partially proved, and reduced to a
 single measured hypothesis. Entry points and archives for all
@@ -1404,9 +1538,12 @@ lack a certificate on the ladder.
 
 With $J(x) = (\log\log x)^2$ --- a mild extrapolation of the nine
 measured rungs --- the exceptional set is
-$\ll x\exp(-\delta(\log\log x)^2)$, beyond every fixed power of
-$\log x$ and hence beyond Theorems~\ref{thm:FG} and~\ref{thm:D};
-with $J(x) = (\log x)^{\theta}$, $\theta > 2/3$, it would pass
+$\ll x\exp(-\delta(\log\log x)^2)$: this calibration is now
+delivered \emph{unconditionally}, and with the stronger bound
+$R_{\min} \le \varepsilon\log\log x$, by Theorem~\ref{thm:U}, so
+Hypothesis~\ref{hyp:B}'s real content begins past the ceiling of
+Remark~\ref{rem:ceiling}: with $J(x) = (\log x)^{\theta}$,
+$\theta > 2/3$, Theorem~\ref{thm:L1} would pass
 Vaughan's bound. The hypothesis-strength required scales with the
 ambition, and each increment is testable before it is assumed.
 
@@ -1427,6 +1564,31 @@ statement of prime-tuple difficulty. What the ladder does is
 localize the conjecture for hard primes into one measured,
 twice-bracketed counting inequality, with every sub-statement
 current tools can decide now decided.
+\end{remark}
+
+\begin{remark}[why the walls are real: two obstruction
+computations]\label{rem:obstruction}
+Two computations pin the walls down. \textup{(i)} \emph{Budget
+failure is not a character event.} In the model at $R = 11$
+(generator $2$), the configurations with class set $\{2, 7\}$ and
+multiplicities $(1,1)$ versus $(4,2)$ have the \emph{same} class
+set and the same product $a \equiv 3 \pmod{11}$ --- hence identical
+values under every Dirichlet character mod $11$ --- yet the first
+fails the target $8$ ($\equiv -m$ for the consistent
+$p \equiv 1 \pmod{11}$) and the second attains it. No
+character-based machinery (pretentious dichotomies included)
+can separate the two, and $97.5\%$ of measured first-rung ladder
+failures are of this budget type. \textup{(ii)} \emph{Weighted
+detection is equivalent to Hypothesis~\ref{hyp:P}.} The certificate
+detector is already maximally relaxed --- by
+Proposition~\ref{prop:succ}, any \emph{divisor} of the shifted
+value in the universal class certifies, so almost-prime weakenings
+of the detected object change nothing --- and the first moment of
+any Bonferroni/Selberg weighting over $E_j$ is itself a failure
+count: carrying the scheme through is equivalent, up to constants,
+to Hypothesis~\ref{hyp:P} itself. The parity gap of
+Theorem~\ref{thm:P1} is therefore intrinsic to every relaxation of
+this type, not an artifact of the chosen detector.
 \end{remark}
 
 \section{Computations to \texorpdfstring{$10^{11}$}{10\textasciicircum 11}}\label{sec:comp}
@@ -1578,14 +1740,21 @@ record).
 \item \textbf{Finite covering.} Prove that some finite admissible set $S$
   covers all hard primes (Theorem~\ref{thm:D} gives density
   $(\log x)^{-A}$ for every $A$; emptiness is beyond the sieve).
-\item \textbf{Beyond fixed lists.} The support bound is now proved
+\item \textbf{Beyond fixed lists.} The support bound is proved
   unconditionally for every residual, prime and composite
-  (Theorem~\ref{thm:S}), so the chain's exponent is unbounded over
-  growing lists --- but the fixed-list format itself cannot reach
-  emptiness (Remark~\ref{rem:emptiness}), and aggregating residuals
-  that grow with $p$ meets two walls: the per-branch forbidden classes
-  depend on $p \bmod R$, and the branch count per residual, though
-  finite, grows. The proof of Theorem~\ref{thm:S} shows the extremal
+  (Theorem~\ref{thm:S}), and Theorem~\ref{thm:U} shows the two
+  walls of list growth --- per-branch forbidden classes depending on
+  $p \bmod R$, and the growing branch count --- are affordable up to
+  lists of length $\varepsilon\log\log x$, but no further
+  (Remark~\ref{rem:ceiling}); the fixed-list format itself cannot
+  reach emptiness (Remark~\ref{rem:emptiness}). Passing the ceiling
+  by structure rather than hypothesis would need a poly($R$)
+  \emph{branch classification}: every failing configuration
+  contained in polynomially many kernel or coset-progression
+  branches --- a Kneser/Freiman-type structure problem for
+  bounded-exponent product sets, whose $\omega(R) \le 2$ extremal
+  cases are exactly Theorem~\ref{thm:S}(i)/(iii) and the
+  \texttt{kneser\_support\_general} data. The proof of Theorem~\ref{thm:S} shows the extremal
   failing supports are \emph{subgroup-trapped} (the stabilizer $H$ is
   nontrivial and $S$ concentrates on $H$ up to at most $d/|H| - 2$
   outliers); exploiting this structure \emph{uniformly in $R$} ---

@@ -1,12 +1,15 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
-**Date:** 2026-08-02 (current through PR #42; this revision adds
+**Date:** 2026-08-02 (current through PR #44; this revision adds
 Theorem S and Theorem A‴; §2.10 adds the Burgess/reciprocity
 route, its full-population census and failure anatomy, the
 ladder theorems L₀ (rigorous, fixed length) and L₁ (almost-all,
 conditional on the measured Hypothesis B), Theorem B₁ (proved),
 Theorems B₂ and P₁ (proof sketches), and Hypothesis P with
-Corollary B₃).  
+Corollary B₃; §2.11 adds **Theorem U** — the unconditional uniform
+chain, R_min ≤ ε·log log x for all but x·exp(−c(log log x)²) hard
+primes — the ceiling analysis, and the two obstruction lemmas
+closing the pretension and almost-prime routes).  
 **Status:** Proved: Theorems A, A′, A″, A‴ (exact criteria for
 R = 3, 7, 11, and now the first composite residual R = 15; A′/A″/A‴ by
 machine-verified finite case analysis), the meta-theorem (now including
@@ -18,8 +21,10 @@ included, upgrading the chain to arbitrary finite residual lists
 (exponent 29/2 for the full 27-residual list ≤ 107; 31/2 with the
 two aggregate identity families adjoined) — Theorem I
 (aggregate families), Theorem J (reciprocity structure), Theorem D
-(full proof in the paper), and Theorem B₁ (the ladder's first rung,
-§2.10). Theorem K is a conditional sketch under
+(full proof in the paper), Theorem B₁ (the ladder's first rung,
+§2.10), and **Theorem U** (the uniform chain, §2.11 — the strongest
+unconditional statement of the development). Theorem K is a
+conditional sketch under
 Dickson's conjecture. Section 6 is heuristic, validated against the
 complete solvability data below 10⁹ and the 10¹⁰/10¹¹ minimal-R data.
 §2.8 records two executed attempts at totality and their
@@ -64,6 +69,9 @@ The dictionary (paper labels in parentheses):
 | Theorem L₁ (conditional almost-all) | Theorem 5.9 (`thm:L1`) |
 | Lemma Q (least non-residue) | not carried into the paper (used unnamed in the proof of Theorem 5.9) |
 | Hypothesis L (ladder) | not carried into the paper |
+| Theorem U (uniform chain) | Theorem 4.5 (`thm:U`) |
+| the ceiling | Remark 4.6 (`rem:ceiling`) |
+| Obstructions (i)/(ii) | Remark 5.11 (`rem:obstruction`) |
 | monotonicity reduction | Lemma 4.1 (`lem:mono`) |
 
 ---
@@ -1325,6 +1333,110 @@ p-adapted by construction. What stands between the census and a
 theorem is the same object as in the Verdict above: control of budget
 failures, now localized to explicit two-parameter families.
 
+### 2.11 The uniform chain (Theorem U), the ceiling, and the obstruction lemmas
+
+The August 2026 research round (two independent deep dives on the two
+walls; see §8's outlook for their charters) produced one new
+unconditional theorem, a sharp ceiling for the whole method family,
+and two obstruction computations that pin the walls down precisely.
+
+**Theorem U (uniform chain; Theorem 4.5 of the paper).** There are
+absolute ε, c > 0 and an (ineffective, Siegel–Walfisz) x₀ such that
+for x ≥ x₀:
+
+    #{hard primes p ≤ x : R_min(p) > ε·log log x} ≤ x·exp(−c(log log x)²).
+
+Unconditional — no Hypothesis B, no Hypothesis P, no q(p). The key
+realization, found independently by both dives: Theorem L₁ never
+needed Hypothesis B's survivor-decay structure. Its conclusion is a
+direct many-residual sieve event — the chain of Theorems F–H run over
+a list growing with x — and the only obstruction was uniformity of
+the constants. The audit shows the growth is affordable to lists of
+length B = ε·log log x:
+
+1. *Dimensions for every ω.* Theorem S(iii)'s Kneser bound is proved
+   for general t = 2^ω − 1 involutions: failure at any admissible R
+   forbids ≥ φ(R)/2 − 2^{ω−1} − 1 classes, dimension
+   ½ − (2^{ω−1}+1)/φ(R) ≥ 0.44 beyond an absolute bound (since
+   2^{ω(R)} = R^{o(1)}). The ω(R) ≤ 2 restriction of the old chain
+   was an artifact of the sharpened (enumeration) tier. Total
+   dimension over the list: κ ≥ 1 + B/10.
+2. *Branches.* Failing supports per residual: ≤ 2^{φ(R)} crudely;
+   branch × class count over the list: exp(O(B²)).
+3. *Sieve.* Brun's sieve of order ≍ κ on integers in one progression
+   mod lcm(840, ∏_{ℓ≤B} ℓ) = e^{O(B)}. No primality detected, so the
+   remainder is trivial (level x^{1/10}, no Bombieri–Vinogradov).
+   Mertens in progressions to moduli ≤ B needs Siegel–Walfisz —
+   whence ineffectivity. (Ω)-constant O(B log B).
+4. *Accounting.* Gain exp(−κL) ≈ exp(−BL/10) vs cost exp(O(B²));
+   with B = εL the exponent is −εL²/10 + O(ε²L²) ≤ −εL²/20 for small
+   ε. (L = log log x.)
+
+Consequences: Theorem U delivers conditional L₁'s mild calibration
+J = (log log x)² unconditionally, and with a *stronger* R_min bound
+(ε log log x versus (log x)^{2+o(1)}·(log log x)²). Hypothesis B's
+real content therefore begins past the ceiling: the θ-calibrations
+J = (log x)^θ (θ > 2/3 passes Vaughan) remain genuinely conditional.
+
+**The ceiling (Remark 4.6 of the paper).** exp(−c(log log x)²) is the
+honest frontier of the entire Fundamental-Lemma family: three
+independent walls detonate at B ≍ log log x — the branch factor
+e^{Θ(B²)}, the class modulus e^{O(B)} leaving the Siegel–Walfisz
+range, and Mertens-in-progressions moduli leaving their valid range.
+Even a poly(R) branch classification (see below) would only move the
+first wall; the method's absolute ceiling is then
+exp(−(log x)^{1/2+o(1)}), still short of Vaughan's
+exp(−c(log x)^{2/3}). What Theorem U adds over Vaughan is not density
+but structure: explicit certificates at residuals of size
+O(log log x) for almost every hard prime.
+
+**Obstruction (i): budget failure is not a character event (Remark
+5.11 of the paper).** At R = 11 (generator 2), the model
+configurations with class set {2, 7} and multiplicities (1,1) vs
+(4,2) have the same class set and the same product a ≡ 3 (mod 11) —
+identical under every Dirichlet character mod 11 — yet reach
+{0,1,2,4,5,6,7,8,9} vs all of Z/10 in discrete logs: the first misses
+the target 8 = 2³ (the consistent target for p ≡ 1 mod 11), the
+second attains it. Verified by direct computation. Since 97.5 % of
+measured first-rung failures are budget-type, no character-based
+machinery — the pretension dichotomy included — can see the dominant
+failure mode. This closes the pretension route of §8's outlook
+(NO-GO), and note the route was self-undercutting anyway: q ∣ a_j at
+every rung by construction, suppressing the Lemma-N character mode.
+
+**Obstruction (ii): weighted detection ⟺ Hypothesis P.** The
+certificate detector is already maximally relaxed — any *divisor* in
+the universal class certifies (Prop 2.2/Proposition 3), so
+almost-prime weakenings of the detected object change nothing (unlike
+Nath–Xie's setting, where parity sits on the detected form; here it
+sits on the conditioning set E_j). And the first moment of any
+Bonferroni/Selberg weighting over E_j is itself a failure count: the
+scheme is equivalent, up to constants, to Hypothesis P. The parity
+gap of Theorem P₁ is intrinsic to every relaxation of this type.
+Levels of distribution are not the obstruction (all moduli ≤ x^{1/2−ε};
+EH/GRH change nothing). This closes the almost-prime route (NO-GO on
+the literal P→B replacement).
+
+**Also available (not yet in the paper):** B₂⁺ — the two-sided proxy
+ladder with uniform 1+o(1) ratio constants on truncated proxies,
+concentrating all of Hypothesis B's unproved content into Hypothesis
+P; and the observation that the p-adapted ladder is the *wrong*
+unconditional vehicle (the large-q(p) tail costs exp(−cL/log L),
+worse than every fixed log-power — the fixed chain dominates; even
+under GRH the ladder only matches U up to log factors at this
+calibration). The ladder's enduring value is structural (Type-I
+failure dead by construction, p-adapted certificates) and conditional
+(the only frame whose measured inputs would push past the ceiling).
+
+**What remains open on this axis:** the poly(R) branch classification
+("every failing configuration lies in polynomially many kernel or
+coset-progression branches" — a Kneser/Freiman-type structure problem
+whose ω ≤ 2 extremal cases are Theorem S(i)/(iii) and the
+`kneser_support_general` data; medium-hard, well-posed). It would
+move the branch wall but not the Siegel–Walfisz or Mertens walls. The
+per-prime conspiracy (no individual p fails all rungs) remains
+polylog-interval-Chowla-hard — out of reach of current technology.
+
 
 ## 3. Empirical validation
 
@@ -1501,21 +1613,24 @@ sampling plus full tail checks; exhaustive below 10⁹):**
    ≍ log x/log log x. Remaining here: fold the Type-II escape layer into
    the growth law quantitatively.
 
-### Research outlook (August 2026)
+### Research outlook (August 2026) — executed; see §2.11
 
-Two external developments bear on the two walls above. **Conspiracy
-wall:** Matomäki–Teräväinen's pretension dichotomy (arXiv:2605.27833)
-together with Basak–Pratt's Page-type zero repulsion
-(arXiv:2607.06433) suggests a route from "almost all" to a bounded —
-possibly finite — exceptional set, IF total ladder failure can be
-reduced to a character-pretension statement. That reduction is open;
-it is plausible because the ladder's failure events enter through
-Lemma N as Jacobi-symbol — i.e. character — conditions. **Parity
-wall:** Nath–Xie's vector sieve (Acta Arith. 223 (2026)) is a
-template for an almost-prime relaxation of Hypothesis P, targeting an
-unconditional weakened form of Theorem L₁. Honestly: neither route
-can prove the full conjecture — parity and prime-tuple strength
-remain out of reach.
+Both routes sketched here were pursued to a decision in the same
+month. **Conspiracy wall / pretension route: NO-GO**, with a
+proof-grade witness — budget failure (97.5 % of the failure
+population) is invisible to characters (§2.11, Obstruction (i)); the
+plausibility argument below was self-undercutting since q ∣ a_j at
+every rung suppresses the Lemma-N character mode. **Parity wall /
+almost-prime route: NO-GO** on the literal P→B replacement — the
+detector is already maximally relaxed and the weighted scheme is
+equivalent to Hypothesis P (§2.11, Obstruction (ii)). **Both dives
+converged on the same open door instead**: Hypothesis B was never
+needed for the mild calibration, and the uniformity audit of the
+chain produced the unconditional Theorem U (§2.11) with the ceiling
+exp(−c(log log x)²). The original honest caveat stands, sharpened:
+neither route — nor any relaxation examined — approaches the full
+conjecture; parity (Hypothesis P's log-gap) and the per-prime
+conspiracy (polylog-interval-Chowla-hard) remain the two walls.
 
 ---
 

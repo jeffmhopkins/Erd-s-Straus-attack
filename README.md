@@ -121,8 +121,13 @@ reciprocity structure theorem (q|R) = (p|q) explains joint failure and the
 static record; and under Dickson's conjecture no fixed finite residual
 list suffices (Theorem K of `THEORY.md`) — the correctly-posed open
 problem, by completeness of the residual formulation, is the conjecture
-itself. The §5 Burgess–reciprocity ladder program (Theorems L₀/B₁/B₂/P₁
-and Hypothesis P) organizes the endgame: the almost-all Theorem L₁ is
+itself. The uniform chain (Theorem U, paper Thm 4.5) is the strongest
+unconditional statement: all but $x\exp(-c(\log\log x)^2)$ hard primes
+$p \le x$ have $R_{\min}(p) \le \varepsilon\log\log x$ — and that
+exceptional-set size is the proved ceiling of the method. The §5
+Burgess–reciprocity ladder program (Theorems L₀/B₁/B₂/P₁
+and Hypothesis P) organizes the endgame past the ceiling: the
+almost-all Theorem L₁ at its stronger calibrations is
 conditional on the measured per-rung decay. Densities are calibrated
 against Vaughan's classical bound; the contribution is mechanism, not raw
 density.

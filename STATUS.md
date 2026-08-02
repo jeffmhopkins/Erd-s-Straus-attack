@@ -1,5 +1,5 @@
 # Erdős–Straus Conjecture Attack — Current State
-**Date:** 2026-08-02 (current through PR #42)  
+**Date:** 2026-08-02 (current through PR #44)  
 **Focus:** Hard-class primes (Mordell exceptional residues mod 840)
 
 ## The Problem
@@ -129,6 +129,22 @@ B, all but $O(x e^{-\delta J(x)})$ hard primes have
 $R_{\min}(p) \le (\log x)^{2+o(1)} J(x)$; calibrations from
 $J = (\log\log x)^2$ (past the entire chain) to
 $J = (\log x)^{\theta}$, $\theta > 2/3$ (past Vaughan).
+
+**Theorem U (proved, unconditional — THEORY §2.11, paper Thm 4.5):**
+the uniform chain. All but $O(x\exp(-c(\log\log x)^2))$ hard primes
+$p \le x$ have $R_{\min}(p) \le \varepsilon\log\log x$ — no
+Hypothesis B, no P, no $q(p)$; Brun's sieve over a residual list of
+length $\varepsilon\log\log x$ with the general-$\omega$ Kneser tier
+of Theorem S(iii) and tracked uniform constants (ineffective via
+Siegel–Walfisz). This delivers L₁'s mild calibration unconditionally
+with a stronger $R_{\min}$ bound; B's real content is now the
+$\theta$-calibrations past the $\exp(-c(\log\log x)^2)$ ceiling
+(paper Rem 4.6: branch, Siegel–Walfisz, and Mertens-in-AP walls all
+detonate at list length $\asymp \log\log x$). Two obstruction
+computations (paper Rem 5.11) close the August 2026 research routes:
+budget failure is provably not a character event (explicit witness
+pair at $R = 11$), and weighted/almost-prime detection is equivalent
+to Hypothesis P — the parity gap is intrinsic.
 
 ### $10^{11}$ update (the gap fills; the record stands)
 
@@ -354,7 +370,10 @@ full tail minimality.
 - Almost-all coverage is settled with mechanism: exponent 29/2 chain
   (31/2 with the aggregate families),
   exact criteria for R = 3, 7, 11, and per-residual finite-state criteria
-  for every fixed R (meta-theorem).
+  for every fixed R (meta-theorem); and now unconditionally uniform —
+  Theorem U gives $R_{\min} \le \varepsilon\log\log x$ outside a set
+  of size $x\exp(-c(\log\log x)^2)$, the proved ceiling of the
+  method family.
 
 ## Next Natural Steps (updated)
 1. ~~Extend past $10^8$, $10^9$, $10^{10}$, $10^{11}$.~~
