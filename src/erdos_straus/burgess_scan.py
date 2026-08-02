@@ -560,3 +560,58 @@ def proxy_ratio_scan(masks: Dict[int, int], sample_step: int = 20) -> Dict:
             "proxy_decay_rung1": av01 / av0 if av0 else None,
             "true_decay_rung1": e1_f1 / f0 if f0 else None,
             "P_rung1_within_fail0": e1_f1 / e1_av1 if e1_av1 else None}
+
+
+def _proxy_worker(chunk: List[int]) -> Tuple[int, int, int, int, int, int]:
+    """Tallies (n, avoid0, fail0, avoid01, fail0_avoid1, fail0_fail1)."""
+    _init_small_primes()
+    n = av0 = f0 = av01 = f0a1 = f0f1 = 0
+    for p in chunk:
+        q = least_legendre_nonresidue(p)
+        R0 = selected_residual(p, q)
+        R1 = R0 + 4 * q
+
+        def sclasses(R):
+            t = (-pow(4, -1, R) * p * p) % R
+            pinv = pow(p, -1, R)
+            return {t, t * pinv % R, t * pinv * pinv % R}
+
+        def avoid(R):
+            S = sclasses(R)
+            return not any(u % R in S for u in factorize((p + R) // 4))
+
+        n += 1
+        a0 = avoid(R0)
+        f = not solvable_exact_general(p, R0)
+        if a0:
+            av0 += 1
+            if avoid(R1):
+                av01 += 1
+        if f:
+            f0 += 1
+            if avoid(R1):
+                f0a1 += 1
+            if not solvable_exact_general(p, R1):
+                f0f1 += 1
+    return (n, av0, f0, av01, f0a1, f0f1)
+
+
+def proxy_ratio_scan_scaled(primes: List[int], workers: int = 4,
+                            tag: str = "") -> Dict:
+    """Hypothesis-P measurement over an explicit prime list, mask-free."""
+    from multiprocessing import Pool
+    t0 = time.time()
+    cs = max(1, len(primes) // (workers * 8))
+    chunks = [primes[i:i + cs] for i in range(0, len(primes), cs)]
+    n = av0 = f0 = av01 = f0a1 = f0f1 = 0
+    with Pool(workers) as pool:
+        for t in pool.imap_unordered(_proxy_worker, chunks):
+            n += t[0]; av0 += t[1]; f0 += t[2]
+            av01 += t[3]; f0a1 += t[4]; f0f1 += t[5]
+    return {"tag": tag, "sampled": n,
+            "avoid0_rate": av0 / n, "fail0_rate": f0 / n,
+            "P_rung0": f0 / av0 if av0 else None,
+            "proxy_decay_rung1": av01 / av0 if av0 else None,
+            "true_decay_rung1": f0f1 / f0 if f0 else None,
+            "P_rung1_within_fail0": f0f1 / f0a1 if f0a1 else None,
+            "secs": round(time.time() - t0, 1)}
