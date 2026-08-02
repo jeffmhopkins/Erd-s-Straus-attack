@@ -59,7 +59,11 @@ data/
 tests/
   test_solver.py       46 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (13 pp.)
+  erdos_straus_residuals.tex/.pdf   the manuscript (16 pp.)
+lean/
+  ErdosStraus/         Lean 4 + mathlib formalization: ten sorry-free,
+                       axiom-audited declarations covering the paper's
+                       elementary layer (see lean/README.md)
 STATUS.md              full status of the attack
 THEORY.md              theoretical development with proofs
 ```
@@ -87,6 +91,12 @@ Dickson's conjecture no fixed finite residual list suffices — the
 correctly-posed open problem, by completeness of the residual formulation,
 is the conjecture itself. Densities are calibrated against Vaughan's
 classical bound; the contribution is mechanism, not raw density.
+
+**Formal verification** (`lean/`): the elementary layer is machine-checked
+in Lean 4 + mathlib — certificate soundness and integrality, Theorem A in
+both directions, both aggregate identity families, the reciprocity
+structure theorem, and the hard-class lemmas. Ten sorry-free declarations,
+each axiom-audited via `#print axioms`.
 
 ## Setup
 
