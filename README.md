@@ -65,7 +65,7 @@ data/
 tests/
   test_solver.py       53 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (25 pp.)
+  erdos_straus_residuals.tex/.pdf   the manuscript (27 pp.)
   make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
 lean/
   ErdosStraus/         Lean 4 + mathlib formalization (7 modules: Basic,

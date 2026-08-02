@@ -99,7 +99,7 @@ against the same finite spaces, with identical results.
 - Composed corollaries at R = 11, 23, 31 analogous to
   `lemmaS_R19_certificate` (same recipe).
 - The analytic sieve bounds (the chain of Theorem 1.11 and the density
-  reduction) and the large-scale computations of the paper's §5 are out
+  reduction) and the large-scale computations of the paper's §6 are out
   of scope by design (see the paper's trusted-computing-base
   discussion): they remain independently reproducible software with
   deterministic verification.

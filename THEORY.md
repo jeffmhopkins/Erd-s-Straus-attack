@@ -49,6 +49,14 @@ The dictionary (paper labels in parentheses):
 | Theorem K (conditional) | sketch inside Open Problem 5 |
 | Lemma S (support bound) | Lemma 1.9 (`lem:S`) |
 | Theorem S (unconditional support bound, Kneser) | Theorem 1.10 (`thm:S`) |
+| Lemma J° (composite reciprocity) | Lemma 5.1 (`lem:Jcomp`) |
+| Lemma N (Jacobi necessity) | Lemma 5.2 (`lem:N`) |
+| Theorem L₀ (ladder chain) | Theorem 5.3 (`thm:L0`) |
+| Theorem B₁ (first rung) | Theorem 5.4 (`thm:B1`) |
+| Theorem B₂ (proxy ladder) | Theorem 5.5 (`thm:B2`) |
+| Hypothesis P / Hypothesis B | Hypotheses 5.6 / 5.8 |
+| Theorem P₁ (half-dimensional failures) | Theorem 5.7 (`thm:P1`) |
+| Theorem L₁ (conditional almost-all) | Theorem 5.9 (`thm:L1`) |
 | monotonicity reduction | Lemma 4.1 (`lem:mono`) |
 
 ---
