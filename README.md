@@ -98,9 +98,11 @@ in Lean 4 + mathlib — certificate soundness and integrality, Theorem A in
 both directions, both aggregate identity families, the reciprocity
 structure theorem, and the hard-class lemmas — plus the finite-enumeration
 layer: the meta-theorem's divisor-class reachability model, both halves of
-the monotonicity reduction, the full 1,536-configuration verification of
-Theorem A′ (R = 7), and Lemma S at R = 19 (437,580 checks), both
-discharged by Lean's compiled evaluator. Every declaration is sorry-free and
+the monotonicity reduction, the full finite verifications of Theorems A′
+(R = 7, 1,536 configurations) and A″ (R = 11, 497,664 capped
+configurations, exact two-case failure classification), and Lemma S at
+R = 19 and 23 (437,580 + 7,759,752 checks), all discharged by Lean's
+compiled evaluator. Every declaration is sorry-free and
 axiom-audited via `#print axioms` (see `lean/README.md` for the trust
 base).
 

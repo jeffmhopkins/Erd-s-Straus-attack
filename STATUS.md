@@ -237,11 +237,14 @@ full tail minimality.
   Theorem J, and the hard-class lemmas. The finite-enumeration layer is
   also formalized: the meta-theorem's divisor-class reachability model
   (`reach`), both halves of the monotonicity reduction (`reach_mono`,
-  `reach_sublist`), the full 1,536-configuration verification of
-  Theorem A′ at R = 7, and Lemma S at R = 19 (437,580 checks), both
-  via `native_decide`. All declarations sorry-free and
-  axiom-audited; see `lean/README.md` for the trust base. Next tier:
-  Theorem A″ (R = 11) and the reach ⟺ divisor-certificate bridge.
+  `reach_sublist`), the full finite verifications of Theorem A′
+  (R = 7, 1,536 configurations) and Theorem A″ (R = 11, 497,664
+  capped configurations with the exact two-case failure
+  classification), and Lemma S at R = 19 and R = 23 (437,580 +
+  7,759,752 checks), all via `native_decide`. All declarations
+  sorry-free and axiom-audited; see `lean/README.md` for the trust
+  base. Next tier: the discrete-log bridges and the
+  reach ⟺ divisor-certificate bridge.
 
 ## Current Assessment
 - No counterexample; all 128 671 219 hard primes below \(10^{11}\) have

@@ -116,9 +116,10 @@ machine-verified structure, together with the exact criteria.
   in both directions, both families of Proposition~\ref{prop:agg}, and
   Theorem~\ref{thm:J} --- and of the finite-enumeration layer: the
   divisor-class reachability model with its monotonicity reductions
-  (Lemma~\ref{lem:mono}), the full $1{,}536$-configuration verification
-  of Theorem~\ref{thm:Ap}, and the support-bound check of
-  Lemma~\ref{lem:S} at $R = 19$ --- in the accompanying repository.
+  (Lemma~\ref{lem:mono}), the full finite verifications of
+  Theorems~\ref{thm:Ap} and~\ref{thm:App}, and the support-bound
+  checks of Lemma~\ref{lem:S} at $R = 19$ and $23$ --- in the
+  accompanying repository.
 \end{itemize}
 
 \subsection{The residual method}\label{sec:intro-method}
@@ -252,13 +253,15 @@ exponents). The checks are short (seconds each, up to $331$\,s for the largest,
 $R = 107$), involve only exact integer arithmetic, and the code is
 available in the
 accompanying repository; Appendix~\ref{app:verif} records the exact
-configuration counts and entry points. Two of the enumerations are
+configuration counts and entry points. These enumerations are
 additionally formalized in Lean~4: the $R = 7$ verification of
 Theorem~\ref{thm:Ap} (re-stated multiplicatively over
-$(\mathbb{Z}/7)^\times$) and the $R = 19$ case of Lemma~\ref{lem:S}
-(in the discrete-log coordinates of its proof) are discharged by
-Lean's compiled evaluator, with the monotonicity reductions
-(Lemma~\ref{lem:mono}) proved as theorems (Appendix~\ref{app:verif}).
+$(\mathbb{Z}/7)^\times$), the $R = 11$ criterion of
+Theorem~\ref{thm:App}, and the $R = 19, 23$ cases of
+Lemma~\ref{lem:S} (the latter three in the discrete-log coordinates
+of their proofs) are discharged by Lean's compiled evaluator, with
+the monotonicity reductions (Lemma~\ref{lem:mono}) proved as theorems
+(Appendix~\ref{app:verif}).
 \end{remark}
 
 The obstruction framework of Section~\ref{sec:obstruction} yields a
@@ -992,10 +995,13 @@ directly, both halves of Lemma~\ref{lem:mono} are proved as theorems
 (\texttt{reach\_mono}, \texttt{reach\_sublist}) with no computational
 content to trust, and the full enumerations behind
 Theorem~\ref{thm:Ap} ($1{,}536$ configurations, stated in the
-multiplicative model itself) and the $R = 19$ case of
-Lemma~\ref{lem:S} ($437{,}580$ checks, stated in the discrete-log
-coordinates in which the proof and \texttt{verify\_support\_bound}
-work) are discharged by Lean's compiled evaluator
+multiplicative model itself), Theorem~\ref{thm:App} ($497{,}664$
+capped configurations, including the exact two-case failure
+classification), and the $R = 19, 23$ cases of Lemma~\ref{lem:S}
+($437{,}580$ resp.\ $7{,}759{,}752$ checks) --- the latter three
+stated in the discrete-log coordinates in which the proofs and
+\texttt{verify\_support\_bound} work --- are discharged by Lean's
+compiled evaluator
 (\texttt{native\_decide}, which trusts the Lean compiler in addition
 to the kernel); every declaration is audited with
 \texttt{\#print axioms}. For these two enumerations the sixty-line
