@@ -1,5 +1,5 @@
 # Erdős–Straus Conjecture Attack — Current State
-**Date:** 2026-08-01 / 2026-08-02  
+**Date:** 2026-08-02 (current through PR #13)  
 **Focus:** Hard-class primes (Mordell exceptional residues mod 840)
 
 ## The Problem
@@ -13,7 +13,12 @@ It is known for all \(n\) outside six residue classes modulo 840:
 \]
 The remaining open cases are concentrated on primes in these classes (“hard primes”).
 
-Published verification (Salez → Mihnea–Dumitru 2025) has ruled out counterexamples for all \(n \le 10^{18}\) via modular sieves. The residual / certificate approach (\(R = 4a - n\)) appears in 2026 technical notes and is the framework used here.
+Documented verification: Swett to \(10^{14}\), Salez to \(10^{17}\); a
+\(10^{18}\) verification and 2026 residual-certificate notes have been
+reported informally but could not be bibliographically confirmed, and are
+cited nowhere in the paper (which uses only Swett, Salez, Vaughan,
+Elsholtz–Tao, Mordell, and the sieve references). The residual approach
+\(R = 4a - n\) is developed here from scratch with full proofs.
 
 ## Method Used
 Residual method:
@@ -22,7 +27,10 @@ Residual method:
 3. Search for a positive divisor \(k \mid m^2\) satisfying \(k \equiv -m \pmod{R}\).
 4. Recover \(b = (k + m)/R\), \(c = (m^2/k + m)/R\).
 
-This is implemented in `residual_solver.py` (factoring via sympy) and supported by utilities in `solver.py`.
+Reference implementation in `residual_solver.py` (sympy); the production
+engine is `bulk_generate.py` (integer-only trial division, segmented sieve,
+parallel, three output formats including the compact R-sequence format used
+at \(10^{11}\) scale).
 
 ## Computational Results (Hard Primes Only)
 
@@ -38,6 +46,7 @@ This is implemented in `residual_solver.py` (factoring via sympy) and supported 
 | \(< 1.2 \times 10^8\) | 213 131 | Yes | 107               | Full explicit solutions saved (gzip) |
 | \(< 10^9\)     | 1 587 581 | Yes | 107               | Minimal-\(R\) map saved (gzip) |
 | \(< 10^{10}\)  | **14 215 707** | **Yes** | **107**      | Minimal-\(R\) map saved (gzip); current verified bound |
+| \(< 10^{11}\)  | ~128.7 M (est.) | *in progress* | — | R-sequence run launched 2026-08-02; results PR to follow |
 
 The \(1.2 \times 10^8\) pass was produced by `erdos_straus.bulk_generate`
 (integer-only trial-division solver, numpy sieve, 4-way parallel) in **≈9 s**
@@ -137,21 +146,33 @@ residuals \(R \equiv 3 \pmod 4\), \(R \le 107\) that yield a solution
 - `src/erdos_straus/parametric_search.py` — early experiments with fixed-residual parametric searches
 - `src/erdos_straus/bulk_generate.py` — fast integer-only solver + monolithic/segmented sieves + parallel driver for large-scale generation
 - `src/erdos_straus/analyze.py` — minimal-\(R\) distribution/CDF, covering-set (set cover over full residual masks), and high-\(R\) tail structure analysis
-- `src/erdos_straus/verify.py` — independent verification of the stored certificates (full triples and minimal-\(R\) maps)
+- `src/erdos_straus/theory.py` — obstruction theory: Jacobi machinery, failure taxonomy, exact-criteria engines (`solvable_exact`, `finite_criterion_dp`), support-bound verifiers (combinatorial and DP), aggregate identities, R=7 finite verification, independence model
+- `src/erdos_straus/verify.py` — independent verification of the stored certificates (full triples, minimal-\(R\) maps, and npz archives)
 - `data/hard_primes_1e9_minimalR.json.gz` — minimal-\(R\) map for all 1 587 581 hard primes \(< 10^9\) (gzip; triples reconstruct deterministically)
 - `data/hard_primes_1.2e8_solutions.json.gz` — explicit \((R,a,b,c)\) for all 213 131 hard primes \(< 1.2 \times 10^8\) (gzip)
 - `data/hard_primes_1e6_solutions.json` — explicit \((R,a,b,c)\) for all hard primes \(< 10^6\)
 - `data/hard_primes_2e5_solutions.json` — smaller explicit set
 - `data/high_R_primes_5e6.json` — primes that required larger residuals
-- `tests/test_solver.py` — unit tests and certificate validation
-- `STATUS.md` — this document
+- `data/hard_primes_1e10_minimalR.json.gz` — minimal-\(R\) map for all 14 215 707 hard primes \(< 10^{10}\)
+- `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
+- `tests/test_solver.py` — 46 tests: unit, certificate validation, theorem checks (A/A′/A″/J/meta), support-bound lemmas, aggregate identities
+- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 13 pp.
+- `THEORY.md` — full theoretical development; `STATUS.md` — this document
 
-All 216 141 bundled certificates pass `es-verify` (exact integer arithmetic).
+All 1 803 722 certificates in the `es-verify` defaults pass exhaustively
+(exact integer arithmetic); the \(10^{10}\) map is verified by sampling plus
+full tail minimality.
 
 ## Comparison with Published Work
-- **Full verification to \(10^{18}\)** (Mihnea–Dumitru 2025) is far stronger for ruling out counterexamples; it uses modular sieves rather than exhibiting solutions.
-- Residual-certificate theory (2026 notes) already formalizes the \(R=4a-n\) framework and proves that \(R=3\) or \(7\) covers many non-hard cases.
-- This attack supplies large-scale *explicit* residual solutions and systematic statistics on the growth of minimal \(R\) for hard primes (up to \(5 \times 10^7\)).
+- **Verification** (Swett \(10^{14}\), Salez \(10^{17}\)) rules out
+  counterexamples far beyond our range but exhibits no mechanism.
+- **Vaughan (1970)**: exceptional set \(\ll x\exp(-c(\log x)^{2/3})\) —
+  asymptotically stronger than any fixed power of \(\log x\); our chain's
+  value is mechanism (explicit certificates, exact criteria, machine-verified
+  lemmas), not raw density.
+- This project supplies the largest explicit certificate dataset
+  (to \(10^{10}\), \(10^{11}\) in progress), exact solvability criteria,
+  and the reciprocity structure theory of joint failure.
 
 ## Theoretical Results (see THEORY.md)
 
@@ -166,35 +187,61 @@ All 216 141 bundled certificates pass `es-verify` (exact integer arithmetic).
   R=3 and R=7 number O(x/(log x)²); empirically density ≈ 5.17/log x,
   constant to 2 % across three decades. With A″, the {3,7,11} exceptional
   set is O(x/(log x)^{5/2}).
-- **Theorem D** (sieve reduction) — for every A, a finite residual list
-  covers all hard primes except relative density O((log x)^{−A}).
+- **Theorems F/G/G′/H** (the chain) — joint exceptional sets:
+  {3,7,11} → O(x/(log x)^{5/2}); {3,7,11,19} → O(x/(log x)³);
+  +23 → 7/2; all fifteen primes ≤ 107 → **17/2**, via **Lemma S**
+  (support bound, machine-verified by subset-DP for every prime residual
+  19…107, zero violations).
+- **Theorem I** (aggregate identities) — R | p+1 or R | p+4 always
+  certifies; the only a-independent families; +1 to the chain (**19/2**);
+  covers 74 % of hard primes alone; characterizes the critical primes.
+- **Theorem J** (reciprocity structure) — (q|R) = (p|q) for odd primes
+  q | (p+R)/4: joint Type-I failure ⟺ p is a QR mod every unforced prime
+  of every shifted value. Explains the record prime (4σ Legendre-coin
+  fluctuation over only 43 distinct primes) and why hard classes are the
+  squares mod 840 (forced small primes are character-neutral).
+- **Theorem K** (conditional) — under Dickson's conjecture, every fixed
+  finite residual list fails infinitely often: the fixed-list covering
+  hypothesis is **false** under standard conjectures.
+- **Theorem D** (density reduction, full proof in the paper) — for every
+  A, a finite residual list covers all hard primes except relative
+  density O((log x)^{−A}).
+- **Completeness** — every ESC solution is a residual certificate with
+  R ≤ 2p, so *any* unconditional bound on R_min(p) is equivalent to the
+  conjecture itself.
 
 ## Current Assessment
-- No counterexample found; all hard primes up to 50 million possess explicit solutions with \(R \le 107\).
-- The slow growth of minimal residual is the most interesting structural signal.
-- A proof that every hard prime admits a solution with \(R\) belonging to a fixed finite set would reduce the conjecture to a finite number of residual shells.
-- Parametric constructions with constant \(k\) give positive-density coverage inside each hard class; full arithmetic-progression coverings require more sophisticated (higher-degree or residual-dependent) factors.
+- No counterexample; all 14 215 707 hard primes below \(10^{10}\) have
+  explicit verified solutions with \(R \le 107\); \(10^{11}\) in progress.
+- The record's staticness is now *explained* (Theorem J): joint failure is a
+  Legendre-coin large-deviation event; expected record growth
+  \(\asymp \log x/\log\log x\) at the pure-Type-I level.
+- The fixed-finite-list reduction is conditionally **false** (Theorem K):
+  the correctly-posed open problem is an unconditional bound on
+  \(R_{\min}(p)\) — which, by completeness, *is* the conjecture.
+- Almost-all coverage is settled with mechanism: exponent 19/2 chain,
+  exact criteria for R = 3, 7, 11, and per-residual finite-state criteria
+  for every fixed R (meta-theorem).
 
-## Next Natural Steps
-1. ~~Extend explicit residual solutions past \(10^8\).~~ **Done** at
-   \(1.2 \times 10^8\) (full triples) and \(10^9\) (minimal-\(R\) map,
-   segmented sieve). Maximal minimal \(R\) unchanged at 107 across a
-   \(20\times\) extension of the bound.
-2. Prove (or disprove) that a short fixed list of residuals always suffices.
-   ~~Compute which residuals are unavoidable and the smallest covering list
-   up to \(10^9\).~~ **Done** — 18 residuals suffice below \(10^9\), and only
-   4 primes force the tail of that list (see Covering-Set Analysis). The
-   theoretical question is now sharply posed: show that the density of
-   primes with *no* working residual \(\le B\) vanishes (or is empty) for
-   some fixed \(B\).
-3. Construct a parametric family that covers an entire hard residue class for a fixed small \(R\).
-4. Analyze the algebraic conditions (divisor distribution / Jacobi barriers) that force larger \(R\).
-   First data point: the record prime's \(a\) is fully smooth
-   (\(3^2 11^2 43 \cdot 47\)) — the failure of all \(R < 107\) despite many
-   divisors suggests a congruence obstruction rather than a scarcity of
-   divisors. The `analyze.py tail` output is the raw material here.
-5. Push the minimal-\(R\) map to \(10^{10}\) (runtime scales linearly;
-   ~8 min on 4 cores).
+## Next Natural Steps (updated)
+1. ~~Extend past \(10^8\), \(10^9\), \(10^{10}\).~~ **Done**;
+   \(10^{11}\) running (tests the Theorem J growth law: record expected to
+   survive, first break forecast \(10^{12}\)–\(10^{13}\)).
+2. ~~Fixed finite list?~~ **Resolved in direction**: covering lists computed
+   (18 suffice below \(10^9\), lower bound 12); fixed lists fail infinitely
+   often under Dickson (Theorem K). Remaining: nothing short of the
+   conjecture itself (completeness).
+3. ~~Single fixed \(R\) covering an entire hard class?~~ **No** — each
+   fixed \(R\) has positive-density failure in every class (exact
+   criteria + Selberg–Delange); coverage is inherently a union over
+   residuals/families.
+4. ~~Algebraic conditions forcing large \(R\).~~ **Done** — Proposition 1
+   (character obstruction), Theorem A″ (budget patterns), Theorem J
+   (reciprocity structure): the full mechanism of the tail.
+5. Open: composite-residual criteria (R = 15 first); Lemma S past 107;
+   Olson-type additive combinatorics to enlarge the provable forbidden
+   structure (the route that could pass Vaughan conditionally); the
+   unconditional \(R_{\min}\) bound (= the conjecture).
 
 ---
 *Attack ongoing. Framework and data are ready for further extension or theoretical work.*

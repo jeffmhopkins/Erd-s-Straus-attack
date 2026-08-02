@@ -1,12 +1,16 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
-**Date:** 2026-08-02.
-**Status:** Theorems A, A′, A″, E, the meta-theorem, and Propositions 1–3
-are proved (A′/A″ by machine-verified finite case analysis, reproducible via
-`erdos_straus.theory`). Theorem D is proved modulo standard sieve machinery,
-with the dependence stated. Section 6 is heuristic and is validated against
-the complete solvability data for all 1 587 581 hard primes below 10⁹
-(`data/analysis/residual_masks_1e9.json.gz`) and the 10¹⁰ minimal-R map.
+**Date:** 2026-08-02 (current through PR #13).
+**Status:** Proved: Theorems A, A′, A″ (exact criteria; A′/A″ by
+machine-verified finite case analysis), the meta-theorem, Propositions 1–3,
+Theorem E and the chain F/G/G′/H (exponents 2 … 17/2, via Lemma S verified
+for every prime residual 19…107), Theorem I (aggregate families, → 19/2),
+Theorem J (reciprocity structure), and Theorem D (full proof in the paper).
+Theorem K is conditional on Dickson's conjecture. Section 6 is heuristic,
+validated against the complete solvability data below 10⁹ and the 10¹⁰
+minimal-R map. §2.8 records two executed attempts at totality and their
+precisely-characterized walls; the completeness remark (R_min ≤ 2p ⟺ ESC)
+calibrates what "closing the problem" requires.
 
 ---
 
@@ -740,20 +744,26 @@ them directly.
 
 ## 8. What would close the hard cases
 
-1. **Finite covering (Theorem B hypothesis).** Prove some finite S works for
-   all hard primes. The sieve (Theorem D) gives density-(log x)^{−A}
-   exceptional sets for every A but cannot reach emptiness.
-2. **More exact criteria / longer chains.** ~~R = 11 as the first Type-II
-   case.~~ **Done** (Theorem A″, §2.6). ~~Sieve-grade handles on 19, 23.~~
-   **Done** (Lemma S, §2.7) — note the support-bound lemma suffices for
-   the sieve without the full exact criterion. Proven exponents: 5/2
-   ({3,7,11}), 3 ({3,7,11,19}), 7/2 (adding 23). Next: bit-parallel
-   verification of Lemma S at R = 31, 43, 47 (exponents 4, 9/2, 5), and
-   the first composite criterion R = 15 (coupled conditions mod 3, mod 5).
-3. **Understand deep-tail correlation.** The ×30 calibration factor says
-   smooth-shift primes fail *jointly*. A quantitative model of
-   P(fail at R | a_R smooth) would turn the record forecast into a theorem-
-   grade tail bound and possibly explain why records are so static.
+1. **Finite covering — resolved in direction.** Under Dickson's conjecture
+   every fixed finite list fails infinitely often (Theorem K, §2.9); the
+   sieve (Theorem D) gives density-(log x)^{−A} exceptional sets for every
+   A but cannot reach emptiness. By completeness (R_min ≤ 2p ⟺ ESC), any
+   unconditional bound on R_min is the conjecture itself.
+2. **More exact criteria / longer chains.** ~~R = 11.~~ **Done** (A″,
+   §2.6). ~~Lemma S at 19, 23.~~ ~~At 31…107.~~ **Done** — the subset-DP
+   verifies every prime residual to 107 (§2.7); chain exponent 17/2, and
+   19/2 with the aggregate families (Theorem I). Next: composite residuals
+   (R = 15 first: coupled conditions mod 3 and mod 5, meta-theorem
+   componentwise), Lemma S past 107 (DP state count grows ≈2× per
+   residual), and Olson-type additive combinatorics to enlarge the
+   provable forbidden structure — the one route that could conditionally
+   pass Vaughan (§2.8).
+3. ~~**Understand deep-tail correlation.**~~ **Done** — Theorem J (§2.9):
+   joint Type-I failure is controlled by one Legendre coin (p|q) per
+   distinct prime of the interval factorizations; smoothness = fewer
+   coins; the record is a ≈4σ coin fluctuation; pure-Type-I record growth
+   ≍ log x/log log x. Remaining here: fold the Type-II escape layer into
+   the growth law quantitatively.
 
 ---
 

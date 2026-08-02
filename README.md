@@ -26,9 +26,9 @@ For a target $n$ and residual $R = 4a - n > 0$ (with $a = (n+R)/4$ an integer):
 3. Recover $b = (k + m)/R$ and $c = (m^2/k + m)/R$.
 
 The attack searches increasing residuals $R$ until a certificate $(a,b,c)$ is
-found, and records the **minimal $R$** per prime. Empirically a short fixed list
+found, and records the **minimal $R$** per prime. The fixed list
 $R \in \{3, 7, 11, \dots, 107\}$ covers every hard prime examined so far
-(up to $5 \times 10^7$).
+(up to $10^{10}$; a $10^{11}$ run is in progress).
 
 ## Layout
 
@@ -37,10 +37,13 @@ src/erdos_straus/
   solver.py            core utilities: is_solution, hard_residue,
                        generate_hard_primes, classical identities, brute search
   residual_solver.py   residual engine (R = 4a - n) with sympy divisor factoring
-  bulk_generate.py     fast integer-only solver + segmented sieve + parallel driver
+  bulk_generate.py     fast integer-only solver + segmented sieve + parallel
+                       driver (full / rmap / rseq output formats)
   analyze.py           distribution/CDF, covering-set, and high-R tail analysis
+  theory.py            obstruction theory: exact-criteria engines, support-
+                       bound verifiers (DP), aggregate identities, models
   parametric_search.py fixed-residual parametric experiments per hard class
-  verify.py            independent verification of the JSON certificates
+  verify.py            independent verification (JSON, minimal-R maps, npz)
 data/
   hard_primes_1e10_minimalR.json.gz    minimal-R map for all 14,215,707 hard
                                        primes < 10^10 (triples reconstruct)
@@ -54,8 +57,11 @@ data/
   analysis/                        distribution, covering-set, per-prime
                                    residual masks, and high-R tail reports
 tests/
-  test_solver.py       unit tests + certificate validation
+  test_solver.py       46 tests: units, certificates, theorem checks
+paper/
+  erdos_straus_residuals.tex/.pdf   the manuscript (13 pp.)
 STATUS.md              full status of the attack
+THEORY.md              theoretical development with proofs
 ```
 
 ## Current results
@@ -69,11 +75,17 @@ orders of magnitude**. `R = 3` covers 49 % of hard primes, `R ∈ {3, 7, 11}`
 covers 91 %, and no prime has minimal R in {87, 91, 95, 99, 103}: the
 distribution jumps from 83 straight to 107.
 
-**Theory** (see `THEORY.md`): exact solvability criteria are proved for
-R = 3 and (for hard primes, via machine-verified finite case analysis) R = 7;
-a quadratic character obstruction explains why residuals fail; and a
-sieve-theoretic reduction shows a finite residual list captures all hard
-primes outside a set of relative density O((log x)⁻ᴬ) for every A.
+**Theory** (see `THEORY.md` and `paper/`): exact solvability criteria are
+proved for R = 3, 7, and 11 (the latter two by machine-verified finite case
+analysis, with a meta-theorem making every fixed R decidable); a chain of
+sieve bounds reaches exponent 19/2 via the support-bound lemma (verified
+for every prime residual to 107) and two aggregate identity families
+(R | p+1 or R | p+4 always certifies); the reciprocity structure theorem
+(q|R) = (p|q) explains joint failure and the static record; and under
+Dickson's conjecture no fixed finite residual list suffices — the
+correctly-posed open problem, by completeness of the residual formulation,
+is the conjecture itself. Densities are calibrated against Vaughan's
+classical bound; the contribution is mechanism, not raw density.
 
 ## Setup
 
@@ -157,15 +169,22 @@ Each data file maps a prime (as a string key) to its certificate:
 }
 ```
 
-A certificate is valid iff $4abc = n(bc + ac + ab)$ (checked exactly, no floats)
-and $R = 4a - n$. All 3010 bundled certificates pass `es-verify`.
+A certificate is valid iff $4abc = n(bc + ac + ab)$ (checked exactly, no
+floats) and $R = 4a - n$. All 1,803,722 certificates in the `es-verify`
+defaults pass exhaustively; the $10^{10}$ map is verified by sampled
+reconstruction plus full tail minimality. Compact minimal-R maps are
+verified by *reconstructing* each triple from $(n, R)$ — never taken on
+faith.
 
 ## Scope & prior work
 
-Full modular-sieve verification rules out counterexamples for all
-$n \le 10^{18}$ (Salez; Mihnea–Dumitru 2025). This project does not compete with
-that bound — it contributes **large-scale explicit residual certificates** and
-**statistics on the growth of the minimal residual $R$** for hard primes. The
-slow growth of minimal $R$ is the most interesting structural signal; a proof
-that a fixed finite set of residuals always suffices would reduce the conjecture
-to finitely many "residual shells."
+Documented verification rules out counterexamples to $10^{14}$ (Swett) and
+$10^{17}$ (Salez), and Vaughan (1970) bounds the exceptional set by
+$x\exp(-c(\log x)^{2/3})$ — stronger in density than any fixed power of
+$\log x$. This project does not compete on either axis: it contributes the
+**mechanism** — explicit verified certificates at the largest scale
+computed, exact solvability criteria, machine-verified sieve lemmas, and
+the reciprocity structure theory of joint failure. The fixed-finite-list
+reduction is conditionally false (Theorem K); by completeness of the
+residual formulation, an unconditional bound on the minimal residual is
+equivalent to the conjecture itself.
