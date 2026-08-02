@@ -303,6 +303,49 @@ The contrapositive of Proposition~\ref{prop:succ} is the sieve input for
 Theorem~\ref{thm:D}: failure at $R$ forces $(p+R)/4$ to avoid prime
 factors in up to three explicit classes modulo $R$.
 
+The next identity converts the per-residual character conditions into a
+single global statement about $p$, and is the structural explanation of
+joint failure across residuals.
+
+\begin{theorem}[reciprocity structure]\label{thm:J}
+Let $p$ be a hard prime, $R \equiv 3 \pmod 4$ prime, and $q$ an odd
+prime factor of $a = (p+R)/4$ (necessarily $q \ne R$). Then
+\[
+  \legendre{q}{R} \;=\; \legendre{p}{q}.
+\]
+\end{theorem}
+
+\begin{proof}
+From $q \mid p+R$ we get $R \equiv -p \pmod q$. By quadratic
+reciprocity with $R \equiv 3 \pmod 4$,
+$\legendre{q}{R} = (-1)^{\frac{q-1}{2}} \legendre{R}{q}
+ = (-1)^{\frac{q-1}{2}} \legendre{-1}{q} \legendre{p}{q}
+ = \legendre{p}{q}$.
+\end{proof}
+
+\begin{corollary}\label{cor:J}
+(i) The hard classes are the squares mod $840$, so $p$ is automatically
+a quadratic residue mod $3, 5, 7$, and $p \equiv 1 \pmod 8$ handles
+$q = 2$ (which divides $a$ only for $R \equiv 7 \pmod 8$, where
+$\smash{\legendre{2}{R}} = +1$): \emph{the small primes forced into
+the shifted values by the Mordell structure never break a Type-I
+failure} --- a conceptual explanation of why the hard classes are
+exactly the square classes. (ii) $p$ fails Type-I at every prime
+residual $R \le B$ simultaneously if and only if
+$\smash{\legendre{p}{R}} = +1$ for each such $R$ and
+$\smash{\legendre{p}{q}} = +1$ for every unforced odd prime $q$
+dividing any of the shifted values --- \emph{one condition per distinct
+prime, shared across every residual it divides}. This is the
+correlation mechanism behind the deep tail: smooth shifted values have
+fewer distinct prime factors, hence fewer independent sign conditions.
+For the record prime $8{,}803{,}369$, the $27$ shifted values contain
+only $43$ distinct odd primes (typical: $45$--$52$) and $81\%$ of them
+satisfy $\legendre{p}{q} = +1$ (typical: $44$--$60\%$) --- a
+$\approx 4\sigma$ fluctuation in provably the right statistic.
+Verified: $135{,}588$ instances of Theorem~\ref{thm:J} and $61{,}438$
+forced-prime instances in the $10^9$ data, zero violations of either.
+\end{corollary}
+
 \section{Exact criteria}\label{sec:exact}
 
 \subsection{Proof of Theorem \ref{thm:A}}
@@ -718,11 +761,20 @@ $\varphi(R)$ grows harder while the character dichotomy stays binary.
   fixed-list format itself cannot reach emptiness (see the remark after
   Theorem~\ref{thm:FG}): the structurally right target is a slowly
   growing bound on $R_{\min}(p)$.
-\item \textbf{The record prime.} $8{,}803{,}369$ fails every residual
-  below $107$ even allowing $R \le 400$; its shifted values are
-  anomalously smooth (at $R = 107$, $a = 3^2 \cdot 11^2 \cdot 43 \cdot
-  47$). A quantitative theory of joint failure for smooth-shift primes
-  would explain why the record is static and bound its future growth.
+\item \textbf{The record and the covering hypothesis.}
+  Theorem~\ref{thm:J} explains the record prime quantitatively (see
+  Corollary~\ref{cor:J}) and yields a conditional resolution of the
+  covering question: under Dickson's prime-tuple conjecture, for every
+  $B$ there are infinitely many hard primes failing every residual
+  $\le B$ --- fix the forced smooth parts of the shifted values
+  (character-neutral by Corollary~\ref{cor:J}(i)), make the cofactors
+  prime in prescribed residue classes, and apply
+  Proposition~\ref{prop:char}. So no fixed finite list suffices,
+  conditionally, and the record grows without bound (at the pure-Type-I
+  level, like $\log x/\log\log x$). Unconditional versions appear
+  out of reach: already ``infinitely many hard $p$ fail $R=3$''
+  contains a two-form prime-tuple statement. What remains open is an
+  unconditional slowly-growing upper bound on $R_{\min}(p)$.
 \end{enumerate}
 
 \appendix

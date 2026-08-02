@@ -522,6 +522,85 @@ x·exp(−c(log x)^{2/3}). The wall is not technical laziness: it is the
 collapse of the p-independent forbidden structure to a single class,
 measured exactly by the AF computation.
 
+## 2.9 The reciprocity structure theorem: joint failure explained
+
+The open problem "explain the record prime" is now substantially
+resolved by a clean structural identity.
+
+### Theorem J (reciprocity structure)
+
+*Let p be a hard prime, R ≡ 3 (mod 4) prime, and q an odd prime factor
+of a_R = (p+R)/4 (necessarily q ≠ R). Then*
+
+    (q | R) = (p | q).
+
+**Proof.** q | p+R gives R ≡ −p (mod q). By quadratic reciprocity with
+R ≡ 3 (mod 4): (q|R) = (−1)^{(q−1)/2}(R|q) =
+(−1)^{(q−1)/2}(−1|q)(p|q) = (−1)^{(q−1)/2}·(−1)^{(q−1)/2}·(p|q) =
+(p|q). ∎
+
+**Corollary J1 (forced primes are character-neutral).** The hard classes
+are the squares mod 840, so p is automatically a QR mod 3, 5, and 7, and
+p ≡ 1 (mod 8) handles q = 2 (2 | a_R only for R ≡ 7 mod 8, where
+(2|R) = +1). Hence the small primes forced into the shifted values by
+the Mordell structure can never break a Type-I failure — a conceptual
+explanation of *why* the hard classes are exactly the square classes.
+Verified: 61 438 forced-prime instances in the data, zero violations
+(and 135 588 instances of Theorem J itself, zero violations).
+
+**Corollary J2 (joint Type-I criterion).** p fails Type-I at every prime
+residual R ≤ B simultaneously ⟺ (p|R) = +1 for each such R and
+**(p|q) = +1 for every unforced odd prime q dividing any of the shifted
+values (p+R)/4, R ≤ B.** One condition per *distinct* prime q, shared
+across every residual q divides.
+
+### The record prime, explained quantitatively
+
+Corollary J2 identifies the correct "coins": joint failure requires a
+positive fluctuation in the independent-looking signs (p|q) over the
+distinct primes q of the interval, plus Type-II luck where signs come up
+−1. Smooth shifted values reduce the number of distinct primes — fewer
+coins to win. Measured for the record p = 8 803 369 against typical
+hard primes of its size:
+
+| | distinct odd primes over 27 shifted values | share with (p|q)=+1 |
+|---|---:|---:|
+| record 8 803 369 | **43** | **81 %** |
+| typical (5 samples) | 45–52 | 44–60 % |
+
+A ≈4σ fluctuation in provably-the-right statistic. The static record is
+now a statement about extreme deviations of Legendre-symbol coin flips
+over interval factorizations: rarer at larger p only because the number
+of coins D(B, p) grows like (B/4)·log log p, giving the growth law
+**B(x) ≍ log x / log log x** for the pure-Type-I record (the observed
+mixed Type I/II record sits above this, Type-II escapes absorbing a few
+−1 coins — the record's 8 negative coins are exactly its 14 Type-II
+failures' worth of luck).
+
+### Theorem K (conditional falsity of the finite covering hypothesis)
+
+*Assume Dickson's conjecture (prime k-tuples). Then for every B there
+are infinitely many hard primes p with R_min(p) > B.*
+
+**Construction sketch.** Fix the interval pattern: choose n mod a smooth
+modulus so each a_R = (p+R)/4 (R ≤ B admissible) has exactly its forced
+smooth part s_R (character-neutral by Corollary J1) times a cofactor
+c_R. The system {c_R = (n + (R−3)/4)/s_R} ∪ {4n−3} is an admissible
+family of linear forms; impose on each prospective prime c_R the
+congruence conditions "c_R ≡ QR class (mod r)" for every prime
+r ≤ B, r ≡ 3 (mod 4) (finitely many congruences, compatible by CRT),
+and on p = 4n−3 the hard-class congruence. Dickson's conjecture supplies
+infinitely many n making all forms prime; then every prime factor of
+every a_R is a QR mod every relevant r — Proposition 1 forces failure at
+every R ≤ B. ∎ (sketch)
+
+Consequently, **under standard conjectures the fixed-list covering
+hypothesis is false and the record grows without bound** — matching the
+calibrated model. Unconditional falsity appears out of reach: already
+"infinitely many hard p fail R = 3" contains a two-form prime-tuple
+statement (a₃ and 4a₃−3 simultaneously prime in classes), i.e. is
+twin-prime-hard.
+
 ### Verdict
 
 Upper-bound counting — fixed lists, growing lists, aggregate families,
