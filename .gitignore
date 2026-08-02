@@ -29,3 +29,18 @@ htmlcov/
 /scratch/
 /output/
 *.tmp
+
+# Lean / lake build artifacts
+.lake/
+*.olean
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz

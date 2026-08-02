@@ -934,7 +934,7 @@ end R11Bridge
 end ErdosStraus
 
 -- Audit. The bridge layer itself is symbolic (standard axioms only);
--- the two `_mult` theorems inherit exactly the mask theorems' single
+-- the three `_mult` theorems inherit exactly the mask theorems' single
 -- `native_decide` axiom each — the bridge adds no computational trust.
 #print axioms ErdosStraus.maskSet_rotg
 #print axioms ErdosStraus.maskSet_mstep

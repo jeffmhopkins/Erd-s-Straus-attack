@@ -31,17 +31,17 @@ def solve_residual(n: int, R: int) -> Optional[Tuple[int, int, int]]:
                         c = (ck + m) // d
                         if c >= b and is_solution(n, a, b, c):
                             return (a, b, c)
-    except:
+    except Exception:
         return None
     return None
 
 def find_solution_by_residuals(n: int, max_R: int = 200) -> Optional[Tuple[int, int, int, int]]:
-    """Try increasing odd residuals R until a solution is found. Returns (a,b,c,R) or None."""
+    """Try increasing residuals R ≡ -n (mod 4) (odd R for the odd n of interest) until a solution is found. Returns (a,b,c,R) or None."""
     # R must be ≡ -n mod 4
     start_R = 4 - (n % 4)   # positive small congruent
     if start_R == 4:
         start_R = 0
-    for R in range(start_R if start_R > 0 else 4, max_R + 1, 4):  # step 4 to keep congruence? Wait, -n mod 4 is fixed, step 4.
+    for R in range(start_R if start_R > 0 else 4, max_R + 1, 4):  # R must stay ≡ -n (mod 4), hence step 4.
         # Actually since step 4 preserves mod 4.
         sol = solve_residual(n, R)
         if sol:

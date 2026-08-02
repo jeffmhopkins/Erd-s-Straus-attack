@@ -96,5 +96,6 @@ theorem theoremA_sufficiency
 end ErdosStraus
 
 -- Audit: standard axioms only.
+#print axioms ErdosStraus.divisor_one_mod_three
 #print axioms ErdosStraus.theoremA_necessity
 #print axioms ErdosStraus.theoremA_sufficiency

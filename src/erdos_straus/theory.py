@@ -2,6 +2,12 @@
 """Theoretical machinery for the residual method: obstruction theory,
 failure classification, and the growth model for the minimal residual.
 
+Naming note: this module's internal labels predate the paper. The
+dictionary is: "Prop. 1" = paper Prop. 2.1 (character obstruction),
+"Thm. 2"/"Theorem A" = paper Thm. 1.1, "Prop. 3" = paper Prop. 2.2
+(guaranteed success), "Theorems F/G"/"Theorem H" = paper Thm. 1.8
+(the chain), "Theorem I" = paper Prop. 1.9, Lemma S = paper Lem. 1.7.
+
 Mathematical setup
 ------------------
 For a hard prime p (p ≡ 1 mod 4) and admissible residual R ≡ 3 (mod 4):
@@ -349,7 +355,8 @@ def verify_R7_finite() -> Dict:
 
     Claim verified: within these constraints, the target class −m is
     realizable by a bounded-exponent subproduct  ⟺  some factor log is odd
-    (i.e. some prime factor of m is a non-residue mod 7).
+    (i.e. some prime factor of a is a non-residue mod 7; p never
+    contributes an odd log since hard primes are QRs mod 7).
     """
     from itertools import product as iproduct
 
@@ -490,11 +497,10 @@ def finite_criterion_dp(R: int, forced_logs: Optional[List[int]] = None,
                 new_states.add((nbm, num, nss, nho))
         states = new_states
 
-    # forced classes: keep only states derivable with forced mult >= 1 —
-    # handled by re-running: simpler to filter at classification time is not
-    # possible from state alone, so instead do the forced pass here:
+    # forced classes: whether a forced class was actually used cannot be read
+    # off a finished state, so when `forced` is set the DP is re-run with the
+    # set of used forced classes carried in the state:
     if forced:
-        # redo DP tracking whether each forced class was used
         states = {(1, 1, 0, False, frozenset())}
         for v in range(1, d):
             sub = d // math.gcd(v, d)
@@ -558,7 +564,8 @@ def finite_criterion_dp(R: int, forced_logs: Optional[List[int]] = None,
 def verify_support_bound(R: int) -> Dict:
     """Machine verification of the support-bound lemma for prime R ≡ 3 (4).
 
-    LEMMA. Every configuration for which residual R fails at a hard prime
+    LEMMA. Every configuration for which residual R fails (checked for
+    every class of p, a free strengthening of the hard-prime case)
     has at most (R-3)/2 NONZERO factor-class support (in discrete-log
     coordinates on (Z/R)* ≅ Z/(R-1)) — equivalently, counting the always-
     neutral class 1, the prime factors of (p+R)/4 lie in at most (R-1)/2
@@ -571,7 +578,7 @@ def verify_support_bound(R: int) -> Dict:
     p-budget 2). Type-I (all-QR) configurations have exactly d/2 - 1
     nonzero classes, so the bound is tight.
 
-    Consequence (used in Theorems F/G): failure at R implies (p+R)/4 has
+    Consequence (used in Theorem 1.8, the chain): failure at R implies (p+R)/4 has
     no prime factor in an explicit set of ≥ d/2 classes, a sifting
     condition of dimension ≥ 1/2 — and there are finitely many maximal
     failing supports, so the exceptional count splits into finitely many
@@ -657,7 +664,7 @@ def verify_support_bound_dp(R: int, time_budget: float = 900.0) -> Dict:
 
 
 def aggregate_identity_certificate(p: int) -> Optional[Tuple[int, int, int, int]]:
-    """Theorem I: explicit certificate from the p+1 / p+4 aggregate families.
+    """Aggregate identity families (paper Prop. 1.9; "Theorem I" in the notes).
 
     If some prime R ≡ 3 (mod 4) divides p+1, then k = a·p² certifies
     residual R (p ≡ −1 mod R); if R | p+4, then k = a²·p does (p ≡ −4).

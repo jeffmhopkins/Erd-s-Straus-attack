@@ -2,7 +2,7 @@
 The finite-enumeration layer: a computable model of divisor-class
 reachability (the content of the meta-theorem's reduction), the two
 monotonicity lemmas that drive it, and the finite checks behind
-Theorem A′ (R = 7) and Lemma S at R = 19.
+Theorem A′ (R = 7), Theorem A″ (R = 11), and Lemma S at R = 19 and 23.
 
 Model. A configuration is a list of pairs `(x, b) : ZMod R × ℕ`: a
 factor class `x` of `m = p·a` together with an exponent budget `b`
@@ -11,13 +11,15 @@ order of `x`). `reach l` is the set of classes of divisors `k ∣ m²`
 realizable within the budgets; residual `R` succeeds at `p` iff the
 target class `−m = −4⁻¹p²` lies in `reach`.
 
-The two finite theorems at the bottom mirror, statement for statement,
-the Python verifiers `theory.verify_R7_finite` (1,536 consistent
-configurations; stated multiplicatively over `ZMod 7`) and
-`theory.verify_support_bound` at R = 19 (C(17,9) = 24,310 supports ×
-18 classes of p; stated in the discrete-log coordinates of the proof —
-see the docstring of `lemmaS_finite_R19` for why). Both are discharged
-by `native_decide`; see lean/README.md for the trust base.
+The four finite theorems at the bottom mirror, statement for
+statement, the Python verifiers `theory.verify_R7_finite` (1,536
+consistent configurations; stated multiplicatively over `ZMod 7`),
+`theory.finite_criterion_dp` at R = 11, and
+`theory.verify_support_bound` at R = 19 and 23 — the latter three in
+the discrete-log coordinates of their proofs (see the docstring of
+`lemmaS_finite_R19` for why). All are discharged by `native_decide`;
+see lean/README.md for the trust base, and `Bridges.lean` for the
+proved translations back to the multiplicative model.
 -/
 import Mathlib.Tactic
 
@@ -160,12 +162,12 @@ multiplicity 1, for every class of `p` — all C(17,9) = 24,310 supports
 × 18 classes = 437,580 checks. By the monotonicity of reachability in
 support and multiplicities (`reach_mono` / `reach_sublist` in the
 multiplicative model), failing configurations therefore occupy at most
-8 nonzero classes: the support bound. The translation between this
-statement and the multiplicative model is the discrete-log
-isomorphism `(ℤ/19)ˣ ≅ ℤ/18`; it is not formalized here (the
-multiplicative form is stated at R = 7 above, where evaluation is
-cheap — at R = 19 the `Finset`-model evaluation is impractical for
-`native_decide`, so we check the proof's own coordinates instead). -/
+8 nonzero classes: the support bound. The discrete-log translation
+back to the multiplicative model is proved in `Bridges.lean`
+(`maskSet_rotg`, `reach_eq_maskSet`) and applied there to derive the
+multiplicative form `lemmaS_finite_R19_mult`; the mask coordinates
+are used here only because the `Finset`-over-`ZMod` evaluation is
+impractical for `native_decide` at R = 19. -/
 theorem lemmaS_finite_R19 :
     ∀ S ∈ Finset.powersetCard 9 (Finset.Icc 1 17),
       ∀ plog : ℕ, plog < 18 →

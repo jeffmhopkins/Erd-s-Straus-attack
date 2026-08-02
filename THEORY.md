@@ -1,16 +1,41 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
-**Date:** 2026-08-02 (current through PR #13).
+**Date:** 2026-08-02 (current through PR #28).
 **Status:** Proved: Theorems A, A′, A″ (exact criteria; A′/A″ by
-machine-verified finite case analysis), the meta-theorem, Propositions 1–3,
-Theorem E and the chain F/G/G′/H (exponents 2 … 17/2, via Lemma S verified
-for every prime residual 19…107), Theorem I (aggregate families, → 19/2),
-Theorem J (reciprocity structure), and Theorem D (full proof in the paper).
-Theorem K is conditional on Dickson's conjecture. Section 6 is heuristic,
-validated against the complete solvability data below 10⁹ and the 10¹⁰
-minimal-R map. §2.8 records two executed attempts at totality and their
-precisely-characterized walls; the completeness remark (R_min ≤ 2p ⟺ ESC)
-calibrates what "closing the problem" requires.
+machine-verified finite case analysis), the meta-theorem, Propositions 1
+and 3, Theorem E and the chain F/G/G′/H (exponents 2 … 17/2, via Lemma S
+verified for every prime residual 19…107), Theorem I (aggregate
+families, → 19/2), Theorem J (reciprocity structure), and Theorem D
+(full proof in the paper). Theorem K is a conditional sketch under
+Dickson's conjecture. Section 6 is heuristic, validated against the
+complete solvability data below 10⁹ and the 10¹⁰/10¹¹ minimal-R data.
+§2.8 records two executed attempts at totality and their
+precisely-characterized walls; the completeness remark (R_min ≤ 2p ⟺
+ESC) calibrates what "closing the problem" requires. Much of the
+elementary and enumeration layer is machine-checked in Lean 4
+(`lean/README.md`); paper counterparts of each named result are listed
+in the mapping table below.
+
+### Name mapping to the paper
+
+This document uses working letter names; the paper numbers results.
+The dictionary (paper labels in parentheses):
+
+| here | paper |
+|---|---|
+| Proposition 1 (character obstruction) | Proposition 2.1 (`prop:char`) |
+| Proposition 3 (guaranteed success) | Proposition 2.2 (`prop:succ`) |
+| Theorem A / A′ / A″ | Theorems 1.1 / 1.3 / 1.4 |
+| meta-theorem | Theorem 1.2 (`thm:meta`) |
+| Theorem B (empirical covering) | unnumbered remark after Thm. 1.10 |
+| Theorem C | not carried into the paper |
+| Theorem D (density reduction) | Theorem 1.10 (`thm:D`) |
+| Theorems E/F/G/G′/H (the chain) | the single Theorem 1.8 (`thm:FG`) |
+| Theorem I (aggregate families) | Proposition 1.9 (`prop:agg`) |
+| Theorem J (reciprocity) | Theorem 1.6 (`thm:J`) |
+| Theorem K (conditional) | sketch inside Open Problem 5 |
+| Lemma S (support bound) | Lemma 1.7 (`lem:S`) |
+| monotonicity reduction | Lemma 4.1 (`lem:mono`) |
 
 ---
 
@@ -70,8 +95,9 @@ valuation v ≥ 1, then k = q^{2v−1} (or simply k = q) is a certificate.*
 
 **Proof.** Mod 3 the unit group has order 2, so quadratic character *equals*
 class: −m ≡ 2 (mod 3) by (∗∗)-type computation (p² ≡ 1, 4⁻¹ ≡ 1, so
-m ≡ 1 and −m ≡ 2). *Necessity:* if all prime factors of a are ≡ 1 (mod 3)
-(note p ≡ 1 and 3 ∤ a since a ≡ 4⁻¹p ≡ 1), every divisor of m² is ≡ 1,
+m ≡ 1 and −m ≡ 2). *Necessity:* if all prime factors of a are ≡ 1 (mod 3),
+then a ≡ 1 (mod 3), hence p = 4a − 3 ≡ 1 (mod 3) as well, so every prime
+factor of m = pa is ≡ 1 (mod 3) and every divisor of m² is ≡ 1,
 missing class 2. *Sufficiency:* k = q^{2v−1} ≡ 2^{odd} ≡ 2 (mod 3), and
 k | m² since v_q(m²) ≥ 2v. Integrality of b and c is automatic: k ≡ −m gives
 3 | k+m, and m²/k ≡ m²(−m)⁻¹ = −m gives 3 | m²/k + m. ∎
@@ -79,7 +105,7 @@ k | m² since v_q(m²) ≥ 2v. Integrality of b and c is automatic: k ≡ −m g
 Verified against ground truth for **all 1 587 581 hard primes below 10⁹:
 1 587 581/1 587 581 agreements, zero exceptions.**
 
-### Theorem A′ (exact criterion for R = 7, hard primes) — NEW
+### Theorem A′ (exact criterion for R = 7, hard primes)
 
 *Let p be a hard prime, a = (p+7)/4. Residual 7 succeeds ⟺ a has a prime
 factor that is a quadratic non-residue mod 7 (i.e. ≡ 3, 5, or 6 mod 7).*
@@ -120,8 +146,8 @@ t·p^{−i}·pⁱ = t = −m. ∎
 
 *Contrapositive (sieve form):* failure at R ⟹ (p+R)/4 has **no prime factor
 in the ≤ 3 classes S_R(p) = {t, tp⁻¹, tp⁻²} mod R** — a sifting condition of
-dimension κ_R ≥ |S_R(p)|/φ(R) ≥ 1/φ(R) on the shifted linear form
-(p+R)/4. Validated: **zero violations across every residual tested** on the
+dimension κ_R = t_R/φ(R) ≥ 1/φ(R) (t_R = |S_R(p)|) on the shifted linear
+form (p+R)/4. Validated: **zero violations across every residual tested** on the
 10⁹ mask data.
 
 ### Theorem B (finite covering reduction; refined statement)
@@ -141,7 +167,10 @@ exponents, and monoid membership with an exponent beyond the budget need not
 be realizable (exponents can only be reduced modulo ord_R(q) when they
 exceed a full cycle). D_R(p) as defined is exactly what the computation
 verifies. The computational statement stands: **S₀ = {3, 7, 11, …, 107}
-(all R ≡ 3 mod 4) satisfies the hypothesis for every hard prime below 10⁹.**
+(all R ≡ 3 mod 4) satisfies the hypothesis for every hard prime below
+10¹¹** (complete per-residual solvability masks verified below 10⁹;
+minimal-R data to 10¹¹). The paper states the covering hypothesis as an
+equivalence with the conjecture for hard primes.
 
 ### Theorem C/D (density of exceptions; quantitative)
 
@@ -165,8 +194,9 @@ O_A(x/(log x)^{1+A}).*
 **Proof sketch.** By Proposition 3, failure at R implies the form (p+R)/4
 avoids prime factors in ≥ 1 explicit class mod R. Distinct R give distinct
 shifts — a system of linear forms, sifted simultaneously with total
-dimension κ(S) = Σ_R κ_R ≥ Σ_R 1/φ(R). Since Σ_{R ≡ 3 (4)} 1/φ(R) diverges,
-κ(S) can be made > A with a finite S; the multidimensional Selberg sieve
+dimension κ = 1 + Σ_R t_R/φ(R) ≥ 1 + Σ_R 1/φ(R) (the +1 is the form
+4n−3 being prime). Since Σ_{R ≡ 3 (4)} 1/φ(R) diverges, κ can be made
+> 1 + A with a finite S; the multidimensional Selberg sieve
 (Halberstam–Richert) yields the bound. ∎
 
 Theorem D is the strongest rigorous statement short of finiteness: residual
@@ -280,8 +310,8 @@ ground truth on every prime tested (R = 11, 19, 23; 7 938 primes each).
 Theorems A and A′ are the cases R = 3, 7, where the criterion collapses to
 the character dichotomy. The DP enumeration (`theory.finite_criterion_dp`)
 compresses each R's configuration space to a handful of equivalence states:
-R = 7 has 9 states (3 success / 3 all-even-fail — Theorem A′ re-derived),
-R = 11 has 25.
+R = 7 with the forced even factor has 4 reachable states (3 success /
+1 all-even-fail — Theorem A′ re-derived), R = 11 has 25.
 
 ### Theorem A″ (exact criterion for R = 11, hard primes)
 
@@ -308,9 +338,10 @@ matched to the class of p:*
 158 759** hard primes tested (every 10th prime below 10⁹). The DP
 enumeration proves cases (a)/(b) are exhaustive: of the 25 equivalence
 states, 16 succeed, 6 fail by (a), 3 fail by (b), and — remarkably —
-**no state fails by a proper-subgroup obstruction**: the only subgroup of
-(Z/11)* of even index containing a non-residue is {±1}, and the consistency
-relation forces p's class to generate the rest.
+**no state fails by a proper-subgroup obstruction**: in discrete-log
+coordinates, the only proper subgroup of Z/10 containing an odd element
+is {0, 5}, and the consistency relation forces p's class to extend it to
+all of Z/10.
 
 **Structure of (b).** The failing patterns are exponent-budget edge cases:
 the only odd-log contributions available are ±1 (single copies of classes
@@ -340,14 +371,20 @@ p = 4n − 3 contributes 1. Three residuals therefore give dimension 5/2 —
 **not 3**; exponent 3 requires a fourth residual. Both theorems below are
 now fully proven.
 
-### Lemma S (support bound; machine-verified for R = 19, 23)
+### Lemma S (support bound; machine-verified for every prime residual 19…107; Lean-certified at R = 19, 23, 31)
 
-*Let R ∈ {19, 23}. Every configuration for which residual R fails at a
+*Let R be one of the twelve primes 19, 23, 31, 43, 47, 59, 67, 71, 79,
+83, 103, 107. Every configuration for which residual R fails at a
 hard prime has at most (R−3)/2 nonzero factor-class support; equivalently,
 the prime factors of (p+R)/4 lie in at most (R−1)/2 of the R−1 unit
 classes mod R. Hence failure at R forbids at least half the classes, and
 the failing configurations fall into finitely many maximal-support
 branches, each a sifting condition of dimension ≥ ½ on (p+R)/4.*
+
+Note the check deliberately ignores the consistency relation
+∏(classes) ≡ 4⁻¹p: it examines a *superset* of the realizable
+configurations and can only overstate the failing supports — the lemma
+is conservative (paper, proof of Lemma 1.7).
 
 **Proof.** Reachability of the target class is monotone in both the
 support and the multiplicities. It therefore suffices to check that for
@@ -373,7 +410,9 @@ mod 11 (density 3/5). Each branch is a four-form sieve problem
 (n, n+1, n+2, 4n−3) as in Theorem E, of dimension 1+½+½+½ = 5/2, resp.
 1+½+½+3/5 = 13/5. The Fundamental Lemma bounds branch (a) by
 O(x/(log x)^{5/2}) and branch (b) by O(x/(log x)^{13/5}) = o(the former).
-Sum over the two branches and the six hard classes. ∎
+Sum over the two branches and the six hard classes. ∎ (At {3,7,11,19}
+the paper's proof also carries the Type-II cross-branch at exponent
+31/10; see the proof of Theorem 1.8 there.)
 
 ### Theorem G ({3,7,11,19}; exponent 3)
 
@@ -452,9 +491,11 @@ cover **74.2 %** of hard primes (random sample of 3 000), and none of the
 four critical primes — whose p+1 and p+4 must accordingly be free of
 3-mod-4 prime factors, a strong structural characterization of them.
 
-**Sieve consequence.** Failure of both families means p+1 and p+4 (two
-new linear forms, ~(2n−1) and (4n+1) in n = (p+3)/4) are free of primes
-≡ 3 (mod 4): two further sifting conditions of dimension ½ each. Added
+**Sieve consequence.** Failure of both families means (p+1)/2 and p+4
+(two new primitive linear forms, 2n−1 and 4n+1 in n = (p+3)/4) are free
+of primes ≡ 3 (mod 4): two further sifting conditions of dimension ½
+each. (The certifying shapes k = a^j p^i are the only a-independent
+ones with j, i ≤ 2.) Added
 to Theorem H: *the number of hard primes p ≤ x failing all fifteen prime
 residuals up to 107 **and** both aggregate families is
 O(x/(log x)^{19/2}).*
@@ -497,8 +538,11 @@ thicken the almost-all coverage but structurally cannot reach totality.
 
 Idea: let the residual list grow with p (B ≈ C log p), so the sieve
 dimension grows and the count bound x/(log x)^{κ(B)} could in principle
-drop below 1 — proving R_min(p) ≤ C log p outright. Two requirements
-emerge:
+drop below 1 — proving R_min(p) ≤ C log p outright. (Note: by the
+completeness remark below, *any* unconditional bound R_min(p) ≤ f(p) is
+equivalent in strength to the conjecture at p itself; this attempt is
+recorded to characterize the wall, not as an intermediate milestone.)
+Two requirements emerge:
 
 1. **p-independent forbidden classes.** The per-branch half-density
    forbidden sets of Lemma S depend on p mod R; aggregating them over
@@ -506,8 +550,10 @@ emerge:
    more classes than there are primes ≤ x. Only *p-independent* (branch-
    and p-class-free) forbidden classes can be aggregated. Computing this
    set exhaustively (forced-class DP over all configurations and all p
-   classes, R = 11 … 43): **the always-forbidden set is exactly one
-   class — the universal class −4⁻¹ (mod R) — at every R tested.** Every
+   classes, R = 11 … 43; an exploratory computation whose driver is not
+   among the repo's named entry points): **the always-forbidden set is
+   exactly one class — the universal class −4⁻¹ (mod R) — at every R
+   tested.** Every
    other class occurs in some failing configuration. So the aggregable
    sifting weight per modulus q is W(q) = #{R ≤ B : R | 4q+1}, of average
    ~½ log B — not the ~B/log B that half-density sets would give.
@@ -519,9 +565,10 @@ emerge:
    L ≤ exp(O(log x/log log x)) — never ≥ x. The same cap appears as the
    remainder-term explosion (log x)^{#forms} in the fundamental lemma.
 
-Outcome: unconditionally the growing-list route yields at best a bound
-of shape x·exp(−c(log log x)²) — beyond every fixed power of log, but
-(a) still divergent, and (b) weaker than Vaughan's classical
+Outcome (heuristic ceiling, not a claimed theorem — the paper asserts
+nothing of this shape): the growing-list route would yield at best a
+bound of shape x·exp(−c(log log x)²) — beyond every fixed power of log,
+but (a) still divergent, and (b) weaker than Vaughan's classical
 x·exp(−c(log x)^{2/3}). The wall is not technical laziness: it is the
 collapse of the p-independent forbidden structure to a single class,
 measured exactly by the AF computation.
@@ -620,6 +667,8 @@ forbidden structure and could push the conditional bound past Vaughan;
 symmetrically; (iii) a mean-value treatment of the certificate count
 itself (the Vaughan route) upgraded with the residual structure.
 
+## 3. Empirical validation
+
 All statements tested against the complete per-prime solvability masks
 (27 residuals × 1 587 581 hard primes).
 
@@ -675,7 +724,8 @@ correlation factor discussed below.
 
 **The record is the anomaly, not the gap.** Conditioned on a prime failing
 every residual ≤ 83, the independence model gives it a 53 % chance of
-landing at minimal R = 87 and only a 1.7 % chance of landing at 107. The
+landing at minimal R = 87 and only a 1.7 % chance of landing at exactly
+107 (total mass at or beyond 107: 6 %). The
 one deep-tail prime below 10⁹ landed at 107. Together with the smoothness of
 its a-values, this marks the record prime as structurally atypical even
 among deep-tail primes — consistent with strong positive correlation of
@@ -683,7 +733,10 @@ failures across residuals for primes with smooth shifted values.
 
 ---
 
-## 6. Independence model, correlations, and the 10¹⁰ forecast
+## 6. Independence model, correlations, and the 10¹⁰/10¹¹ forecasts (both resolved)
+
+*(Reading order: the model and its 10⁹ calibration come first; the
+outcome subsections that follow are newest-first — 10¹¹, then 10¹⁰.)*
 
 Model: P(min R > B) = Π_{R ≤ B} f_R, with marginal failure rates f_R
 measured from the masks. In-sample calibration:
@@ -698,7 +751,7 @@ measured from the masks. In-sample calibration:
 The observed/expected ratio rises from ≈1.3 (B=23) to ≈30 (B=103):
 failures at different residuals are **positively correlated**, increasingly
 so down the tail (shared mechanisms: smoothness of p+R over nearby shifts;
-QR conditions mod common prime factors r of different R; 12 of the 27
+QR conditions mod common prime factors r of different R; 9 of the 27
 residuals share the factor 3).
 
 **Forecast for the decade [10⁹, 10¹⁰]** (~12.6 M hard primes), using fitted
@@ -722,7 +775,8 @@ them directly.
   deep-tail primes (R_min > 83) vs the model's §5 prediction:
   P(87) predicted 0.53, observed 8/19 ≈ 0.42; P(91) 0.11 vs 3/19;
   P(95) 0.22 vs 5/19; P(99) 0.03 vs 1/19; P(103) 0.05 vs 1/19;
-  P(107+) 0.02 vs 1/19 (the record itself). The "gap" §5 explained
+  P(≥107) 0.06 (of which exactly-107 ≈ 0.02) vs 1/19 (the record
+  itself). The "gap" §5 explained
   statistically has now confirmed the explanation by disappearing.
 
 **Outcome (10¹⁰ run, 14 215 707 hard primes, all solved):**

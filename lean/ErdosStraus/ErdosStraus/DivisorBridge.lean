@@ -19,9 +19,17 @@ proves the model faithful to the integers:
   `R·b = k + m`, `R·c = m²/k + m`, and the Erdős–Straus identity
   `4abc = p(bc + ac + ab)` — i.e. reach membership at the target
   produces a genuine certificate. The converse direction is
-  `certificate_reach`.
+  `certificate_reach`;
+* budget consolidation (`step_step_same`, `reach_merge`,
+  `reach_subperm`, `reach_two_eq_doubled`) — the glue between
+  configuration shapes;
+* `lemmaS_R19_certificate` — the composed corollary: nine prime
+  factors of `(p+19)/4` in pairwise-distinct unit classes ≠ 1 mod 19
+  yield an explicit Erdős–Straus certificate at `p`.
 
-Everything here is symbolic: standard axioms only.
+The bridge and consolidation layers are symbolic (standard axioms
+only); the composed corollary inherits the R = 19 enumeration's
+single `native_decide` axiom.
 -/
 import ErdosStraus.Basic
 import ErdosStraus.Bridges
@@ -508,6 +516,7 @@ end ErdosStraus
 #print axioms ErdosStraus.isSubprod_primes_iff_dvd
 #print axioms ErdosStraus.mem_reach_iff_dvd
 #print axioms ErdosStraus.reach_certificate
+#print axioms ErdosStraus.certificate_reach
 #print axioms ErdosStraus.reach_merge
 #print axioms ErdosStraus.reach_subperm
 #print axioms ErdosStraus.lemmaS_R19_certificate
