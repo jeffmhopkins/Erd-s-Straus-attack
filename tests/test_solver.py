@@ -534,11 +534,98 @@ def test_branch_supports_archive_verdicts():
     assert per_R["35"]["n_maximal_supports"] == 1_124
 
 
-def test_halfdim_failure_family_exemplar():
-    """Theorem P1's mechanism (THEORY.md 2.10): p = 5,544,361 is in the
-    half-dimensional failure family of its selected ladder -- R0 = 51 with
-    r1 = 3, (q|3) = +1, and every prime factor of a = (p+R0)/4 a QR mod 3
-    -- and therefore provably fails R0 (Prop 2.1 at r1)."""
+HARD_CLASSES = {1, 121, 169, 289, 361, 529}
+
+
+def _reduced_forms(D):
+    """All reduced primitive positive-definite forms (A, B, C) of
+    discriminant D = B^2 - 4AC < 0."""
+    from math import gcd, isqrt
+
+    forms = []
+    for A in range(1, isqrt(abs(D) // 3) + 1):
+        for B in range(-A + 1, A + 1):
+            if (B * B - D) % (4 * A):
+                continue
+            C = (B * B - D) // (4 * A)
+            if C < A or (B < 0 and (A == C or A == -B)):
+                continue
+            if gcd(gcd(A, B), C) == 1:
+                forms.append((A, B, C))
+    return forms
+
+
+def _primitively_represented_up_to(D, N):
+    """{n <= N : n = f(x,y) for some reduced form f of discriminant D and
+    some coprime (x, y)} -- i.e. n primitively represented by the (single,
+    since D is a prime discriminant) genus of discriminant D."""
+    from math import gcd, isqrt
+
+    reps = set()
+    for (A, B, C) in _reduced_forms(D):
+        ymax = isqrt(4 * A * N // abs(D)) + 1
+        halfwidth = isqrt(N // A) + 1
+        for y in range(-ymax, ymax + 1):
+            centre = -(B * y) // (2 * A)
+            for x in range(centre - halfwidth, centre + halfwidth + 1):
+                v = A * x * x + B * x * y + C * y * y
+                if 0 < v <= N and gcd(x, y) == 1:
+                    reps.add(v)
+    return reps
+
+
+def test_norm_form_bridge_equivalence():
+    """The norm-form bridge, paper eq. (5.1) / THEORY.md 2.10: for a prime
+    r = 3 (mod 4) and r not dividing n,
+
+        every prime factor of n is a QR mod r
+          <=>  -r is a square mod 4n
+          <=>  n is PRIMITIVELY represented by a binary quadratic form of
+               discriminant -r.
+
+    Checked here on the shifted values a = (p+r)/4 of hard primes, for
+    r = 3, 7, 11 (class number 1) and r = 23 (class number 3 -- the whole
+    class group participates, since a prime discriminant has one genus)."""
+    from sympy import primerange
+    from sympy.ntheory.residue_ntheory import sqrt_mod
+
+    from erdos_straus.bulk_generate import _init_small_primes, factorize
+    from erdos_straus.theory import jacobi
+
+    _init_small_primes()
+    N = 20_000
+    class_numbers = {3: 1, 7: 1, 11: 1, 23: 3}
+    for r, h in class_numbers.items():
+        assert r % 4 == 3
+        forms = _reduced_forms(-r)
+        assert len(forms) == h, (r, forms)
+        reps = _primitively_represented_up_to(-r, N)
+        tested = 0
+        for p in primerange(5, 4 * N):
+            if p % 840 not in HARD_CLASSES or (p + r) % 4:
+                continue
+            a = (p + r) // 4
+            if a > N or a % r == 0:
+                continue
+            tested += 1
+            all_qr = all(jacobi(u % r, r) == 1 for u in factorize(a))
+            assert all_qr == (sqrt_mod(-r, 4 * a) is not None), (r, p, a)
+            assert all_qr == (a in reps), (r, p, a)
+        assert tested > 100, (r, tested)
+
+
+def test_type_I_failure_family_exemplar_is_admissible():
+    """Theorem 5.8's mechanism (THEORY.md 2.10; the corrected form of the
+    old "Theorem P1"): p = 5,544,361 is in the Type-I failure family of its
+    selected ladder -- R0 = 51 with r1 = 3, every prime factor of
+    a = (p+R0)/4 a QR mod 3 -- and therefore provably fails R0 (Prop 2.1 at
+    r1).  Its class is admissible in the CORRECTED sense: (A1) (q|r1) = +1;
+    (A2) (l|r1) = +1 for every prime l <= q that the class forces to divide
+    a (here only l = q = 31 -- this clause was missing from the printed
+    Theorem P1 and its omission made that statement false); (A3) the 2-adic
+    case r1 = 3 (mod 8) with a odd."""
+    from sympy import primerange
+
     from erdos_straus.bulk_generate import (_init_small_primes, factorize,
                                             solve_residual)
     from erdos_straus.burgess_scan import (least_legendre_nonresidue,
@@ -551,8 +638,53 @@ def test_halfdim_failure_family_exemplar():
     R = selected_residual(p, q)
     assert (q, R) == (31, 51)
     r1 = 3
-    assert R % r1 == 0 and r1 % 4 == 3 and jacobi(q % r1, r1) == 1
-    fa = factorize((p + R) // 4)
+    assert R % r1 == 0 and r1 % 4 == 3
+    a = (p + R) // 4
+    fa = factorize(a)
     assert fa == {31: 1, 61: 1, 733: 1}
     assert all(jacobi(u % r1, r1) == 1 for u in fa)
+    # (A1)
+    assert jacobi(q % r1, r1) == 1
+    # (A2): the class fixes a modulo every prime <= q, so the forced
+    # divisors are a property of the class; each must be a QR mod r1.
+    forced = [ell for ell in primerange(2, q + 1) if a % ell == 0]
+    assert forced == [31]
+    assert all(jacobi(ell % r1, r1) == 1 for ell in forced)
+    # (A3): case A -- r1 = 3 (mod 8) and a odd.
+    assert r1 % 8 == 3 and a % 2 == 1
     assert solve_residual(p, R) is None
+
+
+def test_type_I_admissibility_vacuity_counterexample():
+    """Why the printed "Theorem P1" was false (paper Remark 5.9): the old
+    admissibility test asked only for (q|r1) = +1 plus a 2-adic clause, but
+    the congruence class also forces small primes to divide a.  For q = 23,
+    R0 = 35, r1 = 7 the old test passes -- (23|7) = +1, and R0 = 3 (mod 8)
+    with p = 1 (mod 8) makes a odd, so the 2-adic clause is vacuous -- yet
+    every hard prime has p = 1 (mod 3) while 35 = 2 (mod 3), so 3 | a
+    always, and (3|7) = -1.  The counted family is EMPTY on every such
+    class, against a claimed >> x/(log x)^{3/2}."""
+    from erdos_straus.bulk_generate import _init_small_primes, factorize
+    from erdos_straus.burgess_scan import (least_legendre_nonresidue,
+                                           selected_residual)
+    from erdos_straus.theory import jacobi
+
+    _init_small_primes()
+    q, R0, r1 = 23, 35, 7
+    # the old test passes: (A1) holds and the 2-adic clause is vacuous
+    assert R0 % 4 == 3 and r1 % 4 == 3 and R0 % r1 == 0
+    assert jacobi(q % r1, r1) == 1
+    assert R0 % 8 == 3          # with p = 1 (mod 8) this forces a odd
+    # but (A2) fails at the forced divisor 3
+    assert R0 % 3 == 2          # and hard primes have p = 1 (mod 3)
+    assert jacobi(3, r1) == -1
+    exemplars = [320401, 499801, 712321, 742681, 830449,
+                 893929, 1035241, 1109761]
+    for p in exemplars:
+        assert p % 840 in HARD_CLASSES
+        assert least_legendre_nonresidue(p) == q
+        assert selected_residual(p, q) == R0
+        a = (p + R0) // 4
+        assert a % 2 == 1 and a % 3 == 0
+        # so a always has a prime factor that is a non-residue mod r1:
+        assert not all(jacobi(u % r1, r1) == 1 for u in factorize(a))
