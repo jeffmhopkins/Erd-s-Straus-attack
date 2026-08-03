@@ -86,14 +86,15 @@ data/
 tests/
   test_solver.py       59 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (35 pp.)
+  erdos_straus_residuals.tex/.pdf   the manuscript (36 pp.)
   make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
 lean/
-  ErdosStraus/         Lean 4 + mathlib formalization (11 modules: Basic,
+  ErdosStraus/         Lean 4 + mathlib formalization (12 modules: Basic,
                        Families, TheoremA, Enumerations, Bridges,
                        DivisorBridge, LemmaS31, Ladder, BridgeR15,
-                       TheoremS, KernelBranch + vendored Kneser) —
-                       sorry-free, axiom-audited; see lean/README.md
+                       TheoremS, KernelBranch, Elementary + vendored
+                       Kneser) — sorry-free, axiom-audited (91 audits);
+                       see lean/README.md
 .github/workflows/
   ci.yml               Python CI: test suite + proof-component smoke checks
   lean.yml             Lean build (triggered by changes under lean/)

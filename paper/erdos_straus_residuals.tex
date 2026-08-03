@@ -555,7 +555,8 @@ can be audited independently.
 \begin{tabular}{>{\raggedright\arraybackslash}p{2.6cm}>{\raggedright\arraybackslash}p{5.3cm}l>{\raggedright\arraybackslash}p{3.6cm}}
 \toprule
 result & proof inputs & proved in & machine-checked? \\ \midrule
-Prop.~\ref{prop:complete} & elementary & \S\ref{sec:intro-method} & --- \\ \addlinespace
+Prop.~\ref{prop:complete} & elementary & \S\ref{sec:intro-method} & Lean, both directions \\ \addlinespace
+Props.~\ref{prop:char}, \ref{prop:succ} & elementary (characters; explicit $k$) & \S\ref{sec:obstruction} & Lean \\ \addlinespace
 Thm.~\ref{thm:A} ($R{=}3$) & elementary & \S\ref{sec:exact} & Lean, both directions \\ \addlinespace
 Thm.~\ref{thm:meta} & elementary & \S\ref{sec:exact} & model + reduction in Lean \\ \addlinespace
 Thm.~\ref{thm:Ap} ($R{=}7$) & Prop.~\ref{prop:char} + Thm.~\ref{thm:meta} + enumeration ($1{,}536$) & \S\ref{sec:exact} & Lean (\texttt{native\_decide}) \\ \addlinespace
@@ -563,12 +564,12 @@ Thm.~\ref{thm:App} ($R{=}11$) & Thm.~\ref{thm:meta} + enumeration ($497{,}664$) 
 Thm.~\ref{thm:R15} ($R{=}15$) & Thm.~\ref{thm:meta}, composite form + enumeration ($349{,}920$) & \S\ref{sec:exact} & Lean (\texttt{native\_decide}) \\ \addlinespace
 Thm.~\ref{thm:J} & quadratic reciprocity & \S\ref{sec:obstruction} & Lean \\ \addlinespace
 Lem.~\ref{lem:S} & Lem.~\ref{lem:mono} + enumerations / DP & \S\ref{sec:sieve} & Lean at $R = 19, 23, 31$ \\ \addlinespace
-Thm.~\ref{thm:S} & Kneser's theorem + Lem.~\ref{lem:mono}; (iii) upgrade at $R \le 107$: enumeration & \S\ref{sec:sieve} & Lean, part (i); (iii) clause: Python \\ \addlinespace
+Thm.~\ref{thm:S} & Kneser's theorem + Lem.~\ref{lem:mono}; (iii) upgrade at $R \le 107$: enumeration & \S\ref{sec:sieve} & Lean, parts (i) and (iii); (iii) upgrade: Python \\ \addlinespace
 Thm.~\ref{thm:FG} & Thms.~\ref{thm:A}, \ref{thm:Ap}--\ref{thm:R15}, \ref{thm:S} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
 Prop.~\ref{prop:agg} & elementary + Thm.~\ref{thm:FG} & \S\ref{sec:sieve} & families in Lean \\ \addlinespace
 Thm.~\ref{thm:D} & Prop.~\ref{prop:succ} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
 Thm.~\ref{thm:U} & Thm.~\ref{thm:S}(iii), general tier + Brun's sieve, uniform constants & \S\ref{sec:sieve} & no \\ \addlinespace
-Thm.~\ref{thm:Mcount} & explicit construction (complete partitions) & \S\ref{sec:sieve} & Lean, the completeness lemma \\ \addlinespace
+Thm.~\ref{thm:Mcount} & explicit construction (complete partitions) & \S\ref{sec:sieve} & Lean \\ \addlinespace
 Thm.~\ref{thm:Mkernel} & Kneser + Lem.~\ref{lem:mono} + quotient induction & \S\ref{sec:sieve} & Lean, single step \\ \addlinespace
 Thm.~\ref{thm:Mcont} & Thm.~\ref{thm:Mkernel} + Conjecture~\ref{conj:A} & \S\ref{sec:sieve} & no (conditional) \\ \addlinespace
 Prop.~\ref{prop:betavac} & elementary (isolation of punctures) & \S\ref{sec:sieve} & Lean \\ \addlinespace
@@ -2199,29 +2200,35 @@ ultimately uses. The formalization comprises:
   \texttt{native\_decide} trusts.
 \end{itemize}
 Every main theorem is audited with \texttt{\#print axioms}, and
-helper lemmas are covered transitively through them. (Not formalized:
-Theorem~\ref{thm:S}(ii)/(iii),
-Propositions~\ref{prop:complete}, \ref{prop:char}
-and~\ref{prop:succ}, and the analytic arguments of
-Sections~\ref{sec:sieve} and~\ref{sec:ladder} --- these rest on the
-Python layer and the hand proofs alone. Theorem~\ref{thm:R15}'s
-finite check and Theorem~\ref{thm:S}(i) \emph{are} formalized: the
-former by a product-index mask bridge over the non-cyclic
-$(\mathbb{Z}/15)^* \cong C_2 \times C_4$, the latter fully
-symbolically --- Kneser's addition theorem vendored from its
-existing sorry-free formalization, an iterated many-summand form
-proved on top, and the support bound derived on standard axioms
-only, no evaluator appeal. So too the branch-classification layer:
+helper lemmas are covered transitively through them. The elementary
+layer is now formalized outright, including
+Proposition~\ref{prop:complete} in both directions (a solution is a
+certificate at its own residual, and conversely --- so the
+equivalence organizing this paper is machine-checked) and
+Propositions~\ref{prop:char} and~\ref{prop:succ}. Theorem~\ref{thm:R15}'s
+finite check is formalized by a product-index mask bridge over the
+non-cyclic $(\mathbb{Z}/15)^* \cong C_2 \times C_4$, and
+Theorem~\ref{thm:S} fully symbolically: Kneser's addition theorem
+vendored from its existing sorry-free formalization, an iterated
+many-summand form proved on top, and the support bound derived for
+an \emph{arbitrary} finite abelian group with an explicit involution
+count --- part (iii)'s general form, from which parts (i) and the
+odd-order variant follow as instances. So too the
+branch-classification layer:
 Theorem~\ref{thm:Mkernel}'s single kernel step in all three parts,
 with the quotient \emph{constructed} rather than assumed and the
-container size bound $\le d/2 - 1$ derived from
-Theorem~\ref{thm:S}(i) and its odd-modulus variant downstairs;
-Proposition~\ref{prop:betavac} in full; and the completeness lemma
-behind Theorem~\ref{thm:Mcount} (budget-$2$ subset sums of a
-complete partition are exactly $[0, 2N]$) together with the
-singleton-miss mechanism it yields. What is left unformalized there
-is the \emph{iterated} reduction --- the strong induction composing
-kernel steps --- and the $2^{c\sqrt d}$ counting.) For these
+container size bound $\le d/2 - 1$ derived from the support bounds
+downstairs; Proposition~\ref{prop:betavac} in full; and
+Theorem~\ref{thm:Mcount} end to end --- the complete-partition
+machinery, the maximality of the constructed supports, their
+injectivity, and an explicit $2^{c\sqrt d}$ lower bound. (Not
+formalized: the transfer of Theorem~\ref{thm:S}(ii) to the
+multiplicative divisor-class model, the identity
+$t = 2^{\omega(R)}-1$ for the involution count of
+$(\mathbb{Z}/R)^*$ --- so the general bound is quoted with that $t$
+supplied by hand --- the \emph{iterated} kernel reduction, and the
+analytic arguments of Sections~\ref{sec:sieve}
+and~\ref{sec:ladder}, which rest on the hand proofs alone.) For these
 enumerations the sixty-line trust base above is thus replaced by the
 Lean toolchain evaluating a formally stated proposition --- and the
 Python and Lean implementations, written independently against the

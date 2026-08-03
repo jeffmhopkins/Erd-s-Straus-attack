@@ -1,6 +1,7 @@
 /-
 Root of the formal development, in dependency order:
-elementary layer (`Basic`, `Families`, `TheoremA`, `Ladder`) → finite
+elementary layer (`Basic`, `Families`, `TheoremA`, `Ladder`,
+`Elementary`) → finite
 enumerations (`Enumerations`) → discrete-log bridges (`Bridges`) →
 the R = 15 product-index bridge (`BridgeR15`) →
 the reach ⟺ divisor-certificate bridge and composed corollary
@@ -15,6 +16,7 @@ import ErdosStraus.Basic
 import ErdosStraus.Families
 import ErdosStraus.TheoremA
 import ErdosStraus.Ladder
+import ErdosStraus.Elementary
 import ErdosStraus.Enumerations
 import ErdosStraus.Bridges
 import ErdosStraus.BridgeR15

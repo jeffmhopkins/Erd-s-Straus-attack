@@ -796,6 +796,382 @@ theorem completePartition_failing {d : ℕ} [NeZero d] {L : List ℕ}
 
 end CompletePartition
 
+/-! ### Theorem 4.7: exponentially many maximal failing supports -/
+
+section BranchCount
+
+open scoped Pointwise
+
+/-- If the reach is exactly `G ∖ {t}` — a *singleton miss* — then the
+support is maximal failing: `t` is not reached, and any extension by a
+nonzero `w` reaches `t` through `t − w ∈ M(S)`. -/
+theorem maximalFailing_of_reach2_eq {G : Type*} [AddCommGroup G]
+    [DecidableEq G] [Fintype G] {S : Finset G} {t : G}
+    (h : reach2 S = Finset.univ.erase t) : MaximalFailing S t := by
+  refine ⟨by rw [Failing, h]; simp, fun w hw hwS => ?_⟩
+  rw [reach2_insert hwS]
+  have hmem : t - w ∈ reach2 S := by
+    rw [h, Finset.mem_erase]
+    exact ⟨fun hc => hw (by rwa [sub_eq_self] at hc), Finset.mem_univ _⟩
+  have hw' : w ∈ budget2 w := by simp [budget2]
+  have := Finset.add_mem_add hw' hmem
+  simpa using this
+
+/-- The classes of `[0, d−2]` are exactly the classes other than
+`−1`. -/
+theorem image_range_pred_eq (d : ℕ) [NeZero d] :
+    (Finset.range (d - 1)).image (Nat.cast : ℕ → ZMod d)
+      = Finset.univ.erase (-1 : ZMod d) := by
+  have hd0 : 0 < d := Nat.pos_of_ne_zero (NeZero.ne d)
+  have hneg : (-1 : ZMod d) = ((d - 1 : ℕ) : ZMod d) := by
+    refine (eq_neg_of_add_eq_zero_left ?_).symm
+    have h : ((d - 1 : ℕ) : ZMod d) + ((1 : ℕ) : ZMod d)
+        = ((d - 1 + 1 : ℕ) : ZMod d) := by push_cast; ring
+    rw [Nat.cast_one] at h
+    rw [h, Nat.sub_add_cancel hd0, ZMod.natCast_self]
+  have hval : (-1 : ZMod d).val = d - 1 := by
+    rw [hneg, ZMod.val_cast_of_lt (by omega)]
+  ext x
+  simp only [Finset.mem_image, Finset.mem_range, Finset.mem_erase,
+    Finset.mem_univ, and_true]
+  constructor
+  · rintro ⟨a, ha, rfl⟩
+    intro hc
+    have : ((a : ZMod d)).val = a := ZMod.val_cast_of_lt (by omega)
+    rw [hc, hval] at this
+    omega
+  · intro hx
+    refine ⟨x.val, ?_, ZMod.natCast_rightInverse x⟩
+    have h1 : x.val < d := ZMod.val_lt x
+    have h2 : x.val ≠ d - 1 := by
+      intro hc
+      exact hx (by rw [hneg, ← hc, ZMod.natCast_rightInverse x])
+    omega
+
+/-! #### The complete-partition family -/
+
+/-- `descList r = [r, r−1, …, 1]`, the "complete" tail block of the
+Theorem 4.7 construction. -/
+def descList : ℕ → List ℕ
+  | 0 => []
+  | k + 1 => (k + 1) :: descList k
+
+@[simp] lemma descList_zero : descList 0 = [] := rfl
+
+@[simp] lemma descList_succ (k : ℕ) :
+    descList (k + 1) = (k + 1) :: descList k := rfl
+
+lemma descList_sum_two (r : ℕ) : 2 * (descList r).sum = r * (r + 1) := by
+  induction r with
+  | zero => simp
+  | succ k ih =>
+      rw [descList_succ, List.sum_cons]
+      have h : 2 * (k + 1 + (descList k).sum)
+          = 2 * (k + 1) + 2 * (descList k).sum := by ring
+      rw [h, ih]; ring
+
+lemma le_descList_sum (r : ℕ) : r ≤ (descList r).sum := by
+  induction r with
+  | zero => simp
+  | succ k ih => rw [descList_succ, List.sum_cons]; omega
+
+lemma descList_mem_bounds {r a : ℕ} (h : a ∈ descList r) : 1 ≤ a ∧ a ≤ r := by
+  induction r with
+  | zero => simp at h
+  | succ k ih =>
+      rw [descList_succ, List.mem_cons] at h
+      rcases h with rfl | h
+      · omega
+      · have := ih h; omega
+
+lemma descList_nodup (r : ℕ) : (descList r).Nodup := by
+  induction r with
+  | zero => simp
+  | succ k ih =>
+      rw [descList_succ, List.nodup_cons]
+      exact ⟨fun h => by have := descList_mem_bounds h; omega, ih⟩
+
+lemma descList_isCompletePartition (r : ℕ) :
+    IsCompletePartition (descList r) := by
+  induction r with
+  | zero => trivial
+  | succ k ih => exact ⟨by have := le_descList_sum k; omega, ih⟩
+
+/-- Prefixing a block of parts, each at most one more than the sum of
+an already complete partition, keeps the partition complete. -/
+theorem isCompletePartition_append {L : List ℕ} (hL : IsCompletePartition L) :
+    ∀ {M : List ℕ}, (∀ a ∈ M, a ≤ 1 + L.sum) → IsCompletePartition (M ++ L)
+  | [], _ => by simpa using hL
+  | a :: M, hM => by
+      refine ⟨?_, isCompletePartition_append hL fun b hb => hM b (by simp [hb])⟩
+      have h1 := hM a (by simp)
+      have h2 : (M ++ L).sum = M.sum + L.sum := List.sum_append
+      simp only [List.append_eq]
+      omega
+
+/-- The parts of the Theorem 4.7 family at the choice `T`: the block
+`[1, r]` with `r = 2n`, the chosen `n`-element set
+`T ⊆ [r+1, 2r]`, and one big part `X` completing the sum to `N`. -/
+noncomputable def branchParts (N n : ℕ) (T : Finset ℕ) : List ℕ :=
+  (N - (∑ a ∈ T, a) - (descList (2 * n)).sum) ::
+    (T.toList ++ descList (2 * n))
+
+/-- The support of `branchParts`, read in `ZMod d`. -/
+noncomputable def branchSupport (d N n : ℕ) (T : Finset ℕ) : Finset (ZMod d) :=
+  ((branchParts N n T).map (Nat.cast : ℕ → ZMod d)).toFinset
+
+section Family
+
+variable {d N n : ℕ} {T : Finset ℕ}
+
+/-- The arithmetic of the construction, gathered once: with
+`6n² + 5n < N ≤ 8n² + 4n + 1` and `T` an `n`-element subset of
+`[2n+1, 4n]`, the big part `X` is `> 4n`, the parts sum to `N`, and the
+chain condition holds at `X`. -/
+private lemma branch_arith
+    (hT : T ⊆ Finset.Icc (2 * n + 1) (4 * n)) (hTc : #T = n) :
+    (descList (2 * n)).sum = 2 * n ^ 2 + n ∧
+      2 * n ^ 2 + n ≤ (∑ a ∈ T, a) ∧ (∑ a ∈ T, a) ≤ 4 * n ^ 2 := by
+  have hdesc : (descList (2 * n)).sum = 2 * n ^ 2 + n := by
+    have h := descList_sum_two (2 * n)
+    have h2 : 2 * n * (2 * n + 1) = 2 * (2 * n ^ 2 + n) := by ring
+    rw [h2] at h
+    exact Nat.eq_of_mul_eq_mul_left (by norm_num) h
+  refine ⟨hdesc, ?_, ?_⟩
+  · have h := Finset.card_nsmul_le_sum T (fun a => a) (2 * n + 1)
+      (fun a ha => (Finset.mem_Icc.mp (hT ha)).1)
+    rw [hTc, smul_eq_mul] at h
+    have h2 : n * (2 * n + 1) = 2 * n ^ 2 + n := by ring
+    omega
+  · have h := Finset.sum_le_card_nsmul T (fun a => a) (4 * n)
+      (fun a ha => (Finset.mem_Icc.mp (hT ha)).2)
+    rw [hTc, smul_eq_mul] at h
+    have h2 : n * (4 * n) = 4 * n ^ 2 := by ring
+    omega
+
+/-- Every member of the family is a complete partition of `N` whose
+parts are distinct and lie in `[1, d − 1]`. -/
+private lemma branchParts_spec (hn : 2 ≤ n) (hd : d = 2 * N + 2)
+    (hT : T ⊆ Finset.Icc (2 * n + 1) (4 * n)) (hTc : #T = n)
+    (hlow : 6 * n ^ 2 + 5 * n < N) (hhigh : N ≤ 8 * n ^ 2 + 4 * n + 1) :
+    IsCompletePartition (branchParts N n T) ∧
+      (branchParts N n T).sum = N ∧
+      (branchParts N n T).Nodup ∧
+      (∀ a ∈ branchParts N n T, 1 ≤ a ∧ a < d) ∧
+      (∀ a ∈ T, a ∈ branchParts N n T) ∧
+      (∀ a ∈ branchParts N n T, a ∈ T ∨ a ≤ 2 * n ∨ 4 * n < a) := by
+  obtain ⟨hdesc, hTlb, hTub⟩ := branch_arith hT hTc
+  set s : ℕ := ∑ a ∈ T, a with hs
+  set X : ℕ := N - s - (descList (2 * n)).sum with hX
+  have hTlist : T.toList.sum = s := Finset.sum_toList T
+  -- the two chain conditions, purely arithmetic
+  have hq : 2 * n ≤ n ^ 2 := by nlinarith
+  have hXsum : X + s + (descList (2 * n)).sum = N := by omega
+  have hXbig : 4 * n < X := by omega
+  have hXchain : X ≤ 1 + (T.toList ++ descList (2 * n)).sum := by
+    rw [List.sum_append, hTlist]
+    omega
+  have hsum : (branchParts N n T).sum = N := by
+    rw [branchParts, List.sum_cons, List.sum_append, hTlist, ← hX]
+    omega
+  -- membership of the tail block
+  have htail : ∀ a ∈ T.toList ++ descList (2 * n), 1 ≤ a ∧ a ≤ 4 * n := by
+    intro a ha
+    rcases List.mem_append.mp ha with h | h
+    · have := Finset.mem_Icc.mp (hT (Finset.mem_toList.mp h))
+      omega
+    · have := descList_mem_bounds h
+      omega
+  refine ⟨?_, hsum, ?_, ?_, ?_, ?_⟩
+  · -- complete partition
+    refine ⟨hXchain, isCompletePartition_append (descList_isCompletePartition _)
+      fun a ha => ?_⟩
+    have h1 := Finset.mem_Icc.mp (hT (Finset.mem_toList.mp ha))
+    omega
+  · -- nodup
+    rw [branchParts, List.nodup_cons]
+    refine ⟨fun h => by have := htail _ h; omega, ?_⟩
+    refine List.Nodup.append (Finset.nodup_toList T) (descList_nodup _) ?_
+    intro a ha hb
+    have h1 := Finset.mem_Icc.mp (hT (Finset.mem_toList.mp ha))
+    have h2 := descList_mem_bounds hb
+    omega
+  · -- range of the parts
+    intro a ha
+    rw [branchParts, List.mem_cons] at ha
+    rcases ha with rfl | ha
+    · omega
+    · have := htail a ha
+      omega
+  · -- `T` sits inside the parts
+    intro a ha
+    rw [branchParts, List.mem_cons]
+    exact Or.inr (List.mem_append_left _ (Finset.mem_toList.mpr ha))
+  · -- the parts outside `T` are recognizable
+    intro a ha
+    rw [branchParts, List.mem_cons] at ha
+    rcases ha with rfl | ha
+    · exact Or.inr (Or.inr hXbig)
+    · rcases List.mem_append.mp ha with h | h
+      · exact Or.inl (Finset.mem_toList.mp h)
+      · exact Or.inr (Or.inl (descList_mem_bounds h).2)
+
+/-- **Each member of the family is a maximal failing support** for the
+target `−1`: its reach is exactly `ZMod d ∖ {−1}` (a singleton miss). -/
+theorem branchSupport_maximalFailing [NeZero d] (hn : 2 ≤ n) (hd : d = 2 * N + 2)
+    (hT : T ⊆ Finset.Icc (2 * n + 1) (4 * n)) (hTc : #T = n)
+    (hlow : 6 * n ^ 2 + 5 * n < N) (hhigh : N ≤ 8 * n ^ 2 + 4 * n + 1) :
+    MaximalFailing (branchSupport d N n T) (-1 : ZMod d) := by
+  obtain ⟨hcp, hsum, hnd, hrange, -, -⟩ :=
+    branchParts_spec hn hd hT hTc hlow hhigh
+  have hcast : ((branchParts N n T).map (Nat.cast : ℕ → ZMod d)).Nodup := by
+    refine List.Nodup.map_on (fun x hx y hy hxy => ?_) hnd
+    have h1 := hrange x hx
+    have h2 := hrange y hy
+    have e1 : ((x : ZMod d)).val = x := ZMod.val_cast_of_lt h1.2
+    have e2 : ((y : ZMod d)).val = y := ZMod.val_cast_of_lt h2.2
+    rw [← e1, ← e2, hxy]
+  apply maximalFailing_of_reach2_eq
+  rw [branchSupport, reach2_of_completePartition hcp hcast, hsum,
+    show 2 * N + 1 = d - 1 by omega]
+  exact image_range_pred_eq d
+
+/-- The classes of `[2n+1, 4n]` present in the support are exactly the
+elements of `T`: the block `[1, 2n]` lies below and the big part above,
+and all parts are `< d`, so no two collide mod `d`. -/
+private lemma mem_branchSupport_iff [NeZero d] (hn : 2 ≤ n) (hd : d = 2 * N + 2)
+    (hT : T ⊆ Finset.Icc (2 * n + 1) (4 * n)) (hTc : #T = n)
+    (hlow : 6 * n ^ 2 + 5 * n < N) (hhigh : N ≤ 8 * n ^ 2 + 4 * n + 1)
+    {a : ℕ} (ha : a ∈ Finset.Icc (2 * n + 1) (4 * n)) :
+    ((a : ZMod d) ∈ branchSupport d N n T ↔ a ∈ T) := by
+  obtain ⟨ha1, ha2⟩ := Finset.mem_Icc.mp ha
+  obtain ⟨-, -, -, hrange, hTin, hrec⟩ :=
+    branchParts_spec hn hd hT hTc hlow hhigh
+  have h4 : 4 * n ≤ 6 * n ^ 2 + 5 * n := by nlinarith
+  have had : a < d := by omega
+  constructor
+  · intro hmem
+    rw [branchSupport, List.mem_toFinset, List.mem_map] at hmem
+    obtain ⟨b, hb, hba⟩ := hmem
+    have hbd := hrange b hb
+    have hab : b = a := by
+      have e1 : ((b : ZMod d)).val = b := ZMod.val_cast_of_lt hbd.2
+      have e2 : ((a : ZMod d)).val = a := ZMod.val_cast_of_lt had
+      rw [← e1, ← e2, hba]
+    rcases hrec b hb with h | h | h
+    · rwa [hab] at h
+    · omega
+    · omega
+  · intro hmem
+    rw [branchSupport, List.mem_toFinset, List.mem_map]
+    exact ⟨a, hTin a hmem, rfl⟩
+
+/-- **Distinct choices of `T` give distinct supports.** -/
+theorem branchSupport_injOn [NeZero d] (hn : 2 ≤ n) (hd : d = 2 * N + 2)
+    (hlow : 6 * n ^ 2 + 5 * n < N) (hhigh : N ≤ 8 * n ^ 2 + 4 * n + 1) :
+    Set.InjOn (branchSupport d N n)
+      ((Finset.Icc (2 * n + 1) (4 * n)).powersetCard n : Set (Finset ℕ)) := by
+  intro T1 h1 T2 h2 heq
+  rw [Finset.mem_coe, Finset.mem_powersetCard] at h1 h2
+  ext a
+  constructor
+  · intro ha
+    rw [← mem_branchSupport_iff hn hd h2.1 h2.2 hlow hhigh (h1.1 ha), ← heq,
+      mem_branchSupport_iff hn hd h1.1 h1.2 hlow hhigh (h1.1 ha)]
+    exact ha
+  · intro ha
+    rw [← mem_branchSupport_iff hn hd h1.1 h1.2 hlow hhigh (h2.1 ha), heq,
+      mem_branchSupport_iff hn hd h2.1 h2.2 hlow hhigh (h2.1 ha)]
+    exact ha
+
+end Family
+
+/-! #### The count -/
+
+open scoped Classical in
+/-- **Theorem 4.7 (branch count blow-up), the binomial count.** For
+`d = 2N + 2` and `n` in the window `6n² + 5n < N ≤ 8n² + 4n + 1`, the
+maximal failing supports for the target `−1` in `ZMod d` number at
+least `C(2n, n)`: the family `[1, 2n] ∪ T ∪ {X}`,
+`T ⊆ [2n+1, 4n]`, `#T = n`, with `X` completing the sum to `N`, is a
+family of pairwise distinct complete partitions
+(`branchSupport_injOn`), each of which has reach exactly
+`ZMod d ∖ {−1}` and so is maximal failing
+(`branchSupport_maximalFailing`). -/
+theorem branchCount {d N n : ℕ} [NeZero d] (hn : 2 ≤ n) (hd : d = 2 * N + 2)
+    (hlow : 6 * n ^ 2 + 5 * n < N) (hhigh : N ≤ 8 * n ^ 2 + 4 * n + 1) :
+    Nat.choose (2 * n) n ≤
+      #(Finset.univ.filter fun S : Finset (ZMod d) =>
+          MaximalFailing S (-1 : ZMod d)) := by
+  have hcard : #((Finset.Icc (2 * n + 1) (4 * n)).powersetCard n)
+      = Nat.choose (2 * n) n := by
+    rw [Finset.card_powersetCard, Nat.card_Icc]
+    congr 1
+    omega
+  rw [← hcard]
+  refine Finset.card_le_card_of_injOn (branchSupport d N n) (fun T hT => ?_)
+    (branchSupport_injOn hn hd hlow hhigh)
+  rw [Finset.mem_coe, Finset.mem_powersetCard] at hT
+  rw [Finset.mem_coe, Finset.mem_filter]
+  exact ⟨Finset.mem_univ _,
+    branchSupport_maximalFailing hn hd hT.1 hT.2 hlow hhigh⟩
+
+open scoped Classical in
+/-- The count in exponential form: `4ⁿ ≤ 2n · #{maximal failing
+supports}`, from the central-binomial bound `4ⁿ ≤ 2n·C(2n, n)`. -/
+theorem branchCount_pow {d N n : ℕ} [NeZero d] (hn : 2 ≤ n) (hd : d = 2 * N + 2)
+    (hlow : 6 * n ^ 2 + 5 * n < N) (hhigh : N ≤ 8 * n ^ 2 + 4 * n + 1) :
+    4 ^ n ≤ 2 * n *
+      #(Finset.univ.filter fun S : Finset (ZMod d) =>
+          MaximalFailing S (-1 : ZMod d)) :=
+  calc 4 ^ n ≤ 2 * n * Nat.centralBinom n :=
+        Nat.four_pow_le_two_mul_self_mul_centralBinom n (by omega)
+    _ = 2 * n * Nat.choose (2 * n) n := by rw [Nat.centralBinom_eq_two_mul_choose]
+    _ ≤ _ := Nat.mul_le_mul_left _ (branchCount hn hd hlow hhigh)
+
+/-- The window `6n² + 5n < N ≤ 8n² + 4n + 1` is nonempty for every
+`N ≥ 1008`: take `n = ⌊√(N/7)⌋`. -/
+theorem exists_branch_window {N : ℕ} (hN : 1008 ≤ N) :
+    ∃ n, 12 ≤ n ∧ 6 * n ^ 2 + 5 * n < N ∧ N ≤ 8 * n ^ 2 + 4 * n + 1 := by
+  set n := Nat.sqrt (N / 7) with hndef
+  have h12 : 12 ≤ n := by
+    rw [hndef, Nat.le_sqrt]
+    omega
+  have hle : n ^ 2 ≤ N / 7 := Nat.sqrt_le' (N / 7)
+  have hlt : N / 7 < (n + 1) ^ 2 := Nat.lt_succ_sqrt' (N / 7)
+  have e2 : (n + 1) ^ 2 = n ^ 2 + 2 * n + 1 := by ring
+  have hA : 12 * n ≤ n ^ 2 := by nlinarith
+  exact ⟨n, h12, by omega, by omega⟩
+
+open scoped Classical in
+/-- **Theorem 4.7, headline form**: for every even `d ≥ 2018` of the
+shape `d = 2N + 2`, the number of maximal failing supports for the
+target `−1` in `ZMod d` is at least `2^{⌊√d/3⌋}/d` — an explicit
+`2^{c√d}` lower bound, so no classification of failing supports can
+proceed by enumeration. -/
+theorem branchCount_sqrt {d N : ℕ} [NeZero d] (hd : d = 2 * N + 2)
+    (hN : 1008 ≤ N) :
+    2 ^ (Nat.sqrt d / 3) ≤ d *
+      #(Finset.univ.filter fun S : Finset (ZMod d) =>
+          MaximalFailing S (-1 : ZMod d)) := by
+  obtain ⟨n, hn12, hlow, hhigh⟩ := exists_branch_window hN
+  have hn : 2 ≤ n := by omega
+  -- `d ≤ 36n²`, so `⌊√d⌋ ≤ 6n` and `⌊√d/3⌋ ≤ 2n`
+  have hdle : d ≤ (6 * n) ^ 2 := by nlinarith
+  have hs : Nat.sqrt d ≤ 6 * n := by
+    have h : Nat.sqrt d ≤ Nat.sqrt ((6 * n) ^ 2) := Nat.sqrt_le_sqrt hdle
+    rwa [Nat.sqrt_eq'] at h
+  have hexp : Nat.sqrt d / 3 ≤ 2 * n := by omega
+  have h2n : 2 * n ≤ d := by nlinarith
+  calc 2 ^ (Nat.sqrt d / 3) ≤ 2 ^ (2 * n) :=
+        Nat.pow_le_pow_right (by norm_num) hexp
+    _ = 4 ^ n := by rw [pow_mul]; norm_num
+    _ ≤ 2 * n * #(Finset.univ.filter fun S : Finset (ZMod d) =>
+          MaximalFailing S (-1 : ZMod d)) := branchCount_pow hn hd hlow hhigh
+    _ ≤ d * _ := Nat.mul_le_mul_right _ h2n
+
+end BranchCount
+
 end ErdosStraus
 
 -- Audit. Everything in this file is symbolic: standard axioms only, no
@@ -816,4 +1192,13 @@ end ErdosStraus
 #print axioms ErdosStraus.sums2_of_completePartition
 #print axioms ErdosStraus.reach2_of_completePartition
 #print axioms ErdosStraus.completePartition_failing
+#print axioms ErdosStraus.maximalFailing_of_reach2_eq
+#print axioms ErdosStraus.image_range_pred_eq
+#print axioms ErdosStraus.isCompletePartition_append
+#print axioms ErdosStraus.branchSupport_maximalFailing
+#print axioms ErdosStraus.branchSupport_injOn
+#print axioms ErdosStraus.exists_branch_window
+#print axioms ErdosStraus.branchCount
+#print axioms ErdosStraus.branchCount_pow
+#print axioms ErdosStraus.branchCount_sqrt
 
