@@ -56,15 +56,19 @@ primes}). We develop the \emph{residual method}: a solution with first
 denominator $a = (p+R)/4$ exists if and only if some divisor
 $k \mid m^2$, $m = pa$, satisfies $k \equiv -m \pmod R$, and every
 solution arises this way --- so the conjecture at $p$ is exactly a
-bound on the minimal working residual $R_{\min}(p)$. Two theorems
-anchor the paper. The \emph{support theorem}: failure at $R$ forbids
+bound on the minimal working residual $R_{\min}(p)$. The paper's
+central theorem is a \emph{support theorem}: failure at $R$ forbids
 at least half the unit classes mod $R$ on the shifted form $(p+R)/4$,
-proved for every residual at once via Kneser's addition theorem. And
-its uniform consequence, an unconditional almost-all bound: all but
+proved for every residual at once via Kneser's addition theorem. Its
+uniform consequence bounds $R_{\min}$ itself: all but
 $O(x\exp(-c(\log\log x)^2))$ hard primes
 $p \le x$ satisfy $R_{\min}(p) \le \varepsilon \log\log x$, with
-explicit certificates --- weaker in density than Vaughan's classical
-bound, but structural, where mean-value methods are silent. Around
+explicit certificates. This is not a sharper exceptional-set
+estimate --- Vaughan's classical mean-value bound is denser, and
+remains the record on that axis --- but a statement about a
+different quantity, one that mean-value methods do not reach: they
+count the primes that fail without exhibiting a denominator for
+those that succeed. Around
 these sit exact solvability criteria at $R = 3, 7, 11, 15$, a
 reciprocity identity
 $\smash{\legendre{q}{R}} = \smash{\legendre{p}{q}}$ governing
@@ -113,9 +117,27 @@ sieve bounds were advanced by Sander~\cite{Sander}, and
 Vaughan's classical
 mean-value bound~\cite{Vaughan} gives an exceptional set
 $\ll x \exp(-c(\log x)^{2/3})$ for \eqref{eq:es} --- asymptotically
-stronger than any fixed power of $\log x$; the value of the present
-approach is not raw density but its explicit, certificate-generating,
-machine-verified structure, together with the exact criteria.
+stronger than any fixed power of $\log x$, and still the record on
+that axis.
+
+We are not competing on it. The distinction is worth stating
+plainly, because it determines what the results below are for.
+A mean-value bound counts the integers that \emph{fail}; it exhibits
+no denominator for the ones that succeed, and says nothing about how
+large a first denominator a given prime requires. By
+Proposition~\ref{prop:complete} the conjecture at $p$ is precisely
+the assertion that the least admissible residual $R_{\min}(p)$ is
+finite --- indeed $\le 2p$ --- so $R_{\min}$, not the exceptional
+set, is the quantity the problem is about. The theorems here bound
+$R_{\min}$: for every hard prime through $10^{11}$ by explicit
+certificate, and for almost every hard prime by
+Theorem~\ref{thm:U}, at a residual of size $O(\log\log x)$. Density
+statements follow as corollaries, and are weaker than Vaughan's;
+the bounds on $R_{\min}$, the exact local criteria that produce
+them, and the certificates they exhibit have no counterpart in the
+mean-value literature. Vaughan's theorem is the benchmark against
+which we calibrate the sieve, not the target we are trying to
+overtake.
 
 \subsection*{New contributions}
 \phantomsection\addcontentsline{toc}{subsection}{New contributions}
@@ -206,13 +228,16 @@ consequences obtained by combining those inputs
 ladder program of Section~\ref{sec:ladder}. The computations of
 Section~\ref{sec:comp} calibrate layer~(3) and test its predictions;
 the formal development machine-checks the core of layers (1)--(2).
-Within this structure, two results anchor the paper and are worth
-naming at the outset: Theorem~\ref{thm:S}, the support theorem ---
-the single per-residual input, proved for all residuals at once ---
-and Theorem~\ref{thm:U}, its uniform consequence, the unconditional
-almost-all certificate bound. The exact criteria feed them, the
-computations calibrate them, and the conditional program of
-Section~\ref{sec:ladder} is what would lie beyond them.
+Within this structure one result carries the technical weight, and
+is worth naming at the outset: Theorem~\ref{thm:S}, the support
+theorem --- a single per-residual input, proved for all residuals at
+once by Kneser's addition theorem, with no computation and no
+restriction on $R$. Everything downstream is what it buys:
+Theorem~\ref{thm:U}'s bound on $R_{\min}$ for almost every hard
+prime, the chain of exceptional-set bounds, and the conditional
+program of Section~\ref{sec:ladder}. The exact criteria supply its
+small-residual instances, and the computations calibrate what it
+predicts.
 
 \subsection{The residual method}\label{sec:intro-method}
 
@@ -517,15 +542,24 @@ is $O_A\!\left(x/(\log x)^{1+A}\right)$.
 \end{theorem}
 
 \begin{remark}[relation to Vaughan's bound]\label{rem:vaughan}
-Theorem~\ref{thm:D} and the chain of Theorem~\ref{thm:FG} are
-\emph{weaker in density} than Vaughan's bound
+As exceptional-set estimates, Theorem~\ref{thm:D}, the chain of
+Theorem~\ref{thm:FG}, and Theorem~\ref{thm:U} are all weaker than
+Vaughan's bound
 $\ll x \exp(-c(\log x)^{2/3})$~\cite{Vaughan}, which already exceeds
-every fixed power of $\log x$. Their interest is orthogonal: the
-exceptional sets here are cut out by finitely many \emph{explicit}
-multiplicative conditions on shifted forms, each failure of which is
-constructively certified by an exhibited divisor $k$, and the underlying
-lemmas are exact or machine-verified. Vaughan's method counts solutions
-on average and exhibits neither certificates nor criteria.
+every fixed power of $\log x$. They are not offered as improvements
+on it. Two differences of kind: first, the exceptional sets here are
+cut out by finitely many \emph{explicit} multiplicative conditions on
+shifted forms, each failure constructively certified by an exhibited
+divisor $k$, with the underlying lemmas exact or machine-verified.
+Second --- and this is the substantive point --- Theorem~\ref{thm:U}
+is not primarily a density statement at all: it bounds
+$R_{\min}(p)$, the quantity Proposition~\ref{prop:complete} shows
+\emph{is} the conjecture at $p$, by $\varepsilon\log\log x$ for
+almost every hard prime. A mean-value argument counts the primes
+that fail; it produces no admissible residual, and hence no bound of
+this shape, for the primes that succeed. On that axis the
+comparison does not arise: no bound on $R_{\min}$ was previously
+available by any method.
 \end{remark}
 
 \emph{Organization.} Proofs are arranged by logical dependency.
