@@ -1,5 +1,5 @@
 # Erdős–Straus Conjecture Attack — Current State
-**Date:** 2026-08-02 (current through PR #44)  
+**Date:** 2026-08-03 (current through PR #45)  
 **Focus:** Hard-class primes (Mordell exceptional residues mod 840)
 
 ## The Problem
@@ -145,6 +145,24 @@ computations (paper Rem 5.11) close the August 2026 research routes:
 budget failure is provably not a character event (explicit witness
 pair at $R = 11$), and weighted/almost-prime detection is equivalent
 to Hypothesis P — the parity gap is intrinsic.
+
+**Branch classification (THEORY §2.12, paper §4.6):** the structural
+question behind Theorem U's ceiling is now half-solved. Proved:
+kernel branches reduce losslessly to aperiodic maximal supports
+(Thm 4.8); the count form is false (≥ $2^{c\sqrt d}$ maximal
+supports, Thm 4.7); size spectrum $\Theta(\log d)$ to $d/2-1$;
+near-critical Kneser is vacuous here (slack rigidity). Open:
+**Conjecture A** (Conj 4.9) — every aperiodic maximal failing
+support fits a window container (coset-progression) of density
+≤ 1/2; verified exhaustively at all moduli $d \le 30$ (all targets)
+and at $R = 19, 23, 31, 43, 47, 59$ + composites $15, 35, 39$
+(495,782 maximal supports at $R = 59$; zero unstructured). Under A:
+branch count drops $2^{\varphi(R)} \to O(R^2)$ and the uniform
+chain reaches the **polylog tier** (Thm 4.11):
+$R_{\min} \le (\log x)^{c_0}$ outside
+$x\exp(-(\log x)^{c_0})$, $c_0 \approx 1/7$, family ceiling $1/2$.
+Enumeration entry point `erdos_straus.branch_enum`, archive
+`data/analysis/branch_maximal_supports.json`.
 
 ### $10^{11}$ update (the gap fills; the record stands)
 
