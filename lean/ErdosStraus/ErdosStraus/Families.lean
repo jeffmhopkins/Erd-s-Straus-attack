@@ -9,14 +9,17 @@ import ErdosStraus.Basic
 namespace ErdosStraus
 
 /-- **Aggregate identities, first family** (Proposition 1.12). If `R ∣ p + 1` (with the usual residual
-setup), then `k = a·p²` certifies: explicit `b, c` exist with the
-Erdős–Straus identity. -/
+setup, under the natural signs `0 < p`, `0 < R`), then `k = a·p²`
+certifies: explicit **positive** `b, c` exist with the Erdős–Straus
+identity. -/
 theorem family_p_plus_one
-    (p R a m : ℤ) (hR : R ≠ 0)
+    (p R a m : ℤ) (hp0 : 0 < p) (hR0 : 0 < R)
     (ha : 4 * a = p + R) (hm : m = p * a)
     (hdvd : R ∣ p + 1) :
-    ∃ b c : ℤ, R * b = a * p ^ 2 + m ∧ R * c = a + m ∧
+    ∃ b c : ℤ, 0 < b ∧ 0 < c ∧ R * b = a * p ^ 2 + m ∧ R * c = a + m ∧
       4 * (a * b * c) = p * (b * c + a * c + a * b) := by
+  have ha0 : 0 < a := by linarith
+  have hm0 : 0 < m := by rw [hm]; exact mul_pos hp0 ha0
   have hb : R ∣ a * p ^ 2 + m := by
     rw [show a * p ^ 2 + m = a * p * (p + 1) from by rw [hm]; ring]
     exact hdvd.mul_left _
@@ -25,18 +28,31 @@ theorem family_p_plus_one
     exact hdvd.mul_left _
   obtain ⟨b, hb'⟩ := hb
   obtain ⟨c, hc'⟩ := hc
-  exact ⟨b, c, hb'.symm, hc'.symm,
-    certificate_sound p R a m (a * p ^ 2) a b c hR ha hm
+  have hb0 : 0 < b := by
+    have h1 : 0 < R * b := by rw [← hb']; positivity
+    rcases mul_pos_iff.mp h1 with ⟨_, h⟩ | ⟨h, _⟩
+    · exact h
+    · linarith
+  have hc0 : 0 < c := by
+    have h1 : 0 < R * c := by rw [← hc']; positivity
+    rcases mul_pos_iff.mp h1 with ⟨_, h⟩ | ⟨h, _⟩
+    · exact h
+    · linarith
+  exact ⟨b, c, hb0, hc0, hb'.symm, hc'.symm,
+    certificate_sound p R a m (a * p ^ 2) a b c hR0.ne' ha hm
       (by rw [hm]; ring) hb'.symm hc'.symm⟩
 
-/-- **Aggregate identities, second family** (Proposition 1.12). If `R ∣ p + 4` and `R` is odd, then
-`k = a²·p` certifies. -/
+/-- **Aggregate identities, second family** (Proposition 1.12). If `R ∣ p + 4` and `R` is odd
+(under the natural signs `0 < p`, `0 < R`), then `k = a²·p` certifies,
+with **positive** `b, c`. -/
 theorem family_p_plus_four
-    (p R a m : ℤ) (hR : R ≠ 0) (hRodd : Odd R)
+    (p R a m : ℤ) (hp0 : 0 < p) (hR0 : 0 < R) (hRodd : Odd R)
     (ha : 4 * a = p + R) (hm : m = p * a)
     (hdvd : R ∣ p + 4) :
-    ∃ b c : ℤ, R * b = a ^ 2 * p + m ∧ R * c = p + m ∧
+    ∃ b c : ℤ, 0 < b ∧ 0 < c ∧ R * b = a ^ 2 * p + m ∧ R * c = p + m ∧
       4 * (a * b * c) = p * (b * c + a * c + a * b) := by
+  have ha0 : 0 < a := by linarith
+  have hm0 : 0 < m := by rw [hm]; exact mul_pos hp0 ha0
   -- R ∣ 4(a+1); R odd is coprime to 4; hence R ∣ a + 1.
   have h4 : R ∣ 4 * (a + 1) := by
     obtain ⟨t, ht⟩ := hdvd
@@ -58,8 +74,18 @@ theorem family_p_plus_four
     exact ha1.mul_left _
   obtain ⟨b, hb'⟩ := hb
   obtain ⟨c, hc'⟩ := hc
-  exact ⟨b, c, hb'.symm, hc'.symm,
-    certificate_sound p R a m (a ^ 2 * p) p b c hR ha hm
+  have hb0 : 0 < b := by
+    have h1 : 0 < R * b := by rw [← hb']; positivity
+    rcases mul_pos_iff.mp h1 with ⟨_, h⟩ | ⟨h, _⟩
+    · exact h
+    · linarith
+  have hc0 : 0 < c := by
+    have h1 : 0 < R * c := by rw [← hc']; positivity
+    rcases mul_pos_iff.mp h1 with ⟨_, h⟩ | ⟨h, _⟩
+    · exact h
+    · linarith
+  exact ⟨b, c, hb0, hc0, hb'.symm, hc'.symm,
+    certificate_sound p R a m (a ^ 2 * p) p b c hR0.ne' ha hm
       (by rw [hm]; ring) hb'.symm hc'.symm⟩
 
 /-- Each of the six hard classes is the square of a unit mod 840

@@ -93,9 +93,61 @@ theorem theoremA_sufficiency
     certificate_sound p 3 a m q k' b c (by norm_num) ha hm hkk'
       hb.symm hc.symm⟩
 
+/-- **Theorem A, the `p ≡ 2 (mod 3)` case** (the other half of the
+paper's Theorem 1.2, which covers all `3 ∤ p`). Here residual 3
+succeeds *unconditionally*: `4a = p + 3` forces `a ≡ 2 (mod 3)`, so
+`k = a` is itself a divisor of `m² = (pa)²` in the target class
+`−m ≡ 2 (mod 3)` — no factorization hypothesis is needed, and the
+necessity direction is vacuous. Positive `b, c` exist with the
+Erdős–Straus identity (via `k = a`, `k′ = p²·a`). -/
+theorem theoremA_two_mod_three
+    (p a : ℤ) (hp0 : 0 < p)
+    (ha : 4 * a = p + 3) (hp3 : p % 3 = 2) :
+    ∃ b c : ℤ, 0 < b ∧ 0 < c ∧
+      4 * (a * b * c) = p * (b * c + a * c + a * b) := by
+  have ha0 : 0 < a := by linarith
+  set m : ℤ := p * a with hm
+  have hm0 : 0 < m := mul_pos hp0 ha0
+  -- 3 ∣ p + 1, and both k + m = a(p+1) and k' + m = pa(p+1)
+  obtain ⟨s, hs⟩ : (3 : ℤ) ∣ p + 1 := by omega
+  have hb3 : (3 : ℤ) ∣ a + m := ⟨a * s, by rw [hm]; linear_combination a * hs⟩
+  have hc3 : (3 : ℤ) ∣ p ^ 2 * a + m :=
+    ⟨p * a * s, by rw [hm]; linear_combination p * a * hs⟩
+  obtain ⟨b, hb⟩ := hb3
+  obtain ⟨c, hc⟩ := hc3
+  have hpa : 0 < p ^ 2 * a := mul_pos (pow_pos hp0 2) ha0
+  have hb0 : 0 < b := by linarith
+  have hc0 : 0 < c := by linarith
+  exact ⟨b, c, hb0, hc0,
+    certificate_sound p 3 a m a (p ^ 2 * a) b c (by norm_num) ha hm
+      (by rw [hm]; ring) hb.symm hc.symm⟩
+
+/-- In the `p ≡ 2 (mod 3)` case the paper's criterion ("`a` has a prime
+factor `≡ 2 (mod 3)`") is automatic: any `a ≡ 2 (mod 3)` has one — the
+contrapositive of the multiplicative-closure lemma. -/
+theorem exists_factor_two_mod_three {a : ℕ} (ha0 : a ≠ 0) (ha3 : a % 3 = 2) :
+    ∃ q, q.Prime ∧ q ∣ a ∧ q % 3 = 2 := by
+  by_contra hcon
+  push_neg at hcon
+  have hfac : ∀ q, q.Prime → q ∣ a → q % 3 = 1 := by
+    intro q hq hdvd
+    have h0 : q % 3 ≠ 0 := by
+      intro h0
+      have h3q : (3 : ℕ) ∣ q := Nat.dvd_of_mod_eq_zero h0
+      have hq3 : q = 3 := ((Nat.prime_dvd_prime_iff_eq Nat.prime_three
+        hq).mp h3q).symm
+      have h3a : (3 : ℕ) ∣ a := hq3 ▸ hdvd
+      omega
+    have h2 := hcon q hq hdvd
+    omega
+  have := divisor_one_mod_three ha0 hfac a dvd_rfl
+  omega
+
 end ErdosStraus
 
 -- Audit: standard axioms only.
 #print axioms ErdosStraus.divisor_one_mod_three
 #print axioms ErdosStraus.theoremA_necessity
 #print axioms ErdosStraus.theoremA_sufficiency
+#print axioms ErdosStraus.theoremA_two_mod_three
+#print axioms ErdosStraus.exists_factor_two_mod_three
