@@ -433,10 +433,15 @@ full tail minimality.
    conditionally-past-Vaughan route); formalize Theorem S and A‴ in
    Lean — largely **done**: ladder Lemmas J°/N (`Ladder.lean`), the
    R = 15 product-index bridge (`BridgeR15.lean`, first non-cyclic
-   mask bridge), and **Theorem S(i) fully symbolic**
-   (`TheoremS.lean`: vendored sorry-free Kneser + iterated form +
-   the support bound, standard axioms only); remaining: Theorem
-   1.10(ii)/(iii) and the discrete-log instantiation; the
+   mask bridge), **Theorem S(i) fully symbolic** (`TheoremS.lean`:
+   vendored sorry-free Kneser + iterated form + the support bound),
+   and the branch layer (`KernelBranch.lean`: Theorem 4.8's kernel
+   step with the quotient constructed, the $d/2-1$ container bound,
+   Prop 4.12 β-vacuity, and Theorem 4.7's completeness lemma) — all
+   on standard axioms only; the three earlier caveats (family
+   positivity, Theorem A mod 3, capped configurations) are closed.
+   Remaining: Theorem 1.10(ii)/(iii), the iterated reduction, the
+   discrete-log instantiation; the
    unconditional $R_{\min}$ bound (= the conjecture).
 
 ---
