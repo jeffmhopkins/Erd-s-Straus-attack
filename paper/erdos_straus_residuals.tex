@@ -55,32 +55,25 @@ concentrate on primes in six residue classes mod $840$ (\emph{hard
 primes}). We develop the \emph{residual method}: a solution with first
 denominator $a = (p+R)/4$ exists if and only if some divisor
 $k \mid m^2$, $m = pa$, satisfies $k \equiv -m \pmod R$, and every
-solution arises this way. Solvability at any fixed residual --- prime
-or composite --- is a computable function of finite data, yielding
-exact criteria at $R = 3, 7, 11, 15$, and a reciprocity identity
-$\smash{\legendre{q}{R}} = \smash{\legendre{p}{q}}$ governs how
-failures correlate across residuals. Failure at $R$ forbids at least
-half the unit classes mod $R$ on the shifted form $(p+R)/4$ --- proved
-for every residual at once via Kneser's addition theorem --- giving
-exceptional sets
-$O_{\mathcal{P}}(x/(\log x)^{1+|\mathcal{P}|/2})$ for every finite
-admissible residual list $\mathcal{P}$ (entries prime or composite
-$\le 107$; marginally weaker exponents beyond): weaker in
-density than
-Vaughan's classical $x\exp(-c(\log x)^{2/3})$, but explicit and
-certificate-producing, with the elementary layer and the core finite
-enumerations of the proofs machine-checked in Lean~4/\mbox{mathlib}.
-Letting the residual list grow with $x$ yields an unconditional
-almost-all theorem: all but $O(x\exp(-c(\log\log x)^2))$ hard primes
-$p \le x$ satisfy $R_{\min}(p) \le \varepsilon \log\log x$; a
-branch-classification conjecture --- kernel case proved, aperiodic
-case verified exhaustively at small moduli and at nine larger ones
---- would raise this to $R_{\min}(p) \le (\log x)^{c_0}$.
-A reciprocity-selected \emph{ladder} of $p$-adapted residuals then
-localizes the conjecture for hard primes into a single measured
-counting inequality, with the first rung proved and a matching
-half-dimensional lower bound for true failures given in outline. Computationally we exhibit
-certificates for all $128{,}671{,}219$
+solution arises this way --- so the conjecture at $p$ is exactly a
+bound on the minimal working residual $R_{\min}(p)$. Two theorems
+anchor the paper. The \emph{support theorem}: failure at $R$ forbids
+at least half the unit classes mod $R$ on the shifted form $(p+R)/4$,
+proved for every residual at once via Kneser's addition theorem. And
+its uniform consequence, an unconditional almost-all bound: all but
+$O(x\exp(-c(\log\log x)^2))$ hard primes
+$p \le x$ satisfy $R_{\min}(p) \le \varepsilon \log\log x$, with
+explicit certificates --- weaker in density than Vaughan's classical
+bound, but structural, where mean-value methods are silent. Around
+these sit exact solvability criteria at $R = 3, 7, 11, 15$, a
+reciprocity identity
+$\smash{\legendre{q}{R}} = \smash{\legendre{p}{q}}$ governing
+correlated failure, a branch-classification conjecture that would
+raise the almost-all bound to $R_{\min}(p) \le (\log x)^{c_0}$, and a
+measured ladder program past that ceiling. The elementary layer and
+the core finite enumerations are machine-checked in
+Lean~4/\mbox{mathlib}, and we exhibit certificates for all
+$128{,}671{,}219$
 hard primes below $10^{11}$; the record minimal residual is $107$.
 \end{abstract}
 
@@ -208,6 +201,13 @@ consequences obtained by combining those inputs
 ladder program of Section~\ref{sec:ladder}. The computations of
 Section~\ref{sec:comp} calibrate layer~(3) and test its predictions;
 the formal development machine-checks the core of layers (1)--(2).
+Within this structure, two results anchor the paper and are worth
+naming at the outset: Theorem~\ref{thm:S}, the support theorem ---
+the single per-residual input, proved for all residuals at once ---
+and Theorem~\ref{thm:U}, its uniform consequence, the unconditional
+almost-all certificate bound. The exact criteria feed them, the
+computations calibrate them, and the conditional program of
+Section~\ref{sec:ladder} is what would lie beyond them.
 
 \subsection{The residual method}\label{sec:intro-method}
 
@@ -246,6 +246,17 @@ the solution yields a divisor $k$ as in \eqref{eq:cert}, so
 $R_{\min}(p) \le R \le 2p$. Conversely \eqref{eq:cert} at any
 admissible $R$ produces a solution.
 \end{proof}
+
+A word on provenance. The divisor-congruence identity underlying
+\eqref{eq:cert} is classical: criteria of this shape are implicit in
+Mordell's treatment~\cite[Ch.~30]{Mordell} and in Yamamoto's
+analysis of the quadratic obstruction~\cite{Yamamoto}. What we claim
+as new is not the identity but what is built on it: the completeness
+statement of Proposition~\ref{prop:complete} (every solution is a
+residual certificate, so the conjecture \emph{is} a bound on
+$R_{\min}$), the residual-indexed program --- exactness at fixed $R$,
+reciprocity across residuals, the support theorem uniform in $R$ ---
+and the sieve consequences those inputs support.
 
 Two
 elementary congruences drive everything below. From $4a = p + R$,
@@ -1233,7 +1244,9 @@ condition holds with the dimension $\kappa$ above and
 $(\Omega)$-constant $O(B \log B)$, by Mertens' theorem in the
 progressions modulo $R \le B$ (Siegel--Walfisz range, whence the
 ineffective $x_0$). Apply Brun's sieve of order $r \asymp \kappa$
-\cite[Ch.~2]{HalberstamRichert} at $s \asymp \kappa$: since the
+(\cite[Ch.~2]{HalberstamRichert}; for constants uniform in the
+dimension, \cite[Thm.~6.9]{FriedlanderIwaniec}) at $s = 10r$, so
+that $z^r = x^{1/10}$: since the
 sifted sequence consists of \emph{integers} in a progression --- no
 primality is detected anywhere --- the remainder is
 $\sum_{d \le z^r} (B+2)^{\omega(d)} \ll x^{1/10} e^{O(BL)} =
@@ -1274,8 +1287,8 @@ supports into polynomially many structured branches --- the subject
 of Section~\ref{sec:branch} --- would therefore raise
 Theorem~\ref{thm:U} to an exceptional set
 $x\exp(-(\log x)^{c_0})$ with $R_{\min} \le (\log x)^{c_0}$
-(Theorem~\ref{thm:Upay}), with the intrinsic family ceiling at
-exponent $\tfrac12$. Vaughan's bound
+(Theorem~\ref{thm:Upay}), with the family ceiling strictly below
+exponent $\tfrac12$ (see the discussion there). Vaughan's bound
 $x\exp(-c(\log x)^{2/3})$~\cite{Vaughan}
 remains stronger as a pure density statement at every tier of this
 family; what
@@ -1313,7 +1326,9 @@ $[1, r] \cup T' \cup \{X\}$, $T' \subseteq [r+1, 2r]$,
 $|T'| = \lceil r/2 \rceil$, $r = \lceil\sqrt{d/4}\,\rceil$, with $X$
 completing the sum to $d/2 - 1$, are pairwise distinct
 complete partitions (for $d$ large, $X > 2r$, so $X$ collides with
-no other part and $T'$ is recoverable from the support), and each
+no other part and $T'$ is recoverable from the support; the chain
+condition at the part $X$ reduces to $d/2 - 2 \le 3r(r+1)$, which
+holds since $r^2 \ge d/4$), and each
 has reach exactly
 $\mathbb{Z}/d \setminus \{-1\}$, hence is maximal failing.
 \end{theorem}
@@ -1337,8 +1352,12 @@ $\psi \colon \mathbb{Z}/d \to \mathbb{Z}/d'$ and an
 \emph{aperiodic maximal} failing support $T'$ downstairs, and this
 container has at most $\lfloor d/2 \rfloor - 1$ elements. (The
 support bound extends to odd moduli, as needed for the quotients:
-for odd $\bar d$ no summand is degenerate and Kneser's bound gives
-$|T| \le (\bar d - 3)/2$.)
+for odd $\bar d$ no summand is degenerate, so in the aperiodic case
+Kneser's bound gives
+$|T| \le (\bar d - 3)/2$; for nontrivial stabilizer of order $h$
+the count is $\le h + \bar d/h - 3 \le \bar d/3 \le (\bar d - 3)/2$
+for $\bar d \ge 9$, smaller odd $\bar d$ having no proper
+nontrivial subgroups.)
 \end{theorem}
 
 \begin{proof}
@@ -1424,11 +1443,21 @@ integers, so the per-class main terms resum); and Siegel--Walfisz
 covers the Mertens-in-progressions inputs for moduli up to any
 fixed power of $\log x$. The per-residual balance is then a sieve
 gain $\delta(1-\theta)L$ against a branch-and-slop cost
-$(3 + c_M)\theta L$ ($L = \log\log x$, $\delta = \tfrac12$),
+$(3 + c_M)\theta L$, where $L = \log\log x$, $\delta = \tfrac12$,
+and $c_M$ collects the per-residual slop --- the
+Mertens-in-progressions constants, the discarded initial segment
+$\ell \le B$ of sieving primes, and the $(\Omega)$-condition
+constant, together of order $1$. This is
 admissible for every
 $\theta < \delta/(3 + c_M + \delta)$ --- with the constants proved
-here, any $\theta$ below roughly $1/9$. The family ceiling is
-$c_0 < \tfrac12$: the container-count exponent cannot reach $0$. A
+here, any $\theta$ below roughly $1/9$. The family ceiling sits
+strictly below $\tfrac12$: no container scheme of this shape has
+fewer than ${\sim}d$ members (distinct progression directions
+already require distinct containers), so the count exponent is at
+least $1$ and the balance caps $\theta$ at
+$\delta/(1 + c_M + \delta) < \tfrac13$ --- consistent with, and
+sharper than, the $\exp(-(\log x)^{1/2+o(1)})$ outer ceiling of the
+wider method family, itself short of Vaughan's $2/3$. A
 quasi-polynomial classification ($d^{O(\log d)}$ containers) would
 still give exceptional sets
 $x\exp(-\exp(c\sqrt{\log\log x}))$, past every
