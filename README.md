@@ -86,7 +86,7 @@ data/
 tests/
   test_solver.py       61 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (38 pp.)
+  erdos_straus_residuals.tex/.pdf   the manuscript (39 pp.)
   make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
 lean/
   ErdosStraus/         Lean 4 + mathlib formalization (12 modules: Basic,
@@ -144,7 +144,7 @@ Burgess–reciprocity ladder program (Theorems L₀/B₁/B₂ and
 Hypothesis P) organizes the endgame past the ceiling: the
 almost-all Theorem L₁ at its stronger calibrations is
 conditional on the measured per-rung decay. On the lower-bound side,
-the identification of Type-I failure families as *norm-form* families
+the identification of character failure families as *norm-form* families
 (paper eq. (5.1): for $r \equiv 3 \bmod 4$, all prime factors of $a$
 being quadratic residues mod $r$ is primitive representability of $a$
 by a binary quadratic form of discriminant $-r$) makes Iwaniec's

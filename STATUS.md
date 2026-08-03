@@ -124,7 +124,7 @@ of classes and one-sidedly (upper bound) elsewhere. The lower-bound
 side comes from the **norm-form bridge** (paper eq. (5.1)): for
 $r \equiv 3 \pmod 4$, "every prime factor of $a$ is a QR mod $r$" is
 "$a$ is *primitively* represented by a binary quadratic form of
-discriminant $-r$", so Type-I failure families are norm-form families
+discriminant $-r$", so character failure families are norm-form families
 and Iwaniec's *prime-indexed* half-dimensional sieve (Acta Arith. 21
 (1972) 203–234) is the counting tool — parity does not bite at
 $\kappa = 1/2$, where $\beta(1/2) = 1$. It gives **Theorem 5.7 (the
@@ -355,7 +355,7 @@ full tail minimality.
   at once*: if the factor classes of (p+R)/4 occupy ≥ (R−1)/2 nonzero
   classes, every class mod R is a divisor class of m² and R succeeds;
   failure forces support ≤ (R−3)/2. Proof via Kneser's addition theorem
-  (stabilizer dichotomy); tight (Type-I configurations). General
+  (stabilizer dichotomy); tight (character-type configurations). General
   abelian form covers composite R (≥ φ(R)/2 classes forbidden for all
   ω(R) ≤ 2). "Lemma S past 107" is thereby closed for all R, and the
   DP verifications 19…107 become independent confirmations.
@@ -364,7 +364,7 @@ full tail minimality.
   on the prime list, **31/2** on the full 27-residual list); covers 74 %
   of hard primes alone; characterizes the critical primes.
 - **Theorem J** (reciprocity structure) — (q|R) = (p|q) for odd primes
-  q | (p+R)/4: joint Type-I failure ⟺ p is a QR mod every unforced prime
+  q | (p+R)/4: joint character failure ⟺ p is a QR mod every unforced prime
   of every shifted value. Explains the record prime (4σ Legendre-coin
   fluctuation over only 43 distinct primes) and why hard classes are the
   squares mod 840 (forced small primes are character-neutral).
@@ -413,7 +413,7 @@ full tail minimality.
   verified solutions with $R \le 107$.
 - The record's staticness is now *explained* (Theorem J): joint failure is a
   Legendre-coin large-deviation event; expected record growth
-  $\asymp \log x/\log\log x$ at the pure-Type-I level.
+  $\asymp \log x/\log\log x$ at the pure-character-type level.
 - The fixed-finite-list reduction is conditionally **false** (Theorem K):
   the correctly-posed open problem is an unconditional bound on
   $R_{\min}(p)$ — which, by completeness, *is* the conjecture.

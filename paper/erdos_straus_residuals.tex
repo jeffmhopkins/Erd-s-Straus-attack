@@ -134,10 +134,11 @@ set, is the quantity the problem is about. The theorems here bound
 $R_{\min}$: for every hard prime through $10^{11}$ by explicit
 certificate, and for almost every hard prime by
 Theorem~\ref{thm:U}, at a residual of size $O(\log\log x)$. Density
-statements follow as corollaries, and are weaker than Vaughan's;
-the bounds on $R_{\min}$, the exact local criteria that produce
-them, and the certificates they exhibit have no counterpart in the
-mean-value literature. Vaughan's theorem is the benchmark against
+statements follow as corollaries, and are weaker than Vaughan's.
+What has no counterpart in the mean-value literature is the bound on
+$R_{\min}$ itself: the trivial bound $R_{\min}(p) \ll p$ is
+Bradford's~\cite{Bradford}, and no bound of smaller order was
+available by any method. Vaughan's theorem is the benchmark against
 which we calibrate the sieve, not the target we are trying to
 overtake.
 
@@ -205,7 +206,7 @@ overtake.
   two-sided (Theorem~\ref{thm:B2}), and an
   almost-all bound past every fixed power of $\log x$ conditional on
   one measured hypothesis (Theorem~\ref{thm:L1}).
-\item The identification of Type-I failure families as
+\item The identification of character-failure families as
   \emph{norm-form} families \eqref{eq:normform}, which makes
   Iwaniec's prime-indexed half-dimensional sieve~\cite{IwaniecPhiA}
   the natural counting tool and yields matching upper and lower
@@ -286,16 +287,35 @@ $R_{\min}(p) \le R \le 2p$. Conversely \eqref{eq:cert} at any
 admissible $R$ produces a solution.
 \end{proof}
 
-A word on provenance. The divisor-congruence identity underlying
-\eqref{eq:cert} is classical: criteria of this shape are implicit in
-Mordell's treatment~\cite[Ch.~30]{Mordell} and in Yamamoto's
-analysis of the quadratic obstruction~\cite{Yamamoto}. What we claim
-as new is not the identity but what is built on it: the completeness
-statement of Proposition~\ref{prop:complete} (every solution is a
-residual certificate, so the conjecture \emph{is} a bound on
-$R_{\min}$), the residual-indexed program --- exactness at fixed $R$,
-reciprocity across residuals, the support theorem uniform in $R$ ---
-and the sieve consequences those inputs support.
+A word on provenance. Proposition~\ref{prop:complete} is not new.
+The bounded search space together with the divisor-congruence
+criterion modulo $4a - p$ is due to Bradford~\cite{Bradford}, who
+proves that a solution exists at $p$ if and only if some $a$ in
+$\lceil p/4 \rceil \le a \le \lceil p/2 \rceil$ admits a divisor of
+$a^2$ in a prescribed class modulo $4a - p$ --- his range is in fact
+slightly sharper than the $a \le 3p/4$ recorded above, and the
+correspondence with solutions is likewise bijective. These are by now
+called the Bradford conditions~\cite{MihneaBogdan}. Criteria of this
+general shape go back further: the quadratic obstruction is
+Yamamoto's~\cite{Yamamoto} (a necessary character condition, not a
+solvability criterion), Mordell's Chapter~30~\cite[Ch.~30]{Mordell}
+collects the classical identities and his own non-existence theorem,
+and the systematic divisor-counting form is Elsholtz--Tao's
+\cite{ElsholtzTao}.
+
+What this paper adds is not the criterion but the program built on
+it. The organizing move is to index by the residual $R$ rather than
+by the denominator $a$, which turns a search space into a sequence
+of local problems: each fixed $R$ admits a finite computable exact
+criterion (Theorem~\ref{thm:meta}), those criteria are determined
+explicitly at $R = 3, 7, 11, 15$, their failures are linked across
+residuals by a reciprocity identity (Theorem~\ref{thm:J}), and a
+single bound governs all of them at once
+(Theorem~\ref{thm:S}). What that buys is quantitative: bounds on
+$R_{\min}(p)$ itself --- for almost every hard prime
+(Theorem~\ref{thm:U}), and by explicit certificate for every hard
+prime below $10^{11}$. Bradford's range gives $R_{\min}(p) \ll p$;
+the point of what follows is to replace $p$ by something small.
 
 Two
 elementary congruences drive everything below. From $4a = p + R$,
@@ -567,15 +587,16 @@ $R_{\min}(p)$, the quantity Proposition~\ref{prop:complete} shows
 almost every hard prime. A mean-value argument counts the primes
 that fail; it produces no admissible residual, and hence no bound of
 this shape, for the primes that succeed. On that axis the
-comparison does not arise: no bound on $R_{\min}$ was previously
-available by any method.
+comparison does not arise: the only previously available bound on
+$R_{\min}$ is the trivial $R_{\min}(p) \ll p$ implicit in
+Bradford's search space~\cite{Bradford}.
 \end{remark}
 
 \emph{Organization.} Proofs are arranged by logical dependency.
 Section~\ref{sec:obstruction} develops the obstruction framework
 (Propositions~\ref{prop:char}, \ref{prop:succ}) and proves
 Theorem~\ref{thm:J}, whose Corollary~\ref{cor:J} depends on the
-Type-I/II dichotomy introduced there.
+character/II dichotomy introduced there.
 Section~\ref{sec:exact} proves Theorem~\ref{thm:A}, then
 Theorem~\ref{thm:meta}, then Theorems~\ref{thm:Ap}, \ref{thm:App}
 and~\ref{thm:R15}, which rest on it. Section~\ref{sec:sieve} proves
@@ -664,10 +685,12 @@ whence $\legendre{k}{r} = \legendre{-m}{r} = -1$ by \eqref{eq:target} ---
 impossible.
 \end{proof}
 
-We call failures produced by Proposition~\ref{prop:char} \emph{Type~I};
-failures where $m$ possesses a non-residue prime factor modulo every
-relevant $r$, yet no divisor of $m^2$ attains the exact class $-m \bmod
-R$, are \emph{Type~II}.
+We call failures produced by Proposition~\ref{prop:char}
+\emph{character failures}; failures where $m$ possesses a non-residue
+prime factor modulo every relevant $r$, yet no divisor of $m^2$
+attains the exact class $-m \bmod R$, are \emph{budget failures}.
+(We avoid ``character failure/II'', which Elsholtz and Tao~\cite{ElsholtzTao}
+use for the two principal \emph{solution} parametrizations.)
 
 \begin{proposition}[guaranteed-success classes]\label{prop:succ}
 Let $t \equiv -4^{-1}p^2 \pmod R$. If $a$ has a prime factor $q$ with
@@ -705,7 +728,7 @@ a quadratic residue mod $3, 5, 7$, and $p \equiv 1 \pmod 8$ handles
 $q = 2$ (which divides $a$ only for $R \equiv 7 \pmod 8$, where
 $\smash{\legendre{2}{R}} = +1$): no prime forced into a shifted value
 $(p+R)/4$ by the congruences (H1)--(H3) carries a negative character.
-(ii) $p$ fails Type-I at every prime
+(ii) $p$ fails character at every prime
 residual $R \le B$ simultaneously if and only if
 $\smash{\legendre{p}{R}} = +1$ for each such $R$ and
 $\smash{\legendre{p}{q}} = +1$ for every \emph{unforced} odd prime $q$
@@ -720,7 +743,7 @@ quadratic characters of the forced small primes.
 \end{proof}
 
 In words, part (i) says that the small primes forced into the shifted
-values by the Mordell structure never break a Type-I failure --- a
+values by the Mordell structure never break a character-failure --- a
 conceptual reading of why the hard classes are exactly the square
 classes. By part (ii), failures at distinct residuals
 correlate through shared prime factors: shifted values with few
@@ -817,9 +840,9 @@ non-residue.
 The hard-class hypotheses are essential: for $p = 701 \equiv 1 \pmod 4$
 (not hard), $a = 177 = 3 \cdot 59$ has the non-residue factor $3$, yet
 $R = 7$ fails. Constraint (ii) --- the forced even factor --- is exactly
-what rescues every would-be Type-II configuration at hard primes.
+what rescues every would-be budget configuration at hard primes.
 Empirically (Section~\ref{sec:comp}), among $41{,}421$ sampled failures of
-$R=7$ at hard primes, \emph{all} are Type~I.
+$R=7$ at hard primes, \emph{all} are character failure.
 \end{remark}
 
 \subsection{Proof of Theorem~\ref{thm:App}}
@@ -1003,8 +1026,19 @@ tractable ($3{,}001$ states at $R = 31$ against $77.6$~million supports;
 $19{,}530{,}971$ states at $R = 107$, $331$ seconds). All twelve
 residuals verify with zero violations; exact state counts are tabulated
 in Table~\ref{tab:components}. The bound is tight: the all-residue
-(Type~I) configurations occupy exactly $(R-3)/2$ nonzero classes.
+(character failure) configurations occupy exactly $(R-3)/2$ nonzero classes.
 \end{proof}
+
+Covering a finite abelian group by subset sums is a studied
+question --- see Gao--Hamidoune--Llad\'o--Serra~\cite{GHLS} and the
+literature that follows it --- and Theorem~\ref{thm:S} belongs to
+that circle of ideas. What is specific here is the shape of the
+summands: each factor class contributes the bounded-exponent set
+$\{1, v, v^2\}$ rather than an arbitrary set, the target is a single
+prescribed class rather than the whole group, and the bound is
+required uniformly in $R$ with an explicit extremal family. We have
+not found the statement below in that literature, but we make no
+claim of independence from it beyond the proof given.
 
 \begin{proof}[Proof of Theorem~\ref{thm:S}]
 (i) Write $M = A_1 + \cdots + A_k$ with $A_i = \{0, v_i, 2v_i\}$,
@@ -1091,7 +1125,7 @@ $n+2$ free of the six classes $\{4,5,7,8,9,10\}$ mod $11$ (density
 $\tfrac35$). Each branch is a four-form sieve problem of dimension
 $1 + \tfrac12 + \tfrac12 + \tfrac12 = \tfrac52$, resp.\
 $1 + \tfrac12 + \tfrac12 + \tfrac35 = \tfrac{13}{5}$. Since
-$\tfrac{13}{5} > \tfrac52$, the Type-II branch contributes
+$\tfrac{13}{5} > \tfrac52$, the budget branch contributes
 $O(x/(\log x)^{13/5}) = o(x/(\log x)^{5/2})$:
 the bound is the maximum of the branch exponents, attained by the
 character branch (a). The Fundamental Lemma applied to each branch gives
@@ -1110,7 +1144,7 @@ finitely many maximal-support branches, each forbidding an explicit set
 of at least $9$ of the $18$ unit classes mod $19$ on $n+4$ --- dimension
 $\ge \tfrac12$. Crossing with the branches at $11$ leaves finitely many
 combined branches, each a six-form problem of dimension $\ge \tfrac72$
-(those involving the Type-II case at $11$ have dimension
+(those involving the budget case at $11$ have dimension
 $\ge \tfrac{31}{10} + \tfrac12 > \tfrac72$
 and are again lower-order); the
 forbidden residues of the six forms are pairwise distinct for $q > 19$,
@@ -1330,6 +1364,22 @@ $-\varepsilon L^2/10 + O(\varepsilon^2 L^2) \le
 -\varepsilon L^2/20$ for $\varepsilon$ below an absolute threshold.
 \end{proof}
 
+\begin{remark}[the constant, and the range]\label{rem:Urange}
+The constant $c$ in Theorem~\ref{thm:U} is not innocuous. It
+inherits the branch factor $e^{\Theta(B^2)}$ against the sieve gain
+$e^{-BL/10}$, so the $\varepsilon$ below which the accounting closes
+is small, and $c \asymp \varepsilon$. The bound beats the trivial
+count $\asymp x/(32\log x)$ of hard primes only once
+$c(\log\log x)^2 - \log\log x > \log 32$, which for small $c$
+places the crossover at values of $x$ far beyond any computational
+range: at $c = 10^{-2}$ one needs $\log\log x \gtrsim 350$. The
+theorem is therefore asymptotic in the strict sense --- nontrivial
+for all large $x$, ineffectively so (Siegel--Walfisz), and of no
+numerical content in any accessible range. Its interest is
+structural, and the numerical picture at accessible heights is
+supplied instead by Section~\ref{sec:comp}.
+\end{remark}
+
 \begin{remark}[the ceiling, and the one lever]\label{rem:ceiling}
 Theorem~\ref{thm:U} sits at the boundary set by its \emph{branch
 factor}: $e^{\Theta(B^2)}$ from the crude all-subsets bound on
@@ -1528,9 +1578,9 @@ $x\exp(-\exp(c\sqrt{\log\log x}))$, past every
 $\exp(-C(\log\log x)^A)$.
 \end{proof}
 
-Conjecture~\ref{conj:A} is thus one well-posed additive-combinatorics
-statement --- a Kneser/Freiman-type container theorem for
-bounded-exponent subset sums --- standing between
+Conjecture~\ref{conj:A} is thus a single well-posed question of
+additive combinatorics --- a container theorem of Kneser--Freiman
+type for bounded-exponent subset sums --- standing between
 Theorem~\ref{thm:U} and its polylog tier. Where its difficulty lives
 can now be pinned exactly. Near-critical Kneser analysis is
 \emph{vacuous} here (aperiodic failing supports with $|S| \ge 3$ are
@@ -1792,7 +1842,7 @@ Hypothesis~\ref{hyp:B} below posits, obtained from
 Hypothesis~\ref{hyp:P} rung by rung, though not with the uniformity
 in $j$ and $q$ that Hypothesis~\ref{hyp:B} demands.
 
-The key to counting true failures is that the Type-I failure
+The key to counting true failures is that the character-failure
 condition is a \emph{norm-form} condition in disguise. For
 $r \equiv 3 \pmod 4$, quadratic reciprocity gives
 $\legendre{-r}{\ell} = \legendre{\ell}{r}$ for odd primes
@@ -2067,10 +2117,16 @@ Three features of the distribution deserve comment.\nopagebreak
   language of Corollary~\ref{cor:J}: its $27$ shifted values contain
   only $43$ distinct odd primes (typical: $45$--$52$), and $81\%$ of
   them satisfy $\smash{\legendre{p}{q}} = +1$ (typical: $44$--$60\%$)
-  --- a $\approx 4\sigma$ fluctuation ($z = 4.1$ against the
-  binomial null of independent unit signs) in the statistic that
-  Theorem~\ref{thm:J} identifies as governing joint failure.
-\item \textbf{A confirmed prediction.} The \emph{calibrated
+  --- an extreme value of exactly the statistic
+  Theorem~\ref{thm:J} identifies as governing joint failure. We
+  attach no significance level to this: the prime was selected
+  \emph{because} it is the record, so its extremeness in a
+  correlated statistic is expected rather than surprising, and
+  among $10^8$ primes the corresponding order statistic would be a
+  large fluctuation with near certainty. The observation is
+  descriptive --- it says what the record prime looks like
+  mechanically, not that its existence is improbable.
+\item \textbf{A prediction, and what it was worth.} The \emph{calibrated
   independence model} treats the per-residual failure events as
   independent across $R$, with per-residual failure rates fitted from
   the complete $10^9$ solvability masks and a single deep-tail
@@ -2086,9 +2142,13 @@ Three features of the distribution deserve comment.\nopagebreak
   $10^{10}$ and $10^{11}$ the five values acquired $8, 3, 5, 1, 1$
   primes respectively (all in $(1.3 \times 10^{10}, 10^{11})$), and
   none passed
-  $103$: the observed conditional distribution over the $19$ deep-tail
-  primes ($8, 3, 5, 1, 1, 1$ including the record) matches the
-  prediction.
+  $103$. The observed conditional distribution over the $19$
+  deep-tail primes ($8, 3, 5, 1, 1, 1$ including the record) is
+  \emph{consistent} with the prediction ($\chi^2 \approx 1.3$), but
+  we claim no more than that: with $19$ points and several expected
+  cells below $5$ the comparison has little power to discriminate,
+  and its value is that the model was falsifiable in advance and was
+  not falsified.
 \item Among all $1{,}587{,}581$ hard primes below $10^9$, exactly
   \emph{four} admit a unique working residual $\le 107$
   ($8{,}803{,}369$ with $107$; $142{,}361{,}209$ with $59$;
@@ -2134,9 +2194,9 @@ terms bias the exponent downward.
 \subsection{Failure taxonomy}
 
 Sampling the complete solvability table at $10^9$: failures at $R = 7$
-are $100\%$ Type~I (as Theorem~\ref{thm:Ap} requires); at $R = 11$,
-$89.7\%$ Type~I and $10.3\%$ the budget pattern of
-Theorem~\ref{thm:App}(b); the Type-I share broadly decreases with
+are $100\%$ character failures (as Theorem~\ref{thm:Ap} requires); at $R = 11$,
+$89.7\%$ character failure and $10.3\%$ the budget pattern of
+Theorem~\ref{thm:App}(b); the character-failure share broadly decreases with
 $\varphi(R)$ (e.g.\ $51\%$ at $R = 103$, though not monotonically), as
 hitting one specific class among
 $\varphi(R)$ grows harder while the character dichotomy stays binary.
@@ -2191,7 +2251,7 @@ record).
   invites a graph formulation: on the bipartite graph joining primes $q$
   to residuals $R$ by $q \mid (p+R)/4$, the edge characters
   $\smash{\legendre{q}{R}}$ collapse to vertex signs
-  $\smash{\legendre{p}{q}}$, and joint Type-I failure is an all-plus
+  $\smash{\legendre{p}{q}}$, and joint character-failure is an all-plus
   vertex assignment --- a percolation-style object whose structure could
   organize the growth law. Separately, the meta-theorem's enumeration
   complexity is unresolved: the DP state count grows empirically by
@@ -2209,7 +2269,7 @@ record).
   (character-neutral by Corollary~\ref{cor:J}(i)), make the cofactors
   prime in prescribed residue classes, and apply
   Proposition~\ref{prop:char}. So no fixed finite list suffices,
-  conditionally, and the record grows without bound (at the pure-Type-I
+  conditionally, and the record grows without bound (at the pure-character
   level, like $\log x/\log\log x$). Unconditional versions appear
   out of reach: already ``infinitely many hard $p$ fail $R=3$''
   contains a two-form prime-tuple statement. What remains open is an
@@ -2417,7 +2477,7 @@ Theorems~\ref{thm:A}, \ref{thm:Ap}, \ref{thm:App} and~\ref{thm:R15}
 were compared against ground-truth
 divisor search on the complete solvability data below $10^9$: agreement
 in $1{,}587{,}581/1{,}587{,}581$ cases for $R = 3$,
-$41{,}421/41{,}421$ sampled failure cases for $R = 7$ (all Type~I, as
+$41{,}421/41{,}421$ sampled failure cases for $R = 7$ (all character failures, as
 Theorem~\ref{thm:Ap} requires), $158{,}759/158{,}759$ sampled cases
 for $R = 15$, and $79{,}380$ sampled cases for $R = 11$, with zero
 discrepancies; the
@@ -2629,10 +2689,21 @@ J.~Friedlander and H.~Iwaniec,
 American Mathematical Society Colloquium Publications, vol.~57,
 American Mathematical Society, Providence, RI, 2010.
 
+\bibitem{GHLS}
+W.~Gao, Y.~O.~Hamidoune, A.~Llad\'o and O.~Serra,
+\emph{Covering a finite abelian group by subset sums},
+Combinatorica \textbf{23} (2003), 599--611.
+
 \bibitem{HalberstamRichert}
 H.~Halberstam and H.-E.~Richert,
 \emph{Sieve Methods},
 Academic Press, London, 1974.
+
+\bibitem{Bradford}
+K.~Bradford,
+\emph{A note on the Erd\H{o}s--Straus conjecture},
+Integers \textbf{21} (2021), \#A24; preprint,
+arXiv:\href{https://arxiv.org/abs/1906.00561}{1906.00561} [math.NT], 2019.
 
 \bibitem{Cox}
 D.~A.~Cox,
