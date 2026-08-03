@@ -555,10 +555,10 @@ Thm.~\ref{thm:A} ($R{=}3$) & elementary & \S\ref{sec:exact} & Lean, both directi
 Thm.~\ref{thm:meta} & elementary & \S\ref{sec:exact} & model + reduction in Lean \\ \addlinespace
 Thm.~\ref{thm:Ap} ($R{=}7$) & Prop.~\ref{prop:char} + Thm.~\ref{thm:meta} + enumeration ($1{,}536$) & \S\ref{sec:exact} & Lean (\texttt{native\_decide}) \\ \addlinespace
 Thm.~\ref{thm:App} ($R{=}11$) & Thm.~\ref{thm:meta} + enumeration ($497{,}664$) & \S\ref{sec:exact} & Lean (\texttt{native\_decide}) \\ \addlinespace
-Thm.~\ref{thm:R15} ($R{=}15$) & Thm.~\ref{thm:meta}, composite form + enumeration ($349{,}920$) & \S\ref{sec:exact} & Python only \\ \addlinespace
+Thm.~\ref{thm:R15} ($R{=}15$) & Thm.~\ref{thm:meta}, composite form + enumeration ($349{,}920$) & \S\ref{sec:exact} & Lean (\texttt{native\_decide}) \\ \addlinespace
 Thm.~\ref{thm:J} & quadratic reciprocity & \S\ref{sec:obstruction} & Lean \\ \addlinespace
 Lem.~\ref{lem:S} & Lem.~\ref{lem:mono} + enumerations / DP & \S\ref{sec:sieve} & Lean at $R = 19, 23, 31$ \\ \addlinespace
-Thm.~\ref{thm:S} & Kneser's theorem + Lem.~\ref{lem:mono}; (iii) upgrade at $R \le 107$: enumeration & \S\ref{sec:sieve} & Python, (iii) enumeration only \\ \addlinespace
+Thm.~\ref{thm:S} & Kneser's theorem + Lem.~\ref{lem:mono}; (iii) upgrade at $R \le 107$: enumeration & \S\ref{sec:sieve} & Lean, part (i); (iii) clause: Python \\ \addlinespace
 Thm.~\ref{thm:FG} & Thms.~\ref{thm:A}, \ref{thm:Ap}--\ref{thm:R15}, \ref{thm:S} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
 Prop.~\ref{prop:agg} & elementary + Thm.~\ref{thm:FG} & \S\ref{sec:sieve} & families in Lean \\ \addlinespace
 Thm.~\ref{thm:D} & Prop.~\ref{prop:succ} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
@@ -2108,8 +2108,10 @@ ultimately uses. The formalization comprises:
   the neutral class collapses), Theorem~\ref{thm:App} ($497{,}664$
   capped configurations, including the exact two-case failure
   classification), and Lemma~\ref{lem:S} at $R = 19, 23$
-  ($437{,}580$ resp.\ $7{,}759{,}752$ checks) are discharged by
-  \texttt{native\_decide}.
+  ($437{,}580$ resp.\ $7{,}759{,}752$ checks), and
+  Theorem~\ref{thm:R15} ($349{,}920$ configurations, via a
+  product-index bridge for the non-cyclic unit group) are discharged
+  by \texttt{native\_decide}.
 \item \emph{The coordinate bridges}: the larger enumerations are
   \emph{evaluated} in discrete-log coordinates for speed, but the
   translation to the multiplicative model is itself a proved theorem,
@@ -2138,11 +2140,18 @@ ultimately uses. The formalization comprises:
 \end{itemize}
 Every main theorem is audited with \texttt{\#print axioms}, and
 helper lemmas are covered transitively through them. (Not formalized:
-Theorem~\ref{thm:R15}, Theorem~\ref{thm:S},
+Theorem~\ref{thm:S}(ii)/(iii),
 Propositions~\ref{prop:complete}, \ref{prop:char}
 and~\ref{prop:succ}, and the analytic arguments of
 Sections~\ref{sec:sieve} and~\ref{sec:ladder} --- these rest on the
-Python layer and the hand proofs alone.) For these
+Python layer and the hand proofs alone. Theorem~\ref{thm:R15}'s
+finite check and Theorem~\ref{thm:S}(i) \emph{are} formalized: the
+former by a product-index mask bridge over the non-cyclic
+$(\mathbb{Z}/15)^* \cong C_2 \times C_4$, the latter fully
+symbolically --- Kneser's addition theorem vendored from its
+existing sorry-free formalization, an iterated many-summand form
+proved on top, and the support bound derived on standard axioms
+only, no evaluator appeal.) For these
 enumerations the sixty-line trust base above is thus replaced by the
 Lean toolchain evaluating a formally stated proposition --- and the
 Python and Lean implementations, written independently against the
@@ -2357,8 +2366,9 @@ the $10^{11}$ prime array and $R$-sequence are pinned by SHA-256 in
 \texttt{hard\_primes\_1e11\_minimalR.meta.json} (prefixes
 \texttt{53cf17c4\ldots},
 \texttt{2a69f3aa\ldots}) \\ \addlinespace
-formal layer & Lean 4.32.2 + mathlib (pinned toolchain); five
-\texttt{native\_decide} checks; every main theorem audited by
+formal layer & Lean 4.32.2 + mathlib (pinned toolchain); six
+\texttt{native\_decide} checks; Theorem~\ref{thm:S}(i) fully
+symbolic (vendored Kneser); every main theorem audited by
 \texttt{\#print axioms} \\
 \bottomrule
 \end{tabular}

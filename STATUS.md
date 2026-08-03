@@ -1,5 +1,5 @@
 # Erdős–Straus Conjecture Attack — Current State
-**Date:** 2026-08-03 (current through PR #45)  
+**Date:** 2026-08-03 (current through PR #48)  
 **Focus:** Hard-class primes (Mordell exceptional residues mod 840)
 
 ## The Problem
@@ -420,9 +420,12 @@ full tail minimality.
    exploit the subgroup-trapped structure of failing supports
    *uniformly in R* (p-independent branches — the remaining gap on the
    conditionally-past-Vaughan route); formalize Theorem S and A‴ in
-   Lean (ladder Lemmas J°/N and the selected-residual corollary are
-   done in `Ladder.lean`; the R = 15 product-index bridge and a
-   Kneser port are in progress); the
+   Lean — largely **done**: ladder Lemmas J°/N (`Ladder.lean`), the
+   R = 15 product-index bridge (`BridgeR15.lean`, first non-cyclic
+   mask bridge), and **Theorem S(i) fully symbolic**
+   (`TheoremS.lean`: vendored sorry-free Kneser + iterated form +
+   the support bound, standard axioms only); remaining: Theorem
+   1.10(ii)/(iii) and the discrete-log instantiation; the
    unconditional $R_{\min}$ bound (= the conjecture).
 
 ---

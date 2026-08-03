@@ -40,6 +40,12 @@ paper-number dictionary is THEORY.md's mapping table (§1).
 | `lemmaS_R19_certificate` | **the composed corollary**: if `(p+19)/4` has nine prime factors in pairwise-distinct unit classes ≠ 1 mod 19, an explicit Erdős–Straus certificate exists at p — enumeration + both bridges + consolidation, end to end |
 | `R31.dedupMax_dominates` / `R31.dp_sound_aux` (LemmaS31.lean) | **verified dynamic programming**: the DP round carries every state and adds every extension; the soundness induction shows every support `S ⊆ {1..29}` is represented with count ≥ min(\|S\|, 15) — standard axioms only |
 | `R31.lemmaS_finite_R31` | **Lemma S at R = 31**: the C(29,15) = 77,558,760 supports are *never enumerated* — the DP covers them through 3,001 states; the compiled evaluator runs the DP and the final 3,001 × 30 target check (`native_decide`), while the DP's correctness is proved, not trusted; result stays in mask coordinates (no `_mult` bridge yet) |
+| `rot2` / `maskSet2` / `mstep2` (BridgeR15.lean) | the **product-index mask bridge** for non-cyclic unit groups: masks over `Fin d1 × Fin d2` flattened to `d1·d2`-bit naturals, rotation = componentwise block rotation; `maskSet2_rot2` (rotation = multiplication by `g^s·h^t`), `maskSet2_mstep2` (mask step = `step`), `reach_eq_maskSet2` (mask fold = `reach`), proved symbolically for any `R, d1, d2, g, h` with `g^d1 = 1`, `h^d2 = 1` — standard axioms only |
+| `theoremA'''_finite_R15` | **Theorem A‴'s finite verification (R = 15**, the paper's Theorem 1.6): all 349,920 consistent capped hard-prime configurations over `(ℤ/15)* = ⟨11⟩ × ⟨7⟩ ≅ C₂ × C₄` (multiplicities 0..5 per class, class 2 forced, `p ≡ 1, 4 (mod 15)`, consistency `∏ = 4p`) — the target `11` is reachable **iff** some factor class has Jacobi symbol −1 mod 15 (i.e. lies in `{7, 11, 13, 14}`): 349,380 successes, 540 all-residue failures, **no budget failures** — in product-mask coordinates (`native_decide`) |
+| `theoremA'''_finite_R15_mult` | Theorem A‴'s exact criterion **restated over `ZMod 15`** and the multiplicative `reach` model, derived from the mask check via the product-index bridge — inherits exactly the one `native_decide` axiom |
+| `Finset.add_kneser` / `Finset.mul_kneser` (Kneser/, vendored) | **Kneser's addition theorem**: `#(s + H) + #(t + H) ≤ #(s + t) + #H` with `H = (s + t).addStab` — vendored unmodified from Yaël Dillies' misc-yd (Apache 2.0, attribution in the file headers); standard axioms only |
+| `add_kneser_list` (TheoremS.lean) | **iterated Kneser**: for a family `A₁, …, A_k` with `H` the stabilizer of `∑ Aᵢ`, `∑ #(Aᵢ + H) ≤ #(∑ Aᵢ) + (k−1)·#H` — induction replacing the head summand `B` by `B + H`, whose key step is `(t + H).addStab = H` |
+| `theoremS_support_bound` | **Theorem S (paper Theorem 1.10(i))**: for even `d` and `S` a set of nonzero elements of `ZMod d`, if `M(S) = ∑_{v∈S} {0, v, 2v} ≠ ZMod d` then `#S ≤ d/2 − 1` — Kneser + trivial/nontrivial-stabilizer cases + the quadratic `h + d/h − 3 ≤ d/2 − 1`; the unconditional support bound behind Lemma S for *every* residual — standard axioms only |
 
 Together these verify the elementary layer of the paper end to end —
 certificates are sound and integral, Theorem A is exact in both
@@ -63,7 +69,20 @@ bridges** (`Bridges.lean`): the mask semantics (rotation =
 multiplication by `g^s`, mask fold = `reach`) is a theorem, so
 `theoremA''_finite_R11_mult`, `lemmaS_finite_R19_mult`, and
 `lemmaS_finite_R23_mult` state the same results directly over
-`ZMod 11 / 19 / 23` and `reach`, with no coordinate caveat left.
+`ZMod 11 / 19 / 23` and `reach`, with no coordinate caveat left. The
+same recipe now covers the non-cyclic composite residual R = 15
+(`BridgeR15.lean`): the product-index mask bridge (`maskSet2_rot2`,
+`reach_eq_maskSet2`, proved for any product decomposition
+`g^d1 = h^d2 = 1`) carries the 349,920-configuration check of the
+paper's Theorem 1.6 (`theoremA'''_finite_R15`) back to `ZMod 15`
+(`theoremA'''_finite_R15_mult`) — the exact criterion is a pure
+Jacobi-character dichotomy, with no budget failure shapes. And the
+support bounds no longer stop at fixed residuals: `TheoremS.lean`
+proves the paper's Theorem 1.10(i) (`theoremS_support_bound`) from
+Kneser's addition theorem (vendored, `Kneser/`) via the iterated form
+`add_kneser_list` — for every even `d`, a bounded subset-sum set
+`M(S) ≠ ZMod d` forces `#S ≤ d/2 − 1`, symbolically, with no
+enumeration at all.
 Finally, the reach ⟺ divisor-certificate bridge
 (`DivisorBridge.lean`) proves the model faithful to the integers:
 `reach` membership of a class is existence of a divisor of `m²` in
@@ -74,10 +93,10 @@ reduction itself, fully symbolic, standard axioms only.
 
 ### Trust base
 
-Every main theorem is audited by `#print axioms` (40 audit lines;
+Every main theorem is audited by `#print axioms` (50 audit lines;
 helper lemmas are covered transitively through the audited theorems). The model and the
-monotonicity lemmas report only the three standard axioms (`propext`,
-`Classical.choice`, `Quot.sound`). The five finite checks (four enumerations plus the R = 31
+monotonicity lemmas — and the whole Kneser/Theorem S layer — report only the three standard axioms (`propext`,
+`Classical.choice`, `Quot.sound`). The six finite checks (five enumerations plus the R = 31
 `dp_check`) use `native_decide` and so additionally report a `..._native.native_decide.ax_1_1`
 axiom (the `Lean.ofReduceBool` mechanism) — trust in the Lean
 compiler and its evaluator, not just the kernel. Two engineering
@@ -97,7 +116,8 @@ axioms — no additional computational trust.
 Mitigation for the evaluator trust: every enumeration is checked by
 independent Python verifications of the same criteria
 (`theory.verify_R7_finite`, `theory.finite_criterion_dp`,
-`theory.verify_support_bound`, `theory.verify_support_bound_dp`) —
+`theory.verify_support_bound`, `theory.verify_support_bound_dp`,
+`theory.verify_R15_finite`) —
 different coordinates and algorithms, with agreeing results.
 
 ## Roadmap (not yet formalized)
@@ -106,16 +126,22 @@ different coordinates and algorithms, with agreeing results.
   extends directly (R = 43, 47, …); the cost is the evaluator's DP
   run, which grows with the state count (3,001 at R = 31; millions by
   R = 83), eventually needing a compacter state representation. Note,
-  though, that Theorem 1.10 (Kneser) now proves the support bound for
-  every R, so DP extensions past R = 31 would be independent
-  confirmations only; the real unformalized targets are Theorem 1.10
-  itself and Theorem 1.6 (R = 15).
+  though, that Theorem 1.10(i) is now formalized
+  (`theoremS_support_bound`) and proves the support bound for every
+  even d at once, so DP extensions past R = 31 would be independent
+  confirmations only.
 - Near-term plan: the ladder Lemmas J° and N plus the
   selected-residual corollary are **done** (`Ladder.lean`:
   `composite_reciprocity`, `jacobi_necessity`,
-  `selected_residual_nonresidue`, standard axioms only); remaining:
-  an R = 15 product-index mask bridge, and a Kneser port for
-  Theorem 1.10(i)(ii).
+  `selected_residual_nonresidue`, standard axioms only); the R = 15
+  product-index mask bridge is **done** (`BridgeR15.lean`:
+  `theoremA'''_finite_R15` / `_mult`, the paper's Theorem 1.6); the
+  Kneser port for Theorem 1.10(i) is **done** (`Kneser/` vendored +
+  `TheoremS.lean`, standard axioms only); remaining from that list:
+  Theorem 1.10(ii) (the general-abelian composite form with the
+  involution correction), and connecting `theoremS_support_bound` to
+  the `reach` model in the way `lemmaS_finite_R19_mult` is connected
+  (a discrete-log instantiation of `M(S)`).
 - Composed corollaries at R = 11, 23, 31 analogous to
   `lemmaS_R19_certificate` (same recipe).
 - The analytic sieve bounds (the chain of Theorem 1.11, the density
@@ -136,8 +162,11 @@ different coordinates and algorithms, with agreeing results.
 | `Ladder.lean` | the Burgess–reciprocity ladder's elementary layer: Lemma J° (composite reciprocity), Lemma N (Jacobi necessity), the selected-residual corollary |
 | `Enumerations.lean` | the `reach` model, monotonicity lemmas, and the four `native_decide` finite checks (R = 7, 11, 19, 23) |
 | `Bridges.lean` | the parametric discrete-log bridge and the three `_mult` multiplicative restatements |
+| `BridgeR15.lean` | the product-index mask bridge for non-cyclic unit groups and Theorem A‴ (R = 15, paper Theorem 1.6): finite check + multiplicative restatement |
 | `DivisorBridge.lean` | reach ⟺ divisor certificates (FTA), budget consolidation, the composed corollary |
 | `LemmaS31.lean` | Lemma S at R = 31 by certified dynamic programming |
+| `Kneser/MulStab.lean`, `Kneser/Kneser.lean` | Kneser's addition theorem and the finset-stabilizer API, **vendored unmodified** from [Yaël Dillies' misc-yd](https://github.com/YaelDillies/misc-yd) (Apache 2.0; commit and provenance in the file headers) |
+| `TheoremS.lean` | iterated Kneser (`add_kneser_list`) and Theorem S — the paper's Theorem 1.10(i), the unconditional support bound |
 
 ## Build
 

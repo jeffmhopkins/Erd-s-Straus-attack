@@ -5,7 +5,9 @@ enumerations (`Enumerations`) → discrete-log bridges (`Bridges`) →
 the R = 15 product-index bridge (`BridgeR15`) →
 the reach ⟺ divisor-certificate bridge and composed corollary
 (`DivisorBridge`) → Lemma S at R = 31 by certified dynamic
-programming (`LemmaS31`). See lean/README.md.
+programming (`LemmaS31`) → Kneser's addition theorem (vendored,
+`Kneser/`) and the unconditional support bound Theorem S
+(`TheoremS`). See lean/README.md.
 -/
 import ErdosStraus.Basic
 import ErdosStraus.Families
@@ -16,3 +18,4 @@ import ErdosStraus.Bridges
 import ErdosStraus.BridgeR15
 import ErdosStraus.DivisorBridge
 import ErdosStraus.LemmaS31
+import ErdosStraus.TheoremS

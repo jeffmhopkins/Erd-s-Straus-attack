@@ -85,9 +85,10 @@ paper/
   erdos_straus_residuals.tex/.pdf   the manuscript (35 pp.)
   make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
 lean/
-  ErdosStraus/         Lean 4 + mathlib formalization (7 modules: Basic,
+  ErdosStraus/         Lean 4 + mathlib formalization (10 modules: Basic,
                        Families, TheoremA, Enumerations, Bridges,
-                       DivisorBridge, LemmaS31) — sorry-free,
+                       DivisorBridge, LemmaS31, Ladder, BridgeR15,
+                       TheoremS + vendored Kneser) — sorry-free,
                        axiom-audited; see lean/README.md
 .github/workflows/
   ci.yml               Python CI: test suite + proof-component smoke checks
