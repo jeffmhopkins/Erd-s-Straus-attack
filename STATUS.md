@@ -1,5 +1,5 @@
 # Erdős–Straus Conjecture Attack — Current State
-**Date:** 2026-08-03 (current through PR #51)  
+**Date:** 2026-08-03 (current through PR #54)  
 **Focus:** Hard-class primes (Mordell exceptional residues mod 840)
 
 ## The Problem
@@ -440,8 +440,15 @@ full tail minimality.
    Prop 4.12 β-vacuity, and Theorem 4.7's completeness lemma) — all
    on standard axioms only; the three earlier caveats (family
    positivity, Theorem A mod 3, capped configurations) are closed.
-   Remaining: Theorem 1.10(ii)/(iii), the iterated reduction, the
-   discrete-log instantiation; the
+   Wave 3 added `Elementary.lean` (Prop 1.1 completeness in both
+   directions — the paper's organizing equivalence — plus Props 2.1
+   and 2.2), generalized Theorem S to **any finite abelian group
+   with an explicit involution count** (paper Thm 1.10(iii); the
+   even-cyclic and odd cases are now instances, and the file
+   *shrank*), and closed Theorem 4.7 end to end with an explicit
+   $2^{c\sqrt d}$ bound. Remaining: Theorem 1.10(ii)'s transfer to
+   the multiplicative model, the $t = 2^{\omega(R)}-1$ involution
+   count, the iterated reduction; the
    unconditional $R_{\min}$ bound (= the conjecture).
 
 ---
