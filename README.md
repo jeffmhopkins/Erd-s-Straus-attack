@@ -79,6 +79,10 @@ data/
                                        (R = 19..59 prime, 15/35/39 composite):
                                        counts, size spectra, container-law
                                        verdicts (all "holds")
+    conjA_verification.json            Conjecture A stress-test summary:
+                                       exhaustive d <= 60 + d = 72 (first
+                                       non-Hajos order), sampled to 240;
+                                       no violation; beta-vacuity
 tests/
   test_solver.py       59 tests: units, certificates, theorem checks
 paper/

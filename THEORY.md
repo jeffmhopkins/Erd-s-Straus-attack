@@ -1,6 +1,6 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
-**Date:** 2026-08-03 (current through PR #48; this revision adds
+**Date:** 2026-08-03 (current through PR #51; this revision adds
 Theorem S and Theorem A‴; §2.10 adds the Burgess/reciprocity
 route, its full-population census and failure anatomy, the
 ladder theorems L₀ (rigorous, fixed length) and L₁ (almost-all,
@@ -1545,6 +1545,73 @@ certificates at polylog residuals.
 window containers + census CLI), archive
 `data/analysis/branch_maximal_supports.json`, tests. The research
 memos (branch_theorem, branch_enumeration) are summarized above.
+
+### 2.13 The Conjecture A round: β-vacuity, the parity floor, and the Hajós payoff
+
+The August 2026 Conjecture A round (independent prover and hunter
+agents) did not prove the conjecture, but it changed its standing on
+every axis. Verdict headline: **no counterexample exists anywhere it
+was feared** — and the feared mechanism is provably empty.
+
+**β-vacuity (proved; paper Prop 4.12).** A Kneser-critical deletion
+step of punctured (β) type forces the deleted element into
+Stab(M(S)): for f ∈ F and the punctures x, y isolated, f − v = x
+would give x − v = f − 2v ∉ A against isolation, so F − v = F. Hence
+aperiodic maximal failing supports admit only window-type (α)
+critical steps. The "β-chain" stratum — the open core named in §2.12
+and the stated reason non-Hajós orders looked dangerous — is empty by
+theorem. Machine-confirmed on 507,133 classified supports (zero β
+steps). What remains open is the control of *non-critical*
+(slack-consuming) steps: an exact-covering-efficiency question,
+indifferent to the Hajós/non-Hajós divide.
+
+**Parity floor (proved).** At odd moduli the miss set F always has
+even size — singleton-miss supports do not exist at all. The odd-d
+floor family is |F| = 2, auto-maximal, realized by signed complete
+partitions, window-shaped. Alongside: the **halving-pressure
+inequality** (maximality forces |F| ≤ (d+k+1)/2), which makes
+Conjecture A decidable at each fixed support size — and proved for
+all odd d at sizes k ≤ 4 by finite verification; the **deep-run
+identity** (at the floor family at most two elements can be α-type,
+direction pinned to Δ = 2(σ−t)); and **quotient invisibility** (an
+aperiodic maximal failure is invisible in every proper quotient —
+the prime-power case is genuinely two-scale). Floor-embedding is
+refuted: general maximal supports do not reduce to floor supports.
+
+**Verification state** (`data/analysis/conjA_verification.json`):
+exhaustive at every modulus d ≤ 60 (all targets; 24.25M
+orbit-weighted maximal supports) — the gap between the two prior
+ranges is closed; **exhaustive at d = 72, the smallest non-Hajós
+order** (all 11 orbits, 14.99M supports, 10¹¹ DFS nodes; worst
+aperiodic container exactly at the bound, never over); exhaustive at
+5 orbits each of d = 108/120 plus 2–3M samples on the rest; sampled
+at every non-Hajós order to 240 (incl. supports seeded from explicit
+aperiodic de Bruijn factorizations of Z/72); prover sweeps at all
+odd d ≤ 45 ∪ {47, 49, 53, 59}. Zero violations anywhere; bound
+attained by aperiodic supports repeatedly (optimal). One
+methodological catch: the d ≤ 30 sweep of §2.12 had used a laxer
+container class; it was re-verified under the strict recursion-closed
+class of Conjecture 4.9 — holds. Count growth: log₂(#maximal)/√d ≈
+2.6–2.8 at d = 31..72, matching the 2^{c√d} theorem.
+
+**Hajós payoff (proved reduction; paper §4.2 closing).** d = R−1 is
+a Hajós order ⟺ (R−1)/2 ∈ {1, p^a, pq, p²q, pqr}. A Chen-type P₃
+count gives ≫ B/(log B)² such admissible residuals ≤ B — dense
+enough that **Conjecture A restricted to Hajós orders yields Theorem
+4.11 at the same exponent up to o(1)**. So the conjecture only needs
+to hold where the group theory is tame (where every verified case
+lives), and a hypothetical non-Hajós counterexample would leave the
+polylog tier intact. (The pure prime-power thinning d = 2p^a is
+Sophie-Germain-hard and NOT usable — the P₃ tier is the right one.)
+
+**Honest remainder:** the window-concentration statement for
+non-critical steps at the |F| = 2 floor, and the two-scale coupling
+at prime powers — both obstructed for current tools, with the
+obstruction documented (conjA_proof.md C14). Conjecture A is now:
+massively verified including exhaustively at the first non-Hajós
+order, with its dangerous mechanism eliminated by theorem, its
+payoff needing only its tame cases, and its difficulty localized to
+one covering-efficiency question.
 
 
 ## 3. Empirical validation

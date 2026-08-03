@@ -1,0 +1,47 @@
+{
+ "model": "abstract single-target model in Z/d: support of nonzero elements, budget 2, reach = sum of {0,v,2v}; maximal failing supports vs window containers C(K,W), bound floor(d/2)-1 (paper Conjecture 4.9)",
+ "provenance": "Conjecture A research round, 2026-08-03 (memos conjA_proof.md / conjA_hunt.md; independent prover and hunter agents); strict recursion-closed container class throughout",
+ "verdict": "no violation found",
+ "sweeps": [
+  {
+   "range": "all moduli d <= 30",
+   "mode": "exhaustive, all targets",
+   "supports": 87009,
+   "notes": "re-verified under the strict container class; bound attained at every even d"
+  },
+  {
+   "range": "d = 31..60",
+   "mode": "exhaustive, all target orbits",
+   "supports_orbit_weighted": 24250000,
+   "notes": "closes the gap between verified ranges; bound attained by aperiodic supports at d = 40, 42, 48, 60; 53 s total"
+  },
+  {
+   "range": "d = 72 (smallest non-Hajos order)",
+   "mode": "exhaustive, all 11 target orbits",
+   "supports_orbit_weighted": 14990000,
+   "notes": "1.03e11 DFS nodes; worst aperiodic container = 35 = bound; redundant 1.5M-sample runs per orbit incl. de Bruijn-factorization-seeded strata matched exhaustive"
+  },
+  {
+   "range": "d = 108, 120 (non-Hajos)",
+   "mode": "exhaustive at 5 orbits each (340M weighted supports); remaining orbits sampled 2-3M each",
+   "notes": "bound attained by aperiodic supports at both moduli, never exceeded; d=108 t=2/4 exhaustive runs interrupted, covered by 2M samples each"
+  },
+  {
+   "range": "d = 144, 168, 180, 200, 216, 240 (rest of non-Hajos list <= 240)",
+   "mode": "sampled, 60k per orbit",
+   "notes": "aperiodic worst 4-10 below bound"
+  },
+  {
+   "range": "all odd d <= 45 and d in {47, 49, 53, 59}",
+   "mode": "exhaustive, all targets (prover sweeps)",
+   "supports": 190000,
+   "notes": "plus ~450k supports in size <= 4 scans over ALL odd d (finite by the halving-pressure inequality); includes prime powers 9, 25, 27, 49"
+  }
+ ],
+ "structural_results": {
+  "beta_vacuity": "punctured (beta-type) critical deletion steps force the deleted element into Stab(M(S)); impossible for aperiodic supports (paper Prop 4.12); machine-confirmed on 507,133 classified supports, zero beta steps",
+  "parity_obstruction": "at odd moduli the miss set always has even size: no singleton-miss supports exist; floor family |F| = 2, auto-maximal, window-shaped",
+  "hajos_payoff": "Conjecture A restricted to Hajos orders (d = 2m, m in {1, p^a, pq, p^2 q, pqr}) suffices for the polylog tier at the same exponent up to o(1), via a Chen-type P3 count of good residuals",
+  "count_growth": "log2(maximal supports)/sqrt(d) approx 2.6-2.8 at d = 31..72, consistent with the 2^{c sqrt(d)} lower-bound theorem"
+ }
+}
