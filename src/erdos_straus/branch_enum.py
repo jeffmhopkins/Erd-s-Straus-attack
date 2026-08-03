@@ -56,7 +56,7 @@ exhaustive (K, step, window) search.  Reference counts (archived in
 16 / 1,124 / 1,124 at R = 15/35/39.
 
 Runtime honesty (pure Python): R ≤ 31 takes seconds, R = 43 ≈ 1 min,
-R = 47 ≈ 2–3 min, R = 59 ≈ 15–25 min for the enumeration plus a few
+R = 47 ≈ 2–3 min, R = 59 ≈ 15–30 min for the enumeration plus a few
 minutes of container classification over its 496k supports.  R = 67 is
 out of reach of this implementation.  Composite R ∈ {15, 35, 39} are
 fast (< 1 min).

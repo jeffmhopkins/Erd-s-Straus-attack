@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software or data, please cite it as below."
-title: "Residual certificates for the Erdős–Straus conjecture"
+title: "Residual certificates for the Erdős–Straus conjecture: exact solvability criteria, almost-all certificate bounds, and computations to 10^11"
 authors:
   - family-names: Hopkins
     given-names: J. M.

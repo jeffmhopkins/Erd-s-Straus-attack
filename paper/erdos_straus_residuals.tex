@@ -9,8 +9,9 @@
 \usepackage[margin=1.1in]{geometry}
 \usepackage[hidelinks]{hyperref}
 \hypersetup{pdftitle={Residual certificates for the Erdos-Straus
-  conjecture: exact solvability criteria, a sieve bound, and
-  computations to 10\textasciicircum 11}, pdfauthor={J. M. Hopkins}}
+  conjecture: exact solvability criteria, almost-all certificate
+  bounds, and computations to 10\textasciicircum 11},
+  pdfauthor={J. M. Hopkins}}
 % Break URLs only at slashes, never inside hyphenated path components.
 \def\UrlBreaks{\do\/}
 
@@ -33,7 +34,7 @@
 \DeclareMathOperator{\ord}{ord}
 
 \title{Residual certificates for the Erd\H{o}s--Straus conjecture:\\
-exact solvability criteria, a sieve bound,\\
+exact solvability criteria, almost-all certificate bounds,\\
 and computations to $10^{11}$}
 
 \author{J.~M.\ Hopkins\thanks{Independent researcher.
@@ -63,8 +64,8 @@ half the unit classes mod $R$ on the shifted form $(p+R)/4$ --- proved
 for every residual at once via Kneser's addition theorem --- giving
 exceptional sets
 $O_{\mathcal{P}}(x/(\log x)^{1+|\mathcal{P}|/2})$ for every finite
-admissible residual list $\mathcal{P}$ drawn from the primes and the
-composites up to $107$ (marginally weaker exponents beyond): weaker in
+admissible residual list $\mathcal{P}$ (entries prime or composite
+$\le 107$; marginally weaker exponents beyond): weaker in
 density than
 Vaughan's classical $x\exp(-c(\log x)^{2/3})$, but explicit and
 certificate-producing, with the elementary layer and the core finite
@@ -144,10 +145,10 @@ machine-verified structure, together with the exact criteria.
 \item The per-residual sieve input proved unconditionally for
   \emph{every} residual at once (Theorem~\ref{thm:S}): via Kneser's
   addition theorem, any failing configuration occupies at most
-  $(R-3)/2$ nonzero factor classes --- closing what was previously a
-  per-residual machine verification capped at $R = 107$
-  (Lemma~\ref{lem:S}, now an independent confirmation), and extending
-  to composite residuals through the general abelian form.
+  $(R-3)/2$ nonzero factor classes, with composite residuals covered
+  through the general abelian form; the per-residual machine
+  verification to $R = 107$ (Lemma~\ref{lem:S}) serves as its
+  independent confirmation.
 \item A constructive sieve chain built on these criteria
   (Theorem~\ref{thm:FG}, Proposition~\ref{prop:agg}): explicit,
   certificate-producing exceptional-set bounds of exponent
@@ -551,8 +552,10 @@ Thm.~\ref{thm:FG} & Thms.~\ref{thm:A}, \ref{thm:Ap}--\ref{thm:R15}, \ref{thm:S} 
 Prop.~\ref{prop:agg} & elementary + Thm.~\ref{thm:FG} & \S\ref{sec:sieve} & families in Lean \\ \addlinespace
 Thm.~\ref{thm:D} & Prop.~\ref{prop:succ} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
 Thm.~\ref{thm:U} & Thm.~\ref{thm:S}(iii), general tier + Brun's sieve, uniform constants & \S\ref{sec:sieve} & no \\ \addlinespace
+Thm.~\ref{thm:Mcount} & explicit construction (complete partitions) & \S\ref{sec:sieve} & Python (spot checks) \\ \addlinespace
 Thm.~\ref{thm:Mkernel} & Kneser + Lem.~\ref{lem:mono} + quotient induction & \S\ref{sec:sieve} & Python (checks to $d = 30$) \\ \addlinespace
-Thm.~\ref{thm:Upay} & Conjecture~\ref{conj:A} + the audit of Thm.~\ref{thm:U} & \S\ref{sec:sieve} & no (conditional) \\ \addlinespace
+Thm.~\ref{thm:Mcont} & Thm.~\ref{thm:Mkernel} + Conjecture~\ref{conj:A} & \S\ref{sec:sieve} & no (conditional) \\ \addlinespace
+Thm.~\ref{thm:Upay} & Thm.~\ref{thm:Mcont} + the audit of Thm.~\ref{thm:U} & \S\ref{sec:sieve} & no (conditional) \\ \addlinespace
 Lems.~\ref{lem:Jcomp}--\ref{lem:N} & Jacobi reciprocity, elementary & \S\ref{sec:ladder} & Lean \\ \addlinespace
 Thms.~\ref{thm:L0}--\ref{thm:B2} & Thm.~\ref{thm:S} / Prop.~\ref{prop:succ} + sieve & \S\ref{sec:ladder} & no \\ \addlinespace
 Thm.~\ref{thm:P1} & Prop.~\ref{prop:char} + half-dim.\ sieve~\cite{IwaniecHalfDim} & \S\ref{sec:ladder} & no \\ \addlinespace
@@ -566,6 +569,19 @@ the proof is by hand only. Theorems~\ref{thm:B2} and~\ref{thm:P1} are
 established in outline (proof sketches).}
 \label{tab:deps}
 \end{table}
+
+Three printed results are retained as stepping stones although later
+results subsume them, and the reader may want the map stated once:
+Theorem~\ref{thm:D} is superseded by Theorem~\ref{thm:U} (which gives
+$(\log x)^{-A}$ for every $A$ at once), but its fixed-list proof is
+simpler and is the template the uniform chain scales; Lemma~\ref{lem:S}
+is subsumed by Theorem~\ref{thm:S}, and is retained as the
+machine-verified confirmation --- it is the form carried by the Lean
+development; and Theorem~\ref{thm:L0} is dominated unconditionally by
+Theorem~\ref{thm:U} (the fixed chain beats the $p$-adapted ladder
+unconditionally), its role being structural: it opens the conditional
+program of Section~\ref{sec:ladder}, the only known frame whose
+measured inputs would pass the ceiling of Remark~\ref{rem:ceiling}.
 
 Computations (Section~\ref{sec:comp}) provide verified certificates for
 all hard primes below $10^{11}$ and calibrate the base-case constant and
@@ -989,7 +1005,7 @@ every target and every $p$. The strong form is also confirmed
 numerically (\texttt{theory.verify\_support\_bound\_strong}): the
 maximum support of a non-full reachability mask equals $(R-3)/2$
 exactly at every prime residual checked. Lemma~\ref{lem:S} and its
-dynamic-program verifications now stand as independent machine
+dynamic-program verifications stand as independent machine
 confirmations of special cases (and remain the form carried by the
 Lean development).
 \end{remark}
@@ -1282,7 +1298,8 @@ Lemma~\ref{lem:mono} every failing configuration lives on a failing
 support, and every failing support extends to a \emph{maximal} one
 ($S$ failing, $S \cup \{w\}$ succeeding for all $w$). Two facts
 calibrate the problem. First, maximality forces no size
-concentration: maximal failing supports exist at every size from
+concentration: maximal failing supports exist at every size scale
+from
 $\Theta(\log d)$ (complete-partition constructions realizing
 $M(S) = \mathbb{Z}/d \setminus \{t\}$, a \emph{singleton miss}) up
 to the extremal $d/2 - 1$. Second, \emph{enumerating} them is
@@ -1295,7 +1312,9 @@ is at least $2^{c\sqrt d}$: the supports
 $[1, r] \cup T' \cup \{X\}$, $T' \subseteq [r+1, 2r]$,
 $|T'| = \lceil r/2 \rceil$, $r = \lceil\sqrt{d/4}\,\rceil$, with $X$
 completing the sum to $d/2 - 1$, are pairwise distinct
-complete partitions, and each has reach exactly
+complete partitions (for $d$ large, $X > 2r$, so $X$ collides with
+no other part and $T'$ is recoverable from the support), and each
+has reach exactly
 $\mathbb{Z}/d \setminus \{-1\}$, hence is maximal failing.
 \end{theorem}
 
@@ -1345,8 +1364,11 @@ container shape --- a coset-progression \emph{window}: for
 $K \le \mathbb{Z}/d$, a unit direction and a circular window $W$ of
 quotient classes, set
 $C(K, W) = \varphi_K^{-1}(\{0\} \cup W) \setminus \{0\}$. The
-family $\{C(K, W) : |C(K, W)| \le \lfloor d/2 \rfloor - 1\}$ has at
-most $2d^2$ members.
+family $\{C(K, W) : |C(K, W)| \le \lfloor d/2 \rfloor - 1\}$ has
+fewer than $d^3$ members (a container is determined by the kernel
+size $\kappa \mid d$, a unit direction, a window start, and a window
+length $\le \bar d/2$: at most
+$\sum_{\kappa \mid d} \bar d^{\,3}/2 \le \zeta(3)d^3/2$ choices).
 
 \begin{conjecture}[aperiodic branch classification]\label{conj:A}
 Every maximal failing support $S$ with
@@ -1356,7 +1378,8 @@ $|C(K, W)| \le \lfloor d/2 \rfloor - 1$.
 \end{conjecture}
 
 The evidence: exhaustive verification for all moduli $d \le 30$ and
-\emph{all} targets ($46{,}000$-plus maximal supports; the bound
+\emph{all} targets ($87{,}009$ maximal supports, zero violations;
+the bound
 $\lfloor d/2 \rfloor - 1$ is attained, hence optimal); independent
 verification that every maximal failing support at
 $R = 19, 23, 31, 43, 47, 59$ ($495{,}782$ of them at $R = 59$) and
@@ -1374,13 +1397,13 @@ quotients (windows pull back to windows along composed quotients):
 
 \begin{theorem}[container form; conditional on
 Conjecture~\textup{\ref{conj:A}}]\label{thm:Mcont}
-Every failing support for $(d, t)$ is contained in one of at most
-$2d^2$ explicit window containers of size
+Every failing support for $(d, t)$ is contained in one of fewer
+than $d^3$ explicit window containers of size
 $\le \lfloor d/2 \rfloor - 1$; hence failure of residual $R$
-confines the factor classes of $(p+R)/4$ to one of $O(R^2)$
+confines the factor classes of $(p+R)/4$ to one of $O(R^3)$
 branches, each forbidding at least half the nonzero classes ---
 sieve dimension $\tfrac12$ per residual, with the branch count
-reduced from $2^{\varphi(R)}$ to $O(R^2)$.
+reduced from $2^{\varphi(R)}$ to $O(R^3)$.
 \end{theorem}
 
 \begin{theorem}[conditional uniform chain, polylog
@@ -1394,17 +1417,17 @@ satisfy $R_{\min}(p) \le (\log x)^{c_0}$.
 \begin{proof}[Proof sketch]
 Rerun the proof of Theorem~\ref{thm:U} with list length
 $B = (\log x)^{\theta}$. The branch factor over the list drops from
-$e^{\Theta(B^2)}$ to $\prod_{R \le B} O(R^2) =
-e^{(2+o(1)) \cdot \frac{B}{4}\log B}$; the class conditioning
+$e^{\Theta(B^2)}$ to $\prod_{R \le B} O(R^3) =
+e^{(3+o(1)) \cdot \frac{B}{4}\log B}$; the class conditioning
 never multiplies the main term (the classes partition the sifted
 integers, so the per-class main terms resum); and Siegel--Walfisz
 covers the Mertens-in-progressions inputs for moduli up to any
 fixed power of $\log x$. The per-residual balance is then a sieve
 gain $\delta(1-\theta)L$ against a branch-and-slop cost
-$(2 + c_M)\theta L$ ($L = \log\log x$, $\delta = \tfrac12$),
+$(3 + c_M)\theta L$ ($L = \log\log x$, $\delta = \tfrac12$),
 admissible for every
-$\theta < \delta/(2 + c_M + \delta)$ --- with the constants proved
-here, any $\theta$ below roughly $1/7$. The family ceiling is
+$\theta < \delta/(3 + c_M + \delta)$ --- with the constants proved
+here, any $\theta$ below roughly $1/9$. The family ceiling is
 $c_0 < \tfrac12$: the container-count exponent cannot reach $0$. A
 quasi-polynomial classification ($d^{O(\log d)}$ containers) would
 still give exceptional sets

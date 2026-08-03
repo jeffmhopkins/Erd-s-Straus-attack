@@ -82,7 +82,7 @@ data/
 tests/
   test_solver.py       59 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (34 pp.)
+  erdos_straus_residuals.tex/.pdf   the manuscript (35 pp.)
   make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
 lean/
   ErdosStraus/         Lean 4 + mathlib formalization (7 modules: Basic,
@@ -131,7 +131,8 @@ itself. The uniform chain (Theorem U, paper Thm 4.5) is the strongest
 unconditional statement: all but $x\exp(-c(\log\log x)^2)$ hard primes
 $p \le x$ have $R_{\min}(p) \le \varepsilon\log\log x$; the branch
 classification behind its ceiling is half-solved (kernel case proved,
-Conjecture A verified at twelve moduli — paper §4.6), and resolving
+Conjecture A verified exhaustively for all moduli ≤ 30 and at nine
+larger ones — paper §4.2), and resolving
 Conjecture A would raise the bound to $R_{\min} \le (\log x)^{c_0}$. The §5
 Burgess–reciprocity ladder program (Theorems L₀/B₁/B₂/P₁
 and Hypothesis P) organizes the endgame past the ceiling: the
