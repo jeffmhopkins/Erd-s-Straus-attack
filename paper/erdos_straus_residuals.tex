@@ -23,6 +23,7 @@
 \newtheorem{remark}[theorem]{Remark}
 \theoremstyle{plain}
 \newtheorem{hypothesis}[theorem]{Hypothesis}
+\newtheorem{conjecture}[theorem]{Conjecture}
 
 \numberwithin{equation}{section}
 \emergencystretch=1.5em
@@ -70,7 +71,10 @@ certificate-producing, with the elementary layer and the core finite
 enumerations of the proofs machine-checked in Lean~4/\mbox{mathlib}.
 Letting the residual list grow with $x$ yields an unconditional
 almost-all theorem: all but $O(x\exp(-c(\log\log x)^2))$ hard primes
-$p \le x$ satisfy $R_{\min}(p) \le \varepsilon \log\log x$.
+$p \le x$ satisfy $R_{\min}(p) \le \varepsilon \log\log x$; a
+branch-classification conjecture --- kernel case proved, aperiodic
+case verified exhaustively at small moduli and at nine larger ones
+--- would raise this to $R_{\min}(p) \le (\log x)^{c_0}$.
 A reciprocity-selected \emph{ladder} of $p$-adapted residuals then
 localizes the conjecture for hard primes into a single measured
 counting inequality, with the first rung proved and a matching
@@ -158,9 +162,14 @@ machine-verified structure, together with the exact criteria.
   and the \emph{uniform chain} (Theorem~\ref{thm:U}), the strongest
   unconditional statement here: all but
   $O(x e^{-c(\log\log x)^2})$ hard primes $p \le x$ have
-  $R_{\min}(p) \le \varepsilon\log\log x$, with the three walls that
-  make $\exp(-c(\log\log x)^2)$ the ceiling of the method identified
-  (Remark~\ref{rem:ceiling}).
+  $R_{\min}(p) \le \varepsilon\log\log x$ --- together with the
+  branch-classification program behind its ceiling
+  (Section~\ref{sec:branch}): the kernel case proved
+  (Theorem~\ref{thm:Mkernel}), the count form refuted
+  (Theorem~\ref{thm:Mcount}), and a heavily verified container
+  conjecture (Conjecture~\ref{conj:A}) whose resolution raises the
+  bound to $R_{\min} \le (\log x)^{c_0}$
+  (Theorem~\ref{thm:Upay}).
 \item Computed and verified residual certificates for all
   $128{,}671{,}219$ hard primes below $10^{11}$, with a calibrated model
   whose deep-tail predictions were subsequently confirmed
@@ -542,6 +551,8 @@ Thm.~\ref{thm:FG} & Thms.~\ref{thm:A}, \ref{thm:Ap}--\ref{thm:R15}, \ref{thm:S} 
 Prop.~\ref{prop:agg} & elementary + Thm.~\ref{thm:FG} & \S\ref{sec:sieve} & families in Lean \\ \addlinespace
 Thm.~\ref{thm:D} & Prop.~\ref{prop:succ} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
 Thm.~\ref{thm:U} & Thm.~\ref{thm:S}(iii), general tier + Brun's sieve, uniform constants & \S\ref{sec:sieve} & no \\ \addlinespace
+Thm.~\ref{thm:Mkernel} & Kneser + Lem.~\ref{lem:mono} + quotient induction & \S\ref{sec:sieve} & Python (checks to $d = 30$) \\ \addlinespace
+Thm.~\ref{thm:Upay} & Conjecture~\ref{conj:A} + the audit of Thm.~\ref{thm:U} & \S\ref{sec:sieve} & no (conditional) \\ \addlinespace
 Lems.~\ref{lem:Jcomp}--\ref{lem:N} & Jacobi reciprocity, elementary & \S\ref{sec:ladder} & Lean \\ \addlinespace
 Thms.~\ref{thm:L0}--\ref{thm:B2} & Thm.~\ref{thm:S} / Prop.~\ref{prop:succ} + sieve & \S\ref{sec:ladder} & no \\ \addlinespace
 Thm.~\ref{thm:P1} & Prop.~\ref{prop:char} + half-dim.\ sieve~\cite{IwaniecHalfDim} & \S\ref{sec:ladder} & no \\ \addlinespace
@@ -1232,25 +1243,188 @@ $-\varepsilon L^2/10 + O(\varepsilon^2 L^2) \le
 -\varepsilon L^2/20$ for $\varepsilon$ below an absolute threshold.
 \end{proof}
 
-\begin{remark}[the ceiling, and what lies beyond]\label{rem:ceiling}
-Theorem~\ref{thm:U} sits at the exact boundary of this method
-family: the branch factor $e^{\Theta(B^2)}$ against the sieve gain
-$e^{-BL/10}$ forces $B \ll L$, and independently the class modulus
-$\widetilde M = e^{O(B)}$ and the Mertens-in-progressions inputs
-leave their valid ranges at $B \gg L$ --- three walls detonating at
-the same scale, so $\exp(-cL^2)$ is the honest unconditional
-frontier here even under substantial improvements to the branch
-count. Vaughan's bound $x\exp(-c(\log x)^{2/3})$~\cite{Vaughan}
-remains far stronger as a pure density statement; what
+\begin{remark}[the ceiling, and the one lever]\label{rem:ceiling}
+Theorem~\ref{thm:U} sits at the boundary set by its \emph{branch
+factor}: $e^{\Theta(B^2)}$ from the crude all-subsets bound on
+failing supports, against the sieve gain $e^{-BL/10}$, forces
+$B \ll L$ and the ceiling $\exp(-cL^2)$. A closer audit
+(Section~\ref{sec:branch}) shows the branch factor is the
+\emph{only} binding wall: the class modulus
+$\widetilde M = e^{O(B)}$ never multiplies the main term (the
+classes partition the integers), and the Mertens/Siegel--Walfisz
+inputs remain valid for $B$ up to any fixed power of $\log x$ at the
+already-paid price of ineffectivity. Classifying the failing
+supports into polynomially many structured branches --- the subject
+of Section~\ref{sec:branch} --- would therefore raise
+Theorem~\ref{thm:U} to an exceptional set
+$x\exp(-(\log x)^{c_0})$ with $R_{\min} \le (\log x)^{c_0}$
+(Theorem~\ref{thm:Upay}), with the intrinsic family ceiling at
+exponent $\tfrac12$. Vaughan's bound
+$x\exp(-c(\log x)^{2/3})$~\cite{Vaughan}
+remains stronger as a pure density statement at every tier of this
+family; what
 Theorem~\ref{thm:U} adds is structural: an explicit certificate at a
-residual of size $O(\log\log x)$ for almost every hard prime, a
-statement mean-value methods do not address. Passing the
-$\exp(-cL^2)$ ceiling toward Vaughan and beyond is exactly what the
-measured hypotheses of the ladder program
-(Section~\ref{sec:ladder}) would buy: the calibrations
-$J = (\log x)^{\theta}$ of Theorem~\ref{thm:L1} are out of reach of
-every unconditional variant considered here.
+small residual for almost every hard prime, a
+statement mean-value methods do not address. The calibrations
+$J = (\log x)^{\theta}$ of Theorem~\ref{thm:L1} remain out of reach
+of every unconditional variant considered here.
 \end{remark}
+
+\subsection{The branch classification}\label{sec:branch}
+
+Fix a prime residual $R$, $d = R - 1$, and work in the discrete-log
+model of Theorem~\ref{thm:S}(i): a \emph{support}
+$S \subseteq \mathbb{Z}/d \setminus \{0\}$ at exponent budget $2$
+per class has reach $M(S) = \sum_{v \in S} \{0, v, 2v\}$, and $S$
+\emph{fails} for a target $t$ if $t \notin M(S)$ (the $p$-budget is
+absorbed as one more summand). By
+Lemma~\ref{lem:mono} every failing configuration lives on a failing
+support, and every failing support extends to a \emph{maximal} one
+($S$ failing, $S \cup \{w\}$ succeeding for all $w$). Two facts
+calibrate the problem. First, maximality forces no size
+concentration: maximal failing supports exist at every size from
+$\Theta(\log d)$ (complete-partition constructions realizing
+$M(S) = \mathbb{Z}/d \setminus \{t\}$, a \emph{singleton miss}) up
+to the extremal $d/2 - 1$. Second, \emph{enumerating} them is
+hopeless:
+
+\begin{theorem}[branch count blow-up]\label{thm:Mcount}
+There is $c > 0$ such that for every large even $d$, the number of
+maximal failing supports for the target $t = -1$ in $\mathbb{Z}/d$
+is at least $2^{c\sqrt d}$: the supports
+$[1, r] \cup T' \cup \{X\}$, $T' \subseteq [r+1, 2r]$,
+$|T'| = \lceil r/2 \rceil$, $r = \lceil\sqrt{d/4}\,\rceil$, with $X$
+completing the sum to $d/2 - 1$, are pairwise distinct
+complete partitions, and each has reach exactly
+$\mathbb{Z}/d \setminus \{-1\}$, hence is maximal failing.
+\end{theorem}
+
+So a useful classification must produce \emph{containers} ---
+polynomially many structured sets covering all failing supports ---
+not an enumeration. The kernel (periodic) case is under complete
+control:
+
+\begin{theorem}[kernel branch; lossless reduction]\label{thm:Mkernel}
+Let $S$ fail for $t$ and $H = \mathrm{Stab}(M(S)) \ne \{0\}$, and
+write $\varphi_H \colon \mathbb{Z}/d \to \mathbb{Z}/\bar d$. Then
+$t \notin M(S) + H$, the projection
+$\bar T = \varphi_H(S \setminus H)$ is a failing support for
+$\bar t = \varphi_H(t) \ne 0$ at the same budget, and
+$S \subseteq (H \setminus \{0\}) \cup \varphi_H^{-1}(\bar T)$; if
+$S$ is maximal then moreover $H \setminus \{0\} \subseteq S$.
+Iterating: every failing support of $\mathbb{Z}/d$ is contained in
+$\psi^{-1}(\{0\} \cup T') \setminus \{0\}$ for a composed quotient
+$\psi \colon \mathbb{Z}/d \to \mathbb{Z}/d'$ and an
+\emph{aperiodic maximal} failing support $T'$ downstairs, and this
+container has at most $\lfloor d/2 \rfloor - 1$ elements. (The
+support bound extends to odd moduli, as needed for the quotients:
+for odd $\bar d$ no summand is degenerate and Kneser's bound gives
+$|T| \le (\bar d - 3)/2$.)
+\end{theorem}
+
+\begin{proof}
+$M + H = M$ gives $H \subseteq M$ and $t \notin M + H$ (else
+$t \in M$), so $\bar t \ne 0$. The projection
+$\varphi_H(M(S)) = \sum_{v} \{0, \bar v, 2\bar v\}$ contains
+$M(\bar T)$ computed downstairs at budget $2$ (collisions only
+enlarge budgets; Lemma~\ref{lem:mono}), and $H$-saturation of
+$M(S)$ turns $t \notin M(S)$ into $\bar t \notin M(\bar T)$: $\bar
+T$ fails. The containment is definitional. For maximality: any
+$w \in H \setminus (S \cup \{0\})$ has $A_w \subseteq H$, so
+$M(S \cup \{w\}) = M(S) + A_w = M(S)$ still fails --- $w$ must
+already lie in $S$. Iterate on the quotient (strong induction on
+$d$, extending $\bar T$ to a maximal support downstairs first); the
+size bookkeeping per step is
+$(h - 1) + h\,|T'| \le h - 1 + h \lfloor (\bar d - 2)/2 \rfloor
+\le d/2 - 1$, exact at even $\bar d$, with strict inequality at odd
+$\bar d$.
+\end{proof}
+
+The open core is the aperiodic case. All the evidence points to one
+container shape --- a coset-progression \emph{window}: for
+$K \le \mathbb{Z}/d$, a unit direction and a circular window $W$ of
+quotient classes, set
+$C(K, W) = \varphi_K^{-1}(\{0\} \cup W) \setminus \{0\}$. The
+family $\{C(K, W) : |C(K, W)| \le \lfloor d/2 \rfloor - 1\}$ has at
+most $2d^2$ members.
+
+\begin{conjecture}[aperiodic branch classification]\label{conj:A}
+Every maximal failing support $S$ with
+$\mathrm{Stab}(M(S)) = \{0\}$ for a target $t$ in $\mathbb{Z}/d$
+satisfies $S \subseteq C(K, W)$ for some window container with
+$|C(K, W)| \le \lfloor d/2 \rfloor - 1$.
+\end{conjecture}
+
+The evidence: exhaustive verification for all moduli $d \le 30$ and
+\emph{all} targets ($46{,}000$-plus maximal supports; the bound
+$\lfloor d/2 \rfloor - 1$ is attained, hence optimal); independent
+verification that every maximal failing support at
+$R = 19, 23, 31, 43, 47, 59$ ($495{,}782$ of them at $R = 59$) and
+at the composite moduli $R = 15, 35, 39$ fits such a container of
+density $\le \tfrac12$ (entry point
+\texttt{erdos\_straus.branch\_enum}; archived); a proved
+subfamily (the signed complete partitions, windows with room to
+spare); and a rank-$2$ witness
+($S = \{11, 17, 19, 29\} \subseteq \mathbb{Z}/30$, a singleton miss
+contained in no short one-dimensional window but in a
+$K = \langle 10 \rangle$ window container of size $14$) showing the
+subgroup component of the shape is necessary. Combining
+Theorem~\ref{thm:Mkernel} with Conjecture~\ref{conj:A} in the
+quotients (windows pull back to windows along composed quotients):
+
+\begin{theorem}[container form; conditional on
+Conjecture~\textup{\ref{conj:A}}]\label{thm:Mcont}
+Every failing support for $(d, t)$ is contained in one of at most
+$2d^2$ explicit window containers of size
+$\le \lfloor d/2 \rfloor - 1$; hence failure of residual $R$
+confines the factor classes of $(p+R)/4$ to one of $O(R^2)$
+branches, each forbidding at least half the nonzero classes ---
+sieve dimension $\tfrac12$ per residual, with the branch count
+reduced from $2^{\varphi(R)}$ to $O(R^2)$.
+\end{theorem}
+
+\begin{theorem}[conditional uniform chain, polylog
+tier]\label{thm:Upay}
+Assume Conjecture~\ref{conj:A} (for all moduli). Then there is an
+absolute $c_0 > 0$ such that all but
+$O\bigl(x \exp(-(\log x)^{c_0})\bigr)$ hard primes $p \le x$
+satisfy $R_{\min}(p) \le (\log x)^{c_0}$.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Rerun the proof of Theorem~\ref{thm:U} with list length
+$B = (\log x)^{\theta}$. The branch factor over the list drops from
+$e^{\Theta(B^2)}$ to $\prod_{R \le B} O(R^2) =
+e^{(2+o(1)) \cdot \frac{B}{4}\log B}$; the class conditioning
+never multiplies the main term (the classes partition the sifted
+integers, so the per-class main terms resum); and Siegel--Walfisz
+covers the Mertens-in-progressions inputs for moduli up to any
+fixed power of $\log x$. The per-residual balance is then a sieve
+gain $\delta(1-\theta)L$ against a branch-and-slop cost
+$(2 + c_M)\theta L$ ($L = \log\log x$, $\delta = \tfrac12$),
+admissible for every
+$\theta < \delta/(2 + c_M + \delta)$ --- with the constants proved
+here, any $\theta$ below roughly $1/7$. The family ceiling is
+$c_0 < \tfrac12$: the container-count exponent cannot reach $0$. A
+quasi-polynomial classification ($d^{O(\log d)}$ containers) would
+still give exceptional sets
+$x\exp(-\exp(c\sqrt{\log\log x}))$, past every
+$\exp(-C(\log\log x)^A)$.
+\end{proof}
+
+Conjecture~\ref{conj:A} is thus one well-posed additive-combinatorics
+statement --- a Kneser/Freiman-type container theorem for
+bounded-exponent subset sums --- standing between
+Theorem~\ref{thm:U} and its polylog tier. Two structural facts
+sharpen where its difficulty lives: near-critical Kneser analysis is
+\emph{vacuous} here (aperiodic failing supports with $|S| \ge 3$ are
+never Kneser-tight --- the governing mechanism is exact covering by
+complete sequences, not small doubling), and the singleton-miss
+supports satisfy the symmetry $2\sum_{v \in S} v = 2t$, which pins
+their windows. The remaining difficulty is chaining of
+\emph{punctured} (cofinite) intermediate reaches, where quotient
+direction information degenerates --- precisely the non-Hajós
+factorization pathologies of cyclic groups.
 
 \section{The Burgess--reciprocity ladder}\label{sec:ladder}
 
@@ -1742,19 +1916,19 @@ record).
   $(\log x)^{-A}$ for every $A$; emptiness is beyond the sieve).
 \item \textbf{Beyond fixed lists.} The support bound is proved
   unconditionally for every residual, prime and composite
-  (Theorem~\ref{thm:S}), and Theorem~\ref{thm:U} shows the two
-  walls of list growth --- per-branch forbidden classes depending on
-  $p \bmod R$, and the growing branch count --- are affordable up to
-  lists of length $\varepsilon\log\log x$, but no further
-  (Remark~\ref{rem:ceiling}); the fixed-list format itself cannot
-  reach emptiness (Remark~\ref{rem:emptiness}). Passing the ceiling
-  by structure rather than hypothesis would need a poly($R$)
-  \emph{branch classification}: every failing configuration
-  contained in polynomially many kernel or coset-progression
-  branches --- a Kneser/Freiman-type structure problem for
-  bounded-exponent product sets, whose $\omega(R) \le 2$ extremal
-  cases are exactly Theorem~\ref{thm:S}(i)/(iii) and the
-  \texttt{kneser\_support\_general} data. The proof of Theorem~\ref{thm:S} shows the extremal
+  (Theorem~\ref{thm:S}), Theorem~\ref{thm:U} carries list growth to
+  length $\varepsilon\log\log x$, and the branch classification
+  that governs everything further is now formulated in
+  Section~\ref{sec:branch}: the kernel case is proved
+  (Theorem~\ref{thm:Mkernel}), the count form refuted
+  (Theorem~\ref{thm:Mcount}), and what remains open is exactly
+  Conjecture~\ref{conj:A} --- the aperiodic window-container
+  statement, whose difficulty is the chaining of punctured
+  intermediate reaches (non-Hajós factorization pathologies of
+  cyclic groups); its resolution gives Theorem~\ref{thm:Upay}. The
+  fixed-list format itself cannot
+  reach emptiness (Remark~\ref{rem:emptiness}).
+  The proof of Theorem~\ref{thm:S} shows the extremal
   failing supports are \emph{subgroup-trapped} (the stabilizer $H$ is
   nontrivial and $S$ concentrates on $H$ up to at most $d/|H| - 2$
   outliers); exploiting this structure \emph{uniformly in $R$} ---

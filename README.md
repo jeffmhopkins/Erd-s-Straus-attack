@@ -47,6 +47,8 @@ src/erdos_straus/
   parametric_search.py fixed-residual parametric experiments per hard class
   burgess_scan.py      Burgess/reciprocity-route census: least non-residue,
                        selected residuals, purity + ladder scans (THEORY 2.10)
+  branch_enum.py       branch enumeration: maximal failing supports and
+                       two-sided window containers C(K,W) (THEORY 2.12)
   verify.py            independent verification (JSON, minimal-R maps, npz)
 data/
   hard_primes_1e11_minimalR.*          R-sequence dataset for all 128,671,219
@@ -73,10 +75,14 @@ data/
     burgess_proxy_1e9.json             proxy / Hypothesis-P measurement
                                        at 10^9
     burgess_proxy_scaled.json          scaled proxy measurement (10^9-10^11)
+    branch_maximal_supports.json       maximal failing supports per modulus
+                                       (R = 19..59 prime, 15/35/39 composite):
+                                       counts, size spectra, container-law
+                                       verdicts (all "holds")
 tests/
-  test_solver.py       56 tests: units, certificates, theorem checks
+  test_solver.py       59 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (27 pp.)
+  erdos_straus_residuals.tex/.pdf   the manuscript (34 pp.)
   make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
 lean/
   ErdosStraus/         Lean 4 + mathlib formalization (7 modules: Basic,
@@ -123,8 +129,10 @@ list suffices (Theorem K of `THEORY.md`) — the correctly-posed open
 problem, by completeness of the residual formulation, is the conjecture
 itself. The uniform chain (Theorem U, paper Thm 4.5) is the strongest
 unconditional statement: all but $x\exp(-c(\log\log x)^2)$ hard primes
-$p \le x$ have $R_{\min}(p) \le \varepsilon\log\log x$ — and that
-exceptional-set size is the proved ceiling of the method. The §5
+$p \le x$ have $R_{\min}(p) \le \varepsilon\log\log x$; the branch
+classification behind its ceiling is half-solved (kernel case proved,
+Conjecture A verified at twelve moduli — paper §4.6), and resolving
+Conjecture A would raise the bound to $R_{\min} \le (\log x)^{c_0}$. The §5
 Burgess–reciprocity ladder program (Theorems L₀/B₁/B₂/P₁
 and Hypothesis P) organizes the endgame past the ceiling: the
 almost-all Theorem L₁ at its stronger calibrations is
@@ -163,7 +171,7 @@ repository" button). To mint a versioned DOI: enable this repository at
 [zenodo.org/account/settings/github](https://zenodo.org/account/settings/github)
 (one-time toggle), then publish a GitHub release — Zenodo archives the
 release and issues a DOI automatically, with metadata drawn from
-[`.zenodo.json`](.zenodo.json). CI runs the 56-test suite plus the
+[`.zenodo.json`](.zenodo.json). CI runs the 59-test suite plus the
 proof-component smoke checks on every push; the Lean build has its own
 workflow, triggered by changes under `lean/`.
 
@@ -225,7 +233,10 @@ python -m erdos_straus.analyze tail  --rmap data/hard_primes_1e9_minimalR.json.g
 
 The Burgess-route archives in `data/analysis/` (`burgess_*.json`) are
 regenerated via the `python -m erdos_straus.burgess_scan` CLI (see
-`python -m erdos_straus.burgess_scan --help`).
+`python -m erdos_straus.burgess_scan --help`). The branch-enumeration
+archive (`branch_maximal_supports.json`) is refreshed per modulus with
+`python -m erdos_straus.branch_enum census R [R ...]` (R ≤ 47 runs in
+minutes; R = 59 takes ~20–30 min pure-Python).
 
 From Python:
 

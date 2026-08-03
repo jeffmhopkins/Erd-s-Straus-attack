@@ -1,6 +1,6 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
-**Date:** 2026-08-02 (current through PR #44; this revision adds
+**Date:** 2026-08-03 (current through PR #45; this revision adds
 Theorem S and Theorem A‴; §2.10 adds the Burgess/reciprocity
 route, its full-population census and failure anatomy, the
 ladder theorems L₀ (rigorous, fixed length) and L₁ (almost-all,
@@ -9,7 +9,11 @@ Theorems B₂ and P₁ (proof sketches), and Hypothesis P with
 Corollary B₃; §2.11 adds **Theorem U** — the unconditional uniform
 chain, R_min ≤ ε·log log x for all but x·exp(−c(log log x)²) hard
 primes — the ceiling analysis, and the two obstruction lemmas
-closing the pretension and almost-prime routes).  
+closing the pretension and almost-prime routes; §2.12 adds the
+branch classification: Theorem M-kernel proved, the count form
+refuted, **Conjecture A** (window containers) with exhaustive
+verification at twelve moduli, and the conditional polylog tier
+R_min ≤ (log x)^{c₀}).  
 **Status:** Proved: Theorems A, A′, A″, A‴ (exact criteria for
 R = 3, 7, 11, and now the first composite residual R = 15; A′/A″/A‴ by
 machine-verified finite case analysis), the meta-theorem (now including
@@ -72,6 +76,11 @@ The dictionary (paper labels in parentheses):
 | Theorem U (uniform chain) | Theorem 4.5 (`thm:U`) |
 | the ceiling | Remark 4.6 (`rem:ceiling`) |
 | Obstructions (i)/(ii) | Remark 5.11 (`rem:obstruction`) |
+| count blow-up | Theorem 4.7 (`thm:Mcount`) |
+| Theorem M-kernel (lossless reduction) | Theorem 4.8 (`thm:Mkernel`) |
+| Conjecture A (window containers) | Conjecture 4.9 (`conj:A`) |
+| container theorem (under A) | Theorem 4.10 (`thm:Mcont`) |
+| polylog tier (under A) | Theorem 4.11 (`thm:Upay`) |
 | monotonicity reduction | Lemma 4.1 (`lem:mono`) |
 
 ---
@@ -1428,14 +1437,106 @@ calibration). The ladder's enduring value is structural (Type-I
 failure dead by construction, p-adapted certificates) and conditional
 (the only frame whose measured inputs would push past the ceiling).
 
-**What remains open on this axis:** the poly(R) branch classification
-("every failing configuration lies in polynomially many kernel or
-coset-progression branches" — a Kneser/Freiman-type structure problem
-whose ω ≤ 2 extremal cases are Theorem S(i)/(iii) and the
-`kneser_support_general` data; medium-hard, well-posed). It would
-move the branch wall but not the Siegel–Walfisz or Mertens walls. The
+**What remains open on this axis:** the branch classification — now
+formulated, half-solved, and re-audited in §2.12 (the earlier claim
+here that the Siegel–Walfisz and Mertens walls would still bind was
+wrong; the branch factor is the only binding wall). The
 per-prime conspiracy (no individual p fails all rungs) remains
 polylog-interval-Chowla-hard — out of reach of current technology.
+
+### 2.12 The branch classification: Theorem M-kernel, Conjecture A, and the polylog tier
+
+The August 2026 branch round (one exhaustive enumeration prong, one
+proof prong, independent) settled the shape of Open Problem 2. Paper
+counterparts: Theorems 4.7/4.8/4.10/4.11, Conjecture 4.9, §4.6
+(`sec:branch`).
+
+**Setting** (cyclic, prime R, d = R−1, discrete logs): support
+S ⊆ Z/d∖{0} at budget 2, reach M(S) = Σ_{v∈S}{0, v, 2v} (p-budget
+absorbed as one more summand); S fails for t if t ∉ M(S); maximal =
+failing with every one-element extension succeeding.
+
+**Proved (paper Thm 4.7 — count blow-up).** The count form of the
+classification is FALSE: ≥ 2^{c√d} maximal failing supports exist for
+t = −1 (complete-partition construction; verified to d = 400).
+Containers — poly-many covering sets — are the only viable form.
+
+**Proved (paper Thm 4.8 — kernel branch + lossless reduction).** If
+Stab(M(S)) = H ≠ {0}: the projection of S∖H is a failing support in
+Z/(d/|H|) for the projected target (≠ 0), S ⊆ (H∖{0}) ∪ pullback,
+and maximal S must CONTAIN H∖{0}. Iterating: every failing support
+of Z/d lies in ψ⁻¹({0} ∪ T′)∖{0} for a composed quotient ψ and an
+APERIODIC maximal failing support T′ downstairs, container size
+≤ ⌊d/2⌋−1 (exact bookkeeping (h−1)+h⌊(d̄−2)/2⌋ = d/2−1; support
+bound extended to odd moduli for the quotients). Machine-checked on
+all 1,571 nontrivial-stabilizer maximal supports, d ≤ 30. The
+problem reduces losslessly to aperiodic maximal supports.
+
+**Proved (size spectrum).** Maximal failing supports exist at every
+size scale from Θ(log d) (complete partitions ⇒ singleton-miss
+reaches; lower bound k ≥ log₃ d − 2 via the maximality covering
+relation) to d/2 − 1. "Maximal ⟹ large" is false.
+
+**Proved (negative — slack rigidity).** Aperiodic failing supports
+with |S| ≥ 3 are never Kneser-tight: near-critical Kneser /
+small-doubling machinery is VACUOUS here. The governing mechanism is
+exact covering by complete sequences. (Salvage: a run/gap
+classification of critical pairs with 3-AP summands.)
+
+**Conjecture A (paper Conj 4.9 — aperiodic window containers).**
+Every aperiodic maximal failing support lies in a window container
+C(K, W) = φ_K⁻¹({0} ∪ ū·[c̄, c̄+w−1])∖{0} of size ≤ ⌊d/2⌋−1 — a
+coset-progression (subgroup K and progression direction coexisting).
+The family has ≤ 2d² members, each forbidding ≥ half the nonzero
+classes (sieve dimension ½ preserved per branch). Evidence:
+- exhaustive, all moduli d ≤ 30, ALL targets (46,000+ maximal
+  supports; bound attained ⇒ optimal);
+- independent enumeration prong: every maximal failing support at
+  R = 19, 23, 31, 43, 47, 59 (counts 336 / 1,034 / 4,291 / 40,759 /
+  93,897 / 495,782 — note these EXCEED the DP mask-state counts, so
+  supports-as-branches was doubly dead) and at composite R = 15, 35,
+  39 fits a two-sided coset-progression container of density ≤ ½;
+  zero unstructured examples at nine moduli; the (Z/35)* ≅ (Z/39)*
+  tallies are identical — the structure is group-abstract;
+- proved for the signed complete-partition family (windows with room
+  to spare); singleton-miss symmetry 2Σv = 2t pins the windows;
+- the coset component is necessary: {11,17,19,29} ⊆ Z/30 is a
+  singleton-miss support in no short 1-D window but in a
+  ⟨10⟩-window container of size 14 = d/2 − 1 (rank 2 is real).
+The open core: chaining of punctured (cofinite) intermediate reaches,
+where direction information degenerates — the non-Hajós
+factorization pathologies of cyclic groups.
+
+**Conditional container theorem (paper Thm 4.10).** Under Conjecture
+A (all moduli, via the recursion-closed pullback of windows): every
+failing support is contained in one of ≤ 2d² window containers of
+size ≤ ⌊d/2⌋−1 — branch count per residual O(R²) instead of
+2^{φ(R)}, dimension ½ intact.
+
+**Payoff re-audit (paper Thm 4.11 + corrected Rem 4.6).** The
+earlier three-walls claim was wrong: (1) the class modulus
+M̃ = e^{O(B)} never multiplies the main term — the classes partition
+the sifted integers and the per-class main terms resum; only the
+remainder sees M̃, harmless to B ≤ (log x)^{1−ε}; (2)
+Mertens/Siegel–Walfisz inputs are valid for the individual moduli
+R ≤ B up to any fixed power of log x (price: the ineffectivity
+already paid). The branch factor was the only binding wall. Under
+Conjecture A the balance per residual is gain δ(1−θ)L vs cost
+(2+c_M)θL with B = (log x)^θ, admissible for θ < δ/(2+c_M+δ) ≈ 1/7:
+
+    all but O(x·exp(−(log x)^{c₀})) hard primes have
+    R_min(p) ≤ (log x)^{c₀}    (c₀ ≈ 1/7; family ceiling c₀ < ½).
+
+Quasi-poly fallback (d^{O(log d)} containers): exceptional set
+x·exp(−exp(c√(log log x))) — still past every fixed (log log x)^A
+tier. Vaughan's exp(−c(log x)^{2/3}) stays stronger in density at
+every tier of this family (ceiling ½ < 2/3); the value is
+certificates at polylog residuals.
+
+**Repo artifacts:** `erdos_straus.branch_enum` (enumerator + minimal
+window containers + census CLI), archive
+`data/analysis/branch_maximal_supports.json`, tests. The research
+memos (branch_theorem, branch_enumeration) are summarized above.
 
 
 ## 3. Empirical validation

@@ -27,6 +27,11 @@ burgess_scan
     Burgess/reciprocity ladder scans: selected-residual census (10^9
     masks and scaled window samples), failure anatomy, Hypothesis-P
     proxy ratios; CLI regenerates the burgess_* analysis archives.
+branch_enum
+    Branch enumeration of the failure model: maximal failing supports
+    per p-class, minimal two-sided window containers C(K, W), and the
+    container-law census; CLI refreshes the branch_maximal_supports
+    analysis archive.
 verify
     Independent verification of the certificate datasets in ``data/``.
 """
