@@ -139,14 +139,15 @@ of Theorem S(iii) and tracked uniform constants (ineffective via
 Siegel–Walfisz). This delivers L₁'s mild calibration unconditionally
 with a stronger $R_{\min}$ bound; B's real content is now the
 $\theta$-calibrations past the $\exp(-c(\log\log x)^2)$ ceiling
-(paper Rem 4.6: branch, Siegel–Walfisz, and Mertens-in-AP walls all
-detonate at list length $\asymp \log\log x$). Two obstruction
+(paper Rem 4.6: the branch factor is the only binding wall; the
+class conditioning resums and Siegel–Walfisz reaches any fixed power
+of $\log x$). Two obstruction
 computations (paper Rem 5.11) close the August 2026 research routes:
 budget failure is provably not a character event (explicit witness
 pair at $R = 11$), and weighted/almost-prime detection is equivalent
 to Hypothesis P — the parity gap is intrinsic.
 
-**Branch classification (THEORY §2.12, paper §4.6):** the structural
+**Branch classification (THEORY §2.12, paper §4.2):** the structural
 question behind Theorem U's ceiling is now half-solved. Proved:
 kernel branches reduce losslessly to aperiodic maximal supports
 (Thm 4.8); the count form is false (≥ $2^{c\sqrt d}$ maximal
@@ -160,7 +161,7 @@ and at $R = 19, 23, 31, 43, 47, 59$ + composites $15, 35, 39$
 branch count drops $2^{\varphi(R)} \to O(R^2)$ and the uniform
 chain reaches the **polylog tier** (Thm 4.11):
 $R_{\min} \le (\log x)^{c_0}$ outside
-$x\exp(-(\log x)^{c_0})$, $c_0 \approx 1/7$, family ceiling $1/2$.
+$x\exp(-(\log x)^{c_0})$, $c_0 \approx 1/9$, family ceiling $1/2$.
 Enumeration entry point `erdos_straus.branch_enum`, archive
 `data/analysis/branch_maximal_supports.json`.
 
@@ -271,8 +272,8 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 - `data/hard_primes_1e10_minimalR.json.gz` — minimal-$R$ map for all 14 215 707 hard primes $< 10^{10}$
 - `data/hard_primes_1e11_minimalR.{rvals.u8.gz, meta.json, tail.json}` — R-sequence dataset for all 128 671 219 hard primes $< 10^{11}$ (uint8 minimal-$R$ values in ascending-prime order + sha256-pinned metadata + explicit verified tail $R \ge 43$)
 - `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
-- `tests/test_solver.py` — 56 tests: unit, certificate validation, theorem checks (A/A′/A″/A‴/J/meta incl. composite R), support-bound lemmas (DP + strong Kneser form, cyclic and general abelian), aggregate identities
-- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 27 pp.
+- `tests/test_solver.py` — 59 tests: unit, certificate validation, theorem checks (A/A′/A″/A‴/J/meta incl. composite R), support-bound lemmas (DP + strong Kneser form, cyclic and general abelian), aggregate identities
+- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 35 pp.
 - `lean/ErdosStraus/` — Lean 4 + mathlib formalization, elementary layer + finite enumerations (`lake exe cache get && lake build`)
 - `THEORY.md` — full theoretical development; `STATUS.md` — this document
 
@@ -419,8 +420,9 @@ full tail minimality.
    exploit the subgroup-trapped structure of failing supports
    *uniformly in R* (p-independent branches — the remaining gap on the
    conditionally-past-Vaughan route); formalize Theorem S and A‴ in
-   Lean (in progress: ladder Lemmas J°/N, an R = 15 product-index
-   bridge, and a Kneser port are the planned sequence); the
+   Lean (ladder Lemmas J°/N and the selected-residual corollary are
+   done in `Ladder.lean`; the R = 15 product-index bridge and a
+   Kneser port are in progress); the
    unconditional $R_{\min}$ bound (= the conjecture).
 
 ---

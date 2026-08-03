@@ -12,7 +12,7 @@ primes — the ceiling analysis, and the two obstruction lemmas
 closing the pretension and almost-prime routes; §2.12 adds the
 branch classification: Theorem M-kernel proved, the count form
 refuted, **Conjecture A** (window containers) with exhaustive
-verification at twelve moduli, and the conditional polylog tier
+verification for every modulus d ≤ 30 and at nine larger moduli, and the conditional polylog tier
 R_min ≤ (log x)^{c₀}).  
 **Status:** Proved: Theorems A, A′, A″, A‴ (exact criteria for
 R = 3, 7, 11, and now the first composite residual R = 15; A′/A″/A‴ by
@@ -1387,13 +1387,16 @@ J = (log log x)² unconditionally, and with a *stronger* R_min bound
 real content therefore begins past the ceiling: the θ-calibrations
 J = (log x)^θ (θ > 2/3 passes Vaughan) remain genuinely conditional.
 
-**The ceiling (Remark 4.6 of the paper).** exp(−c(log log x)²) is the
-honest frontier of the entire Fundamental-Lemma family: three
-independent walls detonate at B ≍ log log x — the branch factor
-e^{Θ(B²)}, the class modulus e^{O(B)} leaving the Siegel–Walfisz
-range, and Mertens-in-progressions moduli leaving their valid range.
-Even a poly(R) branch classification (see below) would only move the
-first wall; the method's absolute ceiling is then
+**The ceiling (Remark 4.6 of the paper; corrected in the branch
+round).** exp(−c(log log x)²) is the frontier of Theorem U's crude
+branch bound — and, as the §2.12 re-audit established, the branch
+factor e^{Θ(B²)} is the ONLY binding wall: the class modulus e^{O(B)}
+never multiplies the main term (the classes partition the sifted
+integers and the per-class main terms resum), and the
+Mertens/Siegel–Walfisz inputs remain valid for lists up to any fixed
+power of log x at the already-paid price of ineffectivity. A poly(R)
+branch classification therefore moves the ceiling itself (§2.12,
+polylog tier); the method family's absolute ceiling is
 exp(−(log x)^{1/2+o(1)}), still short of Vaughan's
 exp(−c(log x)^{2/3}). What Theorem U adds over Vaughan is not density
 but structure: explicit certificates at residuals of size
@@ -1448,7 +1451,7 @@ polylog-interval-Chowla-hard — out of reach of current technology.
 
 The August 2026 branch round (one exhaustive enumeration prong, one
 proof prong, independent) settled the shape of Open Problem 2. Paper
-counterparts: Theorems 4.7/4.8/4.10/4.11, Conjecture 4.9, §4.6
+counterparts: Theorems 4.7/4.8/4.10/4.11, Conjecture 4.9, §4.2
 (`sec:branch`).
 
 **Setting** (cyclic, prime R, d = R−1, discrete logs): support
@@ -1468,8 +1471,10 @@ and maximal S must CONTAIN H∖{0}. Iterating: every failing support
 of Z/d lies in ψ⁻¹({0} ∪ T′)∖{0} for a composed quotient ψ and an
 APERIODIC maximal failing support T′ downstairs, container size
 ≤ ⌊d/2⌋−1 (exact bookkeeping (h−1)+h⌊(d̄−2)/2⌋ = d/2−1; support
-bound extended to odd moduli for the quotients). Machine-checked on
-all 1,571 nontrivial-stabilizer maximal supports, d ≤ 30. The
+bound extended to odd moduli for the quotients). Machine-checked: zero
+container-law violations across all 87,009 maximal supports at every
+modulus d ≤ 30 and every target (the nontrivial-stabilizer cases
+among them all satisfy assertions (ii) and (iv)). The
 problem reduces losslessly to aperiodic maximal supports.
 
 **Proved (size spectrum).** Maximal failing supports exist at every
@@ -1487,17 +1492,19 @@ classification of critical pairs with 3-AP summands.)
 Every aperiodic maximal failing support lies in a window container
 C(K, W) = φ_K⁻¹({0} ∪ ū·[c̄, c̄+w−1])∖{0} of size ≤ ⌊d/2⌋−1 — a
 coset-progression (subgroup K and progression direction coexisting).
-The family has ≤ 2d² members, each forbidding ≥ half the nonzero
+The family has fewer than d³ members (kernel size × direction × window start × window length), each forbidding ≥ half the nonzero
 classes (sieve dimension ½ preserved per branch). Evidence:
-- exhaustive, all moduli d ≤ 30, ALL targets (46,000+ maximal
-  supports; bound attained ⇒ optimal);
+- exhaustive, all moduli d ≤ 30, ALL targets (87,009 maximal
+  supports, zero violations; bound attained ⇒ optimal);
 - independent enumeration prong: every maximal failing support at
   R = 19, 23, 31, 43, 47, 59 (counts 336 / 1,034 / 4,291 / 40,759 /
   93,897 / 495,782 — note these EXCEED the DP mask-state counts, so
   supports-as-branches was doubly dead) and at composite R = 15, 35,
   39 fits a two-sided coset-progression container of density ≤ ½;
   zero unstructured examples at nine moduli; the (Z/35)* ≅ (Z/39)*
-  tallies are identical — the structure is group-abstract;
+  failure tallies are identical — the structure is group-abstract
+  (container tie-break counts differ, 115 vs 110, an artifact of the
+  minimal-container search);
 - proved for the signed complete-partition family (windows with room
   to spare); singleton-miss symmetry 2Σv = 2t pins the windows;
 - the coset component is necessary: {11,17,19,29} ⊆ Z/30 is a
@@ -1509,8 +1516,9 @@ factorization pathologies of cyclic groups.
 
 **Conditional container theorem (paper Thm 4.10).** Under Conjecture
 A (all moduli, via the recursion-closed pullback of windows): every
-failing support is contained in one of ≤ 2d² window containers of
-size ≤ ⌊d/2⌋−1 — branch count per residual O(R²) instead of
+failing support is contained in one of fewer than d³ window
+containers of
+size ≤ ⌊d/2⌋−1 — branch count per residual O(R³) instead of
 2^{φ(R)}, dimension ½ intact.
 
 **Payoff re-audit (paper Thm 4.11 + corrected Rem 4.6).** The
@@ -1522,10 +1530,10 @@ Mertens/Siegel–Walfisz inputs are valid for the individual moduli
 R ≤ B up to any fixed power of log x (price: the ineffectivity
 already paid). The branch factor was the only binding wall. Under
 Conjecture A the balance per residual is gain δ(1−θ)L vs cost
-(2+c_M)θL with B = (log x)^θ, admissible for θ < δ/(2+c_M+δ) ≈ 1/7:
+(3+c_M)θL with B = (log x)^θ, admissible for θ < δ/(3+c_M+δ) ≈ 1/9:
 
     all but O(x·exp(−(log x)^{c₀})) hard primes have
-    R_min(p) ≤ (log x)^{c₀}    (c₀ ≈ 1/7; family ceiling c₀ < ½).
+    R_min(p) ≤ (log x)^{c₀}    (c₀ ≈ 1/9; family ceiling c₀ < ½).
 
 Quasi-poly fallback (d^{O(log d)} containers): exceptional set
 x·exp(−exp(c√(log log x))) — still past every fixed (log log x)^A
@@ -1704,9 +1712,10 @@ sampling plus full tail checks; exhaustive below 10⁹):**
    proves the support bound for every residual unconditionally; the
    chain reaches exponent 1 + |P|/2 for arbitrary finite admissible
    lists (31/2 for the 27-residual list ≤ 107 with the aggregate
-   families). Remaining on this axis: exploit the subgroup-trapped
-   structure *uniformly in R* (p-independent branches) — the residue of
-   the route that could conditionally pass Vaughan (§2.8, §2.9).
+   families). Remaining on this axis: Conjecture A — the aperiodic
+   window-container classification of §2.12 (kernel case proved,
+   count form refuted there), whose resolution yields the polylog
+   tier R_min ≤ (log x)^{c₀}.
 3. ~~**Understand deep-tail correlation.**~~ **Done** — Theorem J (§2.9):
    joint Type-I failure is controlled by one Legendre coin (p|q) per
    distinct prime of the interval factorizations; smoothness = fewer

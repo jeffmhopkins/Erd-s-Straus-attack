@@ -475,7 +475,7 @@ def test_prop22_contrapositive_on_selected_rung_failures():
 
 
 def test_branch_enum_R19_count_and_predicate_agreement():
-    """Branch enumeration (THEORY.md 2.11): the migrated enumerator finds
+    """Branch enumeration (THEORY.md 2.12): the migrated enumerator finds
     exactly the 336 maximal failing supports at R = 19, and its T-mask
     failing predicate agrees with theory.verify_support_bound's reach-bit
     predicate on the full size-9 census (24,310 supports x 18 p-classes)."""
