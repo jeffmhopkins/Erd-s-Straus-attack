@@ -474,6 +474,66 @@ def test_prop22_contrapositive_on_selected_rung_failures():
     assert checked > 5
 
 
+def test_branch_enum_R19_count_and_predicate_agreement():
+    """Branch enumeration (THEORY.md 2.11): the migrated enumerator finds
+    exactly the 336 maximal failing supports at R = 19, and its T-mask
+    failing predicate agrees with theory.verify_support_bound's reach-bit
+    predicate on the full size-9 census (24,310 supports x 18 p-classes)."""
+    from erdos_straus.branch_enum import (census_crosscheck,
+                                          maximal_failing_supports)
+
+    per_pi = maximal_failing_supports(19)
+    assert sum(len(v) for v in per_pi.values()) == 336
+    # exactly one p-class (the one with 0 in T(pi)) has no failing supports
+    assert sum(1 for v in per_pi.values() if not v) == 1
+
+    chk = census_crosscheck(19)
+    assert chk["agree"], chk
+    assert chk["pairs"] == 437_580 and chk["disagreements"] == 0
+    assert chk["failure_lists_match"] and chk["lemma_holds"]
+
+
+def test_branch_enum_container_law_R19():
+    """Container law at R = 19: every maximal failing support fits a
+    two-sided window container C(K, W) of at most d/2 - 1 = 8 nonzero
+    classes, with equality attained (the quadratic-residue branch)."""
+    from erdos_straus.branch_enum import branch_census
+
+    c = branch_census(19)
+    assert c["n_maximal_supports"] == 336
+    assert c["support_bound_ok"]  # Theorem S: |S| <= d/2 - 1
+    law = c["container_law"]
+    assert law["verdict"] == "holds" and law["n_violations"] == 0
+    assert law["bound"] == 8
+    assert law["worst_min_container_size"] == 8 and law["n_at_bound"] == 9
+    assert c["labels"] == {"window": 336}  # zero unstructured supports
+
+
+def test_branch_supports_archive_verdicts():
+    """The consolidated branch archive parses, covers all nine enumerated
+    moduli, and every per-R container-law verdict is "holds" with the
+    Kneser support bound respected."""
+    path = DATA_DIR / "analysis" / "branch_maximal_supports.json"
+    with open(path) as fh:
+        archive = json.load(fh)
+    per_R = archive["per_R"]
+    assert set(per_R) == {"15", "19", "23", "31", "35", "39",
+                          "43", "47", "59"}
+    for key, e in per_R.items():
+        assert e["R"] == int(key)
+        law = e["container_law"]
+        assert law["verdict"] == "holds", key
+        assert law["n_violations"] == 0 and not law["violations"]
+        assert law["worst_min_container_size"] <= law["bound"]
+        assert e["support_bound_ok"]
+        assert e["max_support_size"] <= e["kneser_bound"]
+        assert sum(e["support_sizes"].values()) == e["n_maximal_supports"]
+    # spot-check the headline counts against the enumeration memo
+    assert per_R["19"]["n_maximal_supports"] == 336
+    assert per_R["59"]["n_maximal_supports"] == 495_782
+    assert per_R["35"]["n_maximal_supports"] == 1_124
+
+
 def test_halfdim_failure_family_exemplar():
     """Theorem P1's mechanism (THEORY.md 2.10): p = 5,544,361 is in the
     half-dimensional failure family of its selected ladder -- R0 = 51 with
