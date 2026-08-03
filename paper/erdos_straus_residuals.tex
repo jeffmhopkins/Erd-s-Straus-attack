@@ -568,9 +568,10 @@ Thm.~\ref{thm:FG} & Thms.~\ref{thm:A}, \ref{thm:Ap}--\ref{thm:R15}, \ref{thm:S} 
 Prop.~\ref{prop:agg} & elementary + Thm.~\ref{thm:FG} & \S\ref{sec:sieve} & families in Lean \\ \addlinespace
 Thm.~\ref{thm:D} & Prop.~\ref{prop:succ} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
 Thm.~\ref{thm:U} & Thm.~\ref{thm:S}(iii), general tier + Brun's sieve, uniform constants & \S\ref{sec:sieve} & no \\ \addlinespace
-Thm.~\ref{thm:Mcount} & explicit construction (complete partitions) & \S\ref{sec:sieve} & Python (spot checks) \\ \addlinespace
-Thm.~\ref{thm:Mkernel} & Kneser + Lem.~\ref{lem:mono} + quotient induction & \S\ref{sec:sieve} & Python (checks to $d = 30$) \\ \addlinespace
+Thm.~\ref{thm:Mcount} & explicit construction (complete partitions) & \S\ref{sec:sieve} & Lean, the completeness lemma \\ \addlinespace
+Thm.~\ref{thm:Mkernel} & Kneser + Lem.~\ref{lem:mono} + quotient induction & \S\ref{sec:sieve} & Lean, single step \\ \addlinespace
 Thm.~\ref{thm:Mcont} & Thm.~\ref{thm:Mkernel} + Conjecture~\ref{conj:A} & \S\ref{sec:sieve} & no (conditional) \\ \addlinespace
+Prop.~\ref{prop:betavac} & elementary (isolation of punctures) & \S\ref{sec:sieve} & Lean \\ \addlinespace
 Thm.~\ref{thm:Upay} & Thm.~\ref{thm:Mcont} + the audit of Thm.~\ref{thm:U} & \S\ref{sec:sieve} & no (conditional) \\ \addlinespace
 Lems.~\ref{lem:Jcomp}--\ref{lem:N} & Jacobi reciprocity, elementary & \S\ref{sec:ladder} & Lean \\ \addlinespace
 Thms.~\ref{thm:L0}--\ref{thm:B2} & Thm.~\ref{thm:S} / Prop.~\ref{prop:succ} + sieve & \S\ref{sec:ladder} & no \\ \addlinespace
@@ -2210,7 +2211,17 @@ $(\mathbb{Z}/15)^* \cong C_2 \times C_4$, the latter fully
 symbolically --- Kneser's addition theorem vendored from its
 existing sorry-free formalization, an iterated many-summand form
 proved on top, and the support bound derived on standard axioms
-only, no evaluator appeal.) For these
+only, no evaluator appeal. So too the branch-classification layer:
+Theorem~\ref{thm:Mkernel}'s single kernel step in all three parts,
+with the quotient \emph{constructed} rather than assumed and the
+container size bound $\le d/2 - 1$ derived from
+Theorem~\ref{thm:S}(i) and its odd-modulus variant downstairs;
+Proposition~\ref{prop:betavac} in full; and the completeness lemma
+behind Theorem~\ref{thm:Mcount} (budget-$2$ subset sums of a
+complete partition are exactly $[0, 2N]$) together with the
+singleton-miss mechanism it yields. What is left unformalized there
+is the \emph{iterated} reduction --- the strong induction composing
+kernel steps --- and the $2^{c\sqrt d}$ counting.) For these
 enumerations the sixty-line trust base above is thus replaced by the
 Lean toolchain evaluating a formally stated proposition --- and the
 Python and Lean implementations, written independently against the

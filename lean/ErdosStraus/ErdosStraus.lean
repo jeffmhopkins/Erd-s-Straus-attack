@@ -7,7 +7,9 @@ the reach ⟺ divisor-certificate bridge and composed corollary
 (`DivisorBridge`) → Lemma S at R = 31 by certified dynamic
 programming (`LemmaS31`) → Kneser's addition theorem (vendored,
 `Kneser/`) and the unconditional support bound Theorem S
-(`TheoremS`). See lean/README.md.
+(`TheoremS`) → the kernel branch of the branch classification and
+β-vacuity (`KernelBranch`, the paper's Theorem 4.8 and
+Proposition 4.12). See lean/README.md.
 -/
 import ErdosStraus.Basic
 import ErdosStraus.Families
@@ -19,3 +21,4 @@ import ErdosStraus.BridgeR15
 import ErdosStraus.DivisorBridge
 import ErdosStraus.LemmaS31
 import ErdosStraus.TheoremS
+import ErdosStraus.KernelBranch
