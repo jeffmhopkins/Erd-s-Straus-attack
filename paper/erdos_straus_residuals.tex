@@ -74,7 +74,9 @@ reciprocity identity
 $\smash{\legendre{q}{R}} = \smash{\legendre{p}{q}}$ governing
 correlated failure, a branch-classification conjecture that would
 raise the almost-all bound to $R_{\min}(p) \le (\log x)^{c_0}$, and a
-measured ladder program past that ceiling. The elementary layer and
+measured ladder program past that ceiling. Identifying the failure
+families as norm-form families makes the count at the chain's first
+link sharp, $\asymp x/(\log x)^{3/2}$. The elementary layer and
 the core finite enumerations are machine-checked in
 Lean~4/\mbox{mathlib}, and we exhibit certificates for all
 $128{,}671{,}219$
@@ -200,11 +202,18 @@ overtake.
   the all-residue failure mode is impossible by construction; the
   ladder chain and its first rung proved
   (Theorems~\ref{thm:L0}, \ref{thm:B1}), the avoidance ladder
-  two-sided and true failures bounded below via the half-dimensional
-  sieve (Theorems~\ref{thm:B2}, \ref{thm:P1}; established in outline,
-  with proof sketches), and an
+  two-sided (Theorem~\ref{thm:B2}), and an
   almost-all bound past every fixed power of $\log x$ conditional on
   one measured hypothesis (Theorem~\ref{thm:L1}).
+\item The identification of Type-I failure families as
+  \emph{norm-form} families \eqref{eq:normform}, which makes
+  Iwaniec's prime-indexed half-dimensional sieve~\cite{IwaniecPhiA}
+  the natural counting tool and yields matching upper and lower
+  bounds at the first link of the chain (Theorem~\ref{thm:sharp}:
+  the failure count at $R = 3, 7, 15$ is $\asymp x/(\log x)^{3/2}$,
+  and $3/2$ is the ceiling of the method); along the ladder the same
+  mechanism applies on a sparse family of classes
+  (Theorem~\ref{thm:P1} and Remark~\ref{rem:P1scope}).
 \item A machine-checked (Lean~4~\cite{Lean4} with
   \mbox{mathlib}~\cite{mathlib}) formalization, in the
   accompanying repository, of the elementary layer of the proofs, of
@@ -610,7 +619,8 @@ Prop.~\ref{prop:betavac} & elementary (isolation of punctures) & \S\ref{sec:siev
 Thm.~\ref{thm:Upay} & Thm.~\ref{thm:Mcont} + the audit of Thm.~\ref{thm:U} & \S\ref{sec:sieve} & no (conditional) \\ \addlinespace
 Lems.~\ref{lem:Jcomp}--\ref{lem:N} & Jacobi reciprocity, elementary & \S\ref{sec:ladder} & Lean \\ \addlinespace
 Thms.~\ref{thm:L0}--\ref{thm:B2} & Thm.~\ref{thm:S} / Prop.~\ref{prop:succ} + sieve & \S\ref{sec:ladder} & no \\ \addlinespace
-Thm.~\ref{thm:P1} & Prop.~\ref{prop:char} + half-dim.\ sieve~\cite{IwaniecHalfDim} & \S\ref{sec:ladder} & no \\ \addlinespace
+Thm.~\ref{thm:sharp} & norm-form bridge + \cite{IwaniecPhiA} + Fundamental Lemma & \S\ref{sec:ladder} & no \\ \addlinespace
+Thm.~\ref{thm:P1} & Prop.~\ref{prop:char} + \cite{IwaniecPhiA} + \cite{FHRSS} & \S\ref{sec:ladder} & no \\ \addlinespace
 Thm.~\ref{thm:L1} & Hypothesis~\ref{hyp:B} (measured) + large sieve & \S\ref{sec:ladder} & no (conditional) \\
 \bottomrule
 \end{tabular}
@@ -1782,13 +1792,76 @@ Hypothesis~\ref{hyp:B} below posits, obtained from
 Hypothesis~\ref{hyp:P} rung by rung, though not with the uniformity
 in $j$ and $q$ that Hypothesis~\ref{hyp:B} demands.
 
-\begin{theorem}[half-dimensional failure lower bound]\label{thm:P1}
+The key to counting true failures is that the Type-I failure
+condition is a \emph{norm-form} condition in disguise. For
+$r \equiv 3 \pmod 4$, quadratic reciprocity gives
+$\legendre{-r}{\ell} = \legendre{\ell}{r}$ for odd primes
+$\ell \ne r$, so
+\begin{equation}\label{eq:normform}
+\begin{aligned}
+  \text{every prime factor of $a$ is a QR mod } r
+  \;&\iff\; -r \text{ is a square mod } 4a \\[-1pt]
+  \;&\iff\; a \text{ is \emph{primitively} represented by} \\
+  &\qquad\ \ \text{a binary quadratic form of discriminant } -r,
+\end{aligned}
+\end{equation}
+the last step by the classical correspondence between
+representations and square roots of the discriminant
+(Cox~\cite[Lem.~2.5]{Cox}; the discriminant $-r$ is prime, hence has
+a single genus, so the whole class group participates). Failure
+families are thus families of shifted values represented by binary
+quadratic forms, and the relevant counting theorem is Iwaniec's
+half-dimensional sieve in its \emph{prime-indexed} form: the number
+of primes $p \le N$ with $p = B\varphi(\xi,\eta) + A$ for a
+primitive form $\varphi$ is $\asymp N/(\log N)^{3/2}$
+\cite{IwaniecPhiA}. This is not obstructed by parity --- at
+dimension $\kappa = \tfrac12$ the lower-bound sieve function
+satisfies $\beta(\tfrac12) = 1$ --- and it is the tool the following
+statements use.
+
+\begin{theorem}[the first link is sharp]\label{thm:sharp}
+For $R \in \{3, 7, 15\}$,
+\[
+  \#\{\text{hard primes } p \le x \text{ failing } R\}
+  \;\asymp\; \frac{x}{(\log x)^{3/2}},
+\]
+and the same holds with $\ll$, $\gg$ separately at $R = 11$. In
+particular the chain of Theorem~\ref{thm:FG} is sharp at its first
+link, and no exponent better than $3/2$ is available from any
+single residual: by Theorem~\ref{thm:S} every failure-sufficient
+family has sieve dimension $\ge \tfrac12$, so $3/2$ is the ceiling
+of the method, not an artifact of the argument.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+At these residuals the exact criteria (Theorems~\ref{thm:A},
+\ref{thm:Ap}, \ref{thm:R15}) make failure equivalent to an
+all-residue condition on the factors of $a = (p+R)/4$, which by
+\eqref{eq:normform} is primitive representability by a form of
+discriminant $-r$ ($r = 3, 7, 15$ respectively --- at $R = 15$ the
+Jacobi condition of Theorem~\ref{thm:R15} plays the role of the
+Legendre condition). The upper bound is the Fundamental Lemma as in
+Theorem~\ref{thm:FG}; the lower bound is \cite{IwaniecPhiA} applied
+to each class of forms, with the congruence conditions (H1)--(H3)
+absorbed into $A$ and $B$. At $R = 11$ the case-(b) budget failures
+of Theorem~\ref{thm:App} are not of this shape, which is why only
+the one-sided bounds are asserted.
+\end{proof}
+
+Along the ladder the same mechanism applies, but only on classes
+whose local conditions are consistent --- a much more delicate
+requirement than it first appears.
+
+\begin{theorem}[ladder failure lower bound]\label{thm:P1}
 Call a class $c \bmod M$ \textup{(}$M$ as in the proof of
-Theorem~\ref{thm:B1}\textup{)} admissible if its $R_0$ is composite
-with a prime factor
-$r_1 \equiv 3 \pmod 4$ such that $\legendre{q}{r_1} = +1$ \textup(and
-$\legendre{2}{r_1} = +1$ when $2 \mid a$\textup). On every admissible
-class,
+Theorem~\ref{thm:B1}\textup{)} \emph{admissible} if $R_0$ has a
+prime factor $r_1 \equiv 3 \pmod 4$ with
+\textup{(A1)} $\legendre{q}{r_1} = +1$;
+\textup{(A2)} $\legendre{\ell}{r_1} = +1$ for \emph{every} prime
+$\ell \le q$ that the class forces to divide $a$;
+\textup{(A3)} either $r_1 \equiv 3 \pmod 8$ with $a$ odd, or
+$r_1 \equiv 7 \pmod 8$ with $a$ even.
+On every admissible class,
 \[
 \begin{aligned}
   \#E_0(x) \;&\ge\; \#\bigl\{p \le x : p \equiv c \!\!\pmod M,\
@@ -1804,24 +1877,43 @@ Membership forces failure by Proposition~\ref{prop:char} at $r_1$:
 all factors of $a$ are residues mod $r_1$ by hypothesis, and
 $\legendre{p}{r_1} = +1$ follows \emph{for free} from consistency
 $a \equiv 4^{-1}p$, so every divisor of $m^2$ is a residue while
-$\legendre{-m}{r_1} = \legendre{-1}{r_1} = -1$. The membership
-condition sifts the $(r_1-1)/2$ non-residue classes mod $r_1$ ---
-dimension exactly $\tfrac12$ --- and Iwaniec's half-dimensional
-sieve~\cite{IwaniecHalfDim} produces the matching-order lower bound
-for the full condition: at dimension $\tfrac12$ the sifting range
-reaches the Bombieri--Vinogradov level, leaving at most one large
-non-residue factor, removed by a switching argument.
+$\legendre{-m}{r_1} = \legendre{-1}{r_1} = -1$. For the count, apply
+\eqref{eq:normform} and~\cite{IwaniecPhiA} with $A = -R_0$,
+$B = 4\prod_{\ell \mid a,\ \ell \le q} \ell$ and discriminant
+$-r_1$; condition~\textup{(A3)} is what makes the $2$-adic
+constraint solvable, and~\textup{(A2)} is what makes the family
+nonempty. One point is not a routine citation: the sieve delivers
+representability by \emph{some} form of the discriminant --- non-split
+primes occurring to even multiplicity --- whereas
+\eqref{eq:normform} needs \emph{primitive} representability, no
+non-split prime at all. That upgrade is the subject of
+Fuchs--Hsu--Rickards--Schindler--Stange~\cite{FHRSS}, where it is
+shown to be neither immediate nor universally true; the cases used
+here fall under their Theorem~1.1.
 \end{proof}
 
-Theorem~\ref{thm:P1} is the program's first unconditional
-\emph{lower} bound on true ladder failures ($6.6\%$ of first rungs
-are admissible; every all-residue member found in the data fails as
-required, e.g.\ $p = 5{,}544{,}361$ with $R_0 = 51$, $r_1 = 3$,
-$a = 31 \cdot 61 \cdot 733$). Against
-Hypothesis~\ref{hyp:P} it gives the two-sided bracket
-$(\log x)^{-(1/2 - 1/\varphi(R_0))} \ll \#E_0/\#\tilde E_0 \le 1$:
-what remains of the hypothesis is exactly the closing of this
-log-gap, the parity obstruction in its sharpest local form.
+\begin{remark}[how much of the ladder this reaches]\label{rem:P1scope}
+Condition \textup{(A2)} is restrictive in a way that is easy to miss:
+the class fixes $a$ modulo every prime $\le q$, so a single forced
+factor $\ell$ with $\legendre{\ell}{r_1} = -1$ empties the family.
+For instance $q = 23$, $R_0 = 35$, $r_1 = 7$ satisfies
+\textup{(A1)}, but $3 \mid a$ for every hard prime (as
+$p \equiv 1 \pmod 3$ and $35 \equiv 2 \pmod 3$) while
+$\legendre{3}{7} = -1$: the set is empty. Counting properly, among
+hard primes below $2 \times 10^7$ the classes passing
+\textup{(A1)} account for $6.6\%$ of first rungs, but those passing
+\textup{(A1)}--\textup{(A3)} with a nonempty family account for only
+$0.023\%$. Theorem~\ref{thm:P1} is therefore an existence statement
+about a sparse family of ladders, not a bound covering a positive
+proportion of them; and whenever $R_0$ is prime --- which is the
+case for the large majority of hard primes --- no $r_1$ of this kind
+exists at all. Consequently the bracket on Hypothesis~\ref{hyp:P}
+is two-sided only on that sparse family at rung $0$, and one-sided
+(upper bound only) elsewhere. Theorem~\ref{thm:sharp} is the
+unconditional lower-bound statement of real reach; what
+Theorem~\ref{thm:P1} adds is that the same mechanism survives the
+passage to $p$-adapted residuals where it survives at all.
+\end{remark}
 
 \subsection{The conditional theorem, and honest scope}
 
@@ -1869,10 +1961,11 @@ ambition, and each increment is testable before it is assumed.
 
 \begin{remark}[scope]\label{rem:ladder-scope}
 Theorem~\ref{thm:L1} is an almost-all statement under a measured
-hypothesis; three things it is not. It is not unconditional: closing
-Hypothesis~\ref{hyp:P}'s log-gap is a parity problem, and
-Theorem~\ref{thm:P1} sits at dimension $\tfrac12$ precisely because
-that is the unique historically known opening in the parity wall. It
+hypothesis; three things it is not. It is not unconditional:
+Hypothesis~\ref{hyp:P} is bounded below unconditionally only on the
+sparse family of Remark~\ref{rem:P1scope}, and one-sidedly
+elsewhere --- in particular whenever $R_0$ is prime, which is the
+typical case. It
 is not a density record: Vaughan's bound remains asymptotically
 stronger unconditionally. And it is not a path to the full
 conjecture by itself: emptiness is beyond upper-bound methods
@@ -1881,9 +1974,10 @@ conspiratorial prime --- a super-record dodging $J(p)$ rungs, of
 which the record prime of Section~\ref{sec:comp} is an empirical
 foreshadowing --- is a simultaneous-multiplicative-structure
 statement of prime-tuple difficulty. What the ladder does is
-localize the conjecture for hard primes into one measured,
-twice-bracketed counting inequality, with every sub-statement
-current tools can decide now decided.
+localize the conjecture for hard primes into one measured counting
+inequality, bracketed on both sides where present methods reach and
+above everywhere, with every sub-statement current tools can decide
+now decided.
 \end{remark}
 
 \begin{remark}[why the walls are real: two obstruction
@@ -2540,10 +2634,28 @@ H.~Halberstam and H.-E.~Richert,
 \emph{Sieve Methods},
 Academic Press, London, 1974.
 
+\bibitem{Cox}
+D.~A.~Cox,
+\emph{Primes of the Form $x^2 + ny^2$: Fermat, Class Field Theory,
+and Complex Multiplication},
+2nd ed., Wiley, Hoboken, NJ, 2013.
+
+\bibitem{FHRSS}
+E.~Fuchs, K.~Hsu, J.~Rickards, D.~Schindler and K.~Stange,
+\emph{Primitive representations by binary quadratic forms},
+preprint, arXiv:\href{https://arxiv.org/abs/2504.20289}{2504.20289}
+[math.NT], 2025.
+
 \bibitem{IwaniecHalfDim}
 H.~Iwaniec,
 \emph{The half dimensional sieve},
 Acta Arith.\ \textbf{29} (1976), 69--95.
+
+\bibitem{IwaniecPhiA}
+H.~Iwaniec,
+\emph{Primes of the type $\varphi(x, y) + A$ where $\varphi$ is a
+quadratic form},
+Acta Arith.\ \textbf{21} (1972), 203--234.
 
 \bibitem{Kneser}
 M.~Kneser,
