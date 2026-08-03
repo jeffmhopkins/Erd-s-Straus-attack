@@ -1,5 +1,5 @@
 # Erdős–Straus Conjecture Attack — Current State
-**Date:** 2026-08-03 (current through PR #48)  
+**Date:** 2026-08-03 (current through PR #51)  
 **Focus:** Hard-class primes (Mordell exceptional residues mod 840)
 
 ## The Problem
@@ -164,6 +164,17 @@ $R_{\min} \le (\log x)^{c_0}$ outside
 $x\exp(-(\log x)^{c_0})$, $c_0 \approx 1/9$, family ceiling $1/2$.
 Enumeration entry point `erdos_straus.branch_enum`, archive
 `data/analysis/branch_maximal_supports.json`.
+
+**Conjecture A round (THEORY §2.13):** no counterexample anywhere —
+exhaustive at every $d \le 60$ and at $d = 72$, the smallest
+non-Hajós order (14.99M maximal supports); sampled to 240. The
+feared punctured-chain mechanism is **provably empty** (β-vacuity,
+paper Prop 4.12: a β-step forces the deleted element into the
+stabilizer), and Conjecture A restricted to Hajós orders already
+yields the polylog tier at the same exponent up to $o(1)$ (Chen-type
+$P_3$ count of good residuals). Remaining: non-critical-step control
+at the $|F| = 2$ floor + the prime-power two-scale coupling.
+Archive: `data/analysis/conjA_verification.json`.
 
 ### $10^{11}$ update (the gap fills; the record stands)
 

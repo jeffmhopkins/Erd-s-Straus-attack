@@ -1408,14 +1408,20 @@ satisfies $S \subseteq C(K, W)$ for some window container with
 $|C(K, W)| \le \lfloor d/2 \rfloor - 1$.
 \end{conjecture}
 
-The evidence: exhaustive verification for all moduli $d \le 30$ and
-\emph{all} targets ($87{,}009$ maximal supports, zero violations;
-the bound
-$\lfloor d/2 \rfloor - 1$ is attained, hence optimal); independent
-verification that every maximal failing support at
-$R = 19, 23, 31, 43, 47, 59$ ($495{,}782$ of them at $R = 59$) and
-at the composite moduli $R = 15, 35, 39$ fits such a container of
-density $\le \tfrac12$ (entry point
+The evidence: exhaustive verification for \emph{all} moduli
+$d \le 60$ and all targets ($24.25$ million orbit-weighted maximal
+supports; zero violations; the bound
+$\lfloor d/2 \rfloor - 1$ is attained, hence optimal); exhaustive
+verification at $d = 72$, the smallest \emph{non-Haj\'os} cyclic
+order --- the one place aperiodic factorization pathologies could
+first appear --- over all $11$ target orbits and $14.99$ million
+maximal supports, with extensive stratified sampling (including
+supports seeded from explicit aperiodic de~Bruijn factorizations of
+$\mathbb{Z}/72$) at every non-Haj\'os order up to $240$; independent
+verification in the residual model at
+$R = 19, 23, 31, 43, 47, 59$ ($495{,}782$ maximal supports at
+$R = 59$) and
+at the composite moduli $R = 15, 35, 39$ (entry point
 \texttt{erdos\_straus.branch\_enum}; archived); a proved
 subfamily (the signed complete partitions, windows with room to
 spare); and a rank-$2$ witness
@@ -1479,16 +1485,55 @@ $\exp(-C(\log\log x)^A)$.
 Conjecture~\ref{conj:A} is thus one well-posed additive-combinatorics
 statement --- a Kneser/Freiman-type container theorem for
 bounded-exponent subset sums --- standing between
-Theorem~\ref{thm:U} and its polylog tier. Two structural facts
-sharpen where its difficulty lives: near-critical Kneser analysis is
+Theorem~\ref{thm:U} and its polylog tier. Where its difficulty lives
+can now be pinned exactly. Near-critical Kneser analysis is
 \emph{vacuous} here (aperiodic failing supports with $|S| \ge 3$ are
 never Kneser-tight --- the governing mechanism is exact covering by
-complete sequences, not small doubling), and the singleton-miss
+complete sequences, not small doubling); the singleton-miss
 supports satisfy the symmetry $2\sum_{v \in S} v = 2t$, which pins
-their windows. The remaining difficulty is chaining of
-\emph{punctured} (cofinite) intermediate reaches, where quotient
-direction information degenerates --- precisely the non-Hajós
-factorization pathologies of cyclic groups.
+their windows (and at \emph{odd} moduli singleton misses do not
+exist at all: the miss set always has even size, so the floor family
+there is $|F| = 2$, auto-maximal and window-shaped). The one
+mechanism previously feared --- chaining of \emph{punctured}
+(cofinite) intermediate reaches, where direction information
+degenerates and non-Hajós factorization pathologies could hide ---
+is provably empty:
+
+\begin{proposition}[$\beta$-vacuity]\label{prop:betavac}
+Let $S$ fail for $t$ in $\mathbb{Z}/d$, let $v \in S$, and suppose
+the deletion step at $v$ is Kneser-critical
+($|M(S)| = |M(S \setminus \{v\})| + 2$) of punctured type: the two
+new elements are isolated punctures of the complement. Then
+$F - v = F$ for the miss set $F = \mathbb{Z}/d \setminus M(S)$, so
+$v \in \mathrm{Stab}(M(S))$. In particular, for an \emph{aperiodic}
+maximal failing support every critical deletion step is of window
+($\alpha$) type.
+\end{proposition}
+
+\begin{proof}
+Write $A = M(S \setminus \{v\})$ and
+$\mathbb{Z}/d \setminus A = F \sqcup \{x, y\}$ with $x, y$ the
+punctures. For $f \in F$: since
+$f \notin M(S) = A \cup (A + v) \cup (A + 2v)$, both $f - v$ and
+$f - 2v$ avoid $A$, so $f - v \in F \cup \{x, y\}$. If $f - v = x$,
+then $x - v = f - 2v \notin A$, contradicting the isolation of $x$
+($x - v \in A$; the $v = d/2$ two-cycle case is the same
+contradiction). Likewise for $y$. So $F - v \subseteq F$, hence
+$F - v = F$ by finiteness.
+\end{proof}
+
+What remains open in Conjecture~\ref{conj:A} is therefore only the
+control of \emph{non-critical} deletion steps --- slack-consuming
+extensions, a question about exact-covering efficiency that is
+indifferent to the Hajós/non-Hajós divide (consistent with the
+exhaustive verification at $d = 72$ above). And the payoff is robust
+to the conjecture's scope: by a Chen-type $P_3$ count there are
+$\gg B/(\log B)^2$ admissible residuals $R \le B$ whose modulus
+$d = R - 1$ is a Hajós order (equivalently $(R-1)/2$ is a prime
+power or has at most three prime factors), which is dense enough
+that assuming Conjecture~\ref{conj:A} \emph{only for Hajós orders}
+--- where the group theory is tame --- yields
+Theorem~\ref{thm:Upay} with the same exponent up to $o(1)$.
 
 \section{A conditional program: the Burgess--reciprocity
 ladder}\label{sec:ladder}
@@ -1988,9 +2033,10 @@ record).
   (Theorem~\ref{thm:Mkernel}), the count form refuted
   (Theorem~\ref{thm:Mcount}), and what remains open is exactly
   Conjecture~\ref{conj:A} --- the aperiodic window-container
-  statement, whose difficulty is the chaining of punctured
-  intermediate reaches (non-Hajós factorization pathologies of
-  cyclic groups); its resolution gives Theorem~\ref{thm:Upay}. The
+  statement, whose difficulty is now localized to the control of
+  non-critical deletion steps (the punctured-chain mechanism is
+  empty by Proposition~\ref{prop:betavac}); its resolution --- for
+  Hajós orders alone --- gives Theorem~\ref{thm:Upay}. The
   fixed-list format itself cannot
   reach emptiness (Remark~\ref{rem:emptiness}).
   The proof of Theorem~\ref{thm:S} shows the extremal
