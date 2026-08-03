@@ -148,12 +148,12 @@ lemma rot2_zero (hd1 : 0 < d1) (hd2 : 0 < d2) {M : ℕ}
   by_cases hn : n < d1 * d2
   · cases hMn : M.testBit n with
     | true =>
-        rw [hMn, List.any_eq_true]
+        rw [List.any_eq_true]
         refine ⟨n, List.mem_range.mpr hn, ?_⟩
         rw [Bool.and_eq_true, decide_eq_true_eq]
         exact ⟨hMn, (hdest n hn).mpr rfl⟩
     | false =>
-        rw [hMn, List.any_eq_false]
+        rw [List.any_eq_false]
         intro k hkmem
         rw [List.mem_range] at hkmem
         intro hcontra
@@ -268,7 +268,7 @@ lemma maskSet2_mstep2 (hg1 : g ^ d1 = 1) (hh1 : h ^ d2 = 1)
   induction b with
   | zero =>
       have h0 : mstep2 d1 d2 M v w 0 = M := by
-        show (List.range 1).foldl _ 0 = M
+        change (List.range 1).foldl _ 0 = M
         simp only [List.range_one, List.foldl_cons, List.foldl_nil,
           Nat.mul_zero, Nat.zero_or]
         exact rot2_zero d1 d2 hd1 hd2 hM
@@ -362,7 +362,13 @@ lemma h15_pow4 : (7 : ZMod 15) ^ 4 = 1 := by decide
 decomposition `(ℤ/15)* = ⟨11⟩ × ⟨7⟩` is exact. -/
 lemma gh15_inj : ∀ i < 2, ∀ j < 4, ∀ i' < 2, ∀ j' < 4,
     (11 : ZMod 15) ^ i * 7 ^ j = 11 ^ i' * 7 ^ j' → i = i' ∧ j = j' := by
-  decide
+  -- `decide` cannot synthesize the bounded-`∀` instance directly, so
+  -- check the 64 cases over `Fin 2 × Fin 4` squared and transfer.
+  have key : ∀ (i i' : Fin 2) (j j' : Fin 4),
+      (11 : ZMod 15) ^ i.val * 7 ^ j.val = 11 ^ i'.val * 7 ^ j'.val →
+        i.val = i'.val ∧ j.val = j'.val := by decide
+  intro i hi j hj i' hi' j' hj' h
+  exact key ⟨i, hi⟩ ⟨i', hi'⟩ ⟨j, hj⟩ ⟨j', hj'⟩ h
 
 lemma neg_inv4_15 : -(4⁻¹ : ZMod 15) = 11 := by
   rw [ZMod.inv_eq_of_mul_eq_one 15 4 4 (by decide)]
@@ -405,6 +411,7 @@ theorem theoremA'''_finite_R15 :
   native_decide
 
 set_option maxHeartbeats 1600000 in
+-- the `decide`-heavy dictionary rewrites below exceed the default limit
 /-- **Theorem A‴, multiplicative form** (the product-index bridge
 applied to `theoremA'''_finite_R15`; the paper's Theorem 1.6, finite
 verification). `c_u` is the capped multiplicity of the unit class `u`
