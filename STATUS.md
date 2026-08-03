@@ -1,5 +1,5 @@
 # Erdős–Straus Conjecture Attack — Current State
-**Date:** 2026-08-03 (current through PR #54)  
+**Date:** 2026-08-03 (current through PR #56)  
 **Focus:** Hard-class primes (Mordell exceptional residues mod 840)
 
 ## The Problem
@@ -119,12 +119,32 @@ so the avoidance ladder decays exactly as B prescribes), and
 $c_P$ = 12.0 % at rung 0, 15.9 % at rung 1, archive
 `burgess_proxy_1e9.json`; **stable at scale**: $c_P$ = 9.7–11.6 % across four half-decade bins to $10^{11}$, `burgess_proxy_scaled.json`): under P, B holds at every fixed rung — the
 program is L₀ ✓, B₁ ✓, B₂ ✓, B ⟸ P, L₁ ⟸ B, with P the single
-unproved ingredient — now two-sidedly bracketed: **Theorem P₁**
-(Iwaniec's half-dimensional sieve on the per-prime character family
-at composite selected residuals) gives the program's first
-unconditional failure *lower* bound, $\#E_0 \gg x/(\log x)^{3/2}$ on
-the 6.6 % of ladders that are half-dimensionally admissible; the
-remaining gap to P is exactly $(\log x)^{1/2 - 1/\varphi(R_0)}$. Theorem L₁ — under
+unproved ingredient, bracketed on both sides only on a sparse family
+of classes and one-sidedly (upper bound) elsewhere. The lower-bound
+side comes from the **norm-form bridge** (paper eq. (5.1)): for
+$r \equiv 3 \pmod 4$, "every prime factor of $a$ is a QR mod $r$" is
+"$a$ is *primitively* represented by a binary quadratic form of
+discriminant $-r$", so character failure families are norm-form families
+and Iwaniec's *prime-indexed* half-dimensional sieve (Acta Arith. 21
+(1972) 203–234) is the counting tool — parity does not bite at
+$\kappa = 1/2$, where $\beta(1/2) = 1$. It gives **Theorem 5.7 (the
+first link is sharp)**: the hard primes $p \le x$ failing $R$ number
+$\asymp x/(\log x)^{3/2}$ for $R = 3, 7, 15$ (one-sided bounds
+separately at $R = 11$), and by Theorem S the exponent $3/2$ is the
+*ceiling* of the method — every failure-sufficient family has sieve
+dimension $\ge 1/2$, so there is no weaker-exponent fallback. Along
+the ladder, **Theorem 5.8** (the corrected former "Theorem P₁" —
+the printed statement was **false**, its admissibility test having
+ignored the small primes the class forces to divide $a$; see the
+correction note in THEORY §2.10) gives
+$\#E_0 \gg x/(\log x)^{3/2}$ only on classes passing the completed
+conditions (A1)–(A3), which is **0.023 %** of first rungs (9 of
+39 391 hard $p \le 2\times10^7$), not the 6.6 % previously claimed —
+that figure counted only (A1), on which the family can be empty; and
+whenever $R_0$ is prime (the typical case) no such $r_1$ exists at
+all. On that sparse family, at rung 0 only, the gap to P is
+$(\log x)^{1/2 - 1/\varphi(R_0)}$; elsewhere P is not bracketed from
+below at all. Theorem L₁ — under
 B, all but $O(x e^{-\delta J(x)})$ hard primes have
 $R_{\min}(p) \le (\log x)^{2+o(1)} J(x)$; calibrations from
 $J = (\log\log x)^2$ (past the entire chain) to
@@ -142,7 +162,7 @@ $\theta$-calibrations past the $\exp(-c(\log\log x)^2)$ ceiling
 (paper Rem 4.6: the branch factor is the only binding wall; the
 class conditioning resums and Siegel–Walfisz reaches any fixed power
 of $\log x$). Two obstruction
-computations (paper Rem 5.11) close the August 2026 research routes:
+computations (paper Rem 5.13) close the August 2026 research routes:
 budget failure is provably not a character event (explicit witness
 pair at $R = 11$), and weighted/almost-prime detection is equivalent
 to Hypothesis P — the parity gap is intrinsic.
@@ -283,7 +303,7 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 - `data/hard_primes_1e10_minimalR.json.gz` — minimal-$R$ map for all 14 215 707 hard primes $< 10^{10}$
 - `data/hard_primes_1e11_minimalR.{rvals.u8.gz, meta.json, tail.json}` — R-sequence dataset for all 128 671 219 hard primes $< 10^{11}$ (uint8 minimal-$R$ values in ascending-prime order + sha256-pinned metadata + explicit verified tail $R \ge 43$)
 - `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
-- `tests/test_solver.py` — 59 tests: unit, certificate validation, theorem checks (A/A′/A″/A‴/J/meta incl. composite R), support-bound lemmas (DP + strong Kneser form, cyclic and general abelian), aggregate identities
+- `tests/test_solver.py` — 61 tests: unit, certificate validation, theorem checks (A/A′/A″/A‴/J/meta incl. composite R), support-bound lemmas (DP + strong Kneser form, cyclic and general abelian), aggregate identities
 - `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 35 pp.
 - `lean/ErdosStraus/` — Lean 4 + mathlib formalization, elementary layer + finite enumerations (`lake exe cache get && lake build`)
 - `THEORY.md` — full theoretical development; `STATUS.md` — this document
@@ -335,7 +355,7 @@ full tail minimality.
   at once*: if the factor classes of (p+R)/4 occupy ≥ (R−1)/2 nonzero
   classes, every class mod R is a divisor class of m² and R succeeds;
   failure forces support ≤ (R−3)/2. Proof via Kneser's addition theorem
-  (stabilizer dichotomy); tight (Type-I configurations). General
+  (stabilizer dichotomy); tight (character-type configurations). General
   abelian form covers composite R (≥ φ(R)/2 classes forbidden for all
   ω(R) ≤ 2). "Lemma S past 107" is thereby closed for all R, and the
   DP verifications 19…107 become independent confirmations.
@@ -344,7 +364,7 @@ full tail minimality.
   on the prime list, **31/2** on the full 27-residual list); covers 74 %
   of hard primes alone; characterizes the critical primes.
 - **Theorem J** (reciprocity structure) — (q|R) = (p|q) for odd primes
-  q | (p+R)/4: joint Type-I failure ⟺ p is a QR mod every unforced prime
+  q | (p+R)/4: joint character failure ⟺ p is a QR mod every unforced prime
   of every shifted value. Explains the record prime (4σ Legendre-coin
   fluctuation over only 43 distinct primes) and why hard classes are the
   squares mod 840 (forced small primes are character-neutral).
@@ -393,7 +413,7 @@ full tail minimality.
   verified solutions with $R \le 107$.
 - The record's staticness is now *explained* (Theorem J): joint failure is a
   Legendre-coin large-deviation event; expected record growth
-  $\asymp \log x/\log\log x$ at the pure-Type-I level.
+  $\asymp \log x/\log\log x$ at the pure-character-type level.
 - The fixed-finite-list reduction is conditionally **false** (Theorem K):
   the correctly-posed open problem is an unconditional bound on
   $R_{\min}(p)$ — which, by completeness, *is* the conjecture.

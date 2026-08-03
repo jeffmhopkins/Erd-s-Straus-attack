@@ -84,9 +84,9 @@ data/
                                        non-Hajos order), sampled to 240;
                                        no violation; beta-vacuity
 tests/
-  test_solver.py       59 tests: units, certificates, theorem checks
+  test_solver.py       61 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (37 pp.)
+  erdos_straus_residuals.tex/.pdf   the manuscript (39 pp.)
   make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
 lean/
   ErdosStraus/         Lean 4 + mathlib formalization (12 modules: Basic,
@@ -140,10 +140,23 @@ classification behind its ceiling is half-solved (kernel case proved,
 Conjecture A verified exhaustively for all moduli ≤ 30 and at nine
 larger ones — paper §4.2), and resolving
 Conjecture A would raise the bound to $R_{\min} \le (\log x)^{c_0}$. The §5
-Burgess–reciprocity ladder program (Theorems L₀/B₁/B₂/P₁
-and Hypothesis P) organizes the endgame past the ceiling: the
+Burgess–reciprocity ladder program (Theorems L₀/B₁/B₂ and
+Hypothesis P) organizes the endgame past the ceiling: the
 almost-all Theorem L₁ at its stronger calibrations is
-conditional on the measured per-rung decay. Densities are calibrated
+conditional on the measured per-rung decay. On the lower-bound side,
+the identification of character failure families as *norm-form* families
+(paper eq. (5.1): for $r \equiv 3 \bmod 4$, all prime factors of $a$
+being quadratic residues mod $r$ is primitive representability of $a$
+by a binary quadratic form of discriminant $-r$) makes Iwaniec's
+prime-indexed half-dimensional sieve the counting tool and gives
+matching bounds at the first link of the chain — failures at
+$R = 3, 7, 15$ number $\asymp x/(\log x)^{3/2}$ (paper Thm 5.7), with
+$3/2$ the ceiling of the method by Theorem S. Along the ladder the
+same mechanism reaches only a sparse family of classes (paper Thm 5.8
+and Rem 5.9; the earlier statement of this result, "Theorem P₁", was
+false as printed — see the correction note in `THEORY.md` §2.10), so
+Hypothesis P is bracketed on both sides only there, and one-sidedly
+(upper bound) elsewhere. Densities are calibrated
 against Vaughan's classical bound; the contribution is mechanism, not raw
 density.
 
@@ -178,7 +191,7 @@ repository" button). To mint a versioned DOI: enable this repository at
 [zenodo.org/account/settings/github](https://zenodo.org/account/settings/github)
 (one-time toggle), then publish a GitHub release — Zenodo archives the
 release and issues a DOI automatically, with metadata drawn from
-[`.zenodo.json`](.zenodo.json). CI runs the 59-test suite plus the
+[`.zenodo.json`](.zenodo.json). CI runs the 61-test suite plus the
 proof-component smoke checks on every push; the Lean build has its own
 workflow, triggered by changes under `lean/`.
 

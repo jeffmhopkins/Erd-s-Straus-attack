@@ -1,12 +1,18 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
-**Date:** 2026-08-03 (current through PR #54; this revision adds
+**Date:** 2026-08-03 (current through PR #56; this revision adds
 Theorem S and Theorem A‴; §2.10 adds the Burgess/reciprocity
 route, its full-population census and failure anatomy, the
 ladder theorems L₀ (rigorous, fixed length) and L₁ (almost-all,
 conditional on the measured Hypothesis B), Theorem B₁ (proved),
 Theorems B₂ and P₁ (proof sketches), and Hypothesis P with
-Corollary B₃; §2.11 adds **Theorem U** — the unconditional uniform
+Corollary B₃ — **PR #56 corrects P₁**, which was false as stated
+(its admissibility test ignored the small primes the class forces to
+divide a), replacing it by paper Theorem 5.8 with the completed local
+conditions, and adds the two results the correction produced: the
+norm-form bridge (paper eq. (5.1)) and the sharpness of the first link
+(paper Theorem 5.7, failures at R = 3, 7, 15 are ≍ x/(log x)^{3/2},
+with 3/2 the ceiling of the whole method); §2.11 adds **Theorem U** — the unconditional uniform
 chain, R_min ≤ ε·log log x for all but x·exp(−c(log log x)²) hard
 primes — the ceiling analysis, and the two obstruction lemmas
 closing the pretension and almost-prime routes; §2.12 adds the
@@ -39,6 +45,20 @@ elementary and enumeration layer is machine-checked in Lean 4
 (`lean/README.md`); paper counterparts of each named result are listed
 in the mapping table below.
 
+## Provenance note (added PR #56)
+
+Proposition 1.1 (completeness) is **not new**: the bounded search
+space together with the divisor-congruence criterion mod 4a − p is
+Bradford's (Integers 21 (2021) #A24, arXiv:1906.00561), now commonly
+called the Bradford conditions; his denominator range is slightly
+sharper than ours. The earlier framing in this file and in the paper
+overstated the novelty of the formulation, and the claim that "no
+bound on R_min was previously available" was wrong — Bradford's
+search space gives R_min(p) ≪ p. What this development adds is the
+residual-indexed program built on the criterion (exactness at fixed
+R, reciprocity across residuals, the uniform support theorem) and the
+bounds on R_min of smaller order that follow from it.
+
 ## Name mapping to the paper
 
 This document uses working letter names; the paper numbers results.
@@ -67,15 +87,18 @@ The dictionary (paper labels in parentheses):
 | Theorem L₀ (ladder chain) | Theorem 5.3 (`thm:L0`) |
 | Theorem B₁ (first rung) | Theorem 5.4 (`thm:B1`) |
 | Theorem B₂ (proxy ladder) | Theorem 5.5 (`thm:B2`) |
-| Hypothesis P / Hypothesis B | Hypotheses 5.6 / 5.8 |
+| Hypothesis P / Hypothesis B | Hypotheses 5.6 / 5.10 |
 | Corollary B₃ (second rung under P) | the unnumbered display following Hypothesis 5.6 |
-| Theorem P₁ (half-dimensional failures) | Theorem 5.7 (`thm:P1`) |
-| Theorem L₁ (conditional almost-all) | Theorem 5.9 (`thm:L1`) |
-| Lemma Q (least non-residue) | not carried into the paper (used unnamed in the proof of Theorem 5.9) |
+| the norm-form bridge (all factors QR mod r ⟺ primitive representation by a form of discriminant −r) | equation (5.1) (`eq:normform`) |
+| the sharp first link (failures at R = 3, 7, 15 are ≍ x/(log x)^{3/2}; 3/2 is the ceiling) | Theorem 5.7 (`thm:sharp`) |
+| Theorem P₁ (ladder failure lower bound; **corrected** — the old "half-dimensional failures" statement was false, see §2.10) | Theorem 5.8 (`thm:P1`) |
+| scope of Theorem 5.8 (availability 0.023 %, vacuity counterexample, one-sided bracket off the sparse family) | Remark 5.9 (`rem:P1scope`) |
+| Theorem L₁ (conditional almost-all) | Theorem 5.11 (`thm:L1`) |
+| Lemma Q (least non-residue) | not carried into the paper (used unnamed in the proof of Theorem 5.11) |
 | Hypothesis L (ladder) | not carried into the paper |
 | Theorem U (uniform chain) | Theorem 4.5 (`thm:U`) |
 | the ceiling | Remark 4.6 (`rem:ceiling`) |
-| Obstructions (i)/(ii) | Remark 5.11 (`rem:obstruction`) |
+| Obstructions (i)/(ii) | Remark 5.13 (`rem:obstruction`) |
 | count blow-up | Theorem 4.7 (`thm:Mcount`) |
 | Theorem M-kernel (lossless reduction) | Theorem 4.8 (`thm:Mkernel`) |
 | Conjecture A (window containers) | Conjecture 4.9 (`conj:A`) |
@@ -130,9 +153,9 @@ satisfies (q | r) = +1, then residual R fails at p.*
 (k | r) = +1. A certificate requires k ≡ −m (mod R), so k ≡ −m (mod r),
 forcing (k | r) = (−m | r) = −1 by (∗∗) — impossible. ∎
 
-We call a failure of this kind **Type I**. A failure where m *does* have a
+We call a failure of this kind **character-type**. A failure where m *does* have a
 non-residue prime factor mod every relevant r, yet no divisor of m² lands in
-the exact class −m mod R, is **Type II** (a "class miss").
+the exact class −m mod R, is **character-typeI** (a "class miss").
 
 ### Theorem A (exact criterion for R = 3)
 
@@ -179,7 +202,7 @@ statement is FALSE: e.g. p = 701, a = 177 = 3·59 has the non-residue factor
 forced factor 2 from (H1) together with (H3) — the mod-8 structure of the
 Mordell classes feeds into the mod-7 divisor problem. Empirically this
 theorem manifests as: **41 421 out of 41 421 sampled R=7 failures are
-Type I** — R=7 never fails by class miss on hard primes.
+character-type** — R=7 never fails by class miss on hard primes.
 
 ### Proposition 3 (guaranteed-success classes)
 
@@ -516,7 +539,7 @@ so k₁ ≤ d/h − 2 and k ≤ (h − 1) + (d/h − 2) = h + d/h − 3. For eve
 divisor h with 2 ≤ h ≤ d/2 the quadratic h² − (d/2 + 2)h + d ≤ 0 (roots
 2 and d/2), i.e. h + d/h − 3 ≤ d/2 − 1. ∎
 
-The bound is **tight**: S = the even classes (the Type-I/all-QR
+The bound is **tight**: S = the even classes (the character-type/all-QR
 configurations) has |S| = d/2 − 1 and M(S) = the even subgroup.
 
 **Corollary (Lemma S for every prime R ≡ 3 mod 4 — no upper limit).**
@@ -777,12 +800,12 @@ R ≡ 3 (mod 4): (q|R) = (−1)^{(q−1)/2}(R|q) =
 are the squares mod 840, so p is automatically a QR mod 3, 5, and 7, and
 p ≡ 1 (mod 8) handles q = 2 (2 | a_R only for R ≡ 7 mod 8, where
 (2|R) = +1). Hence the small primes forced into the shifted values by
-the Mordell structure can never break a Type-I failure — a conceptual
+the Mordell structure can never break a character failure — a conceptual
 explanation of *why* the hard classes are exactly the square classes.
 Verified: 61 438 forced-prime instances in the data, zero violations
 (and 135 588 instances of Theorem J itself, zero violations).
 
-**Corollary J2 (joint Type-I criterion).** p fails Type-I at every prime
+**Corollary J2 (joint character-type criterion).** p fails character-type at every prime
 residual R ≤ B simultaneously ⟺ (p|R) = +1 for each such R and
 **(p|q) = +1 for every unforced odd prime q dividing any of the shifted
 values (p+R)/4, R ≤ B.** One condition per *distinct* prime q, shared
@@ -792,7 +815,7 @@ across every residual q divides.
 
 Corollary J2 identifies the correct "coins": joint failure requires a
 positive fluctuation in the independent-looking signs (p|q) over the
-distinct primes q of the interval, plus Type-II luck where signs come up
+distinct primes q of the interval, plus character-typeI luck where signs come up
 −1. Smooth shifted values reduce the number of distinct primes — fewer
 coins to win. Measured for the record p = 8 803 369 against typical
 hard primes of its size:
@@ -806,9 +829,9 @@ A ≈4σ fluctuation in provably-the-right statistic. The static record is
 now a statement about extreme deviations of Legendre-symbol coin flips
 over interval factorizations: rarer at larger p only because the number
 of coins D(B, p) grows like (B/4)·log log p, giving the growth law
-**B(x) ≍ log x / log log x** for the pure-Type-I record (the observed
-mixed Type I/II record sits above this, Type-II escapes absorbing a few
-−1 coins — the record's 8 negative coins are exactly its 14 Type-II
+**B(x) ≍ log x / log log x** for the pure-character-type record (the observed
+mixed character-type/II record sits above this, character-typeI escapes absorbing a few
+−1 coins — the record's 8 negative coins are exactly its 14 character-typeI
 failures' worth of luck).
 
 #### Theorem K (conditional falsity of the finite covering hypothesis)
@@ -1262,65 +1285,198 @@ parity-flavored, and this is now the program's single unproved
 ingredient: L₀ ✓, B₁ ✓, B₂ ✓, B ⟸ P, L₁ ⟸ B. Everything above P is
 proved; everything below P is measured.
 
-#### Theorem P₁ (half-dimensional failure lower bound — the Selberg–Delange attack on P)
+#### The norm-form bridge, the sharp first link (Theorem 5.7), and the ladder failure lower bound (Theorem 5.8, formerly "Theorem P₁")
 
-A direct lower bound on true failures hits the classical wall: every
-explicit failure family is an "all prime factors of a shifted prime in
-a prescribed set" condition, and for general set-densities such counts
-have no unconditional lower bounds (large prime factors are invisible
-to sieves). The exception is sifting dimension exactly **1/2**, where
-Iwaniec's half-dimensional sieve closes the large-factor gap (sifting
-limit β(1/2) = 1 allows z near the Bombieri–Vinogradov level x^{1/2},
-leaving at most one unsifted factor, removed by a switching argument).
-The ladder has a natural half-dimensional failure family:
+> **Correction (August 2026, PR #56).** The statement previously printed
+> here and in the paper as *Theorem P₁ (half-dimensional failure lower
+> bound)* was **false as stated**, and the passage below replaces it.
+> The old admissibility test asked only that R₀ have a prime factor
+> r₁ ≡ 3 (mod 4) with (q|r₁) = +1, plus a 2-adic clause when 2 | a. But
+> the class c also fixes a = (p+R₀)/4 modulo *every* prime ≤ q, so it
+> can **force** small primes to divide a; a single forced ℓ with
+> (ℓ|r₁) = −1 empties the counted family, and then "≫ x/(log x)^{3/2}"
+> is a lower bound on the empty set. Verified counterexample: q = 23,
+> R₀ = 35, r₁ = 7 passes the old test — (23|7) = +1, and R₀ ≡ 3 (mod 8)
+> with p ≡ 1 (mod 8) makes a odd, so the 2-adic clause is vacuous — yet
+> every hard prime has p ≡ 1 (mod 3) while 35 ≡ 2 (mod 3), so 3 | a
+> *always*, and (3|7) = −1. The family is empty on every such class
+> (first members p = 320401, 499801, 712321, 742681, 830449, …; test
+> `test_type_I_admissibility_vacuity_counterexample`). The repair adds
+> the missing local conditions (A2)–(A3) below, and costs the
+> availability claim two orders of magnitude. Two things were gained in
+> exchange, and they are worth more than what was lost: the **norm-form
+> bridge**, and the **sharpness of the first link** (Theorem 5.7). A
+> separate referee objection — that the half-dimensional sieve cannot
+> give *lower* bounds over primes at all — was checked and **failed**;
+> see "the parity objection" below.
 
-*Call a class c (fixing q and R₀) **half-dimensionally admissible** if
-R₀ is composite with a prime factor r₁ ≡ 3 (mod 4) such that
-(q|r₁) = +1 and, when 2 | a, (2|r₁) = +1.*
+**The norm-form bridge (paper eq. (5.1), `eq:normform`).** The
+conceptual point the old passage was missing. For a prime r ≡ 3 (mod 4)
+and odd ℓ ≠ r, reciprocity gives (−r|ℓ) = (ℓ|r) — because (r−1)/2 is
+odd — so, for r ∤ n,
 
-**Theorem P₁.** *For every half-dimensionally admissible class,*
+    every prime factor of n is a QR mod r
+      ⟺  −r is a square mod 4n
+      ⟺  n is **primitively** represented by a binary quadratic form
+          of discriminant −r
+
+(the last step is the classical correspondence between representations
+and square roots of the discriminant, Cox, *Primes of the Form x²+ny²*,
+Lemma 2.5; −r is a prime discriminant, hence has a **single genus**, so
+the whole class group participates and no genus-selection condition
+intervenes). Consequences: r ≡ 3 (mod 8) forces the represented n odd;
+r ≡ 7 (mod 8) allows n even. Verified numerically at R = 3 on all
+39,391 hard primes p ≤ 2×10⁷: the character condition and primitive
+representability by x²+xy+y² agree in **39,391/39,391** cases (22,490
+hits, 0 mismatches); re-verified in the test suite for r = 3, 7, 11
+(class number 1) and r = 23 (class number 3) —
+`test_norm_form_bridge_equivalence`.
+
+So the character-type (character-obstruction) failure families of this program
+are **norm-form families**: families of shifted prime values represented
+by binary quadratic forms. *That* — not "dimension 1/2" in the abstract
+— is why a lower bound is available here at all, and why it is not
+available at dimension 1 − 1/φ(R₀).
+
+**The parity objection, and why it fails.** The natural objection is
+that lower-bounding "prime p **and** a multiplicative condition on
+(p+R)/4" is a prime-detection problem, hence parity-blocked absent
+bilinear input. It is not, for two reasons. (i) Primality of p is an
+**input** here, consumed as a level of distribution via
+Bombieri–Vinogradov, not an output to be detected. (ii) At sifting
+dimension κ = 1/2 the lower-bound sieve function satisfies
+β(1/2) = 1, so the semilinear sieve gives nontrivial lower bounds for
+any s > 1, i.e. sifting range z = x^{1/2−δ}. The founding application
+of the half-dimensional sieve is itself **prime-indexed**: Iwaniec,
+*Primes of the type φ(x,y)+A where φ is a quadratic form*, Acta Arith.
+**21** (1972), 203–234, proves matching upper *and lower* bounds
+≍ N/(log N)^{3/2} for #{p ≤ N : p = Bφ(ξ,η) + A}. (The abstract
+machinery paper — Iwaniec, *The half dimensional sieve*, Acta Arith.
+**29** (1976) — is the wrong citation for this statement and was the one
+previously given here.) What defeats parity concretely is a character
+identity, not bilinear input: since r₁ | R₀ and 4a = p + R₀ we have
+a ≡ 4⁻¹p (mod r₁), so χ_{r₁}(a) = χ_{r₁}(p) = +1 is *pinned by the
+class*. Survivors with exactly **one** large non-residue prime factor —
+the term of the same order as the main term, which no sieve can remove —
+are therefore impossible; only the two-large-non-residue-primes term
+survives, and it is O((s−1)log(2s−1)) against a main term ≍ √(s−1).
+(The old proof sketch here said "at most one unsifted factor, removed by
+a switching argument", which describes exactly the situation in which
+the argument *cannot* work; switching bounds the **two**-large-primes
+term.)
+
+**Theorem 5.7 (the first link is sharp) — new, unconditional, and
+ladder-free.** For R ∈ {3, 7, 15},
+
+    #{hard primes p ≤ x failing R}  ≍  x/(log x)^{3/2},
+
+with the two bounds separately at R = 11 (≪ and ≫). Upper bound: the
+κ = 1/2 case of the Fundamental-Lemma chain (Theorems E/F/G/H here =
+paper Theorem 1.11). Lower
+bound: at these residuals the exact criteria (Theorems A/A′/A‴) make
+failure *equivalent* to an all-residue condition on the factors of
+a = (p+R)/4, which by the bridge is primitive representability by a form
+of discriminant −r (r = 3, 7, 15; at R = 15 the Jacobi condition plays
+the role of the Legendre condition), so Iwaniec (1972) applies with the
+hard-prime congruences (H1)–(H3) absorbed into A and B. At R = 11 the
+case-(b) budget failures of Theorem A″ are not of this shape, whence
+only the one-sided bounds.
+
+Moreover **3/2 is the ceiling of the method, not an artifact**: by
+Theorem S (paper Theorem 1.10) every failure-sufficient family forbids at
+least φ(R)/2 − O(1) classes, i.e. has sifting dimension ≥ 1/2, so no
+failure family is denser than x/(log x)^{3/2}; and families of dimension
+> 1/2 lie past the sifting limit, where no lower-bound technology
+exists at all. There is no weaker-exponent fallback: the exponent is
+3/2 or nothing.
+
+**Theorem 5.8 (ladder failure lower bound; the corrected P₁).** *Call a
+class c (mod M, fixing q and R₀) **admissible** if R₀ has a prime factor
+r₁ ≡ 3 (mod 4) with*
+
+* *(A1) (q|r₁) = +1;*
+* *(A2) (ℓ|r₁) = +1 for **every** prime ℓ ≤ q that the class forces to
+  divide a — the clause missing from the old statement; ℓ = 2 and
+  ℓ ∈ {3, 5, 7} (forced by (H1)–(H3)) and 11 ≤ ℓ ≤ q are all in scope,
+  since M contains every prime ≤ q;*
+* *(A3) either r₁ ≡ 3 (mod 8) with a odd, or r₁ ≡ 7 (mod 8) with a
+  even.*
+
+*On every admissible class,*
 
     #E₀(x; c)  ≥  #{p ≡ c ≤ x : every prime factor of (p+R₀)/4
                     is a QR mod r₁}  ≫  x/(log x)^{3/2}.
 
 **Proof sketch.** Membership implies failure by Prop 2.1 at r₁: all
-factors of a are QRs mod r₁ (q by admissibility, the rest by
-definition), whence (a|r₁) = +1 and, by consistency
-a ≡ 4⁻¹p (mod r₁), also (p|r₁) = +1 *for free* — so every prime
-factor of m = pa is a QR mod r₁, every divisor of m² is a QR, and the
-target has (−m|r₁) = (−1|r₁) = −1. The count: sift
-{(p+R₀)/4 : p ≡ c prime} at the (r₁−1)/2 non-residue classes mod r₁
-— sifting dimension 1/2, level x^{1/2−ε} by Bombieri–Vinogradov —
-and apply the half-dimensional sieve (Iwaniec, *The half dimensional
-sieve*, Acta Arith. 29 (1976); Friedlander–Iwaniec, Opera de Cribro,
-half-dimensional chapter) exactly as for "p + a has no prime factor
-≡ 3 (mod 4)": the lower bound of order x/(log x)^{1+1/2} survives the
-single possible large non-residue factor. ∎
+factors of a are QRs mod r₁ (q by (A1), the forced small primes by
+(A2), the rest by definition), whence (a|r₁) = +1 and, by consistency
+a ≡ 4⁻¹p (mod r₁), also (p|r₁) = +1 *for free* — so every divisor of
+m² is a QR mod r₁ while the target has (−m|r₁) = (−1|r₁) = −1. For the
+count, apply the bridge and Iwaniec (1972) with A = −R₀,
+B = 4·∏_{ℓ ≤ q, ℓ | a} ℓ (resp. 8·∏ over odd ℓ in the even-a case) and
+discriminant −r₁: (A3) is what makes the 2-adic constraint solvable,
+(A2) is what makes the family nonempty, and the conditions at r₁ are
+free by consistency. **One step is not a routine citation, and must be
+recorded as such:** the sieve delivers representability by *some* form
+of the discriminant — non-split primes occurring to even multiplicity —
+whereas the bridge needs *primitive* representability, no non-split
+prime at all. That upgrade is the content of
+Fuchs–Hsu–Rickards–Schindler–Stange, *Primes represented by shifted
+quadratic forms: on primitivity and congruence classes*,
+arXiv:2504.20289 (to appear, Acta Arith.), who show it is neither
+immediate nor always true. The cases used here fall under their
+Theorem 1.1 — **except** the mixed 2-adic configuration (r₁ ≡ 7 mod 8
+with a odd), which is outside the citable statement; see the exemplars
+below. ∎
 
-**Availability and exemplars** (measured): 6.6 % of first rungs are
-half-dimensionally admissible (5,278 of 79,380 sampled ladders), and
-every all-QR member found in the data fails as the theorem demands
-(16/16 mask-checkable, zero violations). Smallest exemplars:
-p = 5,505,361 (q = 37, R₀ = 91, r₁ = 7, a = 37·37199) and
-p = 5,544,361 (q = 31, R₀ = 51, r₁ = 3, a = 31·61·733 — all factors
-≡ 1 mod 3), both failing.
+**Availability and exemplars (recomputed under (A1)–(A3)).** Over the
+39,391 hard primes p ≤ 2×10⁷ with their selected first rungs:
 
-**What P₁ buys, and what it does not.** This is the program's first
-unconditional *lower* bound on true ladder failures — rung failures
-are provably ≫ x/(log x)^{3/2}-frequent on admissible classes,
-complementing B₁'s "almost all succeed". Against Hypothesis P it
-gives the two-sided bracket
+| test | count | share |
+|---|---:|---:|
+| (A1) alone: R₀ composite with some r₁ ≡ 3 (mod 4), (q\|r₁) = +1 | 2,593 | 6.6 % |
+| (A1)–(A3), with a **nonempty** family | 9 | **0.023 %** |
+| of those: case A (r₁ ≡ 3 mod 8, a odd) / case B (r₁ ≡ 7 mod 8, a even) / mixed | 5 / 0 / 4 | |
+
+The old "6.6 % of first rungs are half-dimensionally admissible"
+statistic measured only (A1) — i.e. a set on which the theorem's
+conclusion can be vacuous. The correct availability figure is
+**0.023 %**, and whenever R₀ is **prime** — the typical case, 93.4 % of
+hard primes in range — no r₁ of this kind exists at all. The two
+smallest exemplars remain the two smallest *viable* classes:
+p = 5,544,361 (q = 31, R₀ = 51, r₁ = 3, a = 31·61·733, all factors
+≡ 1 mod 3) is case A and satisfies (A1)–(A3) — the only forced small
+prime dividing a is q = 31 itself, with (31|3) = +1 (test
+`test_type_I_failure_family_exemplar_is_admissible`); p = 5,505,361
+(q = 37, R₀ = 91, r₁ = 7, a = 37·37199) is in the **mixed** 2-adic case
+and is therefore *not* covered by the citable form of [FHRSS]. Both
+fail, as the mechanism demands.
+
+**What Theorem 5.8 buys, and what it does not.** Much less than the old
+statement claimed. On an admissible class it gives, against
+Hypothesis P, the two-sided bracket
 
     (log x)^{−(1/2 − 1/φ(R₀))}  ≪  #E₀/#Ẽ₀  ≤  1,
 
-since Ẽ₀ ≍ x/(log x)^{1+1/φ(R₀)} (Theorem B₂). The remaining content
-of P is exactly the closing of this (log x)^{1/2−1/φ} gap: failures
-must be as common as *avoidance*, not merely as common as the
-half-dimensional family. Dimension 1/2 is the unique point where the
-large-factor wall opens; widening the crack to dimension
-1 − 1/φ(R₀) is the parity obstruction in its sharpest local form —
-and it is the single statement separating the measured c_P ≈ 0.1
-from a theorem.
+since Ẽ₀ ≍ x/(log x)^{1+1/φ(R₀)} (Theorem B₂) — but **only at rung 0
+and only on that 0.023 % family**. Everywhere else, and in particular
+whenever R₀ is prime, the bracket is **one-sided**: only the upper
+bound #E₀ ≤ #Ẽ₀ is unconditional. Hypothesis P is therefore *not*
+two-sidedly bracketed in general; saying so was part of the same error.
+Nothing at all is known for rungs j ≥ 1 (the simultaneous condition at
+two rungs is a two-form problem with no Iwaniec analogue). The
+unconditional lower-bound statement with real reach is **Theorem 5.7**,
+which needs no ladder, no admissibility, and no census; what Theorem 5.8
+adds is that the same mechanism survives the passage to p-adapted
+residuals where it survives at all.
+
+Where the residual gap sits is unchanged in kind: closing
+(log x)^{1/2 − 1/φ(R₀)} means making failures as common as *avoidance*,
+not merely as common as the norm-form family. Dimension 1/2 with a
+norm-form parametrisation is the one place the large-factor wall opens;
+widening the crack to dimension 1 − 1/φ(R₀) is the parity obstruction in
+its sharpest local form — and it is the single statement separating the
+measured c_P ≈ 0.1 from a theorem.
 
 #### The Ladder Hypothesis, and what it would give
 
@@ -1403,7 +1559,7 @@ but structure: explicit certificates at residuals of size
 O(log log x) for almost every hard prime.
 
 **Obstruction (i): budget failure is not a character event (Remark
-5.11 of the paper).** At R = 11 (generator 2), the model
+5.13 of the paper).** At R = 11 (generator 2), the model
 configurations with class set {2, 7} and multiplicities (1,1) vs
 (4,2) have the same class set and the same product a ≡ 3 (mod 11) —
 identical under every Dirichlet character mod 11 — yet reach
@@ -1424,7 +1580,11 @@ Nath–Xie's setting, where parity sits on the detected form; here it
 sits on the conditioning set E_j). And the first moment of any
 Bonferroni/Selberg weighting over E_j is itself a failure count: the
 scheme is equivalent, up to constants, to Hypothesis P. The parity
-gap of Theorem P₁ is intrinsic to every relaxation of this type.
+gap of Theorem 5.8 (the corrected P₁) is intrinsic to every relaxation
+of this type — and by Theorem S it is a *ceiling*, not a limitation of
+the chosen detector: every failure-sufficient family has sieve
+dimension ≥ 1/2, so x/(log x)^{3/2} is the best any family argument can
+reach (§2.10).
 Levels of distribution are not the obstruction (all moduli ≤ x^{1/2−ε};
 EH/GRH change nothing). This closes the almost-prime route (NO-GO on
 the literal P→B replacement).
@@ -1436,7 +1596,7 @@ P; and the observation that the p-adapted ladder is the *wrong*
 unconditional vehicle (the large-q(p) tail costs exp(−cL/log L),
 worse than every fixed log-power — the fixed chain dominates; even
 under GRH the ladder only matches U up to log factors at this
-calibration). The ladder's enduring value is structural (Type-I
+calibration). The ladder's enduring value is structural (character-type
 failure dead by construction, p-adapted certificates) and conditional
 (the only frame whose measured inputs would push past the ceiling).
 
@@ -1622,16 +1782,16 @@ All statements tested against the complete per-prime solvability masks
 | Claim | Test | Result |
 |---|---|---|
 | Theorem A (R=3 iff) | all 1 587 581 primes | exact, 0 disagreements |
-| Theorem A′ manifests as pure Type I | 41 421 sampled R=7 failures | 100 % Type I, 0 Type II |
+| Theorem A′ manifests as pure character-type | 41 421 sampled R=7 failures | 100 % character-type, 0 character-typeI |
 | Prop 1 direction | classifier consistency | ✓ |
 | Prop 3 (no factor in S_R(p) among failures) | every residual tested | 0 violations |
 | κ = 1/2 decay for R=7 (Thm A′ + sieve) | binned fit | κ̂ = 0.539 |
 | κ = 1/2 decay for R=3 | binned fit | κ̂ = 0.387 (short range; S–D lower-order terms) |
 
-Type I share of failures by residual (sampled): R=7: 100 %, R=23: 96.6 %,
+character-type share of failures by residual (sampled): R=7: 100 %, R=23: 96.6 %,
 R=11: 89.7 %, R=47: 87.2 %, R=71: 82.1 %, R=31: 79.3 %, … down to
 R=67: 33.5 %. Character obstruction dominates at residuals that are prime
-or have small 3-mod-4 prime power structure; class misses (Type II)
+or have small 3-mod-4 prime power structure; class misses (character-typeI)
 broadly grow with φ(R), though not monotonically (see the sampled list
 above) — as expected, since hitting one specific class among φ(R) gets
 harder while the character argument only sees the QR/NQR dichotomy.
@@ -1645,10 +1805,10 @@ entire obstruction to a shorter covering list, one per hard class involved:
 
 | p | unique R | p mod 840 | failure anatomy (26 failures) |
 |---:|---:|---:|---|
-| 8 803 369 | 107 | 169 | 12 Type I + 14 Type II |
-| 142 361 209 | 59 | 529 | 13 Type I + 13 Type II |
-| 287 567 281 | 83 | 1 | 13 Type I + 13 Type II |
-| 794 037 841 | 63 | 121 | 16 Type I + 10 Type II |
+| 8 803 369 | 107 | 169 | 12 character-type + 14 character-typeI |
+| 142 361 209 | 59 | 529 | 13 character-type + 13 character-typeI |
+| 287 567 281 | 83 | 1 | 13 character-type + 13 character-typeI |
+| 794 037 841 | 63 | 121 | 16 character-type + 10 character-typeI |
 
 The record prime p = 8 803 369 fails every residual below 107 **even
 allowing R up to 400**; its a-values are anomalously smooth (at R = 107,
@@ -1784,10 +1944,10 @@ sampling plus full tail checks; exhaustive below 10⁹):**
    count form refuted there), whose resolution yields the polylog
    tier R_min ≤ (log x)^{c₀}.
 3. ~~**Understand deep-tail correlation.**~~ **Done** — Theorem J (§2.9):
-   joint Type-I failure is controlled by one Legendre coin (p|q) per
+   joint character failure is controlled by one Legendre coin (p|q) per
    distinct prime of the interval factorizations; smoothness = fewer
-   coins; the record is a ≈4σ coin fluctuation; pure-Type-I record growth
-   ≍ log x/log log x. Remaining here: fold the Type-II escape layer into
+   coins; the record is a ≈4σ coin fluctuation; pure-character-type record growth
+   ≍ log x/log log x. Remaining here: fold the character-typeI escape layer into
    the growth law quantitatively.
 
 ### Research outlook (August 2026) — executed; see §2.11
