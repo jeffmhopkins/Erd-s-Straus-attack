@@ -120,6 +120,7 @@ machine-verified structure, together with the exact criteria.
 \subsection*{New contributions}
 \phantomsection\addcontentsline{toc}{subsection}{New contributions}
 
+\paragraph*{Main theorems.}
 \begin{itemize}
 \item The \emph{residual formulation} of the Erd\H{o}s--Straus equation:
   solvability with first denominator $(p+R)/4$ is a divisor-class
@@ -164,6 +165,10 @@ machine-verified structure, together with the exact criteria.
   conjecture (Conjecture~\ref{conj:A}) whose resolution raises the
   bound to $R_{\min} \le (\log x)^{c_0}$
   (Theorem~\ref{thm:Upay}).
+\end{itemize}
+
+\paragraph*{Further contributions.}
+\begin{itemize}
 \item Computed and verified residual certificates for all
   $128{,}671{,}219$ hard primes below $10^{11}$, with a calibrated model
   whose deep-tail predictions were subsequently confirmed
@@ -680,6 +685,13 @@ Theorem~\ref{thm:J}, $61{,}438$ forced-prime instances, zero
 violations of either; Appendix~\ref{app:verif}).
 
 \section{Exact criteria}\label{sec:exact}
+
+The individual criteria proved in this section are instances; the
+conceptual point is the framework behind them --- every residual,
+prime or composite, admits a finite computable exact criterion
+(Theorem~\ref{thm:meta}), and every criterion doubles as a sieve
+input. The four residuals worked out here are the ones the
+computations show carry $95\%$ of the hard primes.
 
 \subsection{Proof of Theorem~\ref{thm:A}}
 
@@ -1478,7 +1490,8 @@ their windows. The remaining difficulty is chaining of
 direction information degenerates --- precisely the non-Hajós
 factorization pathologies of cyclic groups.
 
-\section{The Burgess--reciprocity ladder}\label{sec:ladder}
+\section{A conditional program: the Burgess--reciprocity
+ladder}\label{sec:ladder}
 
 Theorem~\ref{thm:S} closed the fixed-list axis, and
 Theorem~\ref{thm:U} pushed the growing-list axis to its
