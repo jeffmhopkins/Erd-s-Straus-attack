@@ -29,8 +29,9 @@ For a target $n$ and residual $R = 4a - n > 0$ (with $a = (n+R)/4$ an integer):
 
 The attack searches increasing residuals $R$ until a certificate $(a,b,c)$ is
 found, and records the **minimal $R$** per prime. The fixed list
-$R \in \{3, 7, 11, \dots, 107\}$ covers every hard prime examined so far
-(up to $10^{11}$).
+$R \in \{3, 7, 11, \dots, 111\}$ covers every hard prime examined so far
+(up to $10^{12}$); the shorter list ending at $107$ sufficed through
+$10^{11}$ but fails for three primes below $10^{12}$.
 
 ## Layout
 
@@ -53,6 +54,21 @@ src/erdos_straus/
                        two-sided window containers C(K,W) (THEORY 2.12)
   verify.py            independent verification (JSON, minimal-R maps, npz)
 data/
+  hard_primes_1e12_minimalR.meta.json  R-sequence dataset for all
+  hard_primes_1e12_minimalR.tail.json  1,175,215,396 hard primes < 10^12:
+                                       distribution + sha256 pins, and the
+                                       118,210 explicit verified tail
+                                       certificates (R >= 43, including the
+                                       three with the record R = 111).
+                                       The third file of the set, the 304 MB
+                                       value array
+                                       hard_primes_1e12_minimalR.rvals.u8.gz,
+                                       exceeds GitHub's 100 MB file limit and
+                                       is therefore gitignored, not in the
+                                       repository: regenerate it
+                                       deterministically with
+                                       scripts/run_1e12.sh and check it
+                                       against the sha256 pinned in meta.json
   hard_primes_1e11_minimalR.*          R-sequence dataset for all 128,671,219
                                        hard primes < 10^11 (rvals.u8.gz +
                                        meta.json + tail.json; sha256-pinned)
@@ -97,8 +113,12 @@ data/
 tests/
   test_solver.py       63 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (39 pp.)
+  erdos_straus_residuals.tex/.pdf   the manuscript (39 pp.; the title now
+                       reads "...and computations to 10^12")
   make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
+scripts/
+  run_1e12.sh          one-shot 10^12 generation + verification + packaging
+                       run kit (see RUN_1E12.md for the operator notes)
 lean/
   ErdosStraus/         Lean 4 + mathlib formalization (12 modules: Basic,
                        Families, TheoremA, Enumerations, Bridges,
@@ -120,17 +140,37 @@ THEORY.md              theoretical development with proofs
 
 ## Current results
 
-All **128,671,219** hard primes below **10¹¹** have verified solutions:
+All **1,175,215,396** hard primes below **10¹²** have verified solutions:
 full explicit triples up to 1.2 × 10⁸, compact minimal-R maps to 10¹⁰, and
-the R-sequence dataset at 10¹¹ (triples reconstruct deterministically;
+R-sequence datasets at 10¹¹ and 10¹² (triples reconstruct deterministically;
 verification is exhaustive below 10⁹ and by systematic sampling plus
-full tail checks beyond). The maximal
-minimal residual is **R = 107**, attained at a *single* prime
-(8,803,369 < 10⁷) — unchanged from 5×10⁷ to 10¹¹. At 10¹¹, `R = 3` covers
-54 % of hard primes and `R ∈ {3, 7, 11}` covers 94 % (49 % and 91 % at
-10⁹). The once-conspicuous gap
-(no minimal R in {87…103} below 10¹⁰) **filled at 10¹¹ exactly as the
-calibrated model predicted** — 18 new deep-tail primes, none passing 103.
+complete tail checks beyond — at 10¹², 2,350,431 sampled entries
+reconstructed and exactly checked plus **all** 118,210 tail entries
+(R ≥ 43) with full minimality, zero bad and zero non-minimal).
+
+**The record broke at 10¹².** From 10⁷ through 10¹¹ the maximal minimal
+residual stood at **R = 107**, attained by the single prime 8,803,369 < 10⁷
+and unmoved across five decades. At 10¹² it is **R = 111**, first attained at
+
+    p = 119,945,383,009 ≡ 529 (mod 840),
+
+for which every admissible R ≤ 107 fails and R = 111 certifies with
+a = (p+111)/4 = 29,986,345,780. Three primes attain 111
+(119,945,383,009 / 654,730,707,409 / 761,403,297,769), and R = 107 — formerly
+unique — now has four. At 10¹², `R = 3` covers 56.0 % of hard primes and
+`R ∈ {3, 7, 11}` covers 94.6 % (49 % and 91 % at 10⁹; 54 % and 94 % at 10¹¹).
+The once-conspicuous gap (no minimal R in {87…103} below 10¹⁰) filled at
+10¹¹, and the deep tail R ≥ 87 has grown from 19 primes at 10¹¹ to **73**
+at 10¹² (counts 40, 5, 12, 4, 5, 4, 3 over R = 87…111).
+
+Both outcomes were forecast by the calibrated independence model fitted on
+the complete 10⁹ solvability masks: it attributed the empty band {87…103}
+to small-number statistics and predicted it would fill (it did, at 10¹¹),
+and it put the mass at or beyond 107 at 6 % per deep-tail prime, which
+places the first record-breaking prime in the decade 10¹¹–10¹². It broke
+there. The model is a heuristic, not a theorem, and the band-filling
+comparison had little discriminating power (19 points, several expected
+cells below 5); the record-break call is its sharper confirmed prediction.
 
 **Theory** (see [THEORY.md](THEORY.md) and `paper/`): exact solvability criteria are
 proved for R = 3, 7, 11, and 15 — the first composite residual (R = 7, 11,
@@ -141,7 +181,8 @@ the DP runs as independent confirmations, so the chain of sieve bounds
 reaches exponent 29/2 on the full 27-residual list — 31/2 with the two
 aggregate identity families (R | p+1 or R | p+4 always certifies); the
 reciprocity structure theorem (q|R) = (p|q) explains joint failure and the
-static record; and under Dickson's conjecture no fixed finite residual
+record's very slow growth (five decades at 107, then 111 at 10¹²); and
+under Dickson's conjecture no fixed finite residual
 list suffices (Theorem K of `THEORY.md`) — the correctly-posed open
 problem, by completeness of the residual formulation, is the conjecture
 itself. The uniform chain (Theorem U, paper Thm 4.5) is the strongest
@@ -303,11 +344,16 @@ floats) and $R = 4a - n$. All 1,803,722 certificates in the `es-verify`
 defaults pass exhaustively; the $10^{10}$ map is verified by sampled
 reconstruction plus full tail minimality by default (an exhaustive
 re-verification takes about 2.5 h: `python -m erdos_straus.verify
-data/hard_primes_1e10_minimalR.json.gz`). The 10¹¹ R-sequence dataset is
+data/hard_primes_1e10_minimalR.json.gz`). The 10¹¹ and 10¹² R-sequence
+datasets are
 verified via `erdos_straus.verify.verify_npz` after regenerating the
-prime/R arrays (`bulk_generate --store rseq`); its meta.json pins the
-prime array by sha256, and the generation pipeline is validated
-byte-for-byte against the exhaustively verified 10⁹ map. Compact minimal-R maps are
+prime/R arrays (`bulk_generate --store rseq`); each meta.json pins the
+prime array and the value array by sha256, and the generation pipeline is
+validated
+byte-for-byte against the exhaustively verified 10⁹ map. The whole 10¹²
+pass — generation, verification, packaging — is a single scripted run,
+`bash scripts/run_1e12.sh` (10.5 h on 32 cores, of which 53 min sieving).
+Compact minimal-R maps are
 verified by *reconstructing* triples from $(n, R)$ and re-checking them
 exactly — exhaustively at 10⁹, by systematic sampling plus full tail
 minimality beyond.

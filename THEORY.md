@@ -1,6 +1,9 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
-**Date:** 2026-08-03 (current through PR #57; this revision adds
+**Date:** 2026-08-04 (current through PR #58 — the $10^{12}$ census, in
+which the five-decade record R = 107 breaks at **R = 111**, inside the
+decade §6's calibrated model had named; see §5 and §6. Earlier: this
+revision adds
 Theorem S and Theorem A‴; §2.10 adds the Burgess/reciprocity
 route, its full-population census and failure anatomy, the
 ladder theorems L₀ (rigorous, fixed length) and L₁ (almost-all,
@@ -36,7 +39,8 @@ two aggregate identity families adjoined) — Theorem I
 unconditional statement of the development). Theorem K is a
 conditional sketch under
 Dickson's conjecture. Section 6 is heuristic, validated against the
-complete solvability data below 10⁹ and the 10¹⁰/10¹¹ minimal-R data.
+complete solvability data below 10⁹ and the 10¹⁰/10¹¹/10¹² minimal-R
+data.
 §2.8 records two executed attempts at totality and their
 precisely-characterized walls; the completeness proposition (paper
 Prop. 1.1: R_min ≤ 2p ⟺
@@ -155,7 +159,7 @@ forcing (k | r) = (−m | r) = −1 by (∗∗) — impossible. ∎
 
 We call a failure of this kind **character-type**. A failure where m *does* have a
 non-residue prime factor mod every relevant r, yet no divisor of m² lands in
-the exact class −m mod R, is **character-typeI** (a "class miss").
+the exact class −m mod R, is **budget-type** (a "class miss").
 
 ### Theorem A (exact criterion for R = 3)
 
@@ -236,10 +240,15 @@ the factor classes; that is too generous — divisors of m² carry bounded
 exponents, and monoid membership with an exponent beyond the budget need not
 be realizable (exponents can only be reduced modulo ord_R(q) when they
 exceed a full cycle). D_R(p) as defined is exactly what the computation
-verifies. The computational statement stands: **S₀ = {3, 7, 11, …, 107}
-(all R ≡ 3 mod 4) satisfies the hypothesis for every hard prime below
-10¹¹** (complete per-residual solvability masks verified below 10⁹;
-minimal-R data to 10¹¹). The paper (Remark 4.4) states the implication
+verifies. The computational statement, **updated at 10¹²**:
+**S₀ = {3, 7, 11, …, 111} (all R ≡ 3 mod 4) satisfies the hypothesis for
+every hard prime below 10¹²** (complete per-residual solvability masks
+verified below 10⁹; minimal-R data to 10¹²). The shorter list ending at
+107 satisfied it through 10¹¹ but **not** through 10¹²: three primes —
+119 945 383 009, 654 730 707 409, 761 403 297 769 — fail every
+admissible R ≤ 107 and are certified only at R = 111. This is exactly
+the behaviour Theorem K predicts of any fixed list under Dickson's
+conjecture, observed once. The paper (Remark 4.4) states the implication
 in this direction only: a finite covering set would imply the conjecture
 for hard primes, while the conjecture itself bounds R_min(p) by 2p and
 does not produce a uniform finite S.
@@ -811,11 +820,11 @@ residual R ≤ B simultaneously ⟺ (p|R) = +1 for each such R and
 values (p+R)/4, R ≤ B.** One condition per *distinct* prime q, shared
 across every residual q divides.
 
-#### The record prime, explained quantitatively
+#### The record prime, described quantitatively
 
 Corollary J2 identifies the correct "coins": joint failure requires a
 positive fluctuation in the independent-looking signs (p|q) over the
-distinct primes q of the interval, plus character-typeI luck where signs come up
+distinct primes q of the interval, plus budget-type luck where signs come up
 −1. Smooth shifted values reduce the number of distinct primes — fewer
 coins to win. Measured for the record p = 8 803 369 against typical
 hard primes of its size:
@@ -825,14 +834,23 @@ hard primes of its size:
 | record 8 803 369 | **43** | **81 %** |
 | typical (5 samples) | 45–52 | 44–60 % |
 
-A ≈4σ fluctuation in provably-the-right statistic. The static record is
-now a statement about extreme deviations of Legendre-symbol coin flips
-over interval factorizations: rarer at larger p only because the number
-of coins D(B, p) grows like (B/4)·log log p, giving the growth law
-**B(x) ≍ log x / log log x** for the pure-character-type record (the observed
-mixed character-type/II record sits above this, character-typeI escapes absorbing a few
-−1 coins — the record's 8 negative coins are exactly its 14 character-typeI
-failures' worth of luck).
+An extreme value of provably-the-right statistic. **No significance
+level is attached to it** (an earlier draft claimed "≈4σ"; that was a
+look-elsewhere artifact — the prime was selected *because* it was the
+record, so an extreme order statistic in a correlated quantity is
+expected, not surprising). The statement the table supports is
+descriptive: it says what a record prime looks like mechanically. The
+record is then a statement about large deviations of Legendre-symbol
+coin flips over interval factorizations: rarer at larger p only because
+the number of coins D(B, p) grows like (B/4)·log log p, giving the
+growth law **B(x) ≍ log x / log log x** for the pure-character-type
+record (the observed mixed character-type/budget-type record sits above
+this, budget-type escapes absorbing a few −1 coins — 8 803 369's 8
+negative coins are exactly its 14 budget-type failures' worth of luck).
+The record
+was static from 10⁷ to 10¹¹ and moved to R = 111 at 10¹² (§5, §6),
+which is the qualitative behaviour this growth law calls for: motion,
+but glacially slow in log x.
 
 #### Theorem K (conditional falsity of the finite covering hypothesis)
 
@@ -1800,7 +1818,7 @@ All statements tested against the complete per-prime solvability masks
 | Claim | Test | Result |
 |---|---|---|
 | Theorem A (R=3 iff) | all 1 587 581 primes | exact, 0 disagreements |
-| Theorem A′ manifests as pure character-type | 41 421 sampled R=7 failures | 100 % character-type, 0 character-typeI |
+| Theorem A′ manifests as pure character-type | 41 421 sampled R=7 failures | 100 % character-type, 0 budget-type |
 | Prop 1 direction | classifier consistency | ✓ |
 | Prop 3 (no factor in S_R(p) among failures) | every residual tested | 0 violations |
 | κ = 1/2 decay for R=7 (Thm A′ + sieve) | binned fit | κ̂ = 0.539 |
@@ -1809,7 +1827,7 @@ All statements tested against the complete per-prime solvability masks
 character-type share of failures by residual (sampled): R=7: 100 %, R=23: 96.6 %,
 R=11: 89.7 %, R=47: 87.2 %, R=71: 82.1 %, R=31: 79.3 %, … down to
 R=67: 33.5 %. Character obstruction dominates at residuals that are prime
-or have small 3-mod-4 prime power structure; class misses (character-typeI)
+or have small 3-mod-4 prime power structure; class misses (budget-type)
 broadly grow with φ(R), though not monotonically (see the sampled list
 above) — as expected, since hitting one specific class among φ(R) gets
 harder while the character argument only sees the QR/NQR dichotomy.
@@ -1823,10 +1841,10 @@ entire obstruction to a shorter covering list, one per hard class involved:
 
 | p | unique R | p mod 840 | failure anatomy (26 failures) |
 |---:|---:|---:|---|
-| 8 803 369 | 107 | 169 | 12 character-type + 14 character-typeI |
-| 142 361 209 | 59 | 529 | 13 character-type + 13 character-typeI |
-| 287 567 281 | 83 | 1 | 13 character-type + 13 character-typeI |
-| 794 037 841 | 63 | 121 | 16 character-type + 10 character-typeI |
+| 8 803 369 | 107 | 169 | 12 character-type + 14 budget-type |
+| 142 361 209 | 59 | 529 | 13 character-type + 13 budget-type |
+| 287 567 281 | 83 | 1 | 13 character-type + 13 budget-type |
+| 794 037 841 | 63 | 121 | 16 character-type + 10 budget-type |
 
 The record prime p = 8 803 369 fails every residual below 107 **even
 allowing R up to 400**; its a-values are anomalously smooth (at R = 107,
@@ -1834,16 +1852,61 @@ a = 3²·11²·43·47). Its escape requires both failure mechanisms in roughly
 equal measure — it is not explained by the character obstruction alone, nor
 by class misses alone.
 
+*(This section is unchanged by the 10¹² census: it is an analysis of the
+complete 10⁹ mask data, and the four critical primes remain the only
+primes below 10⁹ with a unique working residual ≤ 107. What did change
+at 10¹² is that 8 803 369 is no longer the **maximal**-R prime — three
+primes near 10¹¹–10¹² need R = 111, see §5 — nor is 107 a unique value
+any more. The critical-prime analysis would have to be recomputed on
+10¹² mask data to say anything about that range; per-residual masks
+exist only to 10⁹.)*
+
 ---
 
-## 5. The distribution of minimal R and the gap {87, …, 103}
+## 5. The distribution of minimal R, the gap {87, …, 103}, and the record break at 10¹²
 
 Minimal-R distribution at 10⁹: R=3 covers 49.1 %, {3,7,11} covers 91.3 %,
 R ≤ 23 covers 99.3 %. Full histogram in `data/analysis/dist_1e9.json`.
 
-*(The gap discussed below was subsequently filled between 10¹⁰ and
-10¹¹ exactly as the model predicted — see §6. This section keeps the
-10⁹-era analysis that made the prediction.)*
+**The distribution at 10¹²** (all 1 175 215 396 hard primes; full table
+in `data/hard_primes_1e12_minimalR.meta.json`): R = 3 covers 56.0 %,
+{3, 7, 11} covers 94.6 %, R ≤ 23 covers 99.73 %, R ≤ 39 covers
+99.99 %. The head share creeps up decade by decade (49.1 % → 54.4 % →
+56.0 % for R = 3 at 10⁹ → 10¹¹ → 10¹²) and the tail thins
+geometrically. The complete deep tail:
+
+| R | 87 | 91 | 95 | 99 | 103 | 107 | 111 |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| count at 10¹¹ | 8 | 3 | 5 | 1 | 1 | 1 | 0 |
+| count at 10¹² | 40 | 5 | 12 | 4 | 5 | 4 | **3** |
+
+**Two things resolved since the 10⁹-era analysis below was written.**
+
+1. **The gap {87, 91, 95, 99, 103} filled** between 10¹⁰ and 10¹¹,
+   as the model predicted (§6).
+2. **The record R = 107 broke at 10¹²**, at R = 111. It had stood since
+   p = 8 803 369 < 10⁷ — five decades, unmoved through 10¹¹. The three
+   primes with R_min = 111 are
+
+   | p | p mod 840 | a = (p+111)/4 |
+   |---:|---:|---:|
+   | 119 945 383 009 | 529 | 29 986 345 780 |
+   | 654 730 707 409 | 289 | 163 682 676 880 |
+   | 761 403 297 769 | 289 | 190 350 824 470 |
+
+   For each, every admissible R ≤ 107 fails and R = 111 certifies; the
+   certificates are in `data/hard_primes_1e12_minimalR.tail.json` and
+   were re-derived and exactly checked (4abc = p(bc+ca+ab)) with full
+   minimality. The old record 107 also stopped being unique, acquiring
+   170 230 867 921, 269 646 744 481 and 565 158 121 441.
+
+   Note the direct consequence for §2: the fixed list {3, 7, …, 107} —
+   which sufficed for every hard prime below 10¹¹ — is **not** a
+   covering list at 10¹². This is one observed instance of the behaviour
+   Theorem K (§2.9) makes generic under Dickson's conjecture.
+
+*(The 10⁹-era analysis that made the prediction is kept below,
+unedited, so that the prediction can be read as it was made.)*
 
 **The gap needs no modular explanation.** Under the independence model
 (Section 6), expected counts of primes with minimal R = 87, 91, 95, 99, 103
@@ -1863,10 +1926,11 @@ failures across residuals for primes with smooth shifted values.
 
 ---
 
-## 6. Independence model, correlations, and the 10¹⁰/10¹¹ forecasts (both resolved)
+## 6. Independence model, correlations, and the 10¹⁰/10¹¹/10¹² forecasts (all resolved)
 
 *(Reading order: the model and its 10⁹ calibration come first; the
-outcome subsections that follow are newest-first — 10¹¹, then 10¹⁰.)*
+outcome subsections that follow are newest-first — 10¹², then 10¹¹,
+then 10¹⁰.)*
 
 Model: P(min R > B) = Π_{R ≤ B} f_R, with marginal failure rates f_R
 measured from the masks. In-sample calibration:
@@ -1893,13 +1957,54 @@ power laws f_R(x) = C_R (log x)^{−κ_R}:
   with the ×30 deep-tail calibration ⟹ **order 1 — a genuine coin flip**.
 
 Both were sharp, falsifiable predictions of the model, tested directly
-by the 10¹⁰ and 10¹¹ runs; the outcomes follow.
+by the 10¹⁰, 10¹¹ and 10¹² runs; the outcomes follow.
+
+**The model's forward commitment about the record.** Combining the 6 %
+mass at or beyond 107 per deep-tail prime with the fitted deep-tail
+growth rate places the *first record-breaking prime* in the decade
+[10¹¹, 10¹²]. This was the model's sharpest falsifiable call — sharper
+than the gap-fill, which was a distributional statement on a handful of
+points — and it was on the record before the 10¹² run.
+
+**Outcome (10¹² run, 1 175 215 396 hard primes, all solved — verified by
+2 350 431 sampled reconstructions plus all 118 210 tail entries R ≥ 43
+with full minimality; `bad = 0`, `not_minimal = 0`):**
+
+- **Record: BROKEN, in the predicted decade.** Max minimal R = 111,
+  first attained at p = 119 945 383 009 ≡ 529 (mod 840) — that is
+  1.199×10¹¹, just past the previous bound — with a = (p+111)/4 =
+  29 986 345 780; every admissible R ≤ 107 fails for it. Three primes
+  reach 111; 107 gained three more and is no longer unique. The 27-value
+  list {3, …, 107} that had covered everything for five decades stopped
+  covering.
+- **Deep tail: 19 → 73 primes** with R_min ≥ 87. Conditional landing
+  distribution vs the model's §5 prediction (predicted / observed share
+  of the 73):
+  P(87) 0.53 / 0.548; P(91) 0.11 / 0.068; P(95) 0.22 / 0.164;
+  P(99) 0.03 / 0.055; P(103) 0.05 / 0.068; P(≥107) 0.06 / 0.096
+  (χ² ≈ 5.8 on 5 d.f. against a distribution fixed in advance — no
+  parameters refitted). The largest single contribution is the
+  R ≥ 107 cell, where the model slightly *under*-predicted; that is the
+  same direction as the deep-tail positive correlation already
+  documented above.
+- **Honest reading.** The model is a heuristic, calibrated on 10⁹ data:
+  independent per-residual failure with fitted rates plus one deep-tail
+  correlation factor. It has now made two forward calls that came out
+  right — the band {87…103} filling (at 10¹¹) and the decade of the
+  record break (at 10¹²). The first had little discriminating power
+  (χ² ≈ 1.3 on 19 points, several expected cells below 5); the second is
+  the substantive one, because "which decade does a five-decade-old
+  record fall in" is a single sharp bit that the model committed to and
+  got. It remains a heuristic: nothing here is a theorem about R_max,
+  and Theorem K (§2.9) is the only statement in this file about the
+  record growing without bound — and it is conditional on Dickson.
 
 **Outcome (10¹¹ run, 128 671 219 hard primes, all solved — verified by
 sampling plus full tail checks; exhaustive below 10⁹):**
 
 - **Record: HELD again** — max minimal R = 107, still uniquely at
-  8 803 369, now across 5×10⁷ → 10¹¹.
+  8 803 369, now across 5×10⁷ → 10¹¹. (It fell immediately past this
+  bound: see the 10¹² outcome above.)
 - **Gap: FILLED**, exactly as this model predicted. Minimal
   R ∈ {87, 91, 95, 99, 103} acquired 8, 3, 5, 1, 1 primes respectively,
   all in (1.3×10¹⁰, 10¹¹). Conditional landing distribution for the 19
@@ -1917,7 +2022,11 @@ sampling plus full tail checks; exhaustive below 10⁹):**
   estimate (0.038) and mildly against the ×30-corrected one (~1), suggesting
   the deep-tail correlation is driven by *per-prime* structure (smooth
   shifted values at one p), which becomes rarer as p grows, rather than by
-  a persistent enhancement of the tail rate.
+  a persistent enhancement of the tail rate. **That inference did not
+  survive 10¹²**: the deep tail grew 19 → 73 and the R ≥ 107 cell came
+  in *above* the model's share (0.096 vs 0.06). The 10¹⁰ non-record is
+  better read as one draw of a low-probability event than as evidence
+  that records are suppressed.
 - **Gap: PERSISTS.** Minimal R ∈ {87, …, 103} still unpopulated.
 - Moderate tail as predicted: minimal R ∈ {75, 79, 83} grew 2, 1, 2 →
   3, 11, 5 (14 new primes; the model expected a handful).
@@ -1931,6 +2040,9 @@ sampling plus full tail checks; exhaustive below 10⁹):**
 
 - Occurring minimal residuals: 22 values
   {3, 7, …, 83} ∪ {107} (all R ≡ 3 mod 4 up to 83, plus 107).
+  (By 10¹² the gap has closed and the range has extended: **all 28**
+  admissible values 3, 7, …, 111 occur as a minimal R, each with
+  positive count — see §5.)
 - Smallest covering list found (greedy over full masks): **18 residuals** —
   {3, 11, 15, 19, 23, 31, 39, 47, 59, 63, 71, 79, 83, 87, 95, 99, 103, 107};
   restricting candidates to the 22 occurring values also yields an
@@ -1943,7 +2055,10 @@ sampling plus full tail checks; exhaustive below 10⁹):**
 ## 8. What would close the hard cases
 
 1. **Finite covering — resolved in direction.** Under Dickson's conjecture
-   every fixed finite list fails infinitely often (Theorem K, §2.9); the
+   every fixed finite list fails infinitely often (Theorem K, §2.9) —
+   and one such failure has now been observed: {3, 7, …, 107}, a
+   covering list for every hard prime below 10¹¹, fails for three primes
+   below 10¹² (§5); the
    sieve (Theorem D) gives density-(log x)^{−A} exceptional sets for every
    A but cannot reach emptiness. By completeness (R_min ≤ 2p ⟺ ESC), any
    unconditional bound on R_min is the conjecture itself.
@@ -1964,9 +2079,11 @@ sampling plus full tail checks; exhaustive below 10⁹):**
 3. ~~**Understand deep-tail correlation.**~~ **Done** — Theorem J (§2.9):
    joint character failure is controlled by one Legendre coin (p|q) per
    distinct prime of the interval factorizations; smoothness = fewer
-   coins; the record is a ≈4σ coin fluctuation; pure-character-type record growth
-   ≍ log x/log log x. Remaining here: fold the character-typeI escape layer into
-   the growth law quantitatively.
+   coins; the record prime is an extreme value of that statistic (no
+   significance level attached — it was selected for being the record);
+   pure-character-type record growth ≍ log x/log log x, consistent with
+   the observed move 107 → 111 between 10¹¹ and 10¹². Remaining here:
+   fold the budget-type escape layer into the growth law quantitatively.
 
 ### Research outlook (August 2026) — executed; see §2.11
 

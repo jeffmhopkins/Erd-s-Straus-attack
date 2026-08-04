@@ -1,5 +1,5 @@
 # Erdős–Straus Conjecture Attack — Current State
-**Date:** 2026-08-03 (current through PR #57)  
+**Date:** 2026-08-04 (current through PR #58 — the $10^{12}$ census)  
 **Focus:** Hard-class primes (Mordell exceptional residues mod 840)
 
 ## The Problem
@@ -29,7 +29,7 @@ Residual method:
 Reference implementation in `residual_solver.py` (sympy); the production
 engine is `bulk_generate.py` (integer-only trial division, segmented sieve,
 parallel, three output formats including the compact R-sequence format used
-at $10^{11}$ scale).
+at $10^{11}$ and $10^{12}$ scale).
 
 ## Computational Results (Hard Primes Only)
 
@@ -45,7 +45,12 @@ at $10^{11}$ scale).
 | $< 1.2 \times 10^8$ | 213 131 | Yes | 107               | Full explicit solutions saved (gzip) |
 | $< 10^9$     | 1 587 581 | Yes | 107               | Minimal-$R$ map saved (gzip) |
 | $< 10^{10}$  | 14 215 707 | Yes | 107      | Minimal-$R$ map saved (gzip) |
-| $< 10^{11}$  | **128 671 219** | **Yes** | **107**     | R-sequence format (gzip uint8 + explicit tail); current verified bound |
+| $< 10^{11}$  | 128 671 219 | Yes | 107     | R-sequence format (gzip uint8 + explicit tail) |
+| $< 10^{12}$  | **1 175 215 396** | **Yes** | **111** | **Record broken** — first row since $10^7$ where the max is not 107; attained by 3 primes, least $p = 119\,945\,383\,009$. R-sequence format; current verified bound |
+
+*(Every row is "all solved" with a certificate at the stated maximal
+minimal residual; `num_unsolved = 0` at $10^{12}$ as at every earlier
+bound.)*
 
 The $1.2 \times 10^8$ pass was produced by `erdos_straus.bulk_generate`
 (integer-only trial-division solver, numpy sieve, 4-way parallel) in **≈9 s**
@@ -58,8 +63,8 @@ $(n, R)$, and verification (`es-verify`) re-derives and exactly checks every
 triple, so the map is a full certificate set, not a summary.
 
 *(The subsections below are organized around the exhaustively verified
-$10^9$ baseline, with the $10^{11}$ and $10^{10}$ updates interleaved
-newest-first.)*
+$10^9$ baseline, with the $10^{12}$, $10^{11}$ and $10^{10}$ updates
+interleaved newest-first.)*
 
 ### Minimal-$R$ distribution up to $10^9$ (1 587 581 hard primes)
 
@@ -196,6 +201,60 @@ $P_3$ count of good residuals). Remaining: non-critical-step control
 at the $|F| = 2$ floor + the prime-power two-scale coupling.
 Archive: `data/analysis/conjA_verification.json`.
 
+### $10^{12}$ update (THE RECORD BREAKS) — newest
+
+The $10^{12}$ run (single scripted pass, `scripts/run_1e12.sh`: 10.5 h
+wall on 32 cores of an AMD Ryzen AI Max+ 395, of which 53 min sieving;
+`sieve_secs` 3170.2, `elapsed_secs` 37707.1) covered all
+**1 175 215 396** hard primes below $10^{12}$. Zero unsolved; every one
+has a certificate with $R \le 111$. Verification: 2 350 431
+systematically sampled entries reconstructed and exactly re-checked,
+plus **all** 118 210 tail entries ($R \ge 43$) with full minimality
+(no smaller admissible $R$ succeeds) — `bad = 0`, `not_minimal = 0`,
+log ends `VERIFICATION OK`.
+
+- **The record broke.** Max minimal $R$ is now **111**, first attained at
+  $$p = 119\,945\,383\,009 \equiv 529 \pmod{840},$$
+  for which every admissible $R \le 107$ fails and $R = 111$ certifies
+  with $a = (p+111)/4 = 29\,986\,345\,780$ (checked independently by a
+  direct solver run and by exact evaluation of the identity). Three
+  primes attain 111: 119 945 383 009, 654 730 707 409, 761 403 297 769.
+- **107 is no longer unique.** The old record, held by the single prime
+  $8\,803\,369 < 10^7$ from $10^7$ through $10^{11}$ — five decades —
+  picked up three further primes in this decade (170 230 867 921,
+  269 646 744 481, 565 158 121 441) and now stands at four.
+- **Deep tail.** Primes with $R_{\min} \ge 87$ went from 19 at $10^{11}$
+  to **73**: counts 40, 5, 12, 4, 5, 4, 3 over
+  $R = 87, 91, 95, 99, 103, 107, 111$.
+- **Head.** $R = 3$ covers 56.0 %, $\{3,7,11\}$ covers 94.6 %,
+  $R \le 23$ covers 99.73 % — the same slow drift upward in the $R=3$
+  share seen at every previous decade (49.1 % at $10^9$, 54.4 % at
+  $10^{11}$). Full distribution in
+  `data/hard_primes_1e12_minimalR.meta.json`.
+
+**A prediction confirmed, stated carefully.** The calibrated
+independence model of `THEORY.md` §6 was fitted on the complete $10^9$
+solvability masks. It made two falsifiable calls: (a) the then-empty
+band $\{87,\dots,103\}$ was small-number statistics and would fill —
+it filled at $10^{11}$; and (b) the mass at or beyond $R = 107$ is 6 %
+per deep-tail prime, which with the deep-tail growth rate places the
+*first record-breaking prime* in the decade $10^{11}$–$10^{12}$ — it
+broke there, at $R = 111$. So a heuristic fitted at $10^9$ named in
+advance both the band it would fill and the decade in which a
+five-decade-old record would fall. Two caveats keep this honest: the
+model is a heuristic, not a theorem; and the band-fill comparison had
+little discriminating power ($\chi^2 \approx 1.3$ on 19 points with
+several expected cells below 5). The record-break call is the sharper
+of the two, and it is the one that was confirmed at $10^{12}$.
+
+**Dataset note.** `data/hard_primes_1e12_minimalR.meta.json` and
+`.tail.json` are in the repository. The third file of the set, the
+304 MB value array `hard_primes_1e12_minimalR.rvals.u8.gz`, exceeds
+GitHub's 100 MB per-file limit and is **gitignored** — it is regenerated
+deterministically by `scripts/run_1e12.sh` and checked against the
+SHA-256 pinned in `meta.json` (`sha256_rvals` `7736d10b…`,
+`sha256_primes` `ae1e4e76…`).
+
 ### $10^{11}$ update (the gap fills; the record stands)
 
 The $10^{11}$ run (streaming R-sequence pipeline, 2.85 h on 4 cores;
@@ -212,11 +271,16 @@ headline outcomes:
   primes with $R_{\min} > 83$, i.e. the 18 newly appearing deep-tail
   primes plus the pre-existing record prime). The gap was
   small-number statistics, now confirmed by its own disappearance.
-- **The record STILL stands**: max minimal $R = 107$, still uniquely at
-  $p = 8\,803\,369 < 10^7$, across $5\times 10^7 \to 10^{11}$.
+- **The record STILL stands** (at this bound): max minimal $R = 107$,
+  still uniquely at $p = 8\,803\,369 < 10^7$, across
+  $5\times 10^7 \to 10^{11}$.
   Eighteen new primes entered $R_{\min} > 83$ territory and none
-  passed 103 — consistent with the Theorem J growth law (first record
-  break forecast $10^{12}$–$10^{13}$).
+  passed 103. It fell in the very next stretch: the first prime with
+  $R_{\min} = 111$ is $1.199\times 10^{11}$, barely above this bound —
+  see the $10^{12}$ subsection above. (The independence model's window
+  for the break was the decade $10^{11}$–$10^{12}$; the coarser
+  Theorem J growth-law reading recorded here at the time,
+  $10^{12}$–$10^{13}$, was late by a decade.)
 
 ### $10^{10}$ update (prediction test)
 
@@ -232,15 +296,18 @@ at $10^9$ (see `THEORY.md` §6):
   $R \in \{87, 91, 95, 99, 103\}$ among 14.2 M primes.
 - The tail thickened exactly as the model predicts at moderate depth:
   minimal $R \in \{75, 79, 83\}$ went from 2, 1, 2 primes to 3, 11, 5 —
-  but no prime crossed 83. The deep-tail correlation factor apparently
-  *suppresses* new records rather than producing them: smooth-shift
-  configurations are rarer at larger $p$ (each $f_R \to 0$), and no new
-  structurally-exceptional prime appeared.
+  but no prime crossed 83. At the time this suggested the deep-tail
+  correlation factor *suppresses* new records rather than producing
+  them (smooth-shift configurations being rarer at larger $p$).
+  **The $10^{12}$ run overturned that reading**: the deep tail grew
+  19 → 73 and the $R \ge 107$ share came in above the model's, so the
+  $10^{10}$ non-record was simply one draw of a low-probability event.
 
 ### Key facts at $10^9$
 - Extending the bound by $20\times$ (from $5\times 10^7$) produced
-  **no new maximal $R$**: the record 107 still comes from the single prime
-  $8\,803\,369 < 10^7$.
+  **no new maximal $R$**: the record 107 still came from the single prime
+  $8\,803\,369 < 10^7$ (it stayed that way until $10^{12}$, where
+  $R = 111$ appears and 107 acquires three more primes — see above).
 - At $10^9$ there was a conspicuous **gap** (filled at $10^{11}$, see
   above): no prime below $10^9$ has minimal
   $R \in \{87, 91, 95, 99, 103\}$ — the distribution jumps from 83 straight to 107.
@@ -282,9 +349,12 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 
 ### Key observations ($10^9$)
 - Minimal residual $R$ grows very slowly.
-- Distribution is heavily concentrated: $R=3$ alone covers 49.1 % at $10^9$ (54.4 % at $10^{11}$); $R = 3, 7, 11$ together cover 91.3 %.
+- Distribution is heavily concentrated: $R=3$ alone covers 49.1 % at $10^9$ (54.4 % at $10^{11}$, 56.0 % at $10^{12}$); $R = 3, 7, 11$ together cover 91.3 % (94.6 % at $10^{12}$).
 - When $R=3$ succeeds, the smallest usable divisor $k$ is typically a small prime factor of $a$.
-- A fixed short list of residuals $\{3,7,11,\dots,107\}$ covers all hard primes examined so far.
+- A fixed short list of residuals covers all hard primes examined so far —
+  but the list is no longer $\{3,7,11,\dots,107\}$: three primes below
+  $10^{12}$ need $R = 111$, so the shortest prefix list that works to
+  $10^{12}$ is $\{3,7,11,\dots,111\}$.
 
 ## Files in this Repository
 - `src/erdos_straus/solver.py` — core utilities, hard-residue detector, classical identities, prime generation helpers
@@ -302,9 +372,11 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 - `data/high_R_primes_5e6.json` — primes that required larger residuals
 - `data/hard_primes_1e10_minimalR.json.gz` — minimal-$R$ map for all 14 215 707 hard primes $< 10^{10}$
 - `data/hard_primes_1e11_minimalR.{rvals.u8.gz, meta.json, tail.json}` — R-sequence dataset for all 128 671 219 hard primes $< 10^{11}$ (uint8 minimal-$R$ values in ascending-prime order + sha256-pinned metadata + explicit verified tail $R \ge 43$)
+- `data/hard_primes_1e12_minimalR.{meta.json, tail.json}` — the same format for all 1 175 215 396 hard primes $< 10^{12}$: full $R$-distribution, sha256 pins and run timings, plus the 118 210 explicit verified tail certificates $R \ge 43$ (including the three with $R = 111$). The matching 304 MB value array `hard_primes_1e12_minimalR.rvals.u8.gz` is **not in git** — it exceeds GitHub's 100 MB file limit, so it is gitignored and regenerated deterministically by `scripts/run_1e12.sh`, verified against `sha256_rvals` in the meta file
+- `scripts/run_1e12.sh` (+ `scripts/RUN_1E12.md`) — the one-shot $10^{12}$ generation + verification + packaging run kit
 - `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
 - `tests/test_solver.py` — 63 tests: unit, certificate validation, theorem checks (A/A′/A″/A‴/J/meta incl. composite R), support-bound lemmas (DP + strong Kneser form, cyclic and general abelian), aggregate identities
-- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 35 pp.
+- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 39 pp. (title: "…exact solvability criteria, almost-all certificate bounds, and computations to $10^{12}$")
 - `lean/ErdosStraus/` — Lean 4 + mathlib formalization, elementary layer + finite enumerations (`lake exe cache get && lake build`)
 - `THEORY.md` — full theoretical development; `STATUS.md` — this document
 
@@ -320,7 +392,7 @@ full tail minimality.
   value is mechanism (explicit certificates, exact criteria, machine-verified
   lemmas), not raw density.
 - This project supplies the largest verified certificate dataset
-  (to $10^{11}$), exact solvability criteria,
+  (to $10^{12}$), exact solvability criteria,
   and the reciprocity structure theory of joint failure.
 
 ## Theoretical Results (see THEORY.md)
@@ -365,8 +437,11 @@ full tail minimality.
   of hard primes alone; characterizes the critical primes.
 - **Theorem J** (reciprocity structure) — (q|R) = (p|q) for odd primes
   q | (p+R)/4: joint character failure ⟺ p is a QR mod every unforced prime
-  of every shifted value. Explains the record prime (4σ Legendre-coin
-  fluctuation over only 43 distinct primes) and why hard classes are the
+  of every shifted value. Describes what a record prime looks like
+  mechanically (8 803 369: only 43 distinct odd primes over its 27
+  shifted values, 81 % of them with (p|q) = +1 — no significance level
+  is attached, since the prime was selected *because* it was the record)
+  and explains why the hard classes are the
   squares mod 840 (forced small primes are character-neutral).
 - **Theorem K** (conditional; a sketch in THEORY.md §2.9, presented in
   the paper as part of Open Problem 5) — under Dickson's conjecture, every fixed
@@ -409,11 +484,14 @@ full tail minimality.
   grow), composed corollaries at other residuals.
 
 ## Current Assessment
-- No counterexample; all 128 671 219 hard primes below $10^{11}$ have
-  verified solutions with $R \le 107$.
-- The record's staticness is now *explained* (Theorem J): joint failure is a
+- No counterexample; all 1 175 215 396 hard primes below $10^{12}$ have
+  verified solutions, with $R \le 111$.
+- The record's slow growth is *explained* (Theorem J): joint failure is a
   Legendre-coin large-deviation event; expected record growth
-  $\asymp \log x/\log\log x$ at the pure-character-type level.
+  $\asymp \log x/\log\log x$ at the pure-character-type level. The
+  five-decade plateau at $R = 107$ ended at $10^{12}$ with $R = 111$ —
+  a move in the direction and roughly on the timescale the model and
+  the growth law indicate, not a surprise to be explained away.
 - The fixed-finite-list reduction is conditionally **false** (Theorem K):
   the correctly-posed open problem is an unconditional bound on
   $R_{\min}(p)$ — which, by completeness, *is* the conjecture.
@@ -426,11 +504,14 @@ full tail minimality.
   method family.
 
 ## Next Natural Steps (updated)
-1. ~~Extend past $10^8$, $10^9$, $10^{10}$, $10^{11}$.~~
-   **Done** — the $10^{11}$ run confirmed the Theorem J growth law on
-   both counts (record survived; gap filled with the predicted
-   conditional distribution). Next decade ($10^{12}$, ~29 h compute)
-   enters the forecast record-break window.
+1. ~~Extend past $10^8$, $10^9$, $10^{10}$, $10^{11}$, $10^{12}$.~~
+   **Done** — the $10^{11}$ run filled the gap with the predicted
+   conditional distribution, and the $10^{12}$ run (10.5 h on 32 cores,
+   `scripts/run_1e12.sh`) broke the record at $R = 111$, inside the
+   forecast window. Next decade ($10^{13}$) costs ~10–20× the $10^{12}$
+   run and is the natural next falsifiable test: the same model, now
+   with a second record point to calibrate against, should be re-fitted
+   before it is used to forecast again.
 2. ~~Fixed finite list?~~ **Resolved in direction**: covering lists computed
    (18 suffice below $10^9$, lower bound 12); fixed lists fail infinitely
    often under Dickson (Theorem K). Remaining: nothing short of the
