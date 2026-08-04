@@ -123,11 +123,12 @@ scripts/
   run_1e12.sh          one-shot 10^12 generation + verification + packaging
                        run kit (see RUN_1E12.md for the operator notes)
 lean/
-  ErdosStraus/         Lean 4 + mathlib formalization (12 modules: Basic,
+  ErdosStraus/         Lean 4 + mathlib formalization (13 modules: Basic,
                        Families, TheoremA, Enumerations, Bridges,
                        DivisorBridge, LemmaS31, Ladder, BridgeR15,
-                       TheoremS, KernelBranch, Elementary + vendored
-                       Kneser) — sorry-free, axiom-audited (91 audits);
+                       TheoremS, KernelBranch, SupportBridge,
+                       Elementary + vendored
+                       Kneser) — sorry-free, axiom-audited (101 audits);
                        see lean/README.md
 .github/workflows/
   ci.yml               Python CI: test suite + proof-component smoke checks

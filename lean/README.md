@@ -55,6 +55,11 @@ paper-number dictionary is THEORY.md's mapping table (§1).
 | `forbidden_classes_general` / `forbidden_classes_general_of_le` | **Theorem 1.10(iii), sieve reading**: a failing support forbids at least `(g − t)/2 − 1` non-identity classes, with `t` the involution count (or any upper bound for it — the `_of_le` form is what the paper quotes at `G = (ℤ/R)*` with `t = 2^{ω(R)} − 1`, giving `φ(R)/2 − 2^{ω(R)−1} − 1` forbidden classes and sieve dimension `≥ ½ − (2^{ω(R)−1}+1)/φ(R)`). *Not* formalized: that `(ℤ/R)*` has exactly `2^{ω(R)} − 1` involutions (a CRT + cyclicity-of-`(ℤ/p^e)*` computation) — the bound is stated for whatever `t` bounds the count. Both are stated **additively** (`AddCommGroup`), the paper's multiplicative `M(S) = ∏ {1, v, v²}` being the same statement read through `Additive Gˣ`; no separate multiplicative restatement is included |
 | `theoremS_support_bound` | **Theorem S (paper Theorem 1.10(i))**: for even `d` and `S` a set of nonzero elements of `ZMod d`, if `M(S) = ∑_{v∈S} {0, v, 2v} ≠ ZMod d` then `#S ≤ d/2 − 1`; the unconditional support bound behind Lemma S for *every* residual. Now an instance of `support_bound_general`: a cyclic group of even order has one involution, collapsing `max(⌊(d+t−2)/2⌋, d/2−1)` to `d/2 − 1` — standard axioms only |
 | `theoremS_support_bound_odd` | **Theorem S at odd moduli** (the parenthetical of the paper's Theorem 4.8, needed for the kernel-branch quotients): for odd `d`, `M(S) ≠ ZMod d` forces `#S ≤ (d−3)/2` — the instance of `support_bound_general` at a group of odd order, which has *no* involutions |
+| `exists_expo_of_mem_reach2` (SupportBridge.lean) | membership in the budget-2 reach `M(S)` is an explicit exponent decomposition `x = ∑_{v∈S} e_v·v` with every `e_v ≤ 2` — the direction the multiplicative transfer needs, turning Theorem S's abstract "`M(S)` is everything" into a concrete product |
+| `card_two_torsion_filter_le_one` | in a field `x² = 1` has only the roots `±1`, so a set of units avoiding the identity carries at most one involution — this is what collapses `support_bound_general`'s `max(⌊(g+t−2)/2⌋, g/2−1)` to `g/2 − 1` at `G = (ℤ/R)*`, exactly as a single 2-torsion class does in the cyclic case |
+| `theoremS_units_prod` / `theoremS_zmod_prod` | **Theorem 1.11(ii), multiplicative form**: a set of at least `(R−1)/2` unit classes mod `R`, none of them the identity, reaches *every* nonzero class as a bounded-exponent product `∏ v^{e_v}`, `e_v ≤ 2`. `support_bound_general` transported along `(ℤ/R)* ≃ Additive (ℤ/R)*`, with `Fintype.card (ℤ/R)* = R − 1` and the involution bound above |
+| `prod_pow_dvd_sq` / `theoremS_divisor_class` | **Theorem 1.11(ii), arithmetic form**: if `a` has at least `(R−1)/2` prime factors in pairwise-distinct classes mod `R`, none of them `0` or `1`, then every nonzero class mod `R` is the class of an honest integer divisor of `a²` — the product of bounded prime powers, which divides `a²` by pairwise coprimality |
+| `theoremS_certificate` | **the capstone: Lemma S as a corollary of Theorem S, at every prime residual.** For `p` prime, `R < p` a prime residual, `4a = p + R`, and `a` carrying `(R−1)/2` prime factors in distinct classes ≠ 0, 1 mod `R`: explicit positive `k ∣ (pa)²`, `b`, `c` with `R·b = k+pa`, `R·c = (pa)²/k+pa` and `4abc = p(bc+ac+ab)`. Compare `lemmaS_R19_certificate`, which is this conclusion at `R = 19` and inherits a `native_decide` axiom from the enumeration behind it — this proof is **symbolic throughout**: no enumeration, no evaluator, no restriction on `R` |
 | `reach2` / `budget2` / `Failing` / `MaximalFailing` (KernelBranch.lean) | the branch-classification vocabulary over any finite abelian group: the budget-2 reach `M(S) = ∑_{v∈S} {0, v, 2v}` (shared with Theorem S through `reach2_zmod`), failure `t ∉ M(S)`, and maximality (every one-element extension by a nonzero class attains `t`) |
 | `target_notMem_reach2_add_addStab` / `projected_target_ne_zero` / `zero_notMem_projected_support` / `projected_failing` | **Theorem 4.8(i)** (kernel branch; lossless reduction): for `H = Stab(M(S))` and any hom `φ` with kernel exactly `H`, a failing target misses the whole saturation `M(S) + H`, the projected target `φ(t) ≠ 0`, the projected support `T̄ = φ(S \ H)` consists of nonzero classes, and `T̄` fails for `φ(t)` downstairs **at the same budget** — the reduction loses nothing (collisions only enlarge the reach, `reach2_image_subset`) |
 | `addStab_erase_zero_subset_of_maximal` | **Theorem 4.8(ii)**: a *maximal* failing support contains every nonzero class of `H` — for `w ∈ H` the summand `A_w ⊆ H` stabilizes `M(S)`, so `M(S ∪ {w}) = M(S)` still fails |
@@ -195,6 +200,15 @@ different coordinates and algorithms, with agreeing results.
 
 ## Roadmap (not yet formalized)
 
+- ~~The transfer of Theorem S(ii) to the multiplicative divisor-class
+  model~~ — **done** (`SupportBridge.lean`): `theoremS_certificate`
+  derives the Erdős–Straus certificate at *every* prime residual from
+  `support_bound_general` alone, so the per-residual enumerations are
+  now independent confirmations of a proved general theorem rather
+  than the only route to it. Still open in this direction: the
+  identity `t = 2^{ω(R)} − 1` for the involution count at composite
+  `R` (a CRT computation; only the prime case, `t ≤ 1`, is proved),
+  and the *iterated* kernel reduction.
 - Lemma S past R = 31: the verified-DP machinery of `LemmaS31.lean`
   extends directly (R = 43, 47, …); the cost is the evaluator's DP
   run, which grows with the state count (3,001 at R = 31; millions by
@@ -277,6 +291,7 @@ different coordinates and algorithms, with agreeing results.
 | `LemmaS31.lean` | Lemma S at R = 31 by certified dynamic programming |
 | `Kneser/MulStab.lean`, `Kneser/Kneser.lean` | Kneser's addition theorem and the finset-stabilizer API, **vendored unmodified** from [Yaël Dillies' misc-yd](https://github.com/YaelDillies/misc-yd) (Apache 2.0; commit and provenance in the file headers) |
 | `TheoremS.lean` | iterated Kneser (`add_kneser_list`) and Theorem S in general form — the paper's Theorem 1.10(iii), `support_bound_general`, for any finite abelian group with the involution count, plus the sieve reading `forbidden_classes_general` and the two `ZMod d` instances `theoremS_support_bound` (part (i)) and `theoremS_support_bound_odd` |
+| `SupportBridge.lean` | **Theorem S transported to the multiplicative divisor-class model**, for every prime residual at once: the exponent decomposition of the budget-2 reach, the involution count of `(ℤ/R)*`, the unit-group and `ZMod R` forms of the support bound, the integer divisor it produces, and the composed Erdős–Straus certificate (`theoremS_certificate`) — Lemma S as a machine-checked corollary of Theorem S, symbolic throughout |
 | `KernelBranch.lean` | the kernel branch of the branch classification (the paper's Theorem 4.8: lossless reduction along `φ_H`, maximality, the container and its size bookkeeping), β-vacuity (Proposition 4.12), the complete-partition lemma, and the paper's Theorem 4.7 in full — the explicit `2^{c√d}` family of maximal failing supports and its count (`branchCount_sqrt`) |
 
 ## Build
