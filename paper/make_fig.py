@@ -1,8 +1,8 @@
 """Regenerate fig_minR_hist.pdf (Figure 1 of the paper).
 
 Log-scale histogram of the minimal-residual distribution over all
-128,671,219 hard primes below 10^11, from the distribution of
-Table 3 (data/hard_primes_1e11_minimalR.*). The figure is built at
+1,175,215,396 hard primes below 10^12, from the distribution of
+Table 3 (data/hard_primes_1e12_minimalR.*). The figure is built at
 its final printed size (6.3 in = the paper's text width, included at
 width=\\linewidth), so font sizes below are true on-page sizes, and
 fonts are embedded as vector outlines (pdf.fonttype 42), matching the
@@ -30,21 +30,21 @@ plt.rcParams.update(
     }
 )
 
-# Table 3 of the paper (10^11 data).
+# Table 3 of the paper (10^12 data).
 DIST = {
-    3: 69951190, 7: 31335473, 11: 19439771, 15: 3974286, 19: 2441687,
-    23: 1070808, 27: 187963, 31: 193848, 35: 30784, 39: 25258,
-    43: 6850, 47: 8811, 51: 1450, 55: 1369, 59: 954, 63: 283,
-    67: 104, 71: 209, 75: 29, 79: 50, 83: 23, 87: 8, 91: 3,
-    95: 5, 99: 1, 103: 1, 107: 1,
+    3: 657645152, 7: 286441544, 11: 167419973, 15: 33222834, 19: 19307426,
+    23: 7996742, 27: 1376271, 31: 1318258, 35: 208713, 39: 160273,
+    43: 43558, 47: 50190, 51: 8756, 55: 7441, 59: 4863, 63: 1439, 67: 488,
+    71: 970, 75: 146, 79: 208, 83: 78, 87: 40, 91: 5, 95: 12, 99: 4,
+    103: 5, 107: 4, 111: 3,
 }
 
 fig, ax = plt.subplots(figsize=(6.3, 3.4))
 xs = list(DIST.keys())
 ys = [DIST[r] for r in xs]
 # The band 87-103 was empty below 10^10 (Section 6.1 of the paper).
-ax.axvspan(85, 105, color="0.88", zorder=0)
-ax.text(95, 6e6, "band empty\nbelow $10^{10}$", ha="center",
+ax.axvspan(85, 113, color="0.88", zorder=0)
+ax.text(99, 6e6, "band empty\nbelow $10^{10}$", ha="center",
         fontsize=8, color="0.35")
 ax.bar(xs, ys, width=3.0, color="#3b5b92", edgecolor="black",
        linewidth=0.4, log=True, zorder=2)
@@ -53,10 +53,10 @@ ax.set_ylabel("hard primes (log scale)")
 ax.set_xticks(xs)
 ax.set_xticklabels([str(r) for r in xs], fontsize=7)
 ax.tick_params(axis="y", labelsize=8)
-ax.set_ylim(0.5, 2e8)
+ax.set_ylim(0.5, 2e9)
 ax.annotate(
-    r"record: unique prime $p = 8{,}803{,}369$",
-    xy=(107, 1), xytext=(72, 2e3),
+    r"record $R=111$: $p = 119{,}945{,}383{,}009$",
+    xy=(111, 3), xytext=(70, 3e3),
     arrowprops=dict(arrowstyle="->", lw=0.8),
     fontsize=8,
 )
