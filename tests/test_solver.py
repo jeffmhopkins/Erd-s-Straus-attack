@@ -779,3 +779,57 @@ def test_burgess_admissibility_archive_headline_counts():
     assert set(archive["definitions"]) >= {"forced", "A1", "A2",
                                            "A3_as_printed",
                                            "nonempty_family"}
+
+
+def test_factorize_past_small_prime_table():
+    """Regression: `factorize` must stay complete past the small-prime table.
+
+    Trial division alone certifies the surviving cofactor prime only while
+    ``a < (max small prime)^2`` — with the default 180000 table, only for
+    ``a < 3.24e10``, i.e. hard primes ``n < 1.296e11``. Past that, a cofactor
+    that is a product of two primes both beyond the table was recorded as
+    prime, the divisor set of ``m^2`` came out incomplete, and
+    ``solve_residual`` could miss a certificate that exists — overstating the
+    minimal residual (never understating it: every divisor it does find is
+    genuine).
+    """
+    from erdos_straus import bulk_generate as bg
+
+    bg._init_small_primes()
+    table_max = bg._SMALL_PRIMES[-1]
+    factorize, solve_residual = bg.factorize, bg.solve_residual
+
+    # an `a` whose two prime factors both exceed the table
+    q1, q2 = 200003, 200009
+    a = q1 * q2
+    assert a > table_max**2
+    assert factorize(a) == {q1: 1, q2: 1}
+
+    # the four primes that exposed the bug in the 10^12 census: each had its
+    # minimal residual overstated by the incomplete factorization
+    for n, r_true in [
+        (1000000268569, 3),
+        (1000000270081, 3),
+        (1000000334881, 3),
+        (1000000429801, 7),
+    ]:
+        r_min = next(
+            r
+            for r in range(3, 400, 4)
+            if (n + r) % 4 == 0 and solve_residual(n, r) is not None
+        )
+        assert r_min == r_true, f"{n}: got R={r_min}, expected {r_true}"
+
+
+def test_factorize_matches_reference_above_the_cliff():
+    """`factorize` agrees with a reference factorization well past 1.296e11."""
+    from erdos_straus import bulk_generate as bg
+
+    bg._init_small_primes()
+    for a in (2 * 10**11 + 1, 2 * 10**11 + 3, 249999999989, 200003**2, 200003 * 200009):
+        f = bg.factorize(a)
+        prod = 1
+        for q, e in f.items():
+            prod *= q**e
+            assert bg._is_prime(q), f"{q} is not prime"
+        assert prod == a

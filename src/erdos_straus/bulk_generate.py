@@ -62,17 +62,90 @@ def _init_small_primes(bound: int = 180000) -> None:
     _SMALL_PRIMES = [i for i in range(2, bound + 1) if sieve[i]]
 
 
-def factorize(a: int) -> Dict[int, int]:
-    """Full prime factorization of ``a`` by trial division.
+def _is_prime(n: int) -> bool:
+    """Deterministic Miller-Rabin (valid for n < 3.3e24)."""
+    if n < 2:
+        return False
+    for p in (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37):
+        if n % p == 0:
+            return n == p
+    d, s = n - 1, 0
+    while d % 2 == 0:
+        d //= 2
+        s += 1
+    for a in (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37):
+        x = pow(a, d, n)
+        if x == 1 or x == n - 1:
+            continue
+        for _ in range(s - 1):
+            x = x * x % n
+            if x == n - 1:
+                break
+        else:
+            return False
+    return True
 
-    Assumes ``a`` is small enough that its largest prime factor's square
-    either divides out or leaves a prime remainder within the small-prime
-    table's reach (true for a < ~(max small prime)^2).
+
+def _pollard_rho(n: int) -> int:
+    """A nontrivial factor of composite ``n`` (Brent's variant)."""
+    if n % 2 == 0:
+        return 2
+    from math import gcd
+
+    c = 1
+    while True:
+        x = y = 2
+        d = 1
+        while d == 1:
+            x = (x * x + c) % n
+            y = (y * y + c) % n
+            y = (y * y + c) % n
+            d = gcd(abs(x - y), n)
+        if d != n:
+            return d
+        c += 1
+
+
+def _factor_cofactor(n: int, factors: Dict[int, int]) -> None:
+    """Factor ``n`` (no prime factor within the small-prime table) into
+    ``factors``, using Miller-Rabin + Pollard-rho."""
+    stack = [n]
+    while stack:
+        m = stack.pop()
+        if m == 1:
+            continue
+        if _is_prime(m):
+            factors[m] = factors.get(m, 0) + 1
+            continue
+        d = _pollard_rho(m)
+        stack.append(d)
+        stack.append(m // d)
+
+
+def factorize(a: int) -> Dict[int, int]:
+    """Full prime factorization of ``a``.
+
+    Trial division against the small-prime table, then --- if the table
+    is exhausted before ``p*p > n``, so that the surviving cofactor is
+    *not* certified prime by the trial division alone --- Miller-Rabin
+    and Pollard-rho on the cofactor.
+
+    That fallback is what makes this function correct for every ``a``.
+    Trial division alone certifies the cofactor prime only while
+    ``a < (max small prime)^2``; with the default table that is
+    ``a < 3.24e10``, i.e. ``n < 1.296e11`` in the census. Above that a
+    cofactor which is a product of two primes both beyond the table was
+    silently recorded as prime, so the divisor set of ``m^2`` came out
+    incomplete and ``solve_residual`` could miss a certificate that
+    exists --- overstating the minimal residual. See
+    ``tests/test_solver.py::test_factorize_past_small_prime_table``.
     """
     factors: Dict[int, int] = {}
     n = a
+    exhausted = True
     for p in _SMALL_PRIMES:
         if p * p > n:
+            exhausted = False
             break
         if n % p == 0:
             e = 0
@@ -81,7 +154,11 @@ def factorize(a: int) -> Dict[int, int]:
                 e += 1
             factors[p] = e
     if n > 1:
-        factors[n] = factors.get(n, 0) + 1
+        if exhausted:
+            # the table ran out before certifying `n` prime
+            _factor_cofactor(n, factors)
+        else:
+            factors[n] = factors.get(n, 0) + 1
     return factors
 
 
