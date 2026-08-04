@@ -688,3 +688,94 @@ def test_type_I_admissibility_vacuity_counterexample():
         assert a % 2 == 1 and a % 3 == 0
         # so a always has a prime factor that is a non-residue mod r1:
         assert not all(jacobi(u % r1, r1) == 1 for u in factorize(a))
+
+
+def test_admissibility_predicate_detects_class_forced_vacuity():
+    """The vacuity mechanism of Remark 5.9 as reported by the shipped
+    predicate (the test above checks the same arithmetic by hand; this one
+    checks that burgess_scan.admissibility actually implements it).  For
+    q = 23, R0 = 35 the only r1 = 3 (mod 4) candidate is 7; it passes (A1)
+    and its 2-adic clause is vacuous (a odd), yet the CLASS forces 3 | a
+    and (3|7) = -1, so (A2) fails and the counted family is empty.  The
+    forcing is a property of the class, not of the sample prime: 3 is
+    reported as forced because p = -R0 (mod 3) holds for every hard prime
+    (p = 1 mod 3, 35 = 2 mod 3), and M = 840*11*13*17*19*23 is divisible
+    by 3, so the residue is fixed across the class."""
+    from erdos_straus.bulk_generate import _init_small_primes
+    from erdos_straus.burgess_scan import (admissibility, class_modulus,
+                                           forced_small_primes)
+
+    _init_small_primes()
+    q, R0, r1 = 23, 35, 7
+    M = class_modulus(q)
+    assert M == 840 * 11 * 13 * 17 * 19 * 23
+    assert M % 3 == 0            # the class fixes p mod 3 -> 3 is decidable
+    for p in [320401, 499801, 712321, 742681, 830449, 1109761]:
+        rec = admissibility(p)
+        assert (rec["q"], rec["R0"]) == (q, R0)
+        assert rec["M"] == M
+        # 3 and q = 23 are forced for the whole class; 3 is the killer.
+        forced = forced_small_primes(p, R0, q)
+        assert rec["forced_small_primes"] == forced
+        assert 3 in forced and q in forced and 2 not in forced
+        assert forced == [ell for ell in [2, 3, 5, 7, 11, 13, 17, 19, 23]
+                          if rec["a"] % ell == 0]
+        (cand,) = rec["r1_candidates"]     # 5 is 1 mod 4, so only r1 = 7
+        assert cand["r1"] == r1
+        assert cand["A1"] is True          # (23|7) = +1
+        assert cand["two_adic_ok"] is True  # a odd: ell = 2 says nothing
+        assert cand["A2"] is False and 3 in cand["A2_violations"]
+        assert cand["nonempty"] is False
+        # (A1) alone counts this rung; the corrected predicate does not.
+        assert rec["A1"] is True
+        assert rec["nonempty_family"] is False
+        assert rec["a3_as_printed"] is False
+        assert rec["selected_r1"] is None
+
+
+def test_burgess_admissibility_archive_headline_counts():
+    """The Theorem 5.8 availability census (Remark 5.9): among the 39,391
+    hard primes below 2e7, 2,593 first rungs (6.6%) pass (A1) alone but
+    only 9 (0.023%) have a NONEMPTY family under (A1)-(A3), split 5 case A
+    / 0 case B / 4 mixed.  The archive also records the one figure that
+    does NOT reproduce: R0 is prime for 65.2% of first rungs, not the
+    93.4% quoted -- 93.4% = 100% - 6.6% is the share with no r1 passing
+    (A1) at all, of which prime R0 is a strict subset."""
+    path = DATA_DIR / "analysis" / "burgess_admissibility.json"
+    with open(path) as fh:
+        archive = json.load(fh)
+    assert archive["limit"] == 20_000_000
+    assert archive["hard_primes"] == 39_391
+    c = archive["counts"]
+    assert c["A1_only"] == 2_593
+    assert round(c["A1_only_share"], 3) == 0.066
+    assert c["nonempty_family"] == 9
+    assert round(100 * c["nonempty_family_share"], 3) == 0.023
+    assert c["case_split"] == {"A": 5, "B": 0, "mixed": 4}
+    # (A3) exactly as printed keeps only cases A and B.
+    assert c["a3_as_printed"] == 5
+    assert c["primes_with_two_nonempty_r1"] == 0
+    assert c["distinct_admissible_classes_q_R0_r1"] == 4
+    # The corrected reading is a 285-fold thinning of the old statistic.
+    assert c["A1_only"] > 280 * c["nonempty_family"]
+    # R0 prime is never admissible, and is NOT the 93.4% class.
+    assert c["R0_prime"] == 25_700
+    assert round(c["R0_prime_share"], 3) == 0.652
+    assert c["no_r1_candidate_passing_A1"] == 39_391 - 2_593
+    assert round(c["no_r1_candidate_passing_A1_share"], 3) == 0.934
+    assert c["R0_prime"] < c["no_r1_candidate_passing_A1"]
+    checks = archive["paper_comparison"]["checks"]
+    assert checks["R0_prime_share"]["agrees"] is False
+    assert all(v["agrees"] for k, v in checks.items()
+               if k != "R0_prime_share")
+    # the two exemplars named in THEORY.md 2.10
+    ex = {e["p"]: e for e in archive["exemplars"]}
+    assert ex[5_544_361]["case"] == "A"
+    assert (ex[5_544_361]["q"], ex[5_544_361]["R0"],
+            ex[5_544_361]["r1"]) == (31, 51, 3)
+    assert ex[5_505_361]["case"] == "mixed"
+    assert (ex[5_505_361]["q"], ex[5_505_361]["R0"],
+            ex[5_505_361]["r1"]) == (37, 91, 7)
+    assert set(archive["definitions"]) >= {"forced", "A1", "A2",
+                                           "A3_as_printed",
+                                           "nonempty_family"}

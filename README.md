@@ -46,7 +46,9 @@ src/erdos_straus/
                        bound verifiers (DP), aggregate identities, models
   parametric_search.py fixed-residual parametric experiments per hard class
   burgess_scan.py      Burgess/reciprocity-route census: least non-residue,
-                       selected residuals, purity + ladder scans (THEORY 2.10)
+                       selected residuals, purity + ladder scans, and the
+                       Theorem 5.8 admissibility predicate/census
+                       (forced_small_primes, admissibility) (THEORY 2.10)
   branch_enum.py       branch enumeration: maximal failing supports and
                        two-sided window containers C(K,W) (THEORY 2.12)
   verify.py            independent verification (JSON, minimal-R maps, npz)
@@ -75,6 +77,15 @@ data/
     burgess_proxy_1e9.json             proxy / Hypothesis-P measurement
                                        at 10^9
     burgess_proxy_scaled.json          scaled proxy measurement (10^9-10^11)
+    burgess_admissibility.json         Theorem 5.8 (A1)-(A3) availability
+                                       census of the first rungs below
+                                       2*10^7: 2,593/39,391 pass (A1) alone
+                                       but only 9 have a nonempty family;
+                                       includes the exact predicate used
+                                       and its comparison with Remark 5.9
+                                       (the quoted 93.4% is the no-r1
+                                       share, not the R0-prime share of
+                                       65.2%)
     branch_maximal_supports.json       maximal failing supports per modulus
                                        (R = 19..59 prime, 15/35/39 composite):
                                        counts, size spectra, container-law
@@ -84,7 +95,7 @@ data/
                                        non-Hajos order), sampled to 240;
                                        no violation; beta-vacuity
 tests/
-  test_solver.py       61 tests: units, certificates, theorem checks
+  test_solver.py       63 tests: units, certificates, theorem checks
 paper/
   erdos_straus_residuals.tex/.pdf   the manuscript (39 pp.)
   make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
@@ -191,7 +202,7 @@ repository" button). To mint a versioned DOI: enable this repository at
 [zenodo.org/account/settings/github](https://zenodo.org/account/settings/github)
 (one-time toggle), then publish a GitHub release — Zenodo archives the
 release and issues a DOI automatically, with metadata drawn from
-[`.zenodo.json`](.zenodo.json). CI runs the 61-test suite plus the
+[`.zenodo.json`](.zenodo.json). CI runs the 63-test suite plus the
 proof-component smoke checks on every push; the Lean build has its own
 workflow, triggered by changes under `lean/`.
 
@@ -253,7 +264,10 @@ python -m erdos_straus.analyze tail  --rmap data/hard_primes_1e9_minimalR.json.g
 
 The Burgess-route archives in `data/analysis/` (`burgess_*.json`) are
 regenerated via the `python -m erdos_straus.burgess_scan` CLI (see
-`python -m erdos_straus.burgess_scan --help`). The branch-enumeration
+`python -m erdos_straus.burgess_scan --help`); the availability census
+behind Theorem 5.8 / Remark 5.9 is
+`python -m erdos_straus.burgess_scan admissibility` (seconds). The
+branch-enumeration
 archive (`branch_maximal_supports.json`) is refreshed per modulus with
 `python -m erdos_straus.branch_enum census R [R ...]` (R ≤ 47 runs in
 minutes; R = 59 takes ~20–30 min pure-Python).

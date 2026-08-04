@@ -24,6 +24,11 @@ ground-truth masks:
   * dichotomy_config_scan — exact generic configuration-space verdicts
                         for prime R via finite_criterion_dp: a residual
                         with no odd-failure states is pure a fortiori.
+  * admissibility_census — how many first rungs the lower-bound theorem
+                        of §5 (paper Thm 5.8, THEORY.md §2.10) actually
+                        reaches: the (A1)–(A3) admissibility predicate on
+                        the class c mod M, and in particular whether the
+                        family it counts is nonempty.
 
 Outputs are archived under data/analysis/burgess_scan_1e9.json.
 
@@ -45,6 +50,9 @@ subcommand that regenerates it (``python -m erdos_straus.burgess_scan
                    Hypothesis-P proxy-ratio scan on the 10^9 masks.
   proxy-scaled  -> data/analysis/burgess_proxy_scaled.json
                    Mask-free Hypothesis-P scan on window samples to 10^11.
+  admissibility -> data/analysis/burgess_admissibility.json
+                   Theorem 5.8 (A1)-(A3) admissibility census of the
+                   first rungs below 2*10^7 (Remark 5.9's figures).
 
 Invoking the module with no arguments runs ``census`` (the historical
 behavior).
@@ -604,6 +612,281 @@ def proxy_ratio_scan_scaled(primes: List[int], workers: int = 4,
             "secs": round(time.time() - t0, 1)}
 
 
+# --- Admissibility of a first rung (paper Thm 5.8 / Rem 5.9) --------------
+#
+# Theorem 5.8 (THEORY.md §2.10, the corrected "Theorem P1") gives an
+# unconditional lower bound #E_0(x) >> x/(log x)^{3/2} on the failures of
+# the FIRST rung, but only on classes c mod M — M = 840·∏_{11≤ℓ≤q} ℓ, the
+# modulus of the proof of Theorem B_1 — that are *admissible*: R_0 must
+# have a prime factor r_1 ≡ 3 (mod 4) with
+#
+#   (A1) (q|r_1) = +1;
+#   (A2) (ℓ|r_1) = +1 for EVERY prime ℓ ≤ q that the class forces to
+#        divide a = (p+R_0)/4;
+#   (A3) either r_1 ≡ 3 (mod 8) with a odd, or r_1 ≡ 7 (mod 8) with a even.
+#
+# (A2) is the clause whose omission made the printed "P1" false: the
+# counted family is {p ≡ c : every prime factor of a is a QR mod r_1}, and
+# a single class-forced ℓ with (ℓ|r_1) = −1 empties it (Remark 5.9's
+# q = 23, R_0 = 35, r_1 = 7 example).  This section makes the predicate and
+# its census reproducible; the archive is burgess_admissibility.json.
+#
+# Two structural remarks the code leans on:
+#   * q | a always (that is how R_0 is selected), so (A1) is precisely the
+#     ℓ = q instance of (A2);
+#   * hard primes are ≡ 1 (mod 8), so a is even iff R_0 ≡ 7 (mod 8), and
+#     the ℓ = 2 instance of (A2) — (2|r_1) = +1 whenever 2 | a, i.e.
+#     r_1 ≡ 7 (mod 8) whenever a is even — is what (A3) encodes.  (A3) as
+#     printed is strictly stronger than that ℓ = 2 instance: it also
+#     discards the "mixed" configuration r_1 ≡ 7 (mod 8) with a odd, which
+#     is 2-adically fine but falls outside the citable form of [FHRSS].
+#     Both counts are reported; see `definitions` in the archive.
+#
+# If R_0 is prime then its only prime factor is r_1 = R_0, and Theorem J
+# gives (q|R_0) = (p|q) = −1 (q | a and R_0 ≡ 3 mod 4), so (A1) fails
+# outright: prime R_0 is never admissible.
+
+# 2 together with the odd primes of the least-non-residue table.
+_PRIMES_TO_113 = (2,) + tuple(_Q_CANDIDATES)
+
+
+def class_modulus(q: int) -> int:
+    """M = 840·∏_{11 ≤ ℓ ≤ q} ℓ, the modulus of the proof of Theorem B_1:
+    the condition q(p) = q is a union of classes mod M, and fixing one
+    fixes R_0 and every residue p mod ℓ for ℓ ≤ q."""
+    M = 840
+    for ell in _Q_CANDIDATES:
+        if 11 <= ell <= q:
+            M *= ell
+    return M
+
+
+def forced_small_primes(p: int, R0: int, q: int) -> List[int]:
+    """The primes ℓ ≤ q that the class of p modulo M = class_modulus(q)
+    FORCES to divide a = (p + R_0)/4 — the ℓ's quantified over in (A2).
+
+    Interpretation (this is what "forced by the class" means, and it is
+    the whole content of clause (A2)).  A prime ℓ divides a for ALL primes
+    in the class c = p mod M, not merely for this one, iff the class fixes
+    p mod ℓ and p ≡ −R_0 (mod ℓ).  Concretely, since 4 is invertible mod
+    every odd ℓ,
+
+        ℓ | a  ⟺  p ≡ −R_0 (mod ℓ)      (ℓ odd),
+        2 | a  ⟺  p ≡ −R_0 (mod 8)      (ℓ = 2, because a = (p+R_0)/4),
+
+    and M = 840·∏_{11 ≤ ℓ ≤ q} ℓ is divisible by 8 and by every odd prime
+    ℓ ≤ q (840 = 2³·3·5·7 supplies 2, 3, 5, 7).  So for every prime ℓ ≤ q
+    the condition is constant on the class — true for all of it or for
+    none of it — and is decidable from the single representative p.  That
+    is why a per-prime computation answers a per-class question here, and
+    why (A2) is checkable at all.
+
+    Primes ℓ > q are NOT forced: the class says nothing about p mod ℓ, so
+    such an ℓ divides a for some members of the class and not others, and
+    imposes no condition on r_1.
+
+    Two entries deserve names: ℓ = q is always present (q | a by the
+    construction of R_0), so (A1) is exactly the ℓ = q instance; and
+    ℓ = 2 is present iff R_0 ≡ 7 (mod 8) (hard primes are ≡ 1 mod 8), the
+    instance that (A3) encodes.
+    """
+    out: List[int] = []
+    for ell in _PRIMES_TO_113:
+        if ell > q:
+            break
+        if (p + R0) % (8 if ell == 2 else ell) == 0:
+            out.append(ell)
+    return out
+
+
+def admissibility(p: int) -> Dict:
+    """The Theorem 5.8 admissibility record of p's first rung.
+
+    Returns q, R_0, a, the class-forced small primes, and one sub-record
+    per candidate r_1 (prime factor of R_0 with r_1 ≡ 3 mod 4) carrying
+    (A1), (A2), the 2-adic verdicts and the resulting 2-adic case:
+
+      "A"        r_1 ≡ 3 (mod 8), a odd   — (A3) as printed
+      "B"        r_1 ≡ 7 (mod 8), a even  — (A3) as printed
+      "mixed"    r_1 ≡ 7 (mod 8), a odd   — 2-adically admissible (2 ∤ a,
+                 so ℓ = 2 imposes nothing) but outside (A3) as printed
+      "excluded" r_1 ≡ 3 (mod 8), a even  — (2|r_1) = −1 with 2 | a: the
+                 family is empty
+
+    ``nonempty`` is (A1) ∧ (A2) ∧ (the ℓ = 2 instance), i.e. every
+    class-forced prime is a QR mod r_1 — the exact condition for the
+    counted family to be nonempty.  ``a3_as_printed`` additionally demands
+    case A or case B.  The top-level summary flags are the existential
+    over the candidates.
+    """
+    q = least_legendre_nonresidue(p)
+    assert q is not None, p
+    R0 = selected_residual(p, q)
+    a = (p + R0) // 4
+    a_even = a % 2 == 0
+    forced = forced_small_primes(p, R0, q)
+    fR0 = factorize(R0)
+    cands: List[Dict] = []
+    for r1 in sorted(fR0):
+        if r1 % 4 != 3:
+            continue
+        a1 = jacobi(q % r1, r1) == 1
+        bad = [ell for ell in forced
+               if ell != 2 and jacobi(ell % r1, r1) != 1]
+        a2 = not bad
+        two_adic = (not a_even) or r1 % 8 == 7
+        if r1 % 8 == 3:
+            case = "A" if not a_even else "excluded"
+        else:
+            case = "B" if a_even else "mixed"
+        a3 = case in ("A", "B")
+        cands.append({
+            "r1": r1, "A1": a1, "A2": a2, "A2_violations": bad,
+            "two_adic_ok": two_adic, "A3_as_printed": a3, "case": case,
+            "nonempty": a1 and a2 and two_adic,
+            "a3_as_printed_pass": a1 and a2 and a3,
+        })
+    ok = [c for c in cands if c["nonempty"]]
+    return {
+        "p": p, "q": q, "M": class_modulus(q), "R0": R0, "a": a,
+        "a_even": a_even,
+        "R0_factors": {str(k): v for k, v in sorted(fR0.items())},
+        "R0_prime": len(fR0) == 1 and next(iter(fR0.values())) == 1,
+        "forced_small_primes": forced,
+        "r1_candidates": cands,
+        "A1": any(c["A1"] for c in cands),
+        "nonempty_family": bool(ok),
+        "a3_as_printed": any(c["a3_as_printed_pass"] for c in cands),
+        "selected_r1": ok[0]["r1"] if ok else None,
+        "case": ok[0]["case"] if ok else None,
+        "n_nonempty_candidates": len(ok),
+    }
+
+
+_ADMISSIBILITY_DEFINITIONS = {
+    "hard_prime": "prime p with p mod 840 in {1,121,169,289,361,529}",
+    "q": "least prime with Legendre (p|q) = -1 (least_legendre_nonresidue)",
+    "R0": "least R > 0 with R = -p (mod 4q) (selected_residual); "
+          "R0 = 3 (mod 4) and q | a = (p+R0)/4",
+    "class_modulus_M": "840 * prod(primes 11 <= ell <= q); the class "
+                       "c = p mod M fixes q, R0 and p mod ell for all "
+                       "ell <= q",
+    "forced": "prime ell <= q divides a for EVERY p in the class c mod M; "
+              "equivalently p = -R0 (mod ell) for odd ell, p = -R0 "
+              "(mod 8) for ell = 2. Primes ell > q are never forced.",
+    "r1_candidates": "ALL prime factors r1 of R0 with r1 = 3 (mod 4); "
+                     "admissibility is the existential over them",
+    "A1": "(q|r1) = +1  [= the ell = q instance of (A2), since q | a "
+          "always]",
+    "A2": "(ell|r1) = +1 for every forced odd ell <= q (q included); a "
+          "forced ell = r1 counts as a violation, (r1|r1) = 0",
+    "A3_as_printed": "r1 = 3 (mod 8) with a odd, or r1 = 7 (mod 8) with "
+                     "a even",
+    "two_adic_ok": "the ell = 2 instance of (A2): (2|r1) = +1 whenever "
+                   "2 | a, i.e. r1 = 7 (mod 8) whenever a is even. "
+                   "Weaker than A3_as_printed: it also admits the "
+                   "'mixed' case r1 = 7 (mod 8) with a odd.",
+    "nonempty_family": "A1 and A2 and two_adic_ok - the exact condition "
+                       "for {p = c (mod M) : every prime factor of a is "
+                       "a QR mod r1} to be nonempty, since a violation "
+                       "at a forced ell puts that ell in every member's "
+                       "factorization",
+    "case_split": "2-adic configuration of the selected r1: A (r1 = 3 "
+                  "mod 8, a odd) / B (r1 = 7 mod 8, a even) / mixed "
+                  "(r1 = 7 mod 8, a odd) / excluded (r1 = 3 mod 8, a "
+                  "even, family empty)",
+    "counting_unit": "one hard prime = one first rung; primes sharing a "
+                     "class mod M give identical verdicts, so shares are "
+                     "shares of first rungs exactly as in Remark 5.9",
+}
+
+
+def admissibility_census(limit: int = 2 * 10**7,
+                         primes: Optional[List[int]] = None,
+                         progress: bool = True,
+                         max_exemplars: int = 50) -> Dict:
+    """Census of Theorem 5.8 admissibility over the hard primes p ≤ limit.
+
+    Aggregates: total hard primes; how many first rungs pass (A1) alone;
+    how many have a NONEMPTY family (A1 ∧ (A2) ∧ the ℓ = 2 instance); how
+    many additionally satisfy (A3) exactly as printed; the 2-adic case
+    split; and how many have R_0 prime (for which no r_1 exists at all).
+    """
+    _init_small_primes()
+    t0 = time.time()
+    if primes is None:
+        from erdos_straus.bulk_generate import hard_primes_upto
+        primes = hard_primes_upto(limit)
+    n = len(primes)
+    n_a1 = n_nonempty = n_a3 = n_r0_prime = n_no_r1 = n_multi = 0
+    cases: Dict[str, int] = {"A": 0, "B": 0, "mixed": 0}
+    q_hist: Dict[int, int] = {}
+    r0_hist_a1: Dict[int, int] = {}
+    classes = set()
+    exemplars: List[Dict] = []
+    for i, p in enumerate(primes):
+        rec = admissibility(p)
+        q_hist[rec["q"]] = q_hist.get(rec["q"], 0) + 1
+        if rec["R0_prime"]:
+            n_r0_prime += 1
+        if rec["A1"]:
+            n_a1 += 1
+            r0_hist_a1[rec["R0"]] = r0_hist_a1.get(rec["R0"], 0) + 1
+        else:
+            n_no_r1 += 1
+        if rec["nonempty_family"]:
+            n_nonempty += 1
+            cases[rec["case"]] = cases.get(rec["case"], 0) + 1
+            classes.add((rec["q"], rec["R0"], rec["selected_r1"]))
+            if rec["n_nonempty_candidates"] > 1:
+                n_multi += 1
+            if len(exemplars) < max_exemplars:
+                exemplars.append({
+                    "p": p, "q": rec["q"], "R0": rec["R0"],
+                    "r1": rec["selected_r1"], "case": rec["case"],
+                    "a": rec["a"],
+                    "a_factors": {str(k): v for k, v in
+                                  sorted(factorize(rec["a"]).items())},
+                    "forced_small_primes": rec["forced_small_primes"],
+                    "A3_as_printed": rec["a3_as_printed"],
+                })
+        if rec["a3_as_printed"]:
+            n_a3 += 1
+        if progress and (i + 1) % 5000 == 0:
+            print(f"[admissibility] {i+1:,}/{n:,} "
+                  f"({time.time()-t0:.0f}s, A1 {n_a1}, "
+                  f"nonempty {n_nonempty})", flush=True)
+
+    def share(k: int) -> Optional[float]:
+        return k / n if n else None
+
+    return {
+        "limit": limit,
+        "hard_primes": n,
+        "definitions": _ADMISSIBILITY_DEFINITIONS,
+        "counts": {
+            "A1_only": n_a1,
+            "A1_only_share": share(n_a1),
+            "nonempty_family": n_nonempty,
+            "nonempty_family_share": share(n_nonempty),
+            "a3_as_printed": n_a3,
+            "a3_as_printed_share": share(n_a3),
+            "case_split": cases,
+            "R0_prime": n_r0_prime,
+            "R0_prime_share": share(n_r0_prime),
+            "no_r1_candidate_passing_A1": n_no_r1,
+            "no_r1_candidate_passing_A1_share": share(n_no_r1),
+            "distinct_admissible_classes_q_R0_r1": len(classes),
+            "primes_with_two_nonempty_r1": n_multi,
+        },
+        "admissible_classes": sorted(list(c) for c in classes),
+        "exemplars": exemplars,
+        "q_histogram": dict(sorted(q_hist.items())),
+        "R0_histogram_A1": dict(sorted(r0_hist_a1.items())),
+        "secs": round(time.time() - t0, 1),
+    }
+
+
 # --- CLI: regeneration of the data/analysis archives -----------------------
 
 _MASKS_1E9 = "data/analysis/residual_masks_1e9.json.gz"
@@ -787,6 +1070,89 @@ def _cmd_proxy_scaled(args: argparse.Namespace) -> int:
     return 0
 
 
+# Figures quoted in paper Remark 5.9 / THEORY.md §2.10, recorded verbatim
+# so the archive states what it was checked against.
+_PAPER_FIGURES = {
+    "hard_primes": 39391,
+    "A1_only": 2593,
+    "A1_only_share": 0.066,
+    "nonempty_family": 9,
+    "nonempty_family_share": 0.00023,
+    "case_split": {"A": 5, "B": 0, "mixed": 4},
+    "R0_prime_share": 0.934,
+}
+
+
+def _cmd_admissibility(args: argparse.Namespace) -> int:
+    """Regenerate burgess_admissibility.json."""
+    result = admissibility_census(limit=args.limit,
+                                  max_exemplars=args.max_exemplars)
+    c = result["counts"]
+    print(f"\nhard primes <= {args.limit:,}: {result['hard_primes']:,}",
+          flush=True)
+    print(f"  (A1) alone           : {c['A1_only']:,} "
+          f"({100*c['A1_only_share']:.2f}%)", flush=True)
+    print(f"  nonempty family      : {c['nonempty_family']:,} "
+          f"({100*c['nonempty_family_share']:.4f}%)", flush=True)
+    print(f"  (A3) exactly as printed: {c['a3_as_printed']:,}", flush=True)
+    print(f"  case split           : {c['case_split']}", flush=True)
+    print(f"  R0 prime             : {c['R0_prime']:,} "
+          f"({100*c['R0_prime_share']:.2f}%)", flush=True)
+    print(f"  no r1 passing (A1)   : "
+          f"{c['no_r1_candidate_passing_A1']:,} "
+          f"({100*c['no_r1_candidate_passing_A1_share']:.2f}%)", flush=True)
+
+    # Honest comparison against the printed figures.
+    comp: Dict[str, object] = {"quoted": _PAPER_FIGURES, "checks": {}}
+
+    def chk(key, computed, quoted, tol):
+        ok = abs(computed - quoted) <= tol
+        comp["checks"][key] = {"computed": computed, "quoted": quoted,
+                               "agrees": ok}
+        return ok
+    chk("hard_primes", result["hard_primes"],
+        _PAPER_FIGURES["hard_primes"], 0)
+    chk("A1_only", c["A1_only"], _PAPER_FIGURES["A1_only"], 0)
+    chk("A1_only_share", round(c["A1_only_share"], 4),
+        _PAPER_FIGURES["A1_only_share"], 5e-4)
+    chk("nonempty_family", c["nonempty_family"],
+        _PAPER_FIGURES["nonempty_family"], 0)
+    chk("R0_prime_share", round(c["R0_prime_share"], 4),
+        _PAPER_FIGURES["R0_prime_share"], 5e-4)
+    comp["checks"]["case_split"] = {
+        "computed": c["case_split"], "quoted": _PAPER_FIGURES["case_split"],
+        "agrees": c["case_split"] == _PAPER_FIGURES["case_split"]}
+    comp["notes"] = [
+        "(A3) as PRINTED (case A or case B only) is satisfied by "
+        f"{c['a3_as_printed']} first rungs, not "
+        f"{_PAPER_FIGURES['nonempty_family']}: the quoted headline count "
+        "includes the 'mixed' configuration r1 = 7 (mod 8) with a odd, "
+        "which is 2-adically admissible (2 does not divide a, so ell = 2 "
+        "imposes no condition) but is not one of the two cases (A3) "
+        "lists. The quoted case split names those 4 mixed rungs "
+        "explicitly, so the headline count is the nonempty-family count "
+        "reported here.",
+        "The quoted 'R0 is prime for 93.4% of hard primes' does NOT "
+        f"match: R0 is prime for {c['R0_prime']:,} of "
+        f"{result['hard_primes']:,} first rungs = "
+        f"{100*c['R0_prime_share']:.1f}%. 93.4% is exactly "
+        f"100% - 6.6% = the share of first rungs with NO r1 passing "
+        f"(A1) ({c['no_r1_candidate_passing_A1']:,}/"
+        f"{result['hard_primes']:,} = "
+        f"{100*c['no_r1_candidate_passing_A1_share']:.1f}%). Prime R0 is "
+        "a strict subset of that: prime R0 always fails (A1) (its only "
+        "prime factor is r1 = R0, and Theorem J gives (q|R0) = (p|q) = "
+        "-1), but composite R0 can fail (A1) too.",
+    ]
+    result["paper_comparison"] = comp
+    for key, v in comp["checks"].items():
+        flag = "ok " if v["agrees"] else "MISMATCH"
+        print(f"  [{flag}] {key}: computed {v['computed']} vs quoted "
+              f"{v['quoted']}", flush=True)
+    _write_json(result, args.out)
+    return 0
+
+
 def _add_masks_out(sp: argparse.ArgumentParser, default_out: str) -> None:
     sp.add_argument("--masks", default=_MASKS_1E9,
                     help=f"ground-truth mask archive (default: {_MASKS_1E9})")
@@ -890,6 +1256,30 @@ def main(argv: Optional[List[str]] = None) -> int:
                     help="output JSON path (default: "
                          "data/analysis/burgess_proxy_scaled.json)")
     sp.set_defaults(func=_cmd_proxy_scaled)
+
+    sp = sub.add_parser(
+        "admissibility",
+        help="regenerate burgess_admissibility.json (Theorem 5.8 "
+             "admissibility census of first rungs)",
+        description="Census of the paper's Theorem 5.8 admissibility "
+                    "conditions (A1)-(A3) over the hard primes below the "
+                    "limit: how many first rungs pass (A1) alone, how "
+                    "many have a NONEMPTY counted family, the 2-adic "
+                    "case split, and how many have R0 prime. Reproduces "
+                    "data/analysis/burgess_admissibility.json and "
+                    "records its comparison against the figures quoted "
+                    "in Remark 5.9.")
+    sp.add_argument("--limit", type=int, default=2 * 10**7,
+                    help="upper bound on hard primes (default: 2e7, the "
+                         "range quoted in Remark 5.9)")
+    sp.add_argument("--max-exemplars", type=int, default=50,
+                    help="admissible first rungs recorded in full "
+                         "(default: 50)")
+    sp.add_argument("--out",
+                    default="data/analysis/burgess_admissibility.json",
+                    help="output JSON path (default: "
+                         "data/analysis/burgess_admissibility.json)")
+    sp.set_defaults(func=_cmd_admissibility)
 
     if argv is None:
         argv = sys.argv[1:]

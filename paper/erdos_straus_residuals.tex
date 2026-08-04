@@ -1906,10 +1906,12 @@ requirement than it first appears.
 Call a class $c \bmod M$ \textup{(}$M$ as in the proof of
 Theorem~\ref{thm:B1}\textup{)} \emph{admissible} if $R_0$ has a
 prime factor $r_1 \equiv 3 \pmod 4$ with
-\textup{(A1)} $\legendre{q}{r_1} = +1$;
-\textup{(A2)} $\legendre{\ell}{r_1} = +1$ for \emph{every} prime
-$\ell \le q$ that the class forces to divide $a$;
-\textup{(A3)} either $r_1 \equiv 3 \pmod 8$ with $a$ odd, or
+\textup{(A1)} $\legendre{\ell}{r_1} = +1$ for \emph{every} prime
+$\ell \le q$ that the class forces to divide $a$ --- equivalently,
+every $\ell$ with $p \equiv -R_0 \pmod \ell$ for odd $\ell$, and
+$\ell = 2$ exactly when $R_0 \equiv 7 \pmod 8$; the case $\ell = q$
+is always present and gives $\legendre{q}{r_1} = +1$;
+\textup{(A2)} $r_1 \equiv 3 \pmod 8$ with $a$ odd, or
 $r_1 \equiv 7 \pmod 8$ with $a$ even.
 On every admissible class,
 \[
@@ -1930,9 +1932,13 @@ $a \equiv 4^{-1}p$, so every divisor of $m^2$ is a residue while
 $\legendre{-m}{r_1} = \legendre{-1}{r_1} = -1$. For the count, apply
 \eqref{eq:normform} and~\cite{IwaniecPhiA} with $A = -R_0$,
 $B = 4\prod_{\ell \mid a,\ \ell \le q} \ell$ and discriminant
-$-r_1$; condition~\textup{(A3)} is what makes the $2$-adic
-constraint solvable, and~\textup{(A2)} is what makes the family
-nonempty. One point is not a routine citation: the sieve delivers
+$-r_1$; \textup{(A1)} is what makes the family nonempty.
+Condition~\textup{(A2)} is not needed for $2$-adic solvability ---
+that is already the $\ell = 2$ instance of \textup{(A1)} --- but
+for citability: it is the range covered by~\cite[Thm.~1.1]{FHRSS}
+below. The remaining case $r_1 \equiv 7 \pmod 8$ with $a$ odd is
+arithmetically fine and we expect the conclusion there too, but it
+sits outside the published statement we can cite. One point is not a routine citation: the sieve delivers
 representability by \emph{some} form of the discriminant --- non-split
 primes occurring to even multiplicity --- whereas
 \eqref{eq:normform} needs \emph{primitive} representability, no
@@ -1943,21 +1949,27 @@ here fall under their Theorem~1.1.
 \end{proof}
 
 \begin{remark}[how much of the ladder this reaches]\label{rem:P1scope}
-Condition \textup{(A2)} is restrictive in a way that is easy to miss:
+Condition \textup{(A1)} is restrictive in a way that is easy to miss:
 the class fixes $a$ modulo every prime $\le q$, so a single forced
 factor $\ell$ with $\legendre{\ell}{r_1} = -1$ empties the family.
-For instance $q = 23$, $R_0 = 35$, $r_1 = 7$ satisfies
-\textup{(A1)}, but $3 \mid a$ for every hard prime (as
+For instance $q = 23$, $R_0 = 35$, $r_1 = 7$ satisfies the
+$\ell = q$ instance of \textup{(A1)}, but $3 \mid a$ for every hard
+prime (as
 $p \equiv 1 \pmod 3$ and $35 \equiv 2 \pmod 3$) while
 $\legendre{3}{7} = -1$: the set is empty. Counting properly, among
-hard primes below $2 \times 10^7$ the classes passing
-\textup{(A1)} account for $6.6\%$ of first rungs, but those passing
-\textup{(A1)}--\textup{(A3)} with a nonempty family account for only
-$0.023\%$. Theorem~\ref{thm:P1} is therefore an existence statement
-about a sparse family of ladders, not a bound covering a positive
-proportion of them; and whenever $R_0$ is prime --- which is the
-case for the large majority of hard primes --- no $r_1$ of this kind
-exists at all. Consequently the bracket on Hypothesis~\ref{hyp:P}
+the $39{,}391$ hard primes below $2 \times 10^7$ the classes passing
+the $\ell = q$ instance alone account for $6.6\%$ of first rungs
+($2{,}593$), those with a nonempty family for $0.023\%$ ($9$, in
+four distinct classes $(q, R_0, r_1)$), and $93.4\%$ admit no
+candidate $r_1$ whatever. Theorem~\ref{thm:P1} is therefore an
+existence statement about a sparse family of ladders, not a bound
+covering a positive proportion of them. One structural reason
+dominates: whenever $R_0$ is prime --- $65.2\%$ of first rungs in
+this range --- its only prime factor is $r_1 = R_0$ itself, and
+Theorem~\ref{thm:J} forces $\legendre{q}{R_0} = \legendre{p}{q} =
+-1$, so no admissible $r_1$ exists by construction. All figures are
+reproduced by \texttt{erdos\_straus.burgess\_scan admissibility}
+and archived. Consequently the bracket on Hypothesis~\ref{hyp:P}
 is two-sided only on that sparse family at rung $0$, and one-sided
 (upper bound only) elsewhere. Theorem~\ref{thm:sharp} is the
 unconditional lower-bound statement of real reach; what
