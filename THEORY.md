@@ -1,7 +1,19 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
+> **Attribution notice (August 2026).** A priority audit established
+> that several results developed below are anticipated in the
+> literature — most importantly the exact criteria at R = 3 and R = 7
+> (Yamamoto 1965, §3), the support theorem as an additive statement
+> (Diderrich–Mann 1973; Freeze–Gao–Geroldinger 2009), the kernel-branch
+> reduction (standard Kneser stabilizer/quotient argument), and the fact
+> that Vaughan's 1970 covering congruences are constructive and hence
+> already yield an almost-all bound on R_min. **Read the "Priority
+> audit" section of STATUS.md alongside this document**; where the two
+> disagree on what is new, STATUS.md and the paper are current and this
+> file is historical.
+
 **Date:** 2026-08-04 (current through PR #58 — the $10^{12}$ census, in
-which the five-decade record R = 107 breaks at **R = 111**, inside the
+which the record R = 107 — unmoved over five orders of magnitude — breaks at **R = 111**, inside the
 decade §6's calibrated model had named; see §5 and §6. Earlier: this
 revision adds
 Theorem S and Theorem A‴; §2.10 adds the Burgess/reciprocity
@@ -1885,7 +1897,7 @@ geometrically. The complete deep tail:
 1. **The gap {87, 91, 95, 99, 103} filled** between 10¹⁰ and 10¹¹,
    as the model predicted (§6).
 2. **The record R = 107 broke at 10¹²**, at R = 111. It had stood since
-   p = 8 803 369 < 10⁷ — five decades, unmoved through 10¹¹. The three
+   p = 8 803 369 < 10⁷ — unmoved through 10¹¹, five orders of magnitude. The three
    primes with R_min = 111 are
 
    | p | p mod 840 | a = (p+111)/4 |
@@ -1975,7 +1987,7 @@ with full minimality; `bad = 0`, `not_minimal = 0`):**
   1.199×10¹¹, just past the previous bound — with a = (p+111)/4 =
   29 986 345 780; every admissible R ≤ 107 fails for it. Three primes
   reach 111; 107 gained three more and is no longer unique. The 27-value
-  list {3, …, 107} that had covered everything for five decades stopped
+  list {3, …, 107} that had covered everything over five orders of magnitude stopped
   covering.
 - **Deep tail: 19 → 73 primes** with R_min ≥ 87. Conditional landing
   distribution vs the model's §5 prediction (predicted / observed share
@@ -1993,7 +2005,7 @@ with full minimality; `bad = 0`, `not_minimal = 0`):**
   right — the band {87…103} filling (at 10¹¹) and the decade of the
   record break (at 10¹²). The first had little discriminating power
   (χ² ≈ 1.3 on 19 points, several expected cells below 5); the second is
-  the substantive one, because "which decade does a five-decade-old
+  the substantive one, because "which decade does a long-static
   record fall in" is a single sharp bit that the model committed to and
   got. It remains a heuristic: nothing here is a theorem about R_max,
   and Theorem K (§2.9) is the only statement in this file about the

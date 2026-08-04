@@ -8,9 +8,8 @@
 \usepackage{booktabs}
 \usepackage[margin=1.1in]{geometry}
 \usepackage[hidelinks]{hyperref}
-\hypersetup{pdftitle={Residual certificates for the Erdos-Straus
-  conjecture: exact solvability criteria, almost-all certificate
-  bounds, and computations to 10\textasciicircum 12},
+\hypersetup{pdftitle={Minimal residual certificates for the
+  Erdos-Straus conjecture: a verified census to 10\textasciicircum 12},
   pdfauthor={J. M. Hopkins}}
 % Break URLs only at slashes, never inside hyphenated path components.
 \def\UrlBreaks{\do\/}
@@ -33,9 +32,9 @@
 \newcommand{\legendre}[2]{\genfrac{(}{)}{}{1}{#1}{#2}}
 \DeclareMathOperator{\ord}{ord}
 
-\title{Residual certificates for the Erd\H{o}s--Straus conjecture:\\
-exact solvability criteria, almost-all certificate bounds,\\
-and computations to $10^{12}$}
+\title{Minimal residual certificates for the\\
+Erd\H{o}s--Straus conjecture:\\
+a verified census to $10^{12}$}
 
 \author{J.~M.\ Hopkins\thanks{Independent researcher.
 \texttt{jeff.m.hopkins@gmail.com}.
@@ -52,37 +51,43 @@ code repository accompanying this paper:
 The Erd\H{o}s--Straus conjecture asserts that $4/n = 1/a+1/b+1/c$ is
 solvable in positive integers for every $n \ge 2$; the open cases
 concentrate on primes in six residue classes mod $840$ (\emph{hard
-primes}). We develop the \emph{residual method}: a solution with first
-denominator $a = (p+R)/4$ exists if and only if some divisor
-$k \mid m^2$, $m = pa$, satisfies $k \equiv -m \pmod R$, and every
-solution arises this way --- so the conjecture at $p$ is exactly a
-bound on the minimal working residual $R_{\min}(p)$. The paper's
-central theorem is a \emph{support theorem}: failure at $R$ forbids
-at least half the unit classes mod $R$ on the shifted form $(p+R)/4$,
-proved for every residual at once via Kneser's addition theorem. Its
-uniform consequence bounds $R_{\min}$ itself: all but
-$O(x\exp(-c(\log\log x)^2))$ hard primes
-$p \le x$ satisfy $R_{\min}(p) \le \varepsilon \log\log x$, with
-explicit certificates. This is not a sharper exceptional-set
-estimate --- Vaughan's classical mean-value bound is denser, and
-remains the record on that axis --- but a statement about a
-different quantity, one that mean-value methods do not reach: they
-count the primes that fail without exhibiting a denominator for
-those that succeed. Around
-these sit exact solvability criteria at $R = 3, 7, 11, 15$, a
-reciprocity identity
-$\smash{\legendre{q}{R}} = \smash{\legendre{p}{q}}$ governing
-correlated failure, a branch-classification conjecture that would
-raise the almost-all bound to $R_{\min}(p) \le (\log x)^{c_0}$, and a
-measured ladder program past that ceiling. Identifying the failure
-families as norm-form families makes the count at the chain's first
-link sharp, $\asymp x/(\log x)^{3/2}$. The elementary layer and
-the core finite enumerations are machine-checked in
-Lean~4/\mbox{mathlib}, and we exhibit certificates for all
-$1{,}175{,}215{,}396$
-hard primes below $10^{12}$, where a five-decade-old record breaks:
-the largest minimal residual is $111$, first attained at
-$p = 119{,}945{,}383{,}009$.
+primes}). Every solution at a hard prime $p$ has first denominator
+$a = (p+R)/4$ for an \emph{admissible residual} $R \equiv 3 \pmod 4$,
+and solvability at that $R$ is the divisor-class condition
+$\exists\, k \mid m^2$, $m = pa$, with $k \equiv -m \pmod R$ --- a
+criterion due to Bradford. The conjecture at $p$ is therefore exactly
+the finiteness of the \emph{minimal working residual}
+$R_{\min}(p)$, a structural invariant that verification records do
+not report.
+
+We compute and independently verify $R_{\min}$ for all
+$1{,}175{,}215{,}396$ hard primes below $10^{12}$. The maximum is
+$R_{\min} = 111$, first attained at $p = 119{,}945{,}383{,}009$; it
+had stood at $107$ across the preceding five orders of magnitude,
+and a heuristic model calibrated at $10^9$ predicted in advance both
+the filling of a then-empty band $87 \le R \le 103$ and the decade
+in which the record would move. Verification is graded: exhaustive
+exact re-checking below $10^9$, complete deep tails and large
+systematic samples above, every certificate re-verified as
+$4abc = p(bc+ac+ab)$ in exact integer arithmetic, and all datasets
+published with checksums.
+
+Around the census we assemble the apparatus it exercises. There are
+exact solvability criteria at $R = 3, 7, 11$ and at the first
+composite residual $R = 15$; those at $R = 3, 7$ are Yamamoto's,
+restated in residual form, while the exact criteria at $R = 11$ and
+$R = 15$ are new. A support theorem --- the critical-number theorem
+of Diderrich--Mann, transported to this setting --- shows that
+failure at $R$ forbids at least half the unit classes mod $R$ on the
+shifted form $(p+R)/4$, uniformly in $R$, and its classical
+exceptions fall exactly at the residuals where an exact criterion is
+available. The uniform consequence bounds $R_{\min}$ itself: all but
+$O(x\exp(-c(\log\log x)^2))$ hard primes $p \le x$ satisfy
+$R_{\min}(p) \le \varepsilon\log\log x$, with explicit certificates
+--- a threshold exponentially smaller than the one implicit in
+Vaughan's covering congruences at comparable exceptional-set
+quality. The elementary layer and the finite enumerations behind the
+criteria are machine-checked in Lean~4/\mbox{mathlib}.
 \end{abstract}
 
 \medskip
@@ -114,8 +119,7 @@ conjecture far beyond any range considered here: to $10^{14}$ by Swett~\cite{Swe
 Mihnea and Bogdan~\cite{MihneaBogdan}; the present paper is logically
 independent of those bounds. The structure of
 the solution count was analyzed by Elsholtz and Tao~\cite{ElsholtzTao}.
-Verification, however, carries no structural information; the aim here
-is a quantitative structural reduction. For calibration: the first
+For calibration on the density axis: the first
 density bounds on the exceptional set are due to Webb~\cite{Webb},
 sieve bounds were advanced by Sander~\cite{Sander}, and
 Vaughan's classical
@@ -124,134 +128,122 @@ $\ll x \exp(-c(\log x)^{2/3})$ for \eqref{eq:es} --- asymptotically
 stronger than any fixed power of $\log x$, and still the record on
 that axis.
 
-We are not competing on it. The distinction is worth stating
-plainly, because it determines what the results below are for.
-A mean-value bound counts the integers that \emph{fail}; it exhibits
-no denominator for the ones that succeed, and says nothing about how
-large a first denominator a given prime requires. By
-Proposition~\ref{prop:complete} the conjecture at $p$ is precisely
-the assertion that the least admissible residual $R_{\min}(p)$ is
-finite --- indeed $\le 2p$ --- so $R_{\min}$, not the exceptional
-set, is the quantity the problem is about. The theorems here bound
-$R_{\min}$: for every hard prime through $10^{12}$ by explicit
-certificate, and for almost every hard prime by
-Theorem~\ref{thm:U}, at a residual of size $O(\log\log x)$. Density
-statements follow as corollaries, and are weaker than Vaughan's.
-What has no counterpart in the mean-value literature is the bound on
-$R_{\min}$ itself: the trivial bound $R_{\min}(p) \ll p$ is
-Bradford's~\cite{Bradford}, and no bound of smaller order was
-available by any method. Vaughan's theorem is the benchmark against
-which we calibrate the sieve, not the target we are trying to
-overtake.
+This paper is about a different quantity, and it is primarily a
+computation. A verification to $10^{18}$ answers ``is
+\eqref{eq:es} solvable at $n$?'' and records a yes; it does not
+record \emph{how hard} the instance was, and the published records do
+not report the parameter in which the difficulty is measured. By
+Proposition~\ref{prop:complete} --- Bradford's
+criterion~\cite{Bradford}, restated --- every solution at a hard
+prime $p$ is a certificate at some admissible residual
+$R = 4a - p \equiv 3 \pmod 4$, and the conjecture at $p$ is exactly
+the finiteness of the least such $R$, written $R_{\min}(p)$. Our
+main object is a census of $R_{\min}$: its value for every one of the
+$1{,}175{,}215{,}396$ hard primes below $10^{12}$, verified,
+archived, and reproducible. What comes out of it is a distribution
+with sharp structure (Section~\ref{sec:comp}), a broken record
+(the maximum moves from $107$ to $111$ in the last decade computed),
+and a heuristic model calibrated at $10^9$ whose advance predictions
+about the tail were borne out at $10^{11}$ and $10^{12}$.
+
+The rest of the paper is the apparatus the census exercises and the
+structure it exhibits: exact per-residual solvability criteria
+(Section~\ref{sec:exact}), which are what make the head of the
+distribution computable in closed form; a support theorem valid at
+every residual, which converts failure into a sieve condition; and,
+as its capstone, an almost-all bound on $R_{\min}$ itself
+(Theorem~\ref{thm:U}). Section~\ref{sec:context} states these and
+sketches the sieve consequences; complete proofs of the elementary
+layer, together with the finite enumerations behind the criteria,
+are formalized in Lean~4 and inventoried in
+Appendix~\ref{app:verif}.
 
 \subsection*{New contributions}
 \phantomsection\addcontentsline{toc}{subsection}{New contributions}
 
-\paragraph*{Main theorems.}
+\paragraph*{The census.}
 \begin{itemize}
-\item The \emph{residual formulation} of the Erd\H{o}s--Straus equation:
-  solvability with first denominator $(p+R)/4$ is a divisor-class
-  condition, complete over all solutions
-  (Proposition~\ref{prop:complete}).
-\item \emph{Exact} solvability criteria at $R = 3, 7, 11$
-  (Theorems~\ref{thm:A}, \ref{thm:Ap}, \ref{thm:App}) and at the first
-  composite residual $R = 15$ (Theorem~\ref{thm:R15}: a Jacobi-character
-  dichotomy with no budget cases), and a meta-theorem
-  (Theorem~\ref{thm:meta}) showing every fixed residual --- prime or
-  composite --- admits a finite computable exact criterion.
-\item A reciprocity principle (Theorem~\ref{thm:J}) collapsing the
-  per-residual conditions into one global statement about $p$ --- which
-  we read as the organizing principle behind correlated failure and the
-  record prime.
-\item The per-residual sieve input proved unconditionally for
-  \emph{every} residual at once (Theorem~\ref{thm:S}): via Kneser's
-  addition theorem, any failing configuration occupies at most
-  $(R-3)/2$ nonzero factor classes, with composite residuals covered
-  through the general abelian form; the per-residual machine
-  verification to $R = 107$ (Lemma~\ref{lem:S}) serves as its
-  independent confirmation.
-\item A constructive sieve chain built on these criteria
-  (Theorem~\ref{thm:FG}, Proposition~\ref{prop:agg}): explicit,
-  certificate-producing exceptional-set bounds of exponent
-  $1 + |\mathcal{P}|/2$ for every finite admissible list $\mathcal{P}$
-  of primes and of composites up to $107$, with marginally smaller
-  exponents for larger composites with $\omega(R) \le 2$ ($29/2$ on
-  the $27$ residuals up to $107$; $31/2$ with the two identity
-  families of Proposition~\ref{prop:agg} adjoined); an
-  unconditional
-  density reduction (Theorem~\ref{thm:D}): for every $A$, a finite
-  residual set whose joint failure set is $O_A(x/(\log x)^{1+A})$;
-  and the \emph{uniform chain} (Theorem~\ref{thm:U}), the strongest
-  unconditional statement here: all but
+\item $R_{\min}(p)$ computed and independently verified for every one
+  of the $1{,}175{,}215{,}396$ hard primes $p < 10^{12}$
+  (Section~\ref{sec:comp}), with the full distribution
+  (Table~\ref{tab:dist}), a graded verification protocol
+  (Appendix~\ref{app:verif}), and archived datasets carrying
+  checksums.
+\item The maximum of $R_{\min}$ moves for the first time in five
+  orders of magnitude: it is $107$ throughout
+  $10^7 \le x \le 10^{11}$ and $111$ at $10^{12}$, first attained at
+  $p = 119{,}945{,}383{,}009$. Section~\ref{sec:comp} exhibits the
+  certificate and the exhaustive refutation of every admissible
+  $R \le 107$ at that prime.
+\item A calibrated independence model, fitted to the complete $10^9$
+  solvability masks, that predicted in advance both the population of
+  the band $87 \le R_{\min} \le 103$ --- empty when the model was
+  fitted --- and the decade in which the record would move. Both
+  predictions were tested by the $10^{11}$ and $10^{12}$ runs and
+  held (Section~\ref{sec:comp}).
+\item A reproducibility layer: exact re-verification of every
+  certificate as $4abc = p(bc+ac+ab)$, a Lean~4~\cite{Lean4} /
+  \mbox{mathlib}~\cite{mathlib} formalization of the elementary layer
+  and of the finite enumerations behind the exact criteria, and a
+  published run kit. Appendix~\ref{app:verif} gives the inventory and
+  the exact trust base.
+\end{itemize}
+
+\paragraph*{The apparatus, and what in it is new.}
+\begin{itemize}
+\item \emph{Exact} solvability criteria at $R = 11$
+  (Theorem~\ref{thm:App}) and at the first composite residual
+  $R = 15$ (Theorem~\ref{thm:R15}: a Jacobi-character dichotomy with
+  no budget cases), together with the finite-reduction lemma
+  (Theorem~\ref{thm:meta}) that licenses their enumeration. The
+  criteria at $R = 3$ and $R = 7$ (Theorems~\ref{thm:A},
+  \ref{thm:Ap}) are \emph{not} new --- they are Yamamoto's, in a
+  different notation; see Remark~\ref{rem:yamamoto}, which also
+  delimits what is new at $R = 11$ and $R = 15$.
+\item A reciprocity identity (Theorem~\ref{thm:J}) collapsing the
+  per-residual conditions into one global statement about $p$, which
+  we use to describe the record prime mechanically.
+\item The support theorem (Theorem~\ref{thm:S}): failure at $R$
+  confines the factor classes of $(p+R)/4$ to at most half the unit
+  classes mod $R$, for every admissible $R$ at once. As an additive
+  statement this is the critical-number theorem of
+  Diderrich--Mann~\cite{DiderrichMann}; the contribution here is the
+  transport to residuals (bounded exponent budgets, a single
+  prescribed target) and the observation that its classical
+  exceptional groups occur exactly at $R = 3, 7, 15$, where
+  Theorems~\ref{thm:A}, \ref{thm:Ap} and~\ref{thm:R15} supply an
+  exact criterion --- so the sieve dimension $\tfrac12$ is available
+  at every admissible residual with no gaps.
+\item The sieve consequences (Section~\ref{sec:context}):
+  certificate-producing exceptional-set bounds for every finite
+  admissible list (Theorem~\ref{thm:FG},
+  Proposition~\ref{prop:agg}, Theorem~\ref{thm:D}) and, as the
+  capstone, the \emph{uniform chain} (Theorem~\ref{thm:U}): all but
   $O(x e^{-c(\log\log x)^2})$ hard primes $p \le x$ have
-  $R_{\min}(p) \le \varepsilon\log\log x$ --- together with the
-  branch-classification program behind its ceiling
-  (Section~\ref{sec:branch}): the kernel case proved
-  (Theorem~\ref{thm:Mkernel}), the count form refuted
-  (Theorem~\ref{thm:Mcount}), and a heavily verified container
-  conjecture (Conjecture~\ref{conj:A}) whose resolution raises the
-  bound to $R_{\min} \le (\log x)^{c_0}$
-  (Theorem~\ref{thm:Upay}).
+  $R_{\min}(p) \le \varepsilon\log\log x$, with an explicit
+  certificate for each. Remark~\ref{rem:vaughan} states precisely
+  what this does and does not improve on.
+\item An open problem carved out of the ceiling of that argument:
+  Conjecture~\ref{conj:A}, an aperiodic branch-classification
+  statement, verified exhaustively in the accessible range, whose
+  resolution would raise the bound to
+  $R_{\min}(p) \le (\log x)^{c_0}$ (Theorem~\ref{thm:Upay}).
 \end{itemize}
 
-\paragraph*{Further contributions.}
-\begin{itemize}
-\item Computed and verified residual certificates for all
-  $1{,}175{,}215{,}396$ hard primes below $10^{12}$, with a
-  calibrated model that predicted, in advance, both the filling of an
-  empty band and the decade in which the five-decade-old record
-  $R = 107$ would fall --- it fell at $R = 111$
-  (Section~\ref{sec:comp}).
-\item The \emph{Burgess--reciprocity ladder}
-  (Section~\ref{sec:ladder}): a $p$-adapted residual family on which
-  the all-residue failure mode is impossible by construction; the
-  ladder chain and its first rung proved
-  (Theorems~\ref{thm:L0}, \ref{thm:B1}), the avoidance ladder
-  two-sided (Theorem~\ref{thm:B2}), and an
-  almost-all bound past every fixed power of $\log x$ conditional on
-  one measured hypothesis (Theorem~\ref{thm:L1}).
-\item The identification of character-failure families as
-  \emph{norm-form} families \eqref{eq:normform}, which makes
-  Iwaniec's prime-indexed half-dimensional sieve~\cite{IwaniecPhiA}
-  the natural counting tool and yields matching upper and lower
-  bounds at the first link of the chain (Theorem~\ref{thm:sharp}:
-  the failure count at $R = 3, 7, 15$ is $\asymp x/(\log x)^{3/2}$,
-  and $3/2$ is the ceiling of the method); along the ladder the same
-  mechanism applies on a sparse family of classes
-  (Theorem~\ref{thm:P1} and Remark~\ref{rem:P1scope}).
-\item A machine-checked (Lean~4~\cite{Lean4} with
-  \mbox{mathlib}~\cite{mathlib}) formalization, in the
-  accompanying repository, of the elementary layer of the proofs, of
-  the finite enumerations behind Theorems~\ref{thm:Ap}
-  and~\ref{thm:App} and Lemma~\ref{lem:S} at $R = 19, 23, 31$, and of
-  the reduction of Theorem~\ref{thm:meta} itself. The complete
-  inventory, and what each layer contributes to the trusted base, is
-  in Appendix~\ref{app:verif}.
-\end{itemize}
-
-Conceptually, the paper has three layers: \textup{(1)}~an exact
+Read as a whole, the paper has three layers. \textup{(1)}~An exact
 reformulation of solvability --- every solution of \eqref{eq:es} at a
 hard prime is a residual certificate
-(Proposition~\ref{prop:complete}); \textup{(2)}~finite,
-machine-checkable inputs for individual residuals --- the exact
-criteria (Theorems~\ref{thm:A}--\ref{thm:R15}), the reciprocity
-identity (Theorem~\ref{thm:J}), and the support bounds
-(Lemma~\ref{lem:S}, Theorem~\ref{thm:S}); and \textup{(3)}~sieve
-consequences obtained by combining those inputs
-(Theorems~\ref{thm:FG}--\ref{thm:D}), capped by the $p$-adapted
-ladder program of Section~\ref{sec:ladder}. The computations of
-Section~\ref{sec:comp} calibrate layer~(3) and test its predictions;
-the formal development machine-checks the core of layers (1)--(2).
-Within this structure one result carries the technical weight, and
-is worth naming at the outset: Theorem~\ref{thm:S}, the support
-theorem --- a single per-residual input, proved for all residuals at
-once by Kneser's addition theorem, with no computation and no
-restriction on $R$. Everything downstream is what it buys:
-Theorem~\ref{thm:U}'s bound on $R_{\min}$ for almost every hard
-prime, the chain of exceptional-set bounds, and the conditional
-program of Section~\ref{sec:ladder}. The exact criteria supply its
-small-residual instances, and the computations calibrate what it
-predicts.
+(Proposition~\ref{prop:complete}), which is Bradford's criterion.
+\textup{(2)}~Finite, machine-checkable inputs at individual
+residuals: the exact criteria (Theorems~\ref{thm:A}--\ref{thm:R15}),
+the reciprocity identity (Theorem~\ref{thm:J}), and the support
+bounds (Lemma~\ref{lem:S}, Theorem~\ref{thm:S}). \textup{(3)}~The
+census of Section~\ref{sec:comp}, which is what layers (1)--(2) are
+for: they make $R_{\min}$ computable at scale, and the exact criteria
+determine the head of its distribution in closed form. The sieve
+consequences of Section~\ref{sec:context} run in the other
+direction, predicting the shape of the tail; the computation
+calibrates them and tests what they predict.
 
 \subsection{The residual method}\label{sec:intro-method}
 
@@ -300,26 +292,35 @@ $a^2$ in a prescribed class modulo $4a - p$ --- his range is in fact
 slightly sharper than the $a \le 3p/4$ recorded above, and the
 correspondence with solutions is likewise bijective. These are by now
 called the Bradford conditions~\cite{MihneaBogdan}. Criteria of this
-general shape go back further: the quadratic obstruction is
-Yamamoto's~\cite{Yamamoto} (a necessary character condition, not a
-solvability criterion), Mordell's Chapter~30~\cite[Ch.~30]{Mordell}
-collects the classical identities and his own non-existence theorem,
-and the systematic divisor-counting form is Elsholtz--Tao's
-\cite{ElsholtzTao}.
+general shape go back further. Yamamoto~\cite{Yamamoto} constructs a
+complete system $\Sigma$ of solvable coverings and proves that
+$4/p$ is solvable if and only if $p$ lies in their union; his
+simplified subsystem $\Sigma_0$ is defined on precisely the six hard
+classes, and the individual coverings $\{-s/q\} = \{n : q \mid n+s\}$
+are, for odd $q$, exactly the condition ``$q$ divides
+$(p+s)/4$''. So Yamamoto's system is a residual-indexed criterion in
+different notation, and several of the per-residual statements below
+are his; Remark~\ref{rem:yamamoto} makes the dictionary explicit and
+says which are. Lopez~\cite{Lopez} states the same shift-indexed
+divisor condition in general form for one solution shape. Mordell's
+Chapter~30~\cite[Ch.~30]{Mordell} collects the classical identities
+and his own non-existence theorem; the systematic divisor-counting
+form is Elsholtz--Tao's~\cite{ElsholtzTao}; and
+Salez~\cite{Salez} proves a completeness theorem for seven modular
+equations at the level of degree-one prime polynomials.
 
-What this paper adds is not the criterion but the program built on
-it. The organizing move is to index by the residual $R$ rather than
-by the denominator $a$, which turns a search space into a sequence
-of local problems: each fixed $R$ admits a finite computable exact
-criterion (Theorem~\ref{thm:meta}), those criteria are determined
-explicitly at $R = 3, 7, 11, 15$, their failures are linked across
-residuals by a reciprocity identity (Theorem~\ref{thm:J}), and a
-single bound governs all of them at once
-(Theorem~\ref{thm:S}). What that buys is quantitative: bounds on
-$R_{\min}(p)$ itself --- for almost every hard prime
-(Theorem~\ref{thm:U}), and by explicit certificate for every hard
-prime below $10^{12}$. Bradford's range gives $R_{\min}(p) \ll p$;
-the point of what follows is to replace $p$ by something small.
+What this paper does with the criterion is to \emph{measure} it. The
+organizing move is to index by the residual $R$ rather than by the
+denominator $a$, which makes $R_{\min}(p)$ a well-defined statistic
+of $p$ and the object of a census: it is computable at scale because
+each fixed $R$ admits a finite exact criterion
+(Theorem~\ref{thm:meta}), determined in closed form at
+$R = 3, 7, 11, 15$, and because failure at every other $R$ is
+constrained uniformly (Theorem~\ref{thm:S}). Bradford's range gives
+$R_{\min}(p) \ll p$; the computation of Section~\ref{sec:comp}
+shows $R_{\min} \le 111$ throughout $p < 10^{12}$, and
+Theorem~\ref{thm:U} bounds it by $\varepsilon\log\log x$ for almost
+every hard prime.
 
 Two
 elementary congruences drive everything below. From $4a = p + R$,
@@ -359,8 +360,11 @@ out of the picture just seen, read at three levels. \emph{Locally}
 factor classes of $a$ is a question about a finite multiplicative
 state --- the multiset of classes with bounded exponent budgets --- so
 each fixed $R$ admits an exact, machine-enumerable solvability
-criterion (Theorems~\ref{thm:A}--\ref{thm:App} below).
-\emph{Globally} (all residuals at once): the conditions entering these
+criterion (Theorems~\ref{thm:A}--\ref{thm:App} below). This is what
+makes the census of Section~\ref{sec:comp} feasible: the head of the
+distribution of $R_{\min}$ is decided by a character test rather
+than a divisor search. \emph{Globally} (all residuals at once): the
+conditions entering these
 criteria are quadratic characters, and reciprocity folds the condition
 at every residual into signs $\legendre{p}{q}$ indexed by the primes
 $q$ dividing the shifted values $(p+R)/4$ --- failures at different
@@ -380,11 +384,20 @@ Let $p \equiv 1 \pmod 4$ be prime with $3 \nmid p$, and $a = (p+3)/4$. Then
 $q \equiv 2 \pmod 3$. When it does, $k = q$ is a certificate.
 \end{theorem}
 
-Modulo $3$, character equals class and the criterion is elementary. For
-every other fixed residual, the reduction to a finite check is itself a
-theorem, and the next two results are its first showcase instances.
+Modulo $3$, character equals class and the criterion is elementary.
+For every other fixed residual we need to know that the search space
+is finite before we can enumerate it, which is the content of the
+next statement. We label it a theorem for reference, but it is
+bookkeeping on top of Bradford's criterion, and finite-generation
+statements of this kind have a long history in the subject:
+Terzi~\cite{Terzi} generated $198$ solvable residue classes modulo
+$120120$ algorithmically, Yamamoto's~\cite[\S3]{Yamamoto} whole
+apparatus is a finite generation procedure for solvable coverings,
+and Salez~\cite{Salez} proves a completeness theorem for polynomial
+families. What is specific here is the finite datum: the capped
+multiset of factor classes of $(p+R)/4$ together with $p \bmod R$.
 
-\begin{theorem}[meta-theorem]\label{thm:meta}
+\begin{theorem}[finite reduction]\label{thm:meta}
 For every fixed prime $R \equiv 3 \pmod 4$, the validity of
 \eqref{eq:cert} at a hard prime $p$ depends only on \textup{(i)} the
 multiset of classes mod $R$ of the prime factors of $a = (p+R)/4$, with
@@ -435,6 +448,50 @@ Let $p$ be a hard prime and $a = (p+15)/4$; note $p \bmod 15 \in
 $R = 15$ if and only if $a$ has a prime factor $q$ with
 $\legendre{q}{15} = -1$, i.e.\ $q \equiv 7, 11, 13, 14 \pmod{15}$.
 \end{theorem}
+
+\begin{remark}[attribution at $R = 3, 7, 11, 15$]\label{rem:yamamoto}
+Theorems~\ref{thm:A} and~\ref{thm:Ap} are not new. In
+Yamamoto's notation~\cite[\S3]{Yamamoto} the covering
+$\{-s/q\}$ --- the set of $n$ with $q \mid n+s$, equivalently, for
+odd $q$, $q \mid (n+s)/4$ --- lies in his system $\Sigma_1$ of
+solvable coverings exactly for
+$q \equiv -1 \pmod 3$ when $s = 3$, and for
+$q \equiv -1, -2, -4 \pmod 7$ when $s = 7$; he records the
+common form explicitly, noting that ``all the coverings $\{-s/q\}$
+with the Jacobi symbol $\smash{\legendre{-s}{q}} = -1$ are contained
+in $\Sigma_1$, for $s = 1, 2, 3, 4, 7$ and $8$''
+\cite[p.~45]{Yamamoto}, and $\Sigma_1$ is defined on precisely the
+six hard classes. Since $\smash{\legendre{-s}{q}} =
+\smash{\legendre{q}{s}}$ for $s \equiv 3 \pmod 4$, and since
+membership of a non-residue class is inherited by some prime factor,
+this is the sufficiency half of Theorems~\ref{thm:A} and~\ref{thm:Ap}
+verbatim; the necessity half is the character obstruction
+(Proposition~\ref{prop:char}), which is Yamamoto's Lemma~4
+specialised. What the statements below add at these two residuals is
+only that the certificate can be taken at residual exactly $R$, and
+a machine-checked proof.
+
+At $R = 11$ and $R = 15$ the situation is different, and it is worth
+being exact about the boundary. Yamamoto's Table~3
+\cite[p.~45]{Yamamoto} gives, for $s = 11$, the classes
+$q \equiv -1, -3, -4 \equiv 7, 8, 10 \pmod{11}$: precisely the three
+non-residue classes in which a single prime factor already forces
+solvability. Theorem~\ref{thm:App} supplies the complement --- that
+$q \equiv 2$ and $q \equiv 6 \pmod{11}$ suffice as well, outside the
+explicitly described budget family of case~(b) --- and the exactness.
+Over the $1{,}005$ hard primes below $4 \times 10^5$, Yamamoto's
+classes certify $413$ and Theorem~\ref{thm:App} certifies $628$.
+Yamamoto does not treat $s = 15$ (his tables list prime $s$ only),
+but his constructions (i)--(ii) apply verbatim there and yield the
+three classes $q \equiv 7, 13, 14 \pmod{15}$;
+Theorem~\ref{thm:R15} completes the Jacobi dichotomy with the fourth
+class $q \equiv 11 \pmod{15}$ and proves it exact ($315$ versus
+$355$ primes certified in the same range). For $R \ge 19$ the
+divergence is no longer marginal: Yamamoto's rules give $1$, $3$ or
+$9$ classes according to $R \bmod 24$, against the $(R-1)/2$
+non-residue classes reached by the criteria and support bounds
+below --- $3$ versus $53$ at $R = 107$.
+\end{remark}
 
 \begin{remark}[computer-assisted components]\label{rem:computer}
 The exhaustive verifications behind Theorems~\ref{thm:Ap},
@@ -580,38 +637,51 @@ Theorem~\ref{thm:FG}, and Theorem~\ref{thm:U} are all weaker than
 Vaughan's bound
 $\ll x \exp(-c(\log x)^{2/3})$~\cite{Vaughan}, which already exceeds
 every fixed power of $\log x$. They are not offered as improvements
-on it. Two differences of kind: first, the exceptional sets here are
+on it, and the honest comparison needs one further step, because
+Vaughan's argument is \emph{constructive}: it proceeds by covering
+congruences, and every $n$ it certifies comes with an explicit
+solution and hence with an explicit admissible residual, bounded by
+a power of his sifting parameter. Read that way it already gives an
+almost-all bound on $R_{\min}$ --- roughly
+$R_{\min}(n) \le \exp(O((\log x)^{1/3}))$ outside a set of size
+$x\exp(-c(\log x)^{2/3})$, and $R_{\min}(n) \le (\log x)^{\theta}$
+outside $x\exp(-c(\log\log x)^2)$ when the threshold is set to match
+Theorem~\ref{thm:U}'s exceptional set. So Theorem~\ref{thm:U} is not
+the first almost-all bound on $R_{\min}$. Its content is that at
+comparable exceptional-set quality it lowers the threshold from a
+power of $\log x$ to a constant multiple of $\log\log x$ --- an
+exponential gain in the certified residual, which is the quantity
+Proposition~\ref{prop:complete} shows \emph{is} the conjecture at
+$p$. Two further differences of kind: the exceptional sets here are
 cut out by finitely many \emph{explicit} multiplicative conditions on
 shifted forms, each failure constructively certified by an exhibited
-divisor $k$, with the underlying lemmas exact or machine-verified.
-Second --- and this is the substantive point --- Theorem~\ref{thm:U}
-is not primarily a density statement at all: it bounds
-$R_{\min}(p)$, the quantity Proposition~\ref{prop:complete} shows
-\emph{is} the conjecture at $p$, by $\varepsilon\log\log x$ for
-almost every hard prime. A mean-value argument counts the primes
-that fail; it produces no admissible residual, and hence no bound of
-this shape, for the primes that succeed. On that axis the
-comparison does not arise: the only previously available bound on
-$R_{\min}$ is the trivial $R_{\min}(p) \ll p$ implicit in
-Bradford's search space~\cite{Bradford}.
+divisor $k$, with the underlying lemmas exact or machine-verified;
+and the certificates are of a single controlled shape, indexed by
+$R$, rather than assembled from a covering system. A mean-value
+argument, by contrast, counts the primes that fail and produces no
+residual at all for the ones that succeed.
 \end{remark}
 
-\emph{Organization.} Proofs are arranged by logical dependency.
+\emph{Organization.}
 Section~\ref{sec:obstruction} develops the obstruction framework
 (Propositions~\ref{prop:char}, \ref{prop:succ}) and proves
 Theorem~\ref{thm:J}, whose Corollary~\ref{cor:J} depends on the
 character/II dichotomy introduced there.
 Section~\ref{sec:exact} proves Theorem~\ref{thm:A}, then
 Theorem~\ref{thm:meta}, then Theorems~\ref{thm:Ap}, \ref{thm:App}
-and~\ref{thm:R15}, which rest on it. Section~\ref{sec:sieve} proves
-Theorem~\ref{thm:FG} --- base case first, then, after the monotonicity
+and~\ref{thm:R15}, which rest on it. Section~\ref{sec:comp} is the
+census: data, verification protocol, the record, and the calibrated
+model. Section~\ref{sec:context} is the structural context ---
+Section~\ref{sec:sieve} proves
+Theorem~\ref{thm:FG} (base case first, then, after the monotonicity
 reduction (Lemma~\ref{lem:mono}), Lemma~\ref{lem:S} and its
 unconditional upgrade Theorem~\ref{thm:S}, the higher
-exponents --- followed by Proposition~\ref{prop:agg},
-Theorem~\ref{thm:D}, and the uniform chain
-(Theorem~\ref{thm:U}). Section~\ref{sec:ladder} develops the
-Burgess--reciprocity ladder on top of Theorem~\ref{thm:S}, with its
-own ladder census (Table~\ref{tab:ladder}).
+exponents), followed by Proposition~\ref{prop:agg} and
+Theorem~\ref{thm:D}; Section~\ref{sec:uniform} proves the uniform
+chain (Theorem~\ref{thm:U}); Section~\ref{sec:branch} localizes
+what stands between it and a polylogarithmic bound; and
+Section~\ref{sec:ladder} sketches, in compressed form, the one
+conditional program that would pass the ceiling.
 
 Table~\ref{tab:deps} records, for each main result, exactly what its
 proof consumes and its formal-verification status, so that each layer
@@ -643,17 +713,16 @@ Thm.~\ref{thm:Mcont} & Thm.~\ref{thm:Mkernel} + Conjecture~\ref{conj:A} & \S\ref
 Prop.~\ref{prop:betavac} & elementary (isolation of punctures) & \S\ref{sec:sieve} & Lean \\ \addlinespace
 Thm.~\ref{thm:Upay} & Thm.~\ref{thm:Mcont} + the audit of Thm.~\ref{thm:U} & \S\ref{sec:sieve} & no (conditional) \\ \addlinespace
 Lems.~\ref{lem:Jcomp}--\ref{lem:N} & Jacobi reciprocity, elementary & \S\ref{sec:ladder} & Lean \\ \addlinespace
-Thms.~\ref{thm:L0}--\ref{thm:B2} & Thm.~\ref{thm:S} / Prop.~\ref{prop:succ} + sieve & \S\ref{sec:ladder} & no \\ \addlinespace
-Thm.~\ref{thm:sharp} & norm-form bridge + \cite{IwaniecPhiA} + Fundamental Lemma & \S\ref{sec:ladder} & no \\ \addlinespace
-Thm.~\ref{thm:P1} & Prop.~\ref{prop:char} + \cite{IwaniecPhiA} + \cite{FHRSS} & \S\ref{sec:ladder} & no \\ \addlinespace
+Thms.~\ref{thm:L0}, \ref{thm:B1} & Thm.~\ref{thm:S} / Prop.~\ref{prop:succ} + sieve & \S\ref{sec:ladder} & no \\ \addlinespace
+Thm.~\ref{thm:sharp} & norm-form bridge \eqref{eq:normform} + \cite{IwaniecPhiA}, \cite{FHRSS} + Fundamental Lemma & \S\ref{sec:ladder} & no \\ \addlinespace
 Thm.~\ref{thm:L1} & Hypothesis~\ref{hyp:B} (measured) + large sieve & \S\ref{sec:ladder} & no (conditional) \\
 \bottomrule
 \end{tabular}
 \caption{Audit map: what each main result depends on, where it is
 proved, and its formal-verification status. ``---'' means the result
 is elementary enough that no machine check was warranted; ``no'' means
-the proof is by hand only. Theorems~\ref{thm:B2} and~\ref{thm:P1} are
-established in outline (proof sketches).}
+the proof is by hand only. Theorem~\ref{thm:sharp} is established in
+outline (proof sketch).}
 \label{tab:deps}
 \end{table}
 
@@ -670,9 +739,10 @@ unconditionally), its role being structural: it opens the conditional
 program of Section~\ref{sec:ladder}, the only known frame whose
 measured inputs would pass the ceiling of Remark~\ref{rem:ceiling}.
 
-Computations (Section~\ref{sec:comp}) provide verified certificates for
-all hard primes below $10^{12}$ and calibrate the base-case constant and
-decay exponents of the chain.
+The census of Section~\ref{sec:comp} also calibrates the base-case
+constant and the decay exponents of the chain, and it is where the
+per-residual criteria of Section~\ref{sec:exact} are exercised at
+scale.
 
 \section{The obstruction framework}\label{sec:obstruction}
 
@@ -912,14 +982,261 @@ together with the forced powers of $2$, always reach the target.
 
 \begin{remark}
 The general composite-$R$ engine (\texttt{theory.solvable\_exact\_general}),
-which evaluates the criterion of the composite meta-theorem directly in
+which evaluates the criterion of the composite finite reduction directly in
 $(\mathbb{Z}/R)^*$, agrees with ground-truth divisor search on
 \emph{every} composite admissible residual
 $R \in \{15, 27, 35, \dots, 99\}$ ($7{,}938$ sampled hard primes per
 residual below $10^9$, zero disagreements).
 \end{remark}
 
-\section{The sieve bound}\label{sec:sieve}
+\section{The census to \texorpdfstring{$10^{12}$}{10\textasciicircum 12}}\label{sec:comp}
+
+This section is the paper's main object: the value of $R_{\min}(p)$
+for every hard prime below $10^{12}$. For each $p$ the admissible
+residuals are tried in increasing order; at each $R$ the criterion is
+the exact one of Section~\ref{sec:exact} where available, and
+otherwise a direct integer factorization of $a = (p+R)/4$ (trial
+division; the factorization of $m^2 = p^2a^2$ follows) with a scan of
+the divisor classes for \eqref{eq:cert}. The first $R$ that succeeds
+is $R_{\min}(p)$, and the certificate it yields is re-verified in
+exact integer arithmetic as $4abc = p(bc+ac+ab)$. All code and data
+are in the accompanying repository; the $10^{12}$ run is a single
+$10.5$\,h job on $32$ cores, reproduced by
+\texttt{scripts/run\_1e12.sh}.
+
+\subsection{Verification protocol}\label{sec:protocol}
+
+The claims of this section rest on the datasets of
+Table~\ref{tab:datasets}, all archived in the repository under
+\texttt{data/} with sha256 manifests. A
+certificate $(R, a, b, c)$ for $p$ is \emph{accepted} only if
+$4abc = p(bc + ac + ab)$ holds in exact integer arithmetic and
+$R = 4a - p$; for the compact minimal-$R$ maps, the verifier
+\emph{reconstructs} the triple from $(p, R)$ by the divisor search of
+\eqref{eq:cert} and then applies the same exact check, so a map entry is
+verified as a genuine certificate, not taken on faith.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{3.4cm}r>{\raggedright\arraybackslash}p{6.6cm}}
+\toprule
+dataset & entries & verification performed \\ \midrule
+explicit triples, $p < 1.2 \times 10^8$ &
+$213{,}131$ &
+every triple checked exactly \\ \addlinespace
+minimal-$R$ map, $p < 10^9$ &
+$1{,}587{,}581$ &
+\emph{exhaustive}: every entry reconstructed and checked exactly \\ \addlinespace
+minimal-$R$ map, $p < 10^{10}$ &
+$14{,}215{,}707$ &
+$143{,}000$ systematically sampled entries reconstructed and checked;
+additionally \emph{all} $842$ tail entries ($R \ge 51$) checked with full
+minimality (no smaller admissible $R$ succeeds) \\ \addlinespace
+solvability masks, $p < 10^9$ &
+$27 \times 1{,}587{,}581$ &
+per-prime solvability of every admissible $R \le 107$ by full divisor-class
+computation; consistency with the minimal-$R$ map \\ \addlinespace
+$R$-sequence dataset, $p < 10^{11}$ &
+$128{,}671{,}219$ &
+$257{,}343$ systematically sampled entries reconstructed and checked;
+\emph{all} $20{,}151$ tail entries ($R \ge 43$) checked with full
+minimality; prime array pinned by sha256; pipeline validated
+byte-for-byte against the exhaustively verified $10^9$ map \\ \addlinespace
+$R$-sequence dataset, $p < 10^{12}$ &
+$1{,}175{,}215{,}396$ &
+$2{,}350{,}431$ systematically sampled entries reconstructed and
+checked; \emph{all} $118{,}210$ tail entries ($R \ge 43$) checked
+with full minimality, including the three attaining the record
+$R = 111$; zero unsolved; both arrays pinned by sha256; single
+$10.5$\,h run on $32$ cores, regenerated by
+\texttt{scripts/run\_1e12.sh} \\
+\bottomrule
+\end{tabular}
+\caption{Certificate datasets and the verification applied to each.}
+\label{tab:datasets}
+\end{table}
+
+The masks dataset of Table~\ref{tab:datasets} is the basis for the
+covering-set statements (the
+$18$-residual cover, the lower bound $12$, the four critical primes), the
+failure taxonomy, and the calibration below; the
+minimal-$R$ maps are the basis for Table~\ref{tab:dist}, the record,
+and the gap analysis.
+
+\subsection{Data}
+
+Every one of the $1{,}175{,}215{,}396$ hard primes $p < 10^{12}$ possesses a
+residual certificate with $R \le 111$. The verification behind this
+claim is graded by dataset: exhaustive reconstruction and exact
+re-checking of every entry below $10^9$; systematic samples
+($143{,}000$, $257{,}343$ and $2{,}350{,}431$ entries) at $10^{10}$,
+$10^{11}$ and $10^{12}$,
+together with the \emph{complete} tails ($842$ entries with
+$R \ge 51$, $20{,}151$ and $118{,}210$ with $R \ge 43$) re-checked
+with full
+minimality --- Table~\ref{tab:datasets} gives the per-dataset detail.
+The minimal residuals distribute
+as in Table~\ref{tab:dist} and Figure~\ref{fig:hist}.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr@{\qquad}rr@{\qquad}rr}
+\toprule
+$R$ & count & $R$ & count & $R$ & count \\ \midrule
+3 & 657{,}645{,}152 & 43 & 43{,}558 & 83 & 78 \\
+7 & 286{,}441{,}544 & 47 & 50{,}190 & 87 & 40 \\
+11 & 167{,}419{,}973 & 51 & 8{,}756 & 91 & 5 \\
+15 & 33{,}222{,}834 & 55 & 7{,}441 & 95 & 12 \\
+19 & 19{,}307{,}426 & 59 & 4{,}863 & 99 & 4 \\
+23 & 7{,}996{,}742 & 63 & 1{,}439 & 103 & 5 \\
+27 & 1{,}376{,}271 & 67 & 488 & 107 & 4 \\
+31 & 1{,}318{,}258 & 71 & 970 & 111 & 3 \\
+35 & 208{,}713 & 75 & 146 &  &  \\
+39 & 160{,}273 & 79 & 208 &  &  \\
+\bottomrule
+\end{tabular}
+\caption{Distribution of the minimal residual $R_{\min}$ over the
+$1{,}175{,}215{,}396$ hard primes below $10^{12}$ (plotted in
+Figure~\ref{fig:hist}). The value $R = 111$ is new at this scale.}
+\label{tab:dist}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_minR_hist}
+\caption{The data of Table~\ref{tab:dist} on a logarithmic count
+scale. The head is dominated by $R = 3, 7, 11$; the tail thins
+geometrically; the shaded band $87$--$111$ was empty below
+$10^{10}$, and its population at $10^{11}$ and $10^{12}$ followed the
+calibrated prediction (see the prediction bullet below), including
+the move of the maximum from $R = 107$ to $R = 111$.}
+\label{fig:hist}
+\end{figure}
+
+Three features of the distribution deserve comment.\nopagebreak
+\begin{itemize}
+\item \textbf{The maximum moves at $10^{12}$.} Throughout
+  $10^7 \le x \le 10^{11}$ --- five successive orders of magnitude
+  --- the maximal minimal residual over hard primes $p \le x$ stood
+  at $R = 107$, attained by the single prime
+  $8{,}803{,}369 < 10^7$. At $10^{12}$ it is
+  $R_{\max} = 111$, attained by three primes, the least being
+  \[
+    p \;=\; 119{,}945{,}383{,}009 \;\equiv\; 529 \!\!\pmod{840},
+  \]
+  for which every admissible $R \le 107$ fails and $R = 111$
+  certifies with $a = (p+111)/4 = 29{,}986{,}345{,}780$. The old
+  record $107$ also ceased to be unique, acquiring three further
+  primes in the same decade. The prime $8{,}803{,}369$ is
+  extremal for a closely related statistic as well: in independent
+  contemporaneous work, Bello-Hern\'andez, Benito and
+  Fern\'andez~\cite{BBF} report it as the largest ``survivor''
+  below $10^7$ in a $k \equiv 3 \pmod 4$ divisor sieve, requiring
+  $k = 107$ there too. In the
+  language of Corollary~\ref{cor:J}, $8{,}803{,}369$'s $27$ shifted
+  values contain
+  only $43$ distinct odd primes (typical: $45$--$52$), and $81\%$ of
+  them satisfy $\smash{\legendre{p}{q}} = +1$ (typical: $44$--$60\%$)
+  --- an extreme value of exactly the statistic
+  Theorem~\ref{thm:J} identifies as governing joint failure. We
+  attach no significance level to this: the prime was selected
+  \emph{because} it was the record, so its extremeness in a
+  correlated statistic is expected rather than surprising. The
+  observation is
+  descriptive --- it says what a record prime looks like
+  mechanically, not that its existence is improbable.
+\item \textbf{A prediction, and what it was worth.} The \emph{calibrated
+  independence model} treats the per-residual failure events as
+  independent across $R$, with per-residual failure rates fitted from
+  the complete $10^9$ solvability masks and a single deep-tail
+  correlation factor calibrated on the $R > 83$ counts; it is a
+  heuristic, not a theorem, and its role is to make falsifiable
+  predictions. Below $10^{10}$ no prime had
+  minimal $R \in \{87, 91, 95, 99, 103\}$; the model
+  attributed this gap to small-number statistics (expected counts
+  $\le 0.12$ per value at $10^9$) and predicted that deep-tail primes
+  (failing every $R \le 83$) land at $87, 91, 95, 99, 103, \ge 107$
+  with probabilities $0.53, 0.11, 0.22, 0.03, 0.05, 0.06$ (the last
+  being the total mass at or beyond $107$). Between
+  $10^{10}$ and $10^{11}$ the five values acquired $8, 3, 5, 1, 1$
+  primes respectively (all in $(1.3 \times 10^{10}, 10^{11})$), and
+  none passed
+  $103$; that distribution was \emph{consistent} with the prediction
+  ($\chi^2 \approx 1.3$) but, on $19$ points with several expected
+  cells below $5$, had little power to discriminate. The model's
+  sharper commitment was about \emph{when the record would move}:
+  the mass at or beyond $107$ was put at $6\%$ per deep-tail prime,
+  which with the deep-tail growth rate places the first
+  record-breaking prime in the decade $10^{11}$--$10^{12}$. It broke
+  there, at $R = 111$. The deep tail now holds $73$ primes with
+  $R_{\min} \ge 87$ against $19$ a decade earlier, distributed
+  $40, 5, 12, 4, 5, 4, 3$ over $87, \dots, 111$. A model fitted at
+  $10^9$ thus predicted, before the computation, both the filling of
+  a band that was empty at the time and the decade in which the
+  maximum would move for the first time in five orders of magnitude.
+\item Among all $1{,}587{,}581$ hard primes below $10^9$, exactly
+  \emph{four} admit a unique working residual $\le 107$
+  ($8{,}803{,}369$ with $107$; $142{,}361{,}209$ with $59$;
+  $287{,}567{,}281$ with $83$; $794{,}037{,}841$ with $63$) --- the entire
+  obstruction to a shorter covering list. A greedy cover of the full
+  solvability table uses $18$ residuals; a packing argument gives a lower
+  bound of $12$.
+\end{itemize}
+
+\subsection{Calibration of the base case of Theorem~\ref{thm:FG}}
+
+The proportion of hard primes failing both $R = 3$ and $R = 7$, multiplied
+by $\log x$, is constant to within $1\%$ across three decades of the
+$10^9$ data (Table~\ref{tab:calib}).
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+bin ($p \sim$) & $10^6$ & $10^7$ & $6 \times 10^7$ & $2.5 \times 10^8$ & $10^9$ \\ \midrule
+density $\times \log x$ & 5.14 & 5.19 & 5.18 & 5.17 & 5.16 \\
+\bottomrule
+\end{tabular}
+\caption{The proportion of hard primes near $x$ that fail both
+$R = 3$ and $R = 7$, multiplied by $\log x$, in five bins spanning three decades
+of the $10^9$ data ($x$ is the bin's representative value). Constancy of the product is the decay
+rate predicted by the base case of Theorem~\ref{thm:FG}.}
+\label{tab:calib}
+\end{table}
+
+That is, the joint exceptional density is $\approx 5.17 / \log x$:
+the decay matches the order predicted by the base case of
+Theorem~\ref{thm:FG}, and $5.17$
+estimates the (conjectural) Selberg--Delange constant. The exceptional
+set is density zero but decays slowly: $26.5\%$ of hard primes below
+$10^9$ fail both residuals; all are settled by deeper residuals of the
+list. The fitted per-residual decay exponents are consistent with the
+sieve prediction $\kappa = \tfrac12$ where exact criteria exist:
+$\hat\kappa = 0.539$ for $R = 7$, and $\hat\kappa = 0.387$ for
+$R = 3$, where the short fitting range and Selberg--Delange lower-order
+terms bias the exponent downward.
+
+\subsection{Failure taxonomy}
+
+Sampling the complete solvability table at $10^9$: failures at $R = 7$
+are $100\%$ character failures (as Theorem~\ref{thm:Ap} requires); at $R = 11$,
+$89.7\%$ character failure and $10.3\%$ the budget pattern of
+Theorem~\ref{thm:App}(b); the character-failure share broadly decreases with
+$\varphi(R)$ (e.g.\ $51\%$ at $R = 103$, though not monotonically), as
+hitting one specific class among
+$\varphi(R)$ grows harder while the character dichotomy stays binary.
+Taken together, the data of this section matches the framework of
+Sections~\ref{sec:obstruction}--\ref{sec:sieve}: each distributional
+feature --- the head, the geometric tail, the once-empty band, the
+static record --- has a structural or heuristic explanation (the exact
+criteria for the head; the calibrated model, built on the sieve
+dimensions, for the tail and the band; Theorem~\ref{thm:J} for the
+record).
+
+\section{The sieve chain and its ceiling}\label{sec:context}
+
+\subsection{The chain}\label{sec:sieve}
 
 We now prove the chain of Theorem~\ref{thm:FG}, beginning with the
 base case, and then Lemma~\ref{lem:S}, its unconditional upgrade
@@ -1033,16 +1350,47 @@ in Table~\ref{tab:components}. The bound is tight: the all-residue
 (character failure) configurations occupy exactly $(R-3)/2$ nonzero classes.
 \end{proof}
 
-Covering a finite abelian group by subset sums is a studied
-question --- see Gao--Hamidoune--Llad\'o--Serra~\cite{GHLS} and the
-literature that follows it --- and Theorem~\ref{thm:S} belongs to
-that circle of ideas. What is specific here is the shape of the
-summands: each factor class contributes the bounded-exponent set
-$\{1, v, v^2\}$ rather than an arbitrary set, the target is a single
-prescribed class rather than the whole group, and the bound is
-required uniformly in $R$ with an explicit extremal family. We have
-not found the statement below in that literature, but we make no
-claim of independence from it beyond the proof given.
+Theorem~\ref{thm:S} is a statement of the critical-number literature,
+and we should say so before proving it. The \emph{critical number}
+$\mathrm{cr}(G)$ of a finite abelian group is the least $t$ such that
+every $A \subseteq G \setminus \{0\}$ with $|A| \ge t$ has
+$\Sigma(A) = G$, where $\Sigma(A)$ is the set of subset sums.
+Diderrich and Mann~\cite{DiderrichMann} proved that
+$\mathrm{cr}(G) = |G|/2$ for every abelian $G$ of even order, with
+exactly four exceptions --- $\mathbb{Z}/4$, $\mathbb{Z}/6$,
+$\mathbb{Z}/8$ and $\mathbb{Z}/2 \times \mathbb{Z}/4$ --- and the
+determination for all finite abelian groups was completed by Freeze,
+Gao and Geroldinger~\cite{FGG}; see also
+Gao--Hamidoune--Llad\'o--Serra~\cite{GHLS} for the covering form.
+Since $M(S) \supseteq \Sigma(S)$, parts (i) and (iii) of
+Theorem~\ref{thm:S} follow from those theorems wherever they apply,
+and the extremal family (the nonzero even classes) is theirs. More
+precisely $M(S) = \Sigma(S \uplus S)$, the set of subsequence sums of
+the sequence in which each element of $S$ occurs twice, so everything
+in this subsection and the next lives inside the zero-sum /
+Davenport-constant circle of ideas
+(see~\cite[Ch.~6, 16]{Grynkiewicz}).
+
+Three things justify giving the proof anyway. First, the exceptions
+have to be handled, and the exponent budget removes them. In the
+residual setting $G = (\mathbb{Z}/R)^*$, and among admissible
+$R \equiv 3 \pmod 4$ the exceptional groups occur at exactly
+$R = 7$ (giving $\mathbb{Z}/6$) and $R = 15$ (giving
+$\mathbb{Z}/2 \times \mathbb{Z}/4$); no admissible $R$ has
+$\varphi(R) = 4$. At those two residuals the Diderrich--Mann bound
+$|S| \le g/2 - 1$ is false for $\Sigma(S)$ --- supports of size
+$g/2$ with $\Sigma(S) \ne G$ exist --- but true for $M(S)$, because
+allowing each class twice is exactly enough to close the gap. The
+proof below gives $|S| \le g/2 - 1$ for $M$ at every even-order $G$
+with no exceptions, so the sieve dimension $\tfrac12$ is available at
+\emph{every} admissible residual. (At $R = 7$ and $R = 15$ this is
+belt and braces: Theorems~\ref{thm:Ap} and~\ref{thm:R15} give an
+exact criterion there in any case.) Second, the summands here are not
+arbitrary: each factor class contributes the bounded-exponent set
+$\{1, v, v^2\}$, and the derivation below yields the quantitative
+form we need --- a single prescribed target, bounds uniform in $R$,
+and the involution bookkeeping of part (iii) --- directly. Third, it
+is short, and it is what the Lean development formalizes.
 
 \begin{proof}[Proof of Theorem~\ref{thm:S}]
 (i) Write $M = A_1 + \cdots + A_k$ with $A_i = \{0, v_i, 2v_i\}$,
@@ -1445,10 +1793,19 @@ has reach exactly
 $\mathbb{Z}/d \setminus \{-1\}$, hence is maximal failing.
 \end{theorem}
 
-So a useful classification must produce \emph{containers} ---
-polynomially many structured sets covering all failing supports ---
-not an enumeration. The kernel (periodic) case is under complete
-control:
+The exponential-in-$\sqrt d$ order is not a surprise: the objects
+constructed are complete partitions with distinct parts, whose total
+count is $\exp(\Theta(\sqrt n))$ classically
+(Andrews--Beck--Hopkins~\cite{ABH}). What
+Theorem~\ref{thm:Mcount} records is the version adapted to
+$\mathbb{Z}/d$ and to maximality, because that is what rules out
+enumeration. A useful classification must therefore produce
+\emph{containers} --- polynomially many structured sets covering all
+failing supports. The kernel (periodic) case is under complete
+control, by the standard stabilizer/quotient reduction that drives
+the critical-number literature
+(see~\cite[Ch.~6]{Grynkiewicz}); we state it in the form and with the
+size bookkeeping we need, and claim no novelty in the mechanism.
 
 \begin{theorem}[kernel branch; lossless reduction]\label{thm:Mkernel}
 Let $S$ fail for $t$ and $H = \mathrm{Stab}(M(S)) \ne \{0\}$, and
@@ -1635,21 +1992,19 @@ that assuming Conjecture~\ref{conj:A} \emph{only for Hajós orders}
 --- where the group theory is tame --- yields
 Theorem~\ref{thm:Upay} with the same exponent up to $o(1)$.
 
-\section{A conditional program: the Burgess--reciprocity
-ladder}\label{sec:ladder}
+\subsection{A conditional program past the ceiling}\label{sec:ladder}
 
-Theorem~\ref{thm:S} closed the fixed-list axis, and
-Theorem~\ref{thm:U} pushed the growing-list axis to its
+Theorem~\ref{thm:S} closes the fixed-list axis and
+Theorem~\ref{thm:U} pushes the growing-list axis to its
 unconditional ceiling $\exp(-c(\log\log x)^2)$
 (Remark~\ref{rem:ceiling}); no list-based bound can reach emptiness
-(Remark~\ref{rem:emptiness}). This section develops
-the program that opens past the ceiling: a \emph{$p$-adapted} family of
-residuals, chosen through quadratic reciprocity, along which the
-failure modes are localized, partially proved, and reduced to a
-single measured hypothesis. Entry points and archives for all
-measurements cited here are in Appendix~\ref{app:verif}.
-
-\subsection{Necessity, purity, and the selected residual}
+(Remark~\ref{rem:emptiness}). We record here, in compressed form,
+the one program we know that opens past the ceiling: a
+\emph{$p$-adapted} family of residuals, selected through quadratic
+reciprocity, along which the all-residue failure mode is impossible
+by construction. Its measurements are archived
+(Appendix~\ref{app:verif}); the fuller development, including the
+per-rung census data, is in the accompanying repository.
 
 \begin{lemma}[composite reciprocity]\label{lem:Jcomp}
 Let $R \equiv 3 \pmod 4$ be any admissible residual and $q$ an odd
@@ -1702,52 +2057,23 @@ mode of Lemma~\ref{lem:N} is impossible at $R_0$ \emph{by
 construction}. The \emph{$q$-ladder} is the progression
 $R_j = R_0 + 4qj$, along which the same holds at every rung.
 
-\subsection{The census}
-
 Computed over every one of the $1{,}587{,}581$ hard primes below
 $10^9$, with mask-free window samples of $10{,}000$ primes per
 half-decade beyond, and the complete $10^{11}$ deep tail
-(Appendix~\ref{app:verif}), the census is summarized in
-Table~\ref{tab:ladder}.
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{lrr}
-\toprule
-population & first-rung success & ladder (\,$R \le 400$\,) \\ \midrule
-all hard $p < 10^9$ (exhaustive) & $94.78\%$ & $100\%$ (two $q$'s) \\
-$10^9$--$3.2{\times}10^9$ (sampled) & $95.4\%$ & $100\%$ \\
-$3.2{\times}10^9$--$10^{10}$ & $95.0\%$ & $100\%$ \\
-$10^{10}$--$3.2{\times}10^{10}$ & $95.8\%$ & $100\%$ \\
-$3.2{\times}10^{10}$--$10^{11}$ & $95.7\%$ & $100\%$ \\
-$10^{11}$ deep tail ($R_{\min} \ge 43$, complete) & $75.1\%$ &
-$99.99\%$ ($100\%$ at $R \le 435$) \\
-\bottomrule
-\end{tabular}
-\caption{The selected-residual census: success rates at the first
-rung and along the $q$-ladder, capped at rungs $R_j \le 400$.
-``(two $q$'s)'': below $10^9$, exactly two primes needed the ladder
-of the \emph{second}-least non-residue to resolve within the cap.
-The deep-tail row conditions on $R_{\min} \ge 43$, the adversarial
-$0.016\%$ of the $10^{11}$ population; there, raising the cap to
-$R \le 435$ restores $100\%$. The per-rung failure rate is flat in
-$p$ across two decades, including on the deep-tail population.}
-\label{tab:ladder}
-\end{table}
-
-Failure anatomy (all $82{,}808$ first-rung failures below $10^9$):
+(Appendix~\ref{app:verif}): the selected residual $R_0$ alone
+certifies $94.78\%$ of hard primes below $10^9$ and $95.0$--$95.8\%$
+in every sampled window up to $10^{11}$, with no drift; the ladder
+capped at $R_j \le 400$ certifies $100\%$ below $10^9$ (two primes
+requiring the ladder of the second-least non-residue) and $100\%$ in
+every window. On the adversarial $10^{11}$ deep tail
+($R_{\min} \ge 43$, the $0.016\%$ hardest), the first rung succeeds
+for $75.1\%$ and the capped ladder for $99.99\%$, with $100\%$ at
+$R \le 435$. Among all $82{,}808$ first-rung failures below $10^9$,
 $97.5\%$ are \emph{true budget} failures --- the subgroup generated
 by the factor classes contains the target and only the bounded
-exponents miss it --- and $29\%$ miss exactly one unit class, the
-target itself. No failure has more than $5$ distinct non-identity
-factor classes (Theorem~\ref{thm:S} would allow $(R-3)/2$), with the
-conditional failure probability decaying by a factor ${\approx}7$
-per additional class; and the Jacobi non-residue mass sits at the
-parity minimum forced by consistency in $97.9\%$ of failures --- the
-mechanism of Theorem~\ref{thm:R15}'s proof, observed at every
-residual.
-
-\subsection{What is proved}
+exponents miss it --- $29\%$ miss exactly one unit class, and none has
+more than $5$ distinct non-identity factor classes, against the
+$(R-3)/2$ that Theorem~\ref{thm:S} would allow.
 
 \begin{theorem}[ladder chain]\label{thm:L0}
 Fix a prime $q \ge 11$ and $J \ge 1$. The number of hard primes
@@ -1757,8 +2083,7 @@ $O_{q,J}\!\left(x/(\log x)^{1+\kappa_J}\right)$, where
 $\kappa_J = \sum \delta_{R_j}$ over the rungs with at most two prime
 factors, with $\delta_R = \tfrac12$ for $R$ prime or composite
 $\le 107$ and $\delta_R = \tfrac12 - 1/\varphi(R)$ for larger
-composites; in particular $\kappa_J \ge J'/2 - \sum_j 1/\varphi(R_j)$
-with $J'$ the number of such rungs.
+composites.
 \end{theorem}
 
 \begin{proof}
@@ -1766,8 +2091,7 @@ The shifted forms $(p+R_j)/4 = n + (R_0-3)/4 + qj$ are distinct
 integer shifts of $n = (p+3)/4$, and Theorem~\ref{thm:S} --- part
 (ii) at prime rungs, part (iii) at composite rungs with
 $\omega \le 2$ --- makes failure at each usable rung a sifting
-condition of dimension $\ge \delta_{R_j}$ (the two tiers of part
-(iii) at composite rungs), exactly as in the proof of
+condition of dimension $\ge \delta_{R_j}$, exactly as in the proof of
 Theorem~\ref{thm:FG}, which applies verbatim to this $p$-adapted
 list.
 \end{proof}
@@ -1795,65 +2119,44 @@ $\eta_q$; and $\varphi(R_0) < R_0 < 4q$ gives $\eta_q > 1/(4q)$. The
 bound is uniform for $q \ll \log\log x$.
 \end{proof}
 
-\begin{theorem}[proxy ladder, two-sided]\label{thm:B2}
-Fix $q$, a class \textup{(}fixing $R_0, R_1, \dots$\textup{)}, and
-$J$ with $\kappa = \sum_{j \le J} 1/\varphi(R_j)$ below an absolute
-constant. Let $\tilde E_J(x)$ be the set of hard primes in the class
-whose shifted values $(p+R_j)/4$, $0 \le j \le J$, all avoid prime
-factors in their universal classes \textup{(}so
-$E_j \subseteq \tilde E_j$ for every $j \le J$\textup{)}. Then
-\[
-  x/(\log x)^{1+\kappa} \;\ll_{q,J}\; \#\tilde E_J(x)
-  \;\ll_{q,J}\; x/(\log x)^{1+\kappa}:
-\]
-the avoidance ladder decays by the factor
-$(\log x)^{-1/\varphi(R_{j+1})}$ at every rung.
-\end{theorem}
-
-\begin{proof}[Proof sketch]
-The upper bound is the Fundamental Lemma as in
-Theorem~\ref{thm:B1}. The lower bound is a beta-sieve in dimension
-$\kappa < 1$ on the prime-supported sequence, with level
-$x^{1/2-\varepsilon}$ from Bombieri--Vinogradov; integers with a
-forbidden prime factor above the sifting range are removed by
-Brun--Titchmarsh upper bounds in the progressions they define, whose
-total is absorbable for $\kappa$ small.
-\end{proof}
+Write $E_j(x)$ for the set of hard primes in a fixed class that fail
+every rung through $j$, and $\tilde E_j(x)$ for the larger set whose
+shifted values $(p+R_i)/4$, $i \le j$, all avoid prime factors in
+their universal classes. The same Fundamental Lemma argument bounds
+$\#\tilde E_J \ll_{q,J} x/(\log x)^{1+\kappa}$ with
+$\kappa = \sum_{j \le J} 1/\varphi(R_j)$, and for $\kappa$ below an
+absolute constant a beta-sieve in dimension $\kappa < 1$ at level
+$x^{1/2-\varepsilon}$ (Bombieri--Vinogradov) gives the matching lower
+bound: the \emph{avoidance} ladder provably decays by
+$(\log x)^{-1/\varphi(R_{j+1})}$ at every rung. What is not provable
+by present methods is that the true failure sets $E_j$ track their
+avoidance sets:
 
 \begin{hypothesis}[P; proportionality]\label{hyp:P}
 For each fixed $q$, class, and $J$ there are $c_P > 0$ and $x_0$,
 with $c_P$ bounded below uniformly in the rung $j \le J$
 \textup{(}uniformity in $q$ is part of the hypothesis\textup{)},
 such that $\#E_j(x) \ge c_P\, \#\tilde E_j(x)$ for all $j \le J$ and
-$x \ge x_0$, where $E_j$ is the set of true ladder failures through
-rung $j$: failures are a positive proportion of their
-necessary-condition set.
+$x \ge x_0$.
 \end{hypothesis}
 
 Measured: $c_P \approx 0.097$--$0.12$ at rung $0$ and
-$0.13$--$0.16$
-at rung $1$, flat across two decades to $10^{11}$
-(Appendix~\ref{app:verif}). Under Hypothesis~\ref{hyp:P}, since
-$E_{j+1} \subseteq \tilde E_{j+1}$,
-\[
-  \#E_{j+1} \;\le\; \#\tilde E_{j+1}
-  \;\ll\; (\log x)^{-1/\varphi(R_{j+1})}\, \#\tilde E_j
-  \;\le\; (\log x)^{-1/\varphi(R_{j+1})}\, c_P^{-1}\, \#E_j,
-\]
-so the ladder failure count decays at every \emph{fixed} rung, for
-$x \ge x_0(q, j, \delta)$ --- the per-rung decay
-Hypothesis~\ref{hyp:B} below posits, obtained from
-Hypothesis~\ref{hyp:P} rung by rung, though not with the uniformity
-in $j$ and $q$ that Hypothesis~\ref{hyp:B} demands.
+$0.13$--$0.16$ at rung $1$, flat across two decades to $10^{11}$
+(Appendix~\ref{app:verif}). Since $E_{j+1} \subseteq \tilde E_{j+1}$,
+Hypothesis~\ref{hyp:P} converts the avoidance decay into decay of the
+true failure counts at every \emph{fixed} rung, though not with
+uniformity in $j$ and $q$.
 
-The key to counting true failures is that the character-failure
-condition is a \emph{norm-form} condition in disguise. For
-$r \equiv 3 \pmod 4$, quadratic reciprocity gives
+The one place where the true failure count \emph{is} bounded below
+unconditionally is at the start of the chain, and the reason is that
+the character-failure condition is a \emph{norm-form} condition in
+disguise. For $r \equiv 3 \pmod 4$, quadratic reciprocity gives
 $\legendre{-r}{\ell} = \legendre{\ell}{r}$ for odd primes
-$\ell \ne r$, so
+$\ell \nmid r$, so
 \begin{equation}\label{eq:normform}
 \begin{aligned}
-  \text{every prime factor of $a$ is a QR mod } r
+  \text{every prime factor $\ell$ of $a$ has }
+  \legendre{\ell}{r} = +1
   \;&\iff\; -r \text{ is a square mod } 4a \\[-1pt]
   \;&\iff\; a \text{ is \emph{primitively} represented by} \\
   &\qquad\ \ \text{a binary quadratic form of discriminant } -r,
@@ -1861,17 +2164,19 @@ $\ell \ne r$, so
 \end{equation}
 the last step by the classical correspondence between
 representations and square roots of the discriminant
-(Cox~\cite[Lem.~2.5]{Cox}; the discriminant $-r$ is prime, hence has
-a single genus, so the whole class group participates). Failure
-families are thus families of shifted values represented by binary
-quadratic forms, and the relevant counting theorem is Iwaniec's
-half-dimensional sieve in its \emph{prime-indexed} form: the number
-of primes $p \le N$ with $p = B\varphi(\xi,\eta) + A$ for a
+(Cox~\cite[Lem.~2.5]{Cox}); for $r$ composite,
+$\smash{\legendre{\cdot}{r}}$ is the Jacobi symbol throughout. When
+$r$ is prime the discriminant $-r$ has a single genus and the whole
+form class group participates; at $r = 15$ there are two genera and
+two classes, and the counting below is applied to each form
+separately and summed, which is all that is needed. The relevant
+counting theorem is Iwaniec's half-dimensional
+sieve~\cite{IwaniecHalfDim} in its \emph{prime-indexed} form: the
+number of primes $p \le N$ with $p = B\varphi(\xi,\eta) + A$ for a
 primitive form $\varphi$ is $\asymp N/(\log N)^{3/2}$
 \cite{IwaniecPhiA}. This is not obstructed by parity --- at
 dimension $\kappa = \tfrac12$ the lower-bound sieve function
-satisfies $\beta(\tfrac12) = 1$ --- and it is the tool the following
-statements use.
+satisfies $\beta(\tfrac12) = 1$.
 
 \begin{theorem}[the first link is sharp]\label{thm:sharp}
 For $R \in \{3, 7, 15\}$,
@@ -1892,102 +2197,61 @@ At these residuals the exact criteria (Theorems~\ref{thm:A},
 \ref{thm:Ap}, \ref{thm:R15}) make failure equivalent to an
 all-residue condition on the factors of $a = (p+R)/4$, which by
 \eqref{eq:normform} is primitive representability by a form of
-discriminant $-r$ ($r = 3, 7, 15$ respectively --- at $R = 15$ the
-Jacobi condition of Theorem~\ref{thm:R15} plays the role of the
-Legendre condition). The upper bound is the Fundamental Lemma as in
-Theorem~\ref{thm:FG}; the lower bound is \cite{IwaniecPhiA} applied
-to each class of forms, with the congruence conditions (H1)--(H3)
-absorbed into $A$ and $B$. At $R = 11$ the case-(b) budget failures
-of Theorem~\ref{thm:App} are not of this shape, which is why only
-the one-sided bounds are asserted.
+discriminant $-r$ ($r = 3, 7, 15$ respectively). The upper bound is
+the Fundamental Lemma as in Theorem~\ref{thm:FG}; the lower bound is
+\cite{IwaniecPhiA} applied to each class of forms, with the
+congruence conditions (H1)--(H3) absorbed into $A$ and $B$. At
+$R = 11$ the case-(b) budget failures of Theorem~\ref{thm:App} are
+not of this shape, which is why only the one-sided bounds are
+asserted.
 \end{proof}
 
-Along the ladder the same mechanism applies, but only on classes
-whose local conditions are consistent --- a much more delicate
-requirement than it first appears.
+A lower bound of the same order survives the passage to $p$-adapted
+residuals, but only on a sparse family of classes, and the reason is
+worth recording because it is the obstruction in miniature. Fix a
+class $c \bmod M$ ($M$ as in the proof of Theorem~\ref{thm:B1}) and
+suppose $R_0$ has a prime factor $r_1 \equiv 3 \pmod 4$ with
+$\smash{\legendre{\ell}{r_1}} = +1$ for \emph{every} prime
+$\ell \le q$ that the class forces to divide $a$. Then every $p$ in
+the class whose shifted value $(p+R_0)/4$ has all prime factors
+$\smash{\legendre{\cdot}{r_1}} = +1$ fails the first rung, by
+Proposition~\ref{prop:char} at $r_1$, and \eqref{eq:normform}
+with~\cite{IwaniecPhiA} counts those primes: $\gg x/(\log x)^{3/2}$
+on any such class. The upgrade from representability by \emph{some}
+form of the discriminant to \emph{primitive} representability is not
+automatic; it is the subject of
+Fuchs--Hsu--Rickards--Schindler--Stange~\cite{FHRSS}, and the cases
+used here fall under their Theorem~1.1 when $r_1 \equiv 3 \pmod 8$
+with $a$ odd, or $r_1 \equiv 7 \pmod 8$ with $a$ even.
 
-\begin{theorem}[ladder failure lower bound]\label{thm:P1}
-Call a class $c \bmod M$ \textup{(}$M$ as in the proof of
-Theorem~\ref{thm:B1}\textup{)} \emph{admissible} if $R_0$ has a
-prime factor $r_1 \equiv 3 \pmod 4$ with
-\textup{(A1)} $\legendre{\ell}{r_1} = +1$ for \emph{every} prime
-$\ell \le q$ that the class forces to divide $a$ --- equivalently,
-every $\ell$ with $p \equiv -R_0 \pmod \ell$ for odd $\ell$, and
-$\ell = 2$ exactly when $R_0 \equiv 7 \pmod 8$; the case $\ell = q$
-is always present and gives $\legendre{q}{r_1} = +1$;
-\textup{(A2)} $r_1 \equiv 3 \pmod 8$ with $a$ odd, or
-$r_1 \equiv 7 \pmod 8$ with $a$ even.
-On every admissible class,
-\[
-\begin{aligned}
-  \#E_0(x) \;&\ge\; \#\bigl\{p \le x : p \equiv c \!\!\pmod M,\
-  \text{every prime factor of } (p+R_0)/4 \text{ a QR mod } r_1
-  \bigr\} \\
-  &\gg\; \frac{x}{(\log x)^{3/2}}.
-\end{aligned}
-\]
-\end{theorem}
-
-\begin{proof}[Proof sketch]
-Membership forces failure by Proposition~\ref{prop:char} at $r_1$:
-all factors of $a$ are residues mod $r_1$ by hypothesis, and
-$\legendre{p}{r_1} = +1$ follows \emph{for free} from consistency
-$a \equiv 4^{-1}p$, so every divisor of $m^2$ is a residue while
-$\legendre{-m}{r_1} = \legendre{-1}{r_1} = -1$. For the count, apply
-\eqref{eq:normform} and~\cite{IwaniecPhiA} with $A = -R_0$,
-$B = 4\prod_{\ell \mid a,\ \ell \le q} \ell$ and discriminant
-$-r_1$; \textup{(A1)} is what makes the family nonempty.
-Condition~\textup{(A2)} is not needed for $2$-adic solvability ---
-that is already the $\ell = 2$ instance of \textup{(A1)} --- but
-for citability: it is the range covered by~\cite[Thm.~1.1]{FHRSS}
-below. The remaining case $r_1 \equiv 7 \pmod 8$ with $a$ odd is
-arithmetically fine and we expect the conclusion there too, but it
-sits outside the published statement we can cite. One point is not a routine citation: the sieve delivers
-representability by \emph{some} form of the discriminant --- non-split
-primes occurring to even multiplicity --- whereas
-\eqref{eq:normform} needs \emph{primitive} representability, no
-non-split prime at all. That upgrade is the subject of
-Fuchs--Hsu--Rickards--Schindler--Stange~\cite{FHRSS}, where it is
-shown to be neither immediate nor universally true; the cases used
-here fall under their Theorem~1.1.
-\end{proof}
-
-\begin{remark}[how much of the ladder this reaches]\label{rem:P1scope}
-Condition \textup{(A1)} is restrictive in a way that is easy to miss:
+\begin{remark}[how sparse]\label{rem:P1scope}
+The forcing condition is restrictive in a way that is easy to miss:
 the class fixes $a$ modulo every prime $\le q$, so a single forced
-factor $\ell$ with $\legendre{\ell}{r_1} = -1$ empties the family.
-For instance $q = 23$, $R_0 = 35$, $r_1 = 7$ satisfies the
-$\ell = q$ instance of \textup{(A1)}, but $3 \mid a$ for every hard
-prime (as
+factor $\ell$ with $\smash{\legendre{\ell}{r_1}} = -1$ empties the
+family. For instance $q = 23$, $R_0 = 35$, $r_1 = 7$ passes the
+$\ell = q$ test, but $3 \mid a$ for every hard prime (as
 $p \equiv 1 \pmod 3$ and $35 \equiv 2 \pmod 3$) while
-$\legendre{3}{7} = -1$: the set is empty. Counting properly, among
-the $39{,}391$ hard primes below $2 \times 10^7$ the classes passing
-the $\ell = q$ instance alone account for $6.6\%$ of first rungs
-($2{,}593$), those with a nonempty family for $0.023\%$ ($9$, in
-four distinct classes $(q, R_0, r_1)$), and $93.4\%$ admit no
-candidate $r_1$ whatever. Theorem~\ref{thm:P1} is therefore an
-existence statement about a sparse family of ladders, not a bound
-covering a positive proportion of them. One structural reason
-dominates: whenever $R_0$ is prime --- $65.2\%$ of first rungs in
-this range --- its only prime factor is $r_1 = R_0$ itself, and
-Theorem~\ref{thm:J} forces $\legendre{q}{R_0} = \legendre{p}{q} =
--1$, so no admissible $r_1$ exists by construction. All figures are
-reproduced by \texttt{erdos\_straus.burgess\_scan admissibility}
-and archived. Consequently the bracket on Hypothesis~\ref{hyp:P}
-is two-sided only on that sparse family at rung $0$, and one-sided
-(upper bound only) elsewhere. Theorem~\ref{thm:sharp} is the
-unconditional lower-bound statement of real reach; what
-Theorem~\ref{thm:P1} adds is that the same mechanism survives the
-passage to $p$-adapted residuals where it survives at all.
+$\legendre{3}{7} = -1$: the set is empty. Among the $39{,}391$ hard
+primes below $2 \times 10^7$, the classes passing the $\ell = q$ test
+alone account for $6.6\%$ of first rungs ($2{,}593$), those with a
+nonempty family for $0.023\%$ ($9$, in four distinct classes
+$(q, R_0, r_1)$), and $93.4\%$ admit no candidate $r_1$ whatever. One
+structural reason dominates: whenever $R_0$ is prime --- $65.2\%$ of
+first rungs in this range --- its only prime factor is $r_1 = R_0$,
+and Theorem~\ref{thm:J} forces
+$\legendre{q}{R_0} = \legendre{p}{q} = -1$, so no admissible $r_1$
+exists by construction. All figures are reproduced by
+\texttt{erdos\_straus.burgess\_scan admissibility} and archived.
+Consequently Hypothesis~\ref{hyp:P} is bracketed two-sidedly only on
+that sparse family at rung $0$, and one-sidedly elsewhere;
+Theorem~\ref{thm:sharp} is the unconditional lower-bound statement of
+real reach.
 \end{remark}
 
-\subsection{The conditional theorem, and honest scope}
-
 \begin{hypothesis}[B; per-rung decay]\label{hyp:B}
-Fix a rung-count function $J(x) \to \infty$ (as calibrated after
-Theorem~\ref{thm:L1}). There are $\delta > 0$ and $x_0$ such that
-for $x \ge x_0$, all
-$q \le (\log x)^2$ and all $0 \le j < J(x)$:
+Fix a rung-count function $J(x) \to \infty$. There are $\delta > 0$
+and $x_0$ such that for $x \ge x_0$, all $q \le (\log x)^2$ and all
+$0 \le j < J(x)$:
 $\#E_{j+1}(x) \le (1-\delta)\,\#E_j(x) + O(\sqrt x)$.
 \end{hypothesis}
 
@@ -1999,9 +2263,7 @@ with no drift in $p$.
 
 \begin{theorem}[conditional almost-all bound]\label{thm:L1}
 Assume Hypothesis~\ref{hyp:B}. Then all but
-\[
-  O\!\left(x\,e^{-\delta J(x)} \;+\; x\,2^{-\pi((\log x)^2)}\right)
-\]
+$O\!\left(x\,e^{-\delta J(x)} + x\,2^{-\pi((\log x)^2)}\right)$
 hard primes $p \le x$ satisfy
 $R_{\min}(p) \le 4\,q(p)\,(J(x)+1) \le (\log x)^{2+o(1)} J(x)$.
 \end{theorem}
@@ -2014,234 +2276,34 @@ Hypothesis~\ref{hyp:B} $J(x)$ times; a survivor is the only way to
 lack a certificate on the ladder.
 \end{proof}
 
-With $J(x) = (\log\log x)^2$ --- a mild extrapolation of the nine
-measured rungs --- the exceptional set is
-$\ll x\exp(-\delta(\log\log x)^2)$: this calibration is now
+\begin{remark}[scope]\label{rem:ladder-scope}
+With $J(x) = (\log\log x)^2$ the exceptional set would be
+$\ll x\exp(-\delta(\log\log x)^2)$ --- but that calibration is
 delivered \emph{unconditionally}, and with the stronger bound
-$R_{\min} \le \varepsilon\log\log x$, by Theorem~\ref{thm:U}, so
+$R_{\min} \le \varepsilon\log\log x$, by Theorem~\ref{thm:U}. So
 Hypothesis~\ref{hyp:B}'s real content begins past the ceiling of
 Remark~\ref{rem:ceiling}: with $J(x) = (\log x)^{\theta}$,
-$\theta > 2/3$, Theorem~\ref{thm:L1} would pass
-Vaughan's bound. The hypothesis-strength required scales with the
-ambition, and each increment is testable before it is assumed.
-
-\begin{remark}[scope]\label{rem:ladder-scope}
-Theorem~\ref{thm:L1} is an almost-all statement under a measured
-hypothesis; three things it is not. It is not unconditional:
-Hypothesis~\ref{hyp:P} is bounded below unconditionally only on the
-sparse family of Remark~\ref{rem:P1scope}, and one-sidedly
-elsewhere --- in particular whenever $R_0$ is prime, which is the
-typical case. It
-is not a density record: Vaughan's bound remains asymptotically
-stronger unconditionally. And it is not a path to the full
-conjecture by itself: emptiness is beyond upper-bound methods
-(Remark~\ref{rem:emptiness}), and excluding the individual
-conspiratorial prime --- a super-record dodging $J(p)$ rungs, of
-which the record prime of Section~\ref{sec:comp} is an empirical
-foreshadowing --- is a simultaneous-multiplicative-structure
-statement of prime-tuple difficulty. What the ladder does is
-localize the conjecture for hard primes into one measured counting
-inequality, bracketed on both sides where present methods reach and
-above everywhere, with every sub-statement current tools can decide
-now decided.
+$\theta > 2/3$, Theorem~\ref{thm:L1} would pass Vaughan's bound. It
+is not unconditional, it is not a density record, and it is not a
+path to the full conjecture by itself: emptiness is beyond
+upper-bound methods (Remark~\ref{rem:emptiness}), and excluding the
+individual conspiratorial prime --- a super-record dodging $J(p)$
+rungs, of which the record prime of Section~\ref{sec:comp} is an
+empirical foreshadowing --- is a simultaneous-multiplicative-structure
+statement of prime-tuple difficulty. Two computations pin the walls
+down. \textup{(i)} Budget failure is not a character event: at
+$R = 11$ the configurations with class set $\{2, 7\}$ and
+multiplicities $(1,1)$ versus $(4,2)$ have the same class set and the
+same product mod $11$ --- hence identical values under every
+Dirichlet character mod $11$ --- yet the first fails the target and
+the second attains it, and $97.5\%$ of measured first-rung failures
+are of this budget type. \textup{(ii)} Weighted detection is
+equivalent to Hypothesis~\ref{hyp:P}: by
+Proposition~\ref{prop:succ} the certificate detector is already
+maximally relaxed, so almost-prime weakenings change nothing, and the
+first moment of any Bonferroni/Selberg weighting over $E_j$ is itself
+a failure count.
 \end{remark}
-
-\begin{remark}[why the walls are real: two obstruction
-computations]\label{rem:obstruction}
-Two computations pin the walls down. \textup{(i)} \emph{Budget
-failure is not a character event.} In the model at $R = 11$
-(generator $2$), the configurations with class set $\{2, 7\}$ and
-multiplicities $(1,1)$ versus $(4,2)$ have the \emph{same} class
-set and the same product $a \equiv 3 \pmod{11}$ --- hence identical
-values under every Dirichlet character mod $11$ --- yet the first
-fails the target $8$ ($\equiv -m$ for the consistent
-$p \equiv 1 \pmod{11}$) and the second attains it. No
-character-based machinery (pretentious dichotomies included)
-can separate the two, and $97.5\%$ of measured first-rung ladder
-failures are of this budget type. \textup{(ii)} \emph{Weighted
-detection is equivalent to Hypothesis~\ref{hyp:P}.} The certificate
-detector is already maximally relaxed --- by
-Proposition~\ref{prop:succ}, any \emph{divisor} of the shifted
-value in the universal class certifies, so almost-prime weakenings
-of the detected object change nothing --- and the first moment of
-any Bonferroni/Selberg weighting over $E_j$ is itself a failure
-count: carrying the scheme through is equivalent, up to constants,
-to Hypothesis~\ref{hyp:P} itself. The parity gap of
-Theorem~\ref{thm:P1} is therefore intrinsic to every relaxation of
-this type, not an artifact of the chosen detector.
-\end{remark}
-
-\section{Computations to \texorpdfstring{$10^{12}$}{10\textasciicircum 12}}\label{sec:comp}
-
-All code and data are in the accompanying repository. Certificates are
-found by direct integer factorization of $a$ (trial division; the
-factorization of $m^2 = p^2 a^2$ follows) and scanning divisors for the
-class condition \eqref{eq:cert}; every certificate is re-verified in exact
-integer arithmetic, $4abc = p(bc + ac + ab)$.
-
-\subsection{Data}
-
-Every one of the $1{,}175{,}215{,}396$ hard primes $p < 10^{12}$ possesses a
-residual certificate with $R \le 111$. The verification behind this
-claim is graded by dataset: exhaustive reconstruction and exact
-re-checking of every entry below $10^9$; systematic samples
-($143{,}000$, $257{,}343$ and $2{,}350{,}431$ entries) at $10^{10}$,
-$10^{11}$ and $10^{12}$,
-together with the \emph{complete} tails ($842$ entries with
-$R \ge 51$, $20{,}151$ and $118{,}210$ with $R \ge 43$) re-checked
-with full
-minimality --- Table~\ref{tab:datasets} gives the per-dataset detail.
-The minimal residuals distribute
-as in Table~\ref{tab:dist} and Figure~\ref{fig:hist}.
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rr@{\qquad}rr@{\qquad}rr}
-\toprule
-$R$ & count & $R$ & count & $R$ & count \\ \midrule
-3 & 657{,}645{,}152 & 43 & 43{,}558 & 83 & 78 \\
-7 & 286{,}441{,}544 & 47 & 50{,}190 & 87 & 40 \\
-11 & 167{,}419{,}973 & 51 & 8{,}756 & 91 & 5 \\
-15 & 33{,}222{,}834 & 55 & 7{,}441 & 95 & 12 \\
-19 & 19{,}307{,}426 & 59 & 4{,}863 & 99 & 4 \\
-23 & 7{,}996{,}742 & 63 & 1{,}439 & 103 & 5 \\
-27 & 1{,}376{,}271 & 67 & 488 & 107 & 4 \\
-31 & 1{,}318{,}258 & 71 & 970 & 111 & 3 \\
-35 & 208{,}713 & 75 & 146 &  &  \\
-39 & 160{,}273 & 79 & 208 &  &  \\
-\bottomrule
-\end{tabular}
-\caption{Distribution of the minimal residual $R_{\min}$ over the
-$1{,}175{,}215{,}396$ hard primes below $10^{12}$ (plotted in
-Figure~\ref{fig:hist}). The value $R = 111$ is new at this scale.}
-\label{tab:dist}
-\end{table}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\linewidth]{fig_minR_hist}
-\caption{The data of Table~\ref{tab:dist} on a logarithmic count
-scale. The head is dominated by $R = 3, 7, 11$; the tail thins
-geometrically; the shaded band $87$--$111$ was empty below
-$10^{10}$, and its population at $10^{11}$ and $10^{12}$ followed the
-calibrated prediction (see the prediction bullet below), including
-the break of the five-decade record $R = 107$ at $R = 111$.}
-\label{fig:hist}
-\end{figure}
-
-Three features of the distribution deserve comment.\nopagebreak
-\begin{itemize}
-\item \textbf{The record broke at $10^{12}$.} From $10^7$ to
-  $10^{11}$ the maximal minimal residual stood at $R = 107$,
-  attained by the single prime $8{,}803{,}369 < 10^7$ and unmoved
-  across five decades. At $10^{12}$ it is
-  $R_{\max} = 111$, attained by three primes, the least being
-  \[
-    p \;=\; 119{,}945{,}383{,}009 \;\equiv\; 529 \!\!\pmod{840},
-  \]
-  for which every admissible $R \le 107$ fails and $R = 111$
-  certifies with $a = (p+111)/4 = 29{,}986{,}345{,}780$. The old
-  record $107$ also ceased to be unique, acquiring three further
-  primes in the same decade. In the
-  language of Corollary~\ref{cor:J}, $8{,}803{,}369$'s $27$ shifted
-  values contain
-  only $43$ distinct odd primes (typical: $45$--$52$), and $81\%$ of
-  them satisfy $\smash{\legendre{p}{q}} = +1$ (typical: $44$--$60\%$)
-  --- an extreme value of exactly the statistic
-  Theorem~\ref{thm:J} identifies as governing joint failure. We
-  attach no significance level to this: the prime was selected
-  \emph{because} it was the record, so its extremeness in a
-  correlated statistic is expected rather than surprising. The
-  observation is
-  descriptive --- it says what a record prime looks like
-  mechanically, not that its existence is improbable.
-\item \textbf{A prediction, and what it was worth.} The \emph{calibrated
-  independence model} treats the per-residual failure events as
-  independent across $R$, with per-residual failure rates fitted from
-  the complete $10^9$ solvability masks and a single deep-tail
-  correlation factor calibrated on the $R > 83$ counts; it is a
-  heuristic, not a theorem, and its role is to make falsifiable
-  predictions. Below $10^{10}$ no prime had
-  minimal $R \in \{87, 91, 95, 99, 103\}$; the model
-  attributed this gap to small-number statistics (expected counts
-  $\le 0.12$ per value at $10^9$) and predicted that deep-tail primes
-  (failing every $R \le 83$) land at $87, 91, 95, 99, 103, \ge 107$
-  with probabilities $0.53, 0.11, 0.22, 0.03, 0.05, 0.06$ (the last
-  being the total mass at or beyond $107$). Between
-  $10^{10}$ and $10^{11}$ the five values acquired $8, 3, 5, 1, 1$
-  primes respectively (all in $(1.3 \times 10^{10}, 10^{11})$), and
-  none passed
-  $103$; that distribution was \emph{consistent} with the prediction
-  ($\chi^2 \approx 1.3$) but, on $19$ points with several expected
-  cells below $5$, had little power to discriminate. The model's
-  sharper commitment was about \emph{when the record would move}:
-  the mass at or beyond $107$ was put at $6\%$ per deep-tail prime,
-  which with the deep-tail growth rate places the first
-  record-breaking prime in the decade $10^{11}$--$10^{12}$. It broke
-  there, at $R = 111$. The deep tail now holds $73$ primes with
-  $R_{\min} \ge 87$ against $19$ a decade earlier, distributed
-  $40, 5, 12, 4, 5, 4, 3$ over $87, \dots, 111$. A model fitted at
-  $10^9$ thus predicted, before the computation, both the filling of
-  a band that was empty at the time and the decade in which a
-  five-decade-old record would fall.
-\item Among all $1{,}587{,}581$ hard primes below $10^9$, exactly
-  \emph{four} admit a unique working residual $\le 107$
-  ($8{,}803{,}369$ with $107$; $142{,}361{,}209$ with $59$;
-  $287{,}567{,}281$ with $83$; $794{,}037{,}841$ with $63$) --- the entire
-  obstruction to a shorter covering list. A greedy cover of the full
-  solvability table uses $18$ residuals; a packing argument gives a lower
-  bound of $12$.
-\end{itemize}
-
-\subsection{Calibration of the base case of Theorem~\ref{thm:FG}}
-
-The proportion of hard primes failing both $R = 3$ and $R = 7$, multiplied
-by $\log x$, is constant to within $1\%$ across three decades of the
-$10^9$ data (Table~\ref{tab:calib}).
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{lccccc}
-\toprule
-bin ($p \sim$) & $10^6$ & $10^7$ & $6 \times 10^7$ & $2.5 \times 10^8$ & $10^9$ \\ \midrule
-density $\times \log x$ & 5.14 & 5.19 & 5.18 & 5.17 & 5.16 \\
-\bottomrule
-\end{tabular}
-\caption{The proportion of hard primes near $x$ that fail both
-$R = 3$ and $R = 7$, multiplied by $\log x$, in five bins spanning three decades
-of the $10^9$ data ($x$ is the bin's representative value). Constancy of the product is the decay
-rate predicted by the base case of Theorem~\ref{thm:FG}.}
-\label{tab:calib}
-\end{table}
-
-That is, the joint exceptional density is $\approx 5.17 / \log x$:
-the decay matches the order predicted by the base case of
-Theorem~\ref{thm:FG}, and $5.17$
-estimates the (conjectural) Selberg--Delange constant. The exceptional
-set is density zero but decays slowly: $26.5\%$ of hard primes below
-$10^9$ fail both residuals; all are settled by deeper residuals of the
-list. The fitted per-residual decay exponents are consistent with the
-sieve prediction $\kappa = \tfrac12$ where exact criteria exist:
-$\hat\kappa = 0.539$ for $R = 7$, and $\hat\kappa = 0.387$ for
-$R = 3$, where the short fitting range and Selberg--Delange lower-order
-terms bias the exponent downward.
-
-\subsection{Failure taxonomy}
-
-Sampling the complete solvability table at $10^9$: failures at $R = 7$
-are $100\%$ character failures (as Theorem~\ref{thm:Ap} requires); at $R = 11$,
-$89.7\%$ character failure and $10.3\%$ the budget pattern of
-Theorem~\ref{thm:App}(b); the character-failure share broadly decreases with
-$\varphi(R)$ (e.g.\ $51\%$ at $R = 103$, though not monotonically), as
-hitting one specific class among
-$\varphi(R)$ grows harder while the character dichotomy stays binary.
-Taken together, the data of this section matches the framework of
-Sections~\ref{sec:obstruction}--\ref{sec:sieve}: each distributional
-feature --- the head, the geometric tail, the once-empty band, the
-static record --- has a structural or heuristic explanation (the exact
-criteria for the head; the calibrated model, built on the sieve
-dimensions, for the tail and the band; Theorem~\ref{thm:J} for the
-record).
 
 \section{Open problems}\label{sec:open}
 
@@ -2288,7 +2350,7 @@ record).
   $\smash{\legendre{q}{R}}$ collapse to vertex signs
   $\smash{\legendre{p}{q}}$, and joint character-failure is an all-plus
   vertex assignment --- a percolation-style object whose structure could
-  organize the growth law. Separately, the meta-theorem's enumeration
+  organize the growth law. Separately, the enumeration
   complexity is unresolved: the DP state count grows empirically by
   $\approx 2.8\times$ per successive prime residual ($271$ at $R = 19$ to
   $1.95 \times 10^7$ at $R = 107$); is the equivalence-state complexity
@@ -2529,64 +2591,12 @@ Theorem~\ref{thm:J} and its forced-prime corollary were likewise
 checked on $135{,}588$ resp.\ $61{,}438$ instances from the same data,
 with zero violations (Corollary~\ref{cor:J}).
 
-\subsection{Certificate datasets and their verification}\label{app:datasets}
+\subsection{Certificate datasets}\label{app:datasets}
 
-The computational claims of Section~\ref{sec:comp} rest on the following
-datasets, all archived in the repository under \texttt{data/}. A
-certificate $(R, a, b, c)$ for $p$ is \emph{accepted} only if
-$4abc = p(bc + ac + ab)$ holds in exact integer arithmetic and
-$R = 4a - p$; for the compact minimal-$R$ maps, the verifier
-\emph{reconstructs} the triple from $(p, R)$ by the divisor search of
-\eqref{eq:cert} and then applies the same exact check, so a map entry is
-verified as a genuine certificate, not taken on faith.
-
-\begin{table}[ht]
-\centering
-\small
-\begin{tabular}{>{\raggedright\arraybackslash}p{3.4cm}r>{\raggedright\arraybackslash}p{6.6cm}}
-\toprule
-dataset & entries & verification performed \\ \midrule
-explicit triples, $p < 1.2 \times 10^8$ &
-$213{,}131$ &
-every triple checked exactly \\ \addlinespace
-minimal-$R$ map, $p < 10^9$ &
-$1{,}587{,}581$ &
-\emph{exhaustive}: every entry reconstructed and checked exactly \\ \addlinespace
-minimal-$R$ map, $p < 10^{10}$ &
-$14{,}215{,}707$ &
-$143{,}000$ systematically sampled entries reconstructed and checked;
-additionally \emph{all} $842$ tail entries ($R \ge 51$) checked with full
-minimality (no smaller admissible $R$ succeeds) \\ \addlinespace
-solvability masks, $p < 10^9$ &
-$27 \times 1{,}587{,}581$ &
-per-prime solvability of every admissible $R \le 107$ by full divisor-class
-computation; consistency with the minimal-$R$ map \\ \addlinespace
-$R$-sequence dataset, $p < 10^{11}$ &
-$128{,}671{,}219$ &
-$257{,}343$ systematically sampled entries reconstructed and checked;
-\emph{all} $20{,}151$ tail entries ($R \ge 43$) checked with full
-minimality; prime array pinned by sha256; pipeline validated
-byte-for-byte against the exhaustively verified $10^9$ map \\ \addlinespace
-$R$-sequence dataset, $p < 10^{12}$ &
-$1{,}175{,}215{,}396$ &
-$2{,}350{,}431$ systematically sampled entries reconstructed and
-checked; \emph{all} $118{,}210$ tail entries ($R \ge 43$) checked
-with full minimality, including the three attaining the record
-$R = 111$; zero unsolved; both arrays pinned by sha256; single
-$10.5$\,h run on $32$ cores, regenerated by
-\texttt{scripts/run\_1e12.sh} \\
-\bottomrule
-\end{tabular}
-\caption{Certificate datasets and the verification applied to each.}
-\label{tab:datasets}
-\end{table}
-
-The masks dataset of Table~\ref{tab:datasets} is the basis for the
-covering-set statements (the
-$18$-residual cover, the lower bound $12$, the four critical primes), the
-failure taxonomy, and the calibration of Section~\ref{sec:comp}; the
-minimal-$R$ maps are the basis for Table~\ref{tab:dist}, the record,
-and the gap analysis.
+The datasets underlying the census, and the verification applied to
+each, are tabulated in Section~\ref{sec:protocol}
+(Table~\ref{tab:datasets}); all are archived in the repository under
+\texttt{data/}, with sha256 manifests.
 
 \subsection{Reproduction}\label{app:repro}
 
@@ -2752,6 +2762,40 @@ K.~Bradford,
 Integers \textbf{21} (2021), \#A24; preprint,
 arXiv:\href{https://arxiv.org/abs/1906.00561}{1906.00561} [math.NT], 2019.
 
+\bibitem{BBF}
+M.~Bello-Hern\'andez, M.~Benito and E.~Fern\'andez,
+\emph{A divisor parametrization for the Erd\H{o}s--Straus conjecture},
+preprint, arXiv:\href{https://arxiv.org/abs/2606.10922}{2606.10922}
+[math.NT], 2026.
+
+\bibitem{ABH}
+G.~E.~Andrews, G.~Beck and B.~Hopkins,
+\emph{Complete partitions},
+Fibonacci Quart.\ \textbf{36} (1998), 354--360.
+
+\bibitem{Grynkiewicz}
+D.~J.~Grynkiewicz,
+\emph{Structural Additive Theory},
+Developments in Mathematics, vol.~30, Springer, Cham, 2013.
+
+\bibitem{DiderrichMann}
+G.~T.~Diderrich and H.~B.~Mann,
+\emph{Combinatorial problems in finite abelian groups},
+in: J.~N.~Srivastava et al.\ (eds.), A Survey of Combinatorial Theory,
+North-Holland, Amsterdam, 1973, pp.~95--100.
+
+\bibitem{FGG}
+M.~Freeze, W.~Gao and A.~Geroldinger,
+\emph{The critical number of finite abelian groups},
+J.~Number Theory \textbf{129} (2009), 2766--2777.
+
+\bibitem{Lopez}
+M.~A.~Lopez,
+\emph{A complete congruence system for the Erd\H{o}s--Straus
+conjecture},
+preprint, arXiv:\href{https://arxiv.org/abs/2404.01508}{2404.01508}
+[math.NT], 2024.
+
 \bibitem{Cox}
 D.~A.~Cox,
 \emph{Primes of the Form $x^2 + ny^2$: Fermat, Class Field Theory,
@@ -2815,6 +2859,12 @@ A.~Swett,
 online verification record to $10^{14}$, 1999; formerly at
 \url{http://math.uindy.edu/swett/esc.htm} (archived snapshots
 available via the Internet Archive; accessed August 2026).
+
+\bibitem{Terzi}
+D.~G.~Terzi,
+\emph{On a conjecture by Erd\H{o}s--Straus},
+Nordisk Tidskr.\ Informationsbehandling (BIT) \textbf{11} (1971),
+212--216.
 
 \bibitem{TaoVu}
 T.~Tao and V.~H.~Vu,

@@ -113,8 +113,11 @@ data/
 tests/
   test_solver.py       63 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (39 pp.; the title now
-                       reads "...and computations to 10^12")
+  erdos_straus_residuals.tex/.pdf   the manuscript (40 pp.), "Minimal
+                       residual certificates for the Erdos-Straus
+                       conjecture: a verified census to 10^12" -- framed
+                       as a computational paper: the census is Section 4,
+                       the structural theory is context around it
   make_fig.py          regenerates Figure 1 (needs `pip install -e ".[fig]"`)
 scripts/
   run_1e12.sh          one-shot 10^12 generation + verification + packaging
@@ -150,7 +153,7 @@ reconstructed and exactly checked plus **all** 118,210 tail entries
 
 **The record broke at 10¹².** From 10⁷ through 10¹¹ the maximal minimal
 residual stood at **R = 107**, attained by the single prime 8,803,369 < 10⁷
-and unmoved across five decades. At 10¹² it is **R = 111**, first attained at
+and unmoved across five successive orders of magnitude. At 10¹² it is **R = 111**, first attained at
 
     p = 119,945,383,009 ≡ 529 (mod 840),
 
@@ -181,7 +184,7 @@ the DP runs as independent confirmations, so the chain of sieve bounds
 reaches exponent 29/2 on the full 27-residual list — 31/2 with the two
 aggregate identity families (R | p+1 or R | p+4 always certifies); the
 reciprocity structure theorem (q|R) = (p|q) explains joint failure and the
-record's very slow growth (five decades at 107, then 111 at 10¹²); and
+record's very slow growth (107 from 10⁷ to 10¹¹, then 111 at 10¹²); and
 under Dickson's conjecture no fixed finite residual
 list suffices (Theorem K of `THEORY.md`) — the correctly-posed open
 problem, by completeness of the residual formulation, is the conjecture
