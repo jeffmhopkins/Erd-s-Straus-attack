@@ -1,0 +1,305 @@
+{
+ "limit": 20000000,
+ "hard_primes": 39391,
+ "definitions": {
+  "hard_prime": "prime p with p mod 840 in {1,121,169,289,361,529}",
+  "q": "least prime with Legendre (p|q) = -1 (least_legendre_nonresidue)",
+  "R0": "least R > 0 with R = -p (mod 4q) (selected_residual); R0 = 3 (mod 4) and q | a = (p+R0)/4",
+  "class_modulus_M": "840 * prod(primes 11 <= ell <= q); the class c = p mod M fixes q, R0 and p mod ell for all ell <= q",
+  "forced": "prime ell <= q divides a for EVERY p in the class c mod M; equivalently p = -R0 (mod ell) for odd ell, p = -R0 (mod 8) for ell = 2. Primes ell > q are never forced.",
+  "r1_candidates": "ALL prime factors r1 of R0 with r1 = 3 (mod 4); admissibility is the existential over them",
+  "A1": "(q|r1) = +1  [= the ell = q instance of (A2), since q | a always]",
+  "A2": "(ell|r1) = +1 for every forced odd ell <= q (q included); a forced ell = r1 counts as a violation, (r1|r1) = 0",
+  "A3_as_printed": "r1 = 3 (mod 8) with a odd, or r1 = 7 (mod 8) with a even",
+  "two_adic_ok": "the ell = 2 instance of (A2): (2|r1) = +1 whenever 2 | a, i.e. r1 = 7 (mod 8) whenever a is even. Weaker than A3_as_printed: it also admits the 'mixed' case r1 = 7 (mod 8) with a odd.",
+  "nonempty_family": "A1 and A2 and two_adic_ok - the exact condition for {p = c (mod M) : every prime factor of a is a QR mod r1} to be nonempty, since a violation at a forced ell puts that ell in every member's factorization",
+  "case_split": "2-adic configuration of the selected r1: A (r1 = 3 mod 8, a odd) / B (r1 = 7 mod 8, a even) / mixed (r1 = 7 mod 8, a odd) / excluded (r1 = 3 mod 8, a even, family empty)",
+  "counting_unit": "one hard prime = one first rung; primes sharing a class mod M give identical verdicts, so shares are shares of first rungs exactly as in Remark 5.9"
+ },
+ "counts": {
+  "A1_only": 2593,
+  "A1_only_share": 0.06582721941560254,
+  "nonempty_family": 9,
+  "nonempty_family_share": 0.00022847858647914498,
+  "a3_as_printed": 5,
+  "a3_as_printed_share": 0.00012693254804396943,
+  "case_split": {
+   "A": 5,
+   "B": 0,
+   "mixed": 4
+  },
+  "R0_prime": 25700,
+  "R0_prime_share": 0.6524332969460029,
+  "no_r1_candidate_passing_A1": 36798,
+  "no_r1_candidate_passing_A1_share": 0.9341727805843975,
+  "distinct_admissible_classes_q_R0_r1": 4,
+  "primes_with_two_nonempty_r1": 0
+ },
+ "admissible_classes": [
+  [
+   31,
+   51,
+   3
+  ],
+  [
+   37,
+   51,
+   3
+  ],
+  [
+   37,
+   91,
+   7
+  ],
+  [
+   43,
+   99,
+   3
+  ]
+ ],
+ "exemplars": [
+  {
+   "p": 5505361,
+   "q": 37,
+   "R0": 91,
+   "r1": 7,
+   "case": "mixed",
+   "a": 1376363,
+   "a_factors": {
+    "37": 1,
+    "37199": 1
+   },
+   "forced_small_primes": [
+    37
+   ],
+   "A3_as_printed": false
+  },
+  {
+   "p": 5544361,
+   "q": 31,
+   "R0": 51,
+   "r1": 3,
+   "case": "A",
+   "a": 1386103,
+   "a_factors": {
+    "31": 1,
+    "61": 1,
+    "733": 1
+   },
+   "forced_small_primes": [
+    31
+   ],
+   "A3_as_printed": true
+  },
+  {
+   "p": 9508801,
+   "q": 37,
+   "R0": 51,
+   "r1": 3,
+   "case": "A",
+   "a": 2377213,
+   "a_factors": {
+    "37": 1,
+    "47": 1,
+    "1367": 1
+   },
+   "forced_small_primes": [
+    37
+   ],
+   "A3_as_printed": true
+  },
+  {
+   "p": 10413841,
+   "q": 31,
+   "R0": 51,
+   "r1": 3,
+   "case": "A",
+   "a": 2603473,
+   "a_factors": {
+    "31": 1,
+    "83983": 1
+   },
+   "forced_small_primes": [
+    31
+   ],
+   "A3_as_printed": true
+  },
+  {
+   "p": 11210761,
+   "q": 37,
+   "R0": 91,
+   "r1": 7,
+   "case": "mixed",
+   "a": 2802713,
+   "a_factors": {
+    "37": 1,
+    "211": 1,
+    "359": 1
+   },
+   "forced_small_primes": [
+    37
+   ],
+   "A3_as_printed": false
+  },
+  {
+   "p": 12964561,
+   "q": 37,
+   "R0": 91,
+   "r1": 7,
+   "case": "mixed",
+   "a": 3241163,
+   "a_factors": {
+    "37": 1,
+    "251": 1,
+    "349": 1
+   },
+   "forced_small_primes": [
+    37
+   ],
+   "A3_as_printed": false
+  },
+  {
+   "p": 17813041,
+   "q": 37,
+   "R0": 91,
+   "r1": 7,
+   "case": "mixed",
+   "a": 4453283,
+   "a_factors": {
+    "23": 1,
+    "37": 1,
+    "5233": 1
+   },
+   "forced_small_primes": [
+    23,
+    37
+   ],
+   "A3_as_printed": false
+  },
+  {
+   "p": 18517249,
+   "q": 43,
+   "R0": 99,
+   "r1": 3,
+   "case": "A",
+   "a": 4629337,
+   "a_factors": {
+    "43": 1,
+    "199": 1,
+    "541": 1
+   },
+   "forced_small_primes": [
+    43
+   ],
+   "A3_as_printed": true
+  },
+  {
+   "p": 19007041,
+   "q": 31,
+   "R0": 51,
+   "r1": 3,
+   "case": "A",
+   "a": 4751773,
+   "a_factors": {
+    "13": 2,
+    "31": 1,
+    "907": 1
+   },
+   "forced_small_primes": [
+    13,
+    31
+   ],
+   "A3_as_printed": true
+  }
+ ],
+ "q_histogram": {
+  "11": 19819,
+  "13": 9995,
+  "17": 4945,
+  "19": 2467,
+  "23": 1188,
+  "29": 534,
+  "31": 278,
+  "37": 107,
+  "41": 38,
+  "43": 13,
+  "47": 5,
+  "53": 2
+ },
+ "R0_histogram_A1": {
+  "15": 1683,
+  "35": 115,
+  "39": 285,
+  "51": 20,
+  "55": 115,
+  "63": 312,
+  "87": 21,
+  "91": 7,
+  "95": 1,
+  "99": 1,
+  "111": 16,
+  "119": 3,
+  "135": 6,
+  "143": 8
+ },
+ "secs": 0.7,
+ "paper_comparison": {
+  "quoted": {
+   "hard_primes": 39391,
+   "A1_only": 2593,
+   "A1_only_share": 0.066,
+   "nonempty_family": 9,
+   "nonempty_family_share": 0.00023,
+   "case_split": {
+    "A": 5,
+    "B": 0,
+    "mixed": 4
+   },
+   "R0_prime_share": 0.934
+  },
+  "checks": {
+   "hard_primes": {
+    "computed": 39391,
+    "quoted": 39391,
+    "agrees": true
+   },
+   "A1_only": {
+    "computed": 2593,
+    "quoted": 2593,
+    "agrees": true
+   },
+   "A1_only_share": {
+    "computed": 0.0658,
+    "quoted": 0.066,
+    "agrees": true
+   },
+   "nonempty_family": {
+    "computed": 9,
+    "quoted": 9,
+    "agrees": true
+   },
+   "R0_prime_share": {
+    "computed": 0.6524,
+    "quoted": 0.934,
+    "agrees": false
+   },
+   "case_split": {
+    "computed": {
+     "A": 5,
+     "B": 0,
+     "mixed": 4
+    },
+    "quoted": {
+     "A": 5,
+     "B": 0,
+     "mixed": 4
+    },
+    "agrees": true
+   }
+  },
+  "notes": [
+   "(A3) as PRINTED (case A or case B only) is satisfied by 5 first rungs, not 9: the quoted headline count includes the 'mixed' configuration r1 = 7 (mod 8) with a odd, which is 2-adically admissible (2 does not divide a, so ell = 2 imposes no condition) but is not one of the two cases (A3) lists. The quoted case split names those 4 mixed rungs explicitly, so the headline count is the nonempty-family count reported here.",
+   "The quoted 'R0 is prime for 93.4% of hard primes' does NOT match: R0 is prime for 25,700 of 39,391 first rungs = 65.2%. 93.4% is exactly 100% - 6.6% = the share of first rungs with NO r1 passing (A1) (36,798/39,391 = 93.4%). Prime R0 is a strict subset of that: prime R0 always fails (A1) (its only prime factor is r1 = R0, and Theorem J gives (q|R0) = (p|q) = -1), but composite R0 can fail (A1) too."
+  ]
+ }
+}

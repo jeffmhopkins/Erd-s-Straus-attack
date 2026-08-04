@@ -1,6 +1,6 @@
 # Erdős–Straus, Hard Primes: Obstruction Theory for the Residual Method
 
-**Date:** 2026-08-03 (current through PR #56; this revision adds
+**Date:** 2026-08-03 (current through PR #57; this revision adds
 Theorem S and Theorem A‴; §2.10 adds the Burgess/reciprocity
 route, its full-population census and failure anatomy, the
 ladder theorems L₀ (rigorous, fixed length) and L₁ (almost-all,
@@ -1441,8 +1441,26 @@ below. ∎
 The old "6.6 % of first rungs are half-dimensionally admissible"
 statistic measured only (A1) — i.e. a set on which the theorem's
 conclusion can be vacuous. The correct availability figure is
-**0.023 %**, and whenever R₀ is **prime** — the typical case, 93.4 % of
-hard primes in range — no r₁ of this kind exists at all. The two
+**0.023 %**. **Correction (census, PR #57):** the 93.4 % figure first
+recorded here was misattributed. It is the share of first rungs with
+**no candidate r₁ passing (A1) at all** (36,798/39,391 = 93.4 %); the
+share with R₀ **prime** is **65.2 %** (25,700/39,391). Prime R₀ is a
+strict subset of the no-candidate set: when R₀ is prime its only
+prime factor is r₁ = R₀, and Theorem J forces (q|R₀) = (p|q) = −1, so
+no admissible r₁ exists by construction — but composite R₀ can fail
+(A1) too. Both figures now come from
+`erdos_straus.burgess_scan admissibility` and the archive
+`data/analysis/burgess_admissibility.json`.
+
+A second definitional point from the same census: (A3) *exactly as
+printed* (case A or case B) holds for 5 first rungs, while the
+headline 9 counts the union with the *mixed* case (r₁ ≡ 7 mod 8, a
+odd). The extended reading is the mathematically right one — mixed is
+2-adically fine, since 2 ∤ a means ℓ = 2 imposes nothing, and the
+true 2-adic clause is just the ℓ = 2 instance of (A2). What singles
+the mixed case out is FHRSS-citability, not solvability; the paper
+now says so. Archive keys: `nonempty_family` = 9,
+`a3_as_printed` = 5. The two
 smallest exemplars remain the two smallest *viable* classes:
 p = 5,544,361 (q = 31, R₀ = 51, r₁ = 3, a = 31·61·733, all factors
 ≡ 1 mod 3) is case A and satisfies (A1)–(A3) — the only forced small
