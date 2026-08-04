@@ -28,6 +28,15 @@
 \numberwithin{equation}{section}
 \emergencystretch=1.5em
 
+% Let tables pack onto text pages instead of queueing to the end.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{5}
+
 \newcommand{\Hset}{\mathcal{H}}
 \newcommand{\legendre}[2]{\genfrac{(}{)}{}{1}{#1}{#2}}
 \DeclareMathOperator{\ord}{ord}
@@ -161,89 +170,57 @@ Appendix~\ref{app:verif}.
 \subsection*{New contributions}
 \phantomsection\addcontentsline{toc}{subsection}{New contributions}
 
-\paragraph*{The census.}
-\begin{itemize}
-\item $R_{\min}(p)$ computed and independently verified for every one
-  of the $1{,}175{,}215{,}396$ hard primes $p < 10^{12}$
-  (Section~\ref{sec:comp}), with the full distribution
-  (Table~\ref{tab:dist}), a graded verification protocol
-  (Appendix~\ref{app:verif}), and archived datasets carrying
-  checksums.
-\item The maximum of $R_{\min}$ moves for the first time in five
-  orders of magnitude: it is $107$ throughout
-  $10^7 \le x \le 10^{11}$ and $111$ at $10^{12}$, first attained at
-  $p = 119{,}945{,}383{,}009$. Section~\ref{sec:comp} exhibits the
-  certificate and the exhaustive refutation of every admissible
-  $R \le 107$ at that prime.
-\item A calibrated independence model, fitted to the complete $10^9$
-  solvability masks, that predicted in advance both the population of
-  the band $87 \le R_{\min} \le 103$ --- empty when the model was
-  fitted --- and the decade in which the record would move. Both
-  predictions were tested by the $10^{11}$ and $10^{12}$ runs and
-  held (Section~\ref{sec:comp}).
-\item A reproducibility layer: exact re-verification of every
-  certificate as $4abc = p(bc+ac+ab)$, a Lean~4~\cite{Lean4} /
-  \mbox{mathlib}~\cite{mathlib} formalization of the elementary layer
-  and of the finite enumerations behind the exact criteria, and a
-  published run kit. Appendix~\ref{app:verif} gives the inventory and
-  the exact trust base.
-\end{itemize}
+\paragraph*{The census.} $R_{\min}(p)$ computed and independently
+verified for every one of the $1{,}175{,}215{,}396$ hard primes
+$p < 10^{12}$ (Section~\ref{sec:comp}): the full distribution
+(Table~\ref{tab:dist}); a graded verification protocol
+(Section~\ref{sec:protocol}) in which every certificate is re-checked
+as $4abc = p(bc+ac+ab)$ in exact integer arithmetic; and archived
+datasets carrying checksums. The maximum of $R_{\min}$ moves for the
+first time in five orders of magnitude --- it is $107$ throughout
+$10^7 \le x \le 10^{11}$ and $111$ at $10^{12}$, first attained at
+$p = 119{,}945{,}383{,}009$ --- and a calibrated independence model,
+fitted to the complete $10^9$ solvability masks, predicted in advance
+both the population of the then-empty band $87 \le R_{\min} \le 103$
+and the decade in which the record would move. Both predictions were
+tested by the $10^{11}$ and $10^{12}$ runs and held. Underneath sits a
+reproducibility layer: a Lean~4~\cite{Lean4} /
+\mbox{mathlib}~\cite{mathlib} formalization of the elementary layer
+and of the finite enumerations behind the exact criteria, and a
+published run kit (Appendix~\ref{app:verif}).
 
-\paragraph*{The apparatus, and what in it is new.}
-\begin{itemize}
-\item \emph{Exact} solvability criteria at $R = 11$
-  (Theorem~\ref{thm:App}) and at the first composite residual
-  $R = 15$ (Theorem~\ref{thm:R15}: a Jacobi-character dichotomy with
-  no budget cases), together with the finite-reduction lemma
-  (Theorem~\ref{thm:meta}) that licenses their enumeration. The
-  criteria at $R = 3$ and $R = 7$ (Theorems~\ref{thm:A},
-  \ref{thm:Ap}) are \emph{not} new --- they are Yamamoto's, in a
-  different notation; see Remark~\ref{rem:yamamoto}, which also
-  delimits what is new at $R = 11$ and $R = 15$.
-\item A reciprocity identity (Theorem~\ref{thm:J}) collapsing the
-  per-residual conditions into one global statement about $p$, which
-  we use to describe the record prime mechanically.
-\item The support theorem (Theorem~\ref{thm:S}): failure at $R$
-  confines the factor classes of $(p+R)/4$ to at most half the unit
-  classes mod $R$, for every admissible $R$ at once. As an additive
-  statement this is the critical-number theorem of
-  Diderrich--Mann~\cite{DiderrichMann}; the contribution here is the
-  transport to residuals (bounded exponent budgets, a single
-  prescribed target) and the observation that its classical
-  exceptional groups occur exactly at $R = 3, 7, 15$, where
-  Theorems~\ref{thm:A}, \ref{thm:Ap} and~\ref{thm:R15} supply an
-  exact criterion --- so the sieve dimension $\tfrac12$ is available
-  at every admissible residual with no gaps.
-\item The sieve consequences (Section~\ref{sec:context}):
-  certificate-producing exceptional-set bounds for every finite
-  admissible list (Theorem~\ref{thm:FG},
-  Proposition~\ref{prop:agg}, Theorem~\ref{thm:D}) and, as the
-  capstone, the \emph{uniform chain} (Theorem~\ref{thm:U}): all but
-  $O(x e^{-c(\log\log x)^2})$ hard primes $p \le x$ have
-  $R_{\min}(p) \le \varepsilon\log\log x$, with an explicit
-  certificate for each. Remark~\ref{rem:vaughan} states precisely
-  what this does and does not improve on.
-\item An open problem carved out of the ceiling of that argument:
-  Conjecture~\ref{conj:A}, an aperiodic branch-classification
-  statement, verified exhaustively in the accessible range, whose
-  resolution would raise the bound to
-  $R_{\min}(p) \le (\log x)^{c_0}$ (Theorem~\ref{thm:Upay}).
-\end{itemize}
-
-Read as a whole, the paper has three layers. \textup{(1)}~An exact
-reformulation of solvability --- every solution of \eqref{eq:es} at a
-hard prime is a residual certificate
-(Proposition~\ref{prop:complete}), which is Bradford's criterion.
-\textup{(2)}~Finite, machine-checkable inputs at individual
-residuals: the exact criteria (Theorems~\ref{thm:A}--\ref{thm:R15}),
-the reciprocity identity (Theorem~\ref{thm:J}), and the support
-bounds (Lemma~\ref{lem:S}, Theorem~\ref{thm:S}). \textup{(3)}~The
-census of Section~\ref{sec:comp}, which is what layers (1)--(2) are
-for: they make $R_{\min}$ computable at scale, and the exact criteria
-determine the head of its distribution in closed form. The sieve
-consequences of Section~\ref{sec:context} run in the other
-direction, predicting the shape of the tail; the computation
-calibrates them and tests what they predict.
+\paragraph*{The apparatus, and what in it is new.} \emph{Exact}
+solvability criteria at $R = 11$ (Theorem~\ref{thm:App}) and at the
+first composite residual $R = 15$ (Theorem~\ref{thm:R15}: a
+Jacobi-character dichotomy with no budget cases), together with the
+finite-reduction lemma (Theorem~\ref{thm:meta}) that licenses their
+enumeration. The criteria at $R = 3$ and $R = 7$
+(Theorems~\ref{thm:A}, \ref{thm:Ap}) are \emph{not} new --- they are
+Yamamoto's, in a different notation; Remark~\ref{rem:yamamoto} gives
+the dictionary and delimits what is new at $R = 11$ and $R = 15$.
+A reciprocity identity (Theorem~\ref{thm:J}) collapses the
+per-residual conditions into one global statement about $p$, which we
+use to describe the record prime mechanically. The support theorem
+(Theorem~\ref{thm:S}) shows that failure at $R$ confines the factor
+classes of $(p+R)/4$ to at most half the unit classes mod $R$, for
+every admissible $R$ at once; as an additive statement this is the
+critical-number theorem of Diderrich--Mann~\cite{DiderrichMann}, and
+the contribution here is the transport to residuals (bounded exponent
+budgets, a single prescribed target) together with the observation
+that its classical exceptional groups occur exactly at $R = 3, 7, 15$,
+where an exact criterion is available --- so the sieve dimension
+$\tfrac12$ holds at every admissible residual with no gaps. From these
+follow certificate-producing exceptional-set bounds for every finite
+admissible list (Theorem~\ref{thm:FG}, Proposition~\ref{prop:agg},
+Theorem~\ref{thm:D}) and, as the capstone, the \emph{uniform chain}
+(Theorem~\ref{thm:U}): all but $O(x e^{-c(\log\log x)^2})$ hard primes
+$p \le x$ have $R_{\min}(p) \le \varepsilon\log\log x$, with an
+explicit certificate for each --- Remark~\ref{rem:vaughan} states
+precisely what this does and does not improve on. Carved out of the
+ceiling of that argument is one open problem, Conjecture~\ref{conj:A},
+verified exhaustively in the accessible range, whose resolution would
+raise the bound to $R_{\min}(p) \le (\log x)^{c_0}$
+(Theorem~\ref{thm:Upay}).
 
 \subsection{The residual method}\label{sec:intro-method}
 
@@ -353,28 +330,6 @@ $c = (m^2/k+m)/3 = 1{,}974{,}822{,}872$, and indeed
 Had every prime factor of $a$ been $\equiv 1 \pmod 3$, every divisor of
 $m^2$ would be $\equiv 1 \pmod 3$ and the required class $2$ would be
 unreachable --- the prototype of all the obstructions studied below.
-
-\paragraph{The shape of what follows.} Everything in this paper grows
-out of the picture just seen, read at three levels. \emph{Locally}
-(one residual): whether the target class $-m$ is attainable from the
-factor classes of $a$ is a question about a finite multiplicative
-state --- the multiset of classes with bounded exponent budgets --- so
-each fixed $R$ admits an exact, machine-enumerable solvability
-criterion (Theorems~\ref{thm:A}--\ref{thm:App} below). This is what
-makes the census of Section~\ref{sec:comp} feasible: the head of the
-distribution of $R_{\min}$ is decided by a character test rather
-than a divisor search. \emph{Globally} (all residuals at once): the
-conditions entering these
-criteria are quadratic characters, and reciprocity folds the condition
-at every residual into signs $\legendre{p}{q}$ indexed by the primes
-$q$ dividing the shifted values $(p+R)/4$ --- failures at different
-residuals correlate because shifted values share prime factors
-(Theorem~\ref{thm:J}). \emph{Quantitatively}: each criterion says that
-failure forces $(p+R)/4$ to avoid prime factors in many residue
-classes, a sifting condition; stacking residuals multiplies the
-savings (Theorem~\ref{thm:FG}), though it provably cannot reach
-emptiness (Remark~\ref{rem:emptiness}) --- the honest endpoint of the
-method, discussed in Section~\ref{sec:open}.
 
 \subsection{Main results}
 
@@ -495,23 +450,18 @@ below --- $3$ versus $53$ at $R = 107$.
 
 \begin{remark}[computer-assisted components]\label{rem:computer}
 The exhaustive verifications behind Theorems~\ref{thm:Ap},
-\ref{thm:App}, \ref{thm:R15} and Lemma~\ref{lem:S} below are \emph{parts of the
-respective proofs}, on the same footing as a hand case analysis. Each is
-a deterministic enumeration of a finite configuration space whose
-finiteness and sufficiency are proved in advance
-(Theorem~\ref{thm:meta}; for Lemma~\ref{lem:S}, monotonicity of
-target-reachability in support and multiplicities, checked at minimal
-exponents). The checks are short (seconds each, up to $331$\,s for the largest,
-$R = 107$), involve only exact integer arithmetic, and the code is
-available in the
-accompanying repository; Table~\ref{tab:components} records the exact
+\ref{thm:App}, \ref{thm:R15} and Lemma~\ref{lem:S} are \emph{parts of
+the respective proofs}, on the same footing as a hand case analysis:
+each is a deterministic enumeration of a finite configuration space
+whose finiteness and sufficiency are proved in advance
+(Theorem~\ref{thm:meta}; for Lemma~\ref{lem:S}, Lemma~\ref{lem:mono}).
+The checks use exact integer arithmetic only and run in seconds, up to
+$331$\,s for $R = 107$; Table~\ref{tab:components} records the
 configuration counts and entry points. The enumerations at
-$R = 7, 11$ and the $R = 19, 23, 31$ cases of Lemma~\ref{lem:S} are
-additionally formalized in Lean~4, with the reductions they rely on
-proved as theorems rather than trusted (the $R = 15$ enumeration and
-the remaining cases of Lemma~\ref{lem:S} run in the Python layer
-only); Appendix~\ref{app:verif} gives the inventory and the exact
-trust base.
+$R = 7, 11, 15$ and the $R = 19, 23, 31$ cases of Lemma~\ref{lem:S}
+are additionally formalized in Lean~4, with the reductions they rely
+on proved as theorems rather than trusted;
+Appendix~\ref{app:verif} gives the inventory and the exact trust base.
 \end{remark}
 
 The obstruction framework of Section~\ref{sec:obstruction} yields a
@@ -527,102 +477,69 @@ prime factor of $a = (p+R)/4$ (necessarily $q \ne R$). Then
 \]
 \end{theorem}
 
-The sieve consequences below need one input per residual: a statement
-that failure at $R$ forces the shifted form $(p+R)/4$ to avoid prime
-factors in a positive-density set of residue classes. For
-$R = 3, 7, 11, 15$ the exact criteria provide this; for every other
-residual it is the support bound, which we state first in the
-per-residual machine-verified form in which it was originally
-established (Lemma~\ref{lem:S}) and then prove unconditionally for
-every residual at once (Theorem~\ref{thm:S}; both proved in
-Section~\ref{sec:sieve}).
+The sieve consequences need one input per residual: a statement
+that failure at $R$ forces $(p+R)/4$ to avoid prime factors in a
+positive-density set of residue classes. For $R = 3, 7, 11, 15$ the
+exact criteria provide this; for every other residual it is the
+support bound.
 
-\begin{lemma}[support bound; verified for every prime
-$R \equiv 3 \pmod 4$, $19 \le R \le 107$]\label{lem:S}
-Let $R$ be one of the twelve primes
-$19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103, 107$, and call the set of
-unit classes mod $R$ occupied by the prime factors of $(p+R)/4$ its
-\emph{support}. Every configuration for which residual $R$ fails at a
-hard prime has support of size at most $(R-1)/2$, at most $(R-3)/2$ of
-whose classes differ from the identity class (which never affects
-solvability). Consequently failure at $R$ forbids at least half the
-classes, through finitely many maximal-support branches.
-\end{lemma}
-
-\begin{theorem}[unconditional support bound]\label{thm:S}
+\begin{theorem}[support bound]\label{thm:S}
 \textup{(i)} Let $d \ge 4$ be even and $S \subseteq \mathbb{Z}/d
 \setminus \{0\}$. If the bounded subset-sum set
-\[
-  M(S) \;=\; \Bigl\{ \textstyle\sum_{v \in S} e_v v \;:\;
-  e_v \in \{0, 1, 2\} \Bigr\}
-\]
+$M(S) = \{\sum_{v \in S} e_v v : e_v \in \{0,1,2\}\}$
 is not all of $\mathbb{Z}/d$, then $|S| \le d/2 - 1$, and the bound is
 attained ($S =$ the nonzero even classes). \textup{(ii)} Consequently,
 for \emph{every} prime $R \equiv 3 \pmod 4$ and every $p$: if the prime
 factors of $(p+R)/4$ occupy at least $(R-1)/2$ nonzero unit classes
 mod $R$, then every unit class is a divisor class of $m^2$ and
-\eqref{eq:cert} holds; failure forces the conclusion of
-Lemma~\ref{lem:S}, with no upper limit on $R$. \textup{(iii)} In a
+\eqref{eq:cert} holds; failure forces support $\le (R-3)/2$ off the
+identity class, with no upper limit on $R$. \textup{(iii)} In a
 finite abelian group $G$ of even order $g$ with $t$ involutions
-(multiplicative form, $M(S) = \prod_{v \in S}\{1, v, v^2\}$): if
-$M(S) \ne G$ then $|S| \le \max(\lfloor (g+t-2)/2 \rfloor,\, g/2 - 1)$.
-For $G = (\mathbb{Z}/R)^*$ with $\omega(R) \le 2$ this is $\le g/2$, so
-failure at any admissible composite $R$ forbids at least
-$\varphi(R)/2 - 1$ unit classes on $(p+R)/4$ --- sieve dimension
-$\ge \tfrac12 - 1/\varphi(R)$. For the admissible composites
-$R \le 107$ an exhaustive enumeration
+(multiplicative form, $M(S) = \prod_{v \in S}\{1, v, v^2\}$):
+$M(S) \ne G$ implies
+$|S| \le \max(\lfloor (g+t-2)/2 \rfloor,\, g/2 - 1)$. For
+$G = (\mathbb{Z}/R)^*$, $t = 2^{\omega(R)} - 1$: failure at an
+admissible composite $R$ forbids at least $\varphi(R)/2 - 1$ unit
+classes when $\omega(R) \le 2$ --- sieve dimension
+$\ge \tfrac12 - 1/\varphi(R)$ --- and at least
+$\varphi(R)/2 - 2^{\omega(R)-1} - 1$ in general, which since
+$2^{\omega(R)} = R^{o(1)}$ is dimension $\ge 0.44$ for every
+admissible $R$ beyond an absolute bound: \emph{every} residual, with
+no restriction on $\omega$, is a usable sieve input. For the
+admissible composites $R \le 107$ an exhaustive enumeration
 (\texttt{kneser\_support\_general}, a proof component of this clause)
 sharpens the maximal failing support to $g/2 - 1$, so those residuals
-forbid at least $\varphi(R)/2$ classes and join the chain with full
-dimension $\ge \tfrac12$ each. For arbitrary $\omega(R)$ the same
-bound reads $|S| \le \max(\lfloor (g+t-2)/2 \rfloor,\, g/2 - 1)$ with
-$t = 2^{\omega(R)} - 1$, so failure forbids at least
-$(g-t)/2 - 1 \ge \varphi(R)/2 - 2^{\omega(R)-1} - 1$ unit classes ---
-dimension $\ge \tfrac12 - (2^{\omega(R)-1}+1)/\varphi(R)$, and since
-$2^{\omega(R)} = R^{o(1)}$ this is $\ge 0.44$ for every admissible
-$R$ beyond an absolute bound: \emph{every} residual, with no
-restriction on $\omega$, is a usable sieve input.
+join the chain with full dimension $\ge \tfrac12$ each.
 \end{theorem}
+
+Lemma~\ref{lem:S} below is the per-residual machine-verified special
+case in which the bound was originally established, and remains the
+form carried by the Lean development. Stacking these inputs across a
+list of residuals multiplies the savings:
 
 \begin{theorem}[the chain]\label{thm:FG}
 The number of hard primes $p \le x$ failing every residual in
 $\{3, 7\}$, in $\{3, 7, 11\}$, in $\{3, 7, 11, 15\}$, and in
-$\{3, 7, 11, 15, 19\}$ is, respectively,
-\[
-  O\!\left(\frac{x}{(\log x)^{2}}\right), \qquad
-  O\!\left(\frac{x}{(\log x)^{5/2}}\right), \qquad
-  O\!\left(\frac{x}{(\log x)^{3}}\right), \qquad
-  O\!\left(\frac{x}{(\log x)^{7/2}}\right).
-\]
-More generally, by Theorem~\ref{thm:S}, for \emph{every} finite set
-$\mathcal{P}$ of admissible residuals $R \equiv 3 \pmod 4$ --- prime,
-or composite with $\omega(R) \le 2$ --- the number of hard primes
-failing every residual in $\mathcal{P}$ is
-$O_{\mathcal{P}}\!\left(x/(\log x)^{1+\kappa(\mathcal{P})}\right)$,
-where $\kappa(\mathcal{P}) = \sum_{R \in \mathcal{P}} \delta_R$ with
+$\{3, 7, 11, 15, 19\}$ is $O(x/(\log x)^{2})$, $O(x/(\log x)^{5/2})$,
+$O(x/(\log x)^{3})$ and $O(x/(\log x)^{7/2})$ respectively. More
+generally, for \emph{every} finite set $\mathcal{P}$ of admissible
+residuals the count is
+$O_{\mathcal{P}}(x/(\log x)^{1+\kappa(\mathcal{P})})$ with
+$\kappa(\mathcal{P}) = \sum_{R \in \mathcal{P}} \delta_R$, where
 $\delta_R = \tfrac12$ for $R$ prime or composite $\le 107$ and
-$\delta_R = \tfrac12 - 1/\varphi(R)$ for composite $R > 107$
-(the two tiers of Theorem~\ref{thm:S}(iii)); in particular
-$\kappa(\mathcal{P}) = |\mathcal{P}|/2$ for every list drawn from the
-residuals up to $107$. For the fifteen primes $\equiv 3 \pmod 4$ up to
-$107$ the exponent is $17/2$, and for the full $27$-element admissible
-list $\{3, 7, 11, \dots, 107\}$ it is $29/2$. All but a proportion
-$O((\log x)^{-2})$ of hard primes are solved within
-$\{3, 7, 11, 15\}$ --- one power of $\log x$ less than the counts
-above, since there are $\asymp x/\log x$ hard primes up to $x$.
+$\delta_R = \tfrac12 - 1/\varphi(R)$ for composite $R > 107$ with
+$\omega(R) \le 2$. For the fifteen primes up to $107$ the exponent is
+$17/2$; for the full $27$-element admissible list, $29/2$. Adjoining
+the two identity families of Proposition~\ref{prop:agg} raises these
+to $19/2$ and $31/2$.
 \end{theorem}
 
 \begin{proposition}[aggregate identity families]\label{prop:agg}
 Let $p \equiv 1 \pmod 4$ be prime and $R \equiv 3 \pmod 4$. If
-$R \mid p+1$, then $k = a p^2$ is a certificate for residual $R$; if
-$R \mid p+4$, then $k = a^2 p$ is. Hence any prime factor
-$\equiv 3 \pmod 4$ of $p+1$ or of $p+4$ yields an explicit solution,
-and no divisor shape $k = a^j p^i$ yields a further $p$-only
-condition. Adding the two corresponding linear forms to
-Theorem~\ref{thm:FG}: the number of hard primes $p \le x$ failing every
-prime residual up to $107$ and both families is
-$O(x/(\log x)^{19/2})$; with the full $27$-element admissible list the
-exponent is $31/2$.
+$R \mid p+1$ then $k = a p^2$ is a certificate for residual $R$; if
+$R \mid p+4$ then $k = a^2 p$ is; and no divisor shape $k = a^j p^i$
+yields a further $p$-only condition. Hence any prime factor
+$\equiv 3 \pmod 4$ of $p+1$ or of $p+4$ yields an explicit solution.
 \end{proposition}
 
 \begin{theorem}[density reduction]\label{thm:D}
@@ -687,7 +604,7 @@ Table~\ref{tab:deps} records, for each main result, exactly what its
 proof consumes and its formal-verification status, so that each layer
 can be audited independently.
 
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \small
 \begin{tabular}{>{\raggedright\arraybackslash}p{2.6cm}>{\raggedright\arraybackslash}p{5.3cm}l>{\raggedright\arraybackslash}p{3.6cm}}
@@ -707,15 +624,11 @@ Thm.~\ref{thm:FG} & Thms.~\ref{thm:A}, \ref{thm:Ap}--\ref{thm:R15}, \ref{thm:S} 
 Prop.~\ref{prop:agg} & elementary + Thm.~\ref{thm:FG} & \S\ref{sec:sieve} & families in Lean \\ \addlinespace
 Thm.~\ref{thm:D} & Prop.~\ref{prop:succ} + Fundamental Lemma & \S\ref{sec:sieve} & no \\ \addlinespace
 Thm.~\ref{thm:U} & Thm.~\ref{thm:S}(iii), general tier + Brun's sieve, uniform constants & \S\ref{sec:sieve} & no \\ \addlinespace
-Thm.~\ref{thm:Mcount} & explicit construction (complete partitions) & \S\ref{sec:sieve} & Lean \\ \addlinespace
-Thm.~\ref{thm:Mkernel} & Kneser + Lem.~\ref{lem:mono} + quotient induction & \S\ref{sec:sieve} & Lean, single step \\ \addlinespace
-Thm.~\ref{thm:Mcont} & Thm.~\ref{thm:Mkernel} + Conjecture~\ref{conj:A} & \S\ref{sec:sieve} & no (conditional) \\ \addlinespace
-Prop.~\ref{prop:betavac} & elementary (isolation of punctures) & \S\ref{sec:sieve} & Lean \\ \addlinespace
-Thm.~\ref{thm:Upay} & Thm.~\ref{thm:Mcont} + the audit of Thm.~\ref{thm:U} & \S\ref{sec:sieve} & no (conditional) \\ \addlinespace
-Lems.~\ref{lem:Jcomp}--\ref{lem:N} & Jacobi reciprocity, elementary & \S\ref{sec:ladder} & Lean \\ \addlinespace
-Thms.~\ref{thm:L0}, \ref{thm:B1} & Thm.~\ref{thm:S} / Prop.~\ref{prop:succ} + sieve & \S\ref{sec:ladder} & no \\ \addlinespace
-Thm.~\ref{thm:sharp} & norm-form bridge \eqref{eq:normform} + \cite{IwaniecPhiA}, \cite{FHRSS} + Fundamental Lemma & \S\ref{sec:ladder} & no \\ \addlinespace
-Thm.~\ref{thm:L1} & Hypothesis~\ref{hyp:B} (measured) + large sieve & \S\ref{sec:ladder} & no (conditional) \\
+branch structure of \S\ref{sec:branch} & Kneser + Lem.~\ref{lem:mono} + quotient induction; complete-partition construction & \S\ref{sec:branch} & Lean (kernel step; branch count; puncture lemma) \\ \addlinespace
+Thm.~\ref{thm:Upay} & Conjecture~\ref{conj:A} + the audit of Thm.~\ref{thm:U} & \S\ref{sec:branch} & no (conditional) \\ \addlinespace
+Lem.~\ref{lem:Jcomp} & Jacobi reciprocity, elementary & \S\ref{sec:ladder} & Lean \\ \addlinespace
+Thm.~\ref{thm:sharp} & norm-form bridge \eqref{eq:normform} + \cite{IwaniecPhiA}, \cite{FHRSS} + Fundamental Lemma & \S\ref{sec:ladder} & no \\
+Lem.~\ref{lem:Jcomp} & Jacobi reciprocity, elementary & \S\ref{sec:ladder} & Lean \\
 \bottomrule
 \end{tabular}
 \caption{Audit map: what each main result depends on, where it is
@@ -726,18 +639,12 @@ outline (proof sketch).}
 \label{tab:deps}
 \end{table}
 
-Three printed results are retained as stepping stones although later
-results subsume them, and the reader may want the map stated once:
-Theorem~\ref{thm:D} is superseded by Theorem~\ref{thm:U} (which gives
-$(\log x)^{-A}$ for every $A$ at once), but its fixed-list proof is
-simpler and is the template the uniform chain scales; Lemma~\ref{lem:S}
-is subsumed by Theorem~\ref{thm:S}, and is retained as the
-machine-verified confirmation --- it is the form carried by the Lean
-development; and Theorem~\ref{thm:L0} is dominated unconditionally by
-Theorem~\ref{thm:U} (the fixed chain beats the $p$-adapted ladder
-unconditionally), its role being structural: it opens the conditional
-program of Section~\ref{sec:ladder}, the only known frame whose
-measured inputs would pass the ceiling of Remark~\ref{rem:ceiling}.
+Three results are retained although later ones subsume them:
+Theorem~\ref{thm:D} (superseded by Theorem~\ref{thm:U}, but its
+fixed-list proof is the template the uniform chain scales),
+Lemma~\ref{lem:S} (subsumed by Theorem~\ref{thm:S}, retained as the
+machine-verified confirmation and the form the Lean development
+carries).
 
 The census of Section~\ref{sec:comp} also calibrates the base-case
 constant and the decay exponents of the chain, and it is where the
@@ -1016,7 +923,7 @@ $R = 4a - p$; for the compact minimal-$R$ maps, the verifier
 \eqref{eq:cert} and then applies the same exact check, so a map entry is
 verified as a genuine certificate, not taken on faith.
 
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \small
 \begin{tabular}{>{\raggedright\arraybackslash}p{3.4cm}r>{\raggedright\arraybackslash}p{6.6cm}}
@@ -1079,7 +986,7 @@ minimality --- Table~\ref{tab:datasets} gives the per-dataset detail.
 The minimal residuals distribute
 as in Table~\ref{tab:dist} and Figure~\ref{fig:hist}.
 
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \begin{tabular}{rr@{\qquad}rr@{\qquad}rr}
 \toprule
@@ -1190,7 +1097,7 @@ The proportion of hard primes failing both $R = 3$ and $R = 7$, multiplied
 by $\log x$, is constant to within $1\%$ across three decades of the
 $10^9$ data (Table~\ref{tab:calib}).
 
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \begin{tabular}{lccccc}
 \toprule
@@ -1236,12 +1143,16 @@ record).
 
 \section{The sieve chain and its ceiling}\label{sec:context}
 
-\subsection{The chain}\label{sec:sieve}
+This section is the structural context around the census: what the
+per-residual criteria imply about the tail of the distribution of
+$R_{\min}$, how far that reasoning reaches, and where it stops. It is
+deliberately compressed. The results are stated with proofs where the
+proof is short and load-bearing, and in outline where the argument is
+a routine repetition of one already given; the fuller development,
+including the measurements quoted here, is in the accompanying
+repository.
 
-We now prove the chain of Theorem~\ref{thm:FG}, beginning with the
-base case, and then Lemma~\ref{lem:S}, its unconditional upgrade
-Theorem~\ref{thm:S}, the aggregate identities, and the density
-reduction.
+\subsection{The chain}\label{sec:sieve}
 
 \begin{proof}[Proof of Theorem~\ref{thm:FG}, base case $\{3,7\}$]
 \emph{Step 1 (exact criteria).} Let $p$ be a hard prime and set
@@ -1255,32 +1166,24 @@ exceptional (both residuals fail) precisely when
 \]
 with $p = 4n - 3$ prime.
 
-\emph{Step 2 (congruence bookkeeping).} Fix one of the six hard classes
-$h \bmod 840$; then $n \equiv (h+3)/4 \pmod{210}$ is fixed, and the
-conditions at the primes $2, 3, 5, 7$ are determined by the class (in
-particular $3 \nmid n$ and $7 \nmid n+1$ automatically). It suffices to
-bound each class and sum.
+\emph{Step 2 (containment in a sifted set).} Fix one of the six hard
+classes $h \bmod 840$; then $n \equiv n_0 \pmod{210}$ is fixed and the
+conditions at $2, 3, 5, 7$ are determined by the class (in particular
+$3 \nmid n$ and $7 \nmid n+1$ automatically), so it suffices to bound
+each class and sum. Let $z = x^{1/10}$ and discard the $O(z)$ primes
+$p \le z$. Every exceptional $p$ then gives $n \le (x+3)/4$ in the
+class such that for every prime $q$ with $7 < q \le z$:
+$q \equiv 2 \pmod 3 \implies n \not\equiv 0$;
+$q \equiv 3, 5, 6 \pmod 7 \implies n \not\equiv -1$; and
+$q \nmid 4n - 3$, since $4n-3 = p$ is prime and $p > z$. The first two
+use only ``no forbidden factor up to $z$'', which the full criteria
+imply --- an upper bound needs no more.
 
-\emph{Step 3 (containment in a sifted set).} Let $z = x^{1/10}$. After
-discarding the $O(z)$ primes $p \le z$, every exceptional $p$ gives
-$n \le (x+3)/4$, $n \equiv n_0 \pmod{210}$, such that for every prime $q$
-with $7 < q \le z$:
-\begin{itemize}
-\item[(a)] $q \equiv 2 \pmod 3 \implies n \not\equiv 0 \pmod q$;
-\item[(b)] $q \equiv 3, 5, 6 \pmod 7 \implies n \not\equiv -1 \pmod q$;
-\item[(c)] $q \nmid 4n - 3$ \quad (since $4n - 3 = p$ is prime, $p > z$).
-\end{itemize}
-Conditions (a), (b) only use ``no forbidden factor up to $z$'', which is
-implied by the full criteria --- an upper bound needs no more.
-
-\emph{Step 4 (sieve of dimension 2).} This is a standard upper-bound
+\emph{Step 3 (sieve of dimension 2).} This is a standard upper-bound
 sieve for the three linear forms $n$, $n+1$, $4n - 3$, with sifting
 function
-\[
-  \omega(q) \;=\; \mathbf{1}_{q \equiv 2 (3)}
-    \;+\; \mathbf{1}_{q \,\mathrm{NQR}\, (7)} \;+\; 1
-  \qquad (q > 7),
-\]
+$\omega(q) = \mathbf{1}_{q \equiv 2 (3)}
+  + \mathbf{1}_{q \,\mathrm{NQR}\, (7)} + 1$ for $q > 7$,
 whose forbidden classes $0, -1, 3 \cdot 4^{-1} \bmod q$ are pairwise
 distinct for $q \nmid 21$. By Dirichlet, $\omega$ has average $\kappa =
 \tfrac12 + \tfrac12 + 1 = 2$ in the Halberstam--Richert sense
@@ -1295,23 +1198,21 @@ residuals:
   \;\asymp\; \frac{x}{(\log x)^2},
 \]
 by Mertens' theorem and its arithmetic-progression form. Summing over the
-six classes preserves the bound. The higher exponents of the chain are
-deduced after Lemma~\ref{lem:S} below.
+six classes preserves the bound.
 \end{proof}
 
-The verification behind Lemma~\ref{lem:S} reduces to finitely many
-checks through the following elementary but load-bearing observation,
-which we isolate for scrutiny.
+The higher exponents need one sifting input per residual, and that is
+Theorem~\ref{thm:S}. Its proof rests on an elementary but load-bearing
+monotonicity, which we isolate for scrutiny.
 
 \begin{lemma}[monotonicity reduction]\label{lem:mono}
 For a class multiset $C$ (classes $v$ with multiplicities $\mu_v$) let
 $D(C) = \{\sum_v e_v v : 0 \le e_v \le 2\mu_v\}$ denote the set of
 attainable divisor logs (before the $p$-shifts). If $\mu_v \le \mu'_v$
-for all $v$, then $D(C) \subseteq D(C')$, where $C'$ carries
-multiplicities $\mu'_v$ on the same classes; likewise enlarging the support
+for all $v$, then $D(C) \subseteq D(C')$; likewise enlarging the support
 enlarges $D$. Consequently a support $S$ carries \emph{some} failing
-configuration (any multiplicities $\ge 1$ on $S$) if and only if the
-all-multiplicity-one configuration on $S$ fails.
+configuration if and only if the all-multiplicity-one configuration on
+$S$ fails.
 \end{lemma}
 
 \begin{proof}
@@ -1323,202 +1224,138 @@ the converse inclusion is trivial. The same argument applies verbatim
 after adjoining the $p$-shifts.
 \end{proof}
 
-\begin{proof}[Proof of Lemma~\ref{lem:S}]
-By Lemma~\ref{lem:mono} it suffices to check that for every support of
-size $(R-1)/2$ over the nonzero discrete logs and every class of
-$p \bmod R$, the target is reachable already at minimal multiplicities
-(exponent budget $2$ per class, $p$-budget $2$); success there kills
-every configuration on every superset support at any multiplicities.
-The check deliberately ignores the consistency relation
-$\prod(\text{classes}) \equiv 4^{-1}p$: it therefore examines a
-\emph{superset} of the realizable configurations, and can only
-overstate the failing supports --- the lemma is conservative. For $R = 19, 23$ a
-direct enumeration of all $(R-1)\binom{R-2}{(R-1)/2}$
-(support, class of $p$) pairs suffices
-($437{,}580$ resp.\ $7{,}759{,}752$ pairs; code:
-\texttt{theory.verify\_support\_bound}). For the larger residuals the
-binomial count explodes, and the check is instead performed by a subset
-dynamic program (\texttt{theory.verify\_support\_bound\_dp}): fold all
-supports into a table mapping each reachability mask to the maximal
-support size achieving it --- valid because, by the same monotonicity,
-failure at any multiplicities implies failure at multiplicity one. The
-realized masks are heavily structured, so the state count stays
-tractable ($3{,}001$ states at $R = 31$ against $77.6$~million supports;
-$19{,}530{,}971$ states at $R = 107$, $331$ seconds). All twelve
-residuals verify with zero violations; exact state counts are tabulated
-in Table~\ref{tab:components}. The bound is tight: the all-residue
-(character failure) configurations occupy exactly $(R-3)/2$ nonzero classes.
-\end{proof}
-
-Theorem~\ref{thm:S} is a statement of the critical-number literature,
-and we should say so before proving it. The \emph{critical number}
-$\mathrm{cr}(G)$ of a finite abelian group is the least $t$ such that
-every $A \subseteq G \setminus \{0\}$ with $|A| \ge t$ has
-$\Sigma(A) = G$, where $\Sigma(A)$ is the set of subset sums.
-Diderrich and Mann~\cite{DiderrichMann} proved that
-$\mathrm{cr}(G) = |G|/2$ for every abelian $G$ of even order, with
-exactly four exceptions --- $\mathbb{Z}/4$, $\mathbb{Z}/6$,
-$\mathbb{Z}/8$ and $\mathbb{Z}/2 \times \mathbb{Z}/4$ --- and the
-determination for all finite abelian groups was completed by Freeze,
-Gao and Geroldinger~\cite{FGG}; see also
-Gao--Hamidoune--Llad\'o--Serra~\cite{GHLS} for the covering form.
-Since $M(S) \supseteq \Sigma(S)$, parts (i) and (iii) of
-Theorem~\ref{thm:S} follow from those theorems wherever they apply,
-and the extremal family (the nonzero even classes) is theirs. More
-precisely $M(S) = \Sigma(S \uplus S)$, the set of subsequence sums of
-the sequence in which each element of $S$ occurs twice, so everything
-in this subsection and the next lives inside the zero-sum /
-Davenport-constant circle of ideas
-(see~\cite[Ch.~6, 16]{Grynkiewicz}).
-
-Three things justify giving the proof anyway. First, the exceptions
-have to be handled, and the exponent budget removes them. In the
-residual setting $G = (\mathbb{Z}/R)^*$, and among admissible
-$R \equiv 3 \pmod 4$ the exceptional groups occur at exactly
-$R = 7$ (giving $\mathbb{Z}/6$) and $R = 15$ (giving
-$\mathbb{Z}/2 \times \mathbb{Z}/4$); no admissible $R$ has
-$\varphi(R) = 4$. At those two residuals the Diderrich--Mann bound
-$|S| \le g/2 - 1$ is false for $\Sigma(S)$ --- supports of size
-$g/2$ with $\Sigma(S) \ne G$ exist --- but true for $M(S)$, because
-allowing each class twice is exactly enough to close the gap. The
-proof below gives $|S| \le g/2 - 1$ for $M$ at every even-order $G$
-with no exceptions, so the sieve dimension $\tfrac12$ is available at
-\emph{every} admissible residual. (At $R = 7$ and $R = 15$ this is
-belt and braces: Theorems~\ref{thm:Ap} and~\ref{thm:R15} give an
-exact criterion there in any case.) Second, the summands here are not
-arbitrary: each factor class contributes the bounded-exponent set
-$\{1, v, v^2\}$, and the derivation below yields the quantitative
-form we need --- a single prescribed target, bounds uniform in $R$,
-and the involution bookkeeping of part (iii) --- directly. Third, it
-is short, and it is what the Lean development formalizes.
+Theorem~\ref{thm:S} is a statement of the critical-number
+literature, and we should say so before proving it. The
+\emph{critical number} $\mathrm{cr}(G)$ of a finite abelian group is
+the least $t$ such that every $A \subseteq G \setminus \{0\}$ with
+$|A| \ge t$ has $\Sigma(A) = G$, the set of subset sums. Diderrich and
+Mann~\cite{DiderrichMann} proved $\mathrm{cr}(G) = |G|/2$ for every
+abelian $G$ of even order, with exactly four exceptions ---
+$\mathbb{Z}/4$, $\mathbb{Z}/6$, $\mathbb{Z}/8$ and
+$\mathbb{Z}/2 \times \mathbb{Z}/4$ --- and the determination for all
+finite abelian groups was completed by Freeze, Gao and
+Geroldinger~\cite{FGG}; see also~\cite{GHLS}. Since
+$M(S) = \Sigma(S \uplus S) \supseteq \Sigma(S)$, parts (i) and (iii)
+below follow from those theorems wherever they apply, the extremal
+family (the nonzero even classes) is theirs, and this whole section
+lives inside the zero-sum circle of ideas
+(see~\cite[Ch.~6, 16]{Grynkiewicz}). Two things justify giving the
+proof anyway. First, the exceptions have to be handled, and the
+exponent budget removes them: among admissible $R$ the exceptional
+groups occur at exactly $R = 7$ ($\mathbb{Z}/6$) and $R = 15$
+($\mathbb{Z}/2 \times \mathbb{Z}/4$), no admissible $R$ having
+$\varphi(R) = 4$; there $|S| \le g/2 - 1$ is false for $\Sigma(S)$ but
+true for $M(S)$, because allowing each class twice is exactly enough
+to close the gap, so the sieve dimension $\tfrac12$ is available at
+\emph{every} admissible residual with no exceptions. (At $R = 7, 15$
+this is belt and braces: Theorems~\ref{thm:Ap} and~\ref{thm:R15} give
+an exact criterion there in any case.) Second, the derivation yields
+the form we need --- a single prescribed target, bounds uniform in
+$R$, the involution bookkeeping of part (iii) --- directly, and it is
+what the Lean development formalizes.
 
 \begin{proof}[Proof of Theorem~\ref{thm:S}]
 (i) Write $M = A_1 + \cdots + A_k$ with $A_i = \{0, v_i, 2v_i\}$,
-$k = |S|$, and let $H = \mathrm{Stab}(M) = \{h : M + h = M\}$, a
+$k = |S|$, and let $H = \mathrm{Stab}(M)$, a
 subgroup of $\mathbb{Z}/d$. Kneser's addition theorem
 \cite{Kneser} (in the many-summand form obtained by iterating
 \cite[Thm.~5.5]{TaoVu}) gives
-\[
-  |M| \;\ge\; \sum_{i=1}^{k} |A_i + H| \;-\; (k-1)\,|H|.
-\]
+$|M| \ge \sum_{i} |A_i + H| - (k-1)|H|$.
 \emph{Case $H = \{0\}$.} Every $|A_i| = 3$, except that the (at most
-one) index $i$ with $v_i = d/2$ has $|A_i| = 2$ (there $2v_i = 0$); so
+one) index $i$ with $v_i = d/2$ has $|A_i| = 2$; so
 $|M| \ge (3k - 1) - (k - 1) = 2k$. Since $M \ne \mathbb{Z}/d$,
 $2k \le d - 1$, and $d$ even forces $k \le d/2 - 1$.
 \emph{Case $|H| = h > 1$.} $M$ is a union of $H$-cosets and
 $M \ne \mathbb{Z}/d$, so $|M| \le d - h$. Split
-$k_0 = |S \cap H| \le h - 1$ (distinct nonzero elements of $H$) and
-$k_1 = k - k_0$. For $v \in H$, $|A_v + H| = h$; for $v \notin H$,
-$A_v + H \supseteq H \cup (v + H)$, so $|A_v + H| \ge 2h$. Kneser's
-bound gives $d - h \ge h(k_0 + 2k_1 - k + 1) = h(k_1 + 1)$, so
-$k_1 \le d/h - 2$ and $k \le (h-1) + (d/h - 2) = h + d/h - 3$. For
-every divisor $h$ with $2 \le h \le d/2$, the quadratic
-$h^2 - (\tfrac d2 + 2)h + d \le 0$ (its roots are $2$ and $d/2$), i.e.\
-$h + d/h - 3 \le d/2 - 1$. Tightness: for $S$ the nonzero even
+$k_0 = |S \cap H| \le h - 1$ and $k_1 = k - k_0$. For $v \in H$,
+$|A_v + H| = h$; for $v \notin H$, $A_v + H \supseteq H \cup (v + H)$,
+so $|A_v + H| \ge 2h$. Kneser's bound gives
+$d - h \ge h(k_0 + 2k_1 - k + 1) = h(k_1 + 1)$, so $k_1 \le d/h - 2$
+and $k \le h + d/h - 3$. For every divisor $h$ with $2 \le h \le d/2$
+the quadratic $h^2 - (\tfrac d2 + 2)h + d \le 0$ (roots $2$ and $d/2$),
+i.e.\ $h + d/h - 3 \le d/2 - 1$. Tightness: for $S$ the nonzero even
 classes, $M(S)$ is the even subgroup and $|S| = d/2 - 1$.
 
 (ii) In discrete-log coordinates on $(\mathbb{Z}/R)^* \cong
-\mathbb{Z}/d$, $d = R - 1$, the divisor classes of $m^2$ contain the
-set $M(S)$ over the nonzero support $S$ of $(p+R)/4$ at exponent
-budget $2$ per class (Lemma~\ref{lem:mono}: multiplicities $\ge 1$
-only enlarge budgets). If $|S| \ge d/2$, part (i) forces
-$M(S) = \mathbb{Z}/d$: every class --- in particular the target $-m$
---- is a divisor class of $m^2$, without invoking the $p$-powers, and
-\eqref{eq:cert} holds. Contrapositively, failure at $R$ forces
-$|S| \le d/2 - 1 = (R-3)/2$, which is the conclusion of
-Lemma~\ref{lem:S} for arbitrary $R$.
+\mathbb{Z}/d$, $d = R - 1$, the divisor classes of $m^2$ contain
+$M(S)$ over the nonzero support $S$ of $(p+R)/4$ at exponent
+budget $2$ per class (Lemma~\ref{lem:mono}). If $|S| \ge d/2$, part (i)
+forces $M(S) = \mathbb{Z}/d$: every class --- in particular the target
+$-m$ --- is a divisor class of $m^2$, without invoking the $p$-powers,
+and \eqref{eq:cert} holds. Contrapositively, failure at $R$ forces
+$|S| \le (R-3)/2$.
 
 (iii) The argument in (i) never used cyclicity. In a finite abelian
-$G$ of even order $g$: in the $H$-trivial case each involution
-$v \in S$ has $|\{1, v, v^2\}| = 2$, so
-$|M| \ge (3k - t) - (k - 1) = 2k - t + 1$ and $M \ne G$ gives
+$G$ of even order $g$ with $t$ involutions: in the $H$-trivial case
+each involution $v \in S$ has $|\{1, v, v^2\}| = 2$, so
+$|M| \ge 2k - t + 1$ and $M \ne G$ gives
 $k \le \lfloor (g + t - 2)/2 \rfloor$; the $|H| = h > 1$ case is
-verbatim, giving $k \le h + g/h - 3 \le g/2 - 1$ over proper
-subgroups. For $G = (\mathbb{Z}/R)^*$, $t = 2^{\omega(R)} - 1$; with
-$\omega(R) \le 2$, $t \le 3$ and the bound is $\le g/2$, so failure
-forbids at least $(g - 1) - g/2 = \varphi(R)/2 - 1$ non-identity unit
-classes --- dimension $\ge \tfrac12 - 1/\varphi(R)$. The general-$t$
-clause is the same computation without the specialization: failure
-forbids at least $(g-1) - (g+t-2)/2 = (g-t)/2$ non-identity classes
-(minus one when the max is attained by $g/2-1$), and
-$2^{\omega(R)} \le R^{O(1/\log\log R)} = R^{o(1)}$ gives the stated
-$0.44$ threshold beyond an absolute bound. The upgrade to
-$\varphi(R)/2$ forbidden classes for $R \le 107$ is the enumeration
-cited in the statement: the maximum support of a proper product-set is
-exactly $g/2 - 1$ for every composite admissible $R \le 107$
+verbatim, giving $k \le h + g/h - 3 \le g/2 - 1$. For
+$G = (\mathbb{Z}/R)^*$, $t = 2^{\omega(R)} - 1$; with
+$\omega(R) \le 2$ the bound is $\le g/2$, so failure
+forbids at least $\varphi(R)/2 - 1$ non-identity unit
+classes --- dimension $\ge \tfrac12 - 1/\varphi(R)$. Without the
+specialization, failure forbids at least $(g-t)/2$ non-identity
+classes (minus one when the max is attained by $g/2-1$), and
+$2^{\omega(R)} = R^{o(1)}$ gives the stated $0.44$ threshold beyond an
+absolute bound. The upgrade to $\varphi(R)/2$ forbidden classes for
+$R \le 107$ is the enumeration cited in the statement: the maximum
+support of a proper product-set is exactly $g/2 - 1$ for every
+composite admissible $R \le 107$
 (\texttt{theory.kneser\_support\_general}; e.g.\ $R = 95$: $g = 72$,
 maximum $35$ over $583{,}455$ realizable product-sets). That
-enumeration is a proof component of the $R \le 107$ clause, on the
-same footing as the checks of Remark~\ref{rem:computer}; the
+enumeration is a proof component of the $R \le 107$ clause; the
 $\tfrac12 - 1/\varphi(R)$ tier needs Kneser alone.
 \end{proof}
 
-\begin{remark}
-Theorem~\ref{thm:S}(ii) is strictly stronger than what the sieve
-needs: at support $\ge (R-1)/2$ \emph{every} class is reachable, for
-every target and every $p$. The strong form is also confirmed
-numerically (\texttt{theory.verify\_support\_bound\_strong}): the
-maximum support of a non-full reachability mask equals $(R-3)/2$
-exactly at every prime residual checked. Lemma~\ref{lem:S} and its
-dynamic-program verifications stand as independent machine
-confirmations of special cases (and remain the form carried by the
-Lean development).
+\begin{lemma}[support bound; verified for every prime
+$R \equiv 3 \pmod 4$, $19 \le R \le 107$]\label{lem:S}
+Let $R$ be one of the twelve primes
+$19, 23, 31, 43, 47, 59, 67, 71, 79, 83, 103, 107$, and call the set of
+unit classes mod $R$ occupied by the prime factors of $(p+R)/4$ its
+\emph{support}. Every configuration for which residual $R$ fails at a
+hard prime has support of size at most $(R-1)/2$, at most $(R-3)/2$ of
+whose classes differ from the identity class. Consequently failure at
+$R$ forbids at least half the classes, through finitely many
+maximal-support branches.
+\end{lemma}
+
+\begin{remark}[the machine-verified form]\label{rem:lemS}
+Lemma~\ref{lem:S} is the special case originally established by direct
+verification, and remains the form the Lean development carries. By
+Lemma~\ref{lem:mono} it suffices to check, per residual and per class
+of $p \bmod R$, that every support of size $(R-1)/2$ reaches the
+target at minimal multiplicities; the check ignores the consistency
+relation and so examines a superset of the realizable configurations.
+At $R = 19, 23$ direct enumeration suffices ($437{,}580$ resp.\
+$7{,}759{,}752$ pairs); beyond that it is a subset dynamic program
+over reachability masks ($3{,}001$ states at $R = 31$ against
+$77.6$~million supports; $19{,}530{,}971$ at $R = 107$, $331$\,s).
+All twelve verify with zero violations (Table~\ref{tab:components}).
 \end{remark}
 
-\begin{proof}[Proof of Theorem~\ref{thm:FG}, higher exponents]
-Write $n = (p+3)/4$; the relevant forms are $n$, $n+1$, $n+2 = (p+11)/4$,
-$n+3 = (p+15)/4$, $n+4 = (p+19)/4$, and $4n-3 = p$. Joint failure of
-$\{3,7,11\}$ implies, by Theorems~\ref{thm:A}, \ref{thm:Ap},
-\ref{thm:App}: $n$ free of primes $\equiv 2 \pmod 3$; $n+1$ free of
-non-residues mod $7$; and, splitting by the two cases of
-Theorem~\ref{thm:App}: \emph{branch (a)} --- $n+2$ free of the five
-non-residue classes mod $11$ (density $\tfrac12$); \emph{branch (b)} ---
-$n+2$ free of the six classes $\{4,5,7,8,9,10\}$ mod $11$ (density
-$\tfrac35$). Each branch is a four-form sieve problem of dimension
-$1 + \tfrac12 + \tfrac12 + \tfrac12 = \tfrac52$, resp.\
-$1 + \tfrac12 + \tfrac12 + \tfrac35 = \tfrac{13}{5}$. Since
-$\tfrac{13}{5} > \tfrac52$, the budget branch contributes
-$O(x/(\log x)^{13/5}) = o(x/(\log x)^{5/2})$:
-the bound is the maximum of the branch exponents, attained by the
-character branch (a). The Fundamental Lemma applied to each branch gives
-$O(x/(\log x)^{5/2})$ in total.
-
-Adjoining $R = 15$: by Theorem~\ref{thm:R15}, failure at $15$ is the
-single condition ``$n + 3$ free of the four classes
-$\{7, 11, 13, 14\}$ mod $15$'' --- one branch, density
-$\tfrac{4}{8} = \tfrac12$ over the $\varphi(15) = 8$ unit classes ---
-raising each combined branch to dimension $\ge 3$: joint failure of
-$\{3, 7, 11, 15\}$ is $O(x/(\log x)^3)$.
-
-For $\{3,7,11,15,19\}$, Theorem~\ref{thm:S} (equivalently, at this
-residual, Lemma~\ref{lem:S}) splits failure at $19$ into
-finitely many maximal-support branches, each forbidding an explicit set
-of at least $9$ of the $18$ unit classes mod $19$ on $n+4$ --- dimension
-$\ge \tfrac12$. Crossing with the branches at $11$ leaves finitely many
-combined branches, each a six-form problem of dimension $\ge \tfrac72$
-(those involving the budget case at $11$ have dimension
-$\ge \tfrac{31}{10} + \tfrac12 > \tfrac72$
-and are again lower-order); the
-forbidden residues of the six forms are pairwise distinct for $q > 19$,
-smaller primes being absorbed into the congruence class of $n$. Summing
-the finitely many branches gives $O(x/(\log x)^{7/2})$.
-
-The general case is identical: for a finite admissible list
-$\mathcal{P}$ (prime, or composite with $\omega(R) \le 2$), the forms
-$n + (R-3)/4$, $R \in \mathcal{P}$, are distinct integer shifts of
-$n$; Theorems~\ref{thm:A}, \ref{thm:Ap}, \ref{thm:App}, \ref{thm:R15}
-handle $R = 3, 7, 11, 15$ and Theorem~\ref{thm:S} handles every other
-residual (part (ii) for primes, part (iii) for composites), each
-contributing dimension $\delta_R$ through finitely many
-maximal-support branches --- $\delta_R = \tfrac12$ for primes and for
-composites $\le 107$, $\delta_R = \tfrac12 - 1/\varphi(R)$ for larger
-composites (the two tiers of part (iii)) --- plus $1$ for primality:
-total dimension $\ge 1 + \kappa(\mathcal{P})$, with forbidden residues
-pairwise distinct for $q > \max \mathcal{P}$ and smaller primes
-absorbed into the congruence class of $n$. For the fifteen primes up
-to $107$ this gives
-exponent $\tfrac{17}{2}$; for the full $27$-element admissible list,
-$\tfrac{29}{2}$.
+\begin{proof}[Proof of Theorem~\ref{thm:FG}, higher exponents; sketch]
+Write $n = (p+3)/4$, so the shifted forms $n + (R-3)/4$,
+$R \in \mathcal{P}$, are distinct integer shifts of $n$, joined by
+$4n - 3 = p$. Each residual contributes a sifting condition on its own
+form: the exact criteria at $R = 3, 7, 11, 15$, and
+Theorem~\ref{thm:S} (part (ii) at primes, part (iii) at composites) at
+every other residual, in each case through finitely many
+maximal-support branches, each forbidding a set of prime classes of
+density $\ge \delta_R$. Crossing the branches leaves finitely many
+combined problems, each a multi-form sieve of dimension
+$\ge 1 + \sum_R \delta_R$, the forbidden residues being pairwise
+distinct for $q > \max\mathcal{P}$ and smaller primes absorbed into
+the congruence class of $n$; the Fundamental Lemma applied to each and
+summed gives the stated bound, the exponent being the minimum over
+branches. Two branch computations are worth recording, since they
+show the minimum is attained by the character branch and not by a
+budget branch: at $\{3,7,11\}$, branch (a) of Theorem~\ref{thm:App}
+has dimension $1 + \tfrac12 + \tfrac12 + \tfrac12 = \tfrac52$ while
+the budget branch (b) forbids six classes mod $11$ and has dimension
+$\tfrac{13}{5} > \tfrac52$, so it is lower-order; adjoining $R = 15$
+adds a single branch of density $\tfrac48$, raising each combined
+branch to dimension $\ge 3$.
 \end{proof}
 
 \begin{proof}[Proof of Proposition~\ref{prop:agg}]
@@ -1537,103 +1374,48 @@ Empirically the two families alone cover $74\%$ of hard primes below
 $10^9$ --- and none of the four primes of Section~\ref{sec:comp} that
 admit a unique working residual $\le 107$.
 
-\begin{remark}\label{rem:emptiness}
-By Theorem~\ref{thm:S}, every residual --- prime or composite --- adds
-$\tfrac12$ to the exponent, so the chain's exponent is bounded only by
-the number of residuals used; the constants $O_{\mathcal{P}}$, however,
-grow with $|\mathcal{P}|$ (branch counts and the remainder term of the
-Fundamental Lemma). The chain is a concrete instantiation of
-Theorem~\ref{thm:D} with explicit constants. One caveat frames its
-scope, and it is fundamental: no fixed finite list can be pushed to
-\emph{emptiness}
-by upper-bound sieving: the count bound $x/(\log x)^{\kappa}$ diverges
-for every fixed $\kappa$, and extrapolating the calibration of
+Theorem~\ref{thm:D} is the same argument with the list chosen to make
+the dimension exceed $1 + A$: take
+$S(A) = \{R \equiv 3 \pmod 4 : 3 \le R \le B\}$ with $B$ large enough
+that $\sum_{R \in S(A)} 1/\varphi(R) > A$, possible since the
+reciprocal sum over $R \equiv 3 \pmod 4$ diverges. Within a fixed
+class of $n$ modulo $840\prod_{R \in S(A)} R$,
+Proposition~\ref{prop:succ} makes failure at $R$ imply that
+$n + (R-3)/4$ avoids a fixed nonempty set of $t_R \in \{1,2,3\}$
+prime classes mod $R$, so the sifting function has average
+$\kappa = 1 + \sum_R t_R/\varphi(R) > 1 + A$ and the Fundamental Lemma
+gives $O_A(x/(\log x)^{1+A})$.
+
+\begin{remark}[what upper-bound sieving cannot do]\label{rem:emptiness}
+By Theorem~\ref{thm:S} every residual adds $\tfrac12$ to the exponent,
+so the chain's exponent is bounded only by the number of residuals
+used; the constants $O_{\mathcal{P}}$, however, grow with
+$|\mathcal{P}|$ (branch counts and the remainder term of the
+Fundamental Lemma). Theorem~\ref{thm:D} is the strongest statement of
+this kind: density $O((\log x)^{-A})$ for every $A$, but never
+emptiness --- the count bound $x/(\log x)^{\kappa}$ diverges for every
+fixed $\kappa$, and extrapolating the calibration of
 Section~\ref{sec:comp} to any fixed list yields a positive density
 constant, i.e.\ infinitely many expected exceptional primes with the
-record minimal residual growing slowly without bound. The correctly
-posed remaining problem is a slowly growing bound $R_{\min}(p) \ll f(p)$,
-which requires existence (lower-bound) technology beyond upper-bound
-sieves.
-\end{remark}
-
-\begin{proof}[Proof of Theorem~\ref{thm:D}]
-Fix $A > 0$. Choose $B = B(A)$ so large that
-\begin{equation}\label{eq:divergence}
-  \sum_{\substack{3 \le R \le B \\ R \equiv 3 \ (4)}} \frac{1}{\varphi(R)}
-  \;\ge\; \sum_{\substack{3 \le R \le B \\ R \equiv 3 \ (4)}} \frac{1}{R}
-  \;>\; A;
-\end{equation}
-this is possible since the reciprocal sum over the progression
-$R \equiv 3 \pmod 4$ diverges, and $\varphi(R) \le R$. Let
-$S(A) = \{R \equiv 3 \pmod 4 : 3 \le R \le B\}$ and
-$M = 840 \cdot \prod_{R \in S(A)} R$.
-
-Write $n = (p+3)/4$ as before, so $(p+R)/4 = n + (R-3)/4$ for each
-$R \in S(A)$: a family of $|S(A)|$ integer linear forms in $n$ with
-pairwise distinct shifts, together with the form $4n - 3 = p$. Set
-$z = x^{1/10}$ and discard the $O(z)$ primes $p \le z$. Fix a
-residue class $n \equiv n_0 \pmod M$ compatible with $p$ hard; there are
-finitely many, and it suffices to bound each. Within such a class, for
-every $R \in S(A)$ the quantities $t \equiv -4^{-1}p^2$ and
-$p^{-1} \bmod R$ are constant, so the class set
-$S_R(p) = \{t, tp^{-1}, tp^{-2}\} \bmod R$ of
-Proposition~\ref{prop:succ} is a fixed nonempty set of
-$t_R = t_R(n_0) \in \{1, 2, 3\}$ classes. By the contrapositive of
-Proposition~\ref{prop:succ}, if every residual in $S(A)$ fails at $p$,
-then for each $R \in S(A)$ the form $n + (R-3)/4$ has \emph{no} prime
-factor in $S_R(p)$; and $4n - 3$, being prime and greater than $z$,
-has no prime factor $\le z$.
-
-Sift the class $\{n \le (x+3)/4 : n \equiv n_0 \ (M)\}$ by the primes
-$q \le z$, $q \nmid M$. A prime $q$ forbids: the class
-$n \equiv 3 \cdot 4^{-1} \pmod q$ (from the primality of $4n - 3$), and,
-for each $R \in S(A)$ with $q \bmod R \in S_R(p)$, the single class
-$n \equiv -\tfrac{R-3}{4} \pmod q$ (a prime factor $q$ of the form
-$n + (R-3)/4$ in a guaranteed-success class cannot occur). Thus
-\[
-  \omega(q) \;=\; 1 \;+\;
-  \#\bigl\{R \in S(A) : q \bmod R \in S_R(p)\bigr\},
-\]
-which is bounded by $|S(A)| + 1$; the forbidden residues of distinct
-forms are pairwise distinct for $q > B$, since the shifts $(R-3)/4$
-differ by less than $B$ and $q \nmid M$. For each $R$, the density of
-primes $q$ with $q \bmod R \in S_R(p)$ is $t_R/\varphi(R)$ by
-Dirichlet's theorem, so $\omega$ has average
-\[
-  \kappa \;=\; 1 + \sum_{R \in S(A)} \frac{t_R}{\varphi(R)}
-  \;\ge\; 1 + \sum_{R \in S(A)} \frac{1}{\varphi(R)} \;>\; 1 + A,
-\]
-in the Halberstam--Richert sense, by \eqref{eq:divergence}. The
-Fundamental Lemma~\cite[Thm.~2.5]{HalberstamRichert} in dimension
-$\kappa$ then bounds the sifted count by
-$O_{A}\!\left(x \prod_{q \le z}(1 - \omega(q)/q)\right)
- = O_A\!\left(x (\log x)^{-\kappa}\right)
- = O_A\!\left(x/(\log x)^{1+A}\right)$,
-and summing over the finitely many classes $n_0 \bmod M$ preserves the
-bound.
-\end{proof}
-
-\begin{remark}
-Theorem~\ref{thm:D} is the strongest statement the pure sieve can give:
-density $O((\log x)^{-A})$ for every $A$, but not emptiness. The
-conjecture for hard primes would follow from a \emph{finite covering
-hypothesis}: some finite $S$ admits, for every hard prime, a residual
-$R \in S$ with \eqref{eq:cert} (the converse is not automatic --- the
-conjecture bounds $R_{\min}(p)$ by $2p$, not uniformly). The data to $10^{12}$ is covered by
-$S = \{3, 7, 11, \dots, 107\}$ --- yet both the calibration
-(Remark~\ref{rem:emptiness}) and the conditional construction of
-Section~\ref{sec:open} predict that any fixed list eventually fails.
+record minimal residual growing slowly without bound. The conjecture
+for hard primes would follow from a \emph{finite covering hypothesis}
+--- some finite $S$ containing a working residual for every hard prime
+--- and the data to $10^{12}$ is covered by
+$S = \{3, 7, 11, \dots, 111\}$; but both the calibration and the
+conditional construction of Section~\ref{sec:open} predict that any
+fixed list eventually fails. The correctly posed remaining problem is
+a slowly growing bound $R_{\min}(p) \ll f(p)$, which needs existence
+technology beyond upper-bound sieves.
 \end{remark}
 
 \subsection{The uniform chain}\label{sec:uniform}
 
-Theorem~\ref{thm:D} fixes the list $S(A)$ once $A$ is fixed; letting
-the list \emph{grow with $x$} is purely a question of uniformity in
-the constants of Theorem~\ref{thm:FG} --- the branch count per
-residual, the class modulus, and the sieve constants in growing
-dimension. Auditing those constants shows the growth is affordable
-for lists of length a small multiple of $\log\log x$, which yields
-the strongest unconditional statement of this paper.
+Theorem~\ref{thm:D} fixes the list once $A$ is fixed; letting the list
+\emph{grow with $x$} is purely a question of uniformity in the
+constants --- the branch count per residual, the class modulus, and
+the sieve constants in growing dimension. Auditing those constants
+shows the growth is affordable for lists of length a small multiple of
+$\log\log x$, which yields the strongest unconditional statement here.
 
 \begin{theorem}[uniform chain]\label{thm:U}
 There are absolute constants $\varepsilon, c > 0$ and an
@@ -1654,28 +1436,25 @@ Write $L = \log\log x$, $B = \varepsilon L$, and let $\mathcal{R}$ be
 the admissible residuals $3 \le R \le B$
 ($|\mathcal{R}| \sim B/4$). Discard the $O(\sqrt x)$ primes
 $p \le \sqrt x$. A hard prime with $R_{\min}(p) > B$ fails every
-$R \in \mathcal{R}$; we bound the count of such $p$ by a single
-sieve application per \emph{branch}, as follows.
+$R \in \mathcal{R}$.
 
 \emph{Dimensions.} Each $R \in \mathcal{R}$ contributes a sifting
 dimension $\delta_R$: the exact criteria at $R = 3, 7, 11, 15$ and
-Theorem~\ref{thm:S}(ii) at primes give $\delta_R = \tfrac12$;
-composites $\le 107$ give $\tfrac12$ by the sharpened tier of
+Theorem~\ref{thm:S}(ii) at primes give $\tfrac12$; composites
+$\le 107$ give $\tfrac12$ by the sharpened tier of
 Theorem~\ref{thm:S}(iii); and every remaining composite --- with
 \emph{no} restriction on $\omega(R)$ --- gives
 $\delta_R \ge \tfrac12 - (2^{\omega(R)-1}+1)/\varphi(R) \ge 0.44$
-beyond an absolute bound $R_1$, by the general-$t$ clause of
-Theorem~\ref{thm:S}(iii). Hence
-$\kappa := 1 + \sum_{R \in \mathcal{R}} \delta_R
-\ge 1 + 0.44(|\mathcal{R}| - R_1) \ge 1 + B/10$ for $B$ large.
+beyond an absolute bound $R_1$. Hence
+$\kappa := 1 + \sum_{R} \delta_R \ge 1 + B/10$ for $B$ large.
 
 \emph{Branches.} For each $R$, failure confines the support of
 $(p+R)/4$ to one of at most $2^{\varphi(R)}$ failing supports
-$S_R$ (crudely, all subsets); fixing $(S_R)_{R \in \mathcal{R}}$
+$S_R$ (crudely, all subsets); fixing $(S_R)_R$
 and the class $n_0$ of $n = (p+3)/4$ modulo
 $\widetilde M = \mathrm{lcm}(840, \prod_{\ell \le B} \ell) =
-e^{O(B)}$ costs a factor
-$\prod_R 2^{\varphi(R)} \cdot e^{O(B)} = e^{O(B^2)}$ branches.
+e^{O(B)}$ costs $\prod_R 2^{\varphi(R)} \cdot e^{O(B)} = e^{O(B^2)}$
+branches.
 
 \emph{Sieve.} Within a branch, sift the integers
 $n \le (x+3)/4$, $n \equiv n_0 \pmod{\widetilde M}$, by the primes
@@ -1690,173 +1469,93 @@ progressions modulo $R \le B$ (Siegel--Walfisz range, whence the
 ineffective $x_0$). Apply Brun's sieve of order $r \asymp \kappa$
 (\cite[Ch.~2]{HalberstamRichert}; for constants uniform in the
 dimension, \cite[Thm.~6.9]{FriedlanderIwaniec}) at $s = 10r$, so
-that $z^r = x^{1/10}$: since the
-sifted sequence consists of \emph{integers} in a progression --- no
-primality is detected anywhere --- the remainder is
+that $z^r = x^{1/10}$: since the sifted sequence consists of
+\emph{integers} in a progression --- no primality is detected
+anywhere --- the remainder is
 $\sum_{d \le z^r} (B+2)^{\omega(d)} \ll x^{1/10} e^{O(BL)} =
-x^{1/10 + o(1)}$ for a suitable absolute choice of the implied
-constants, and the main term is
-\[
-  \ll \frac{x}{\widetilde M} \prod_{B < \ell \le z}
-  \Bigl(1 - \frac{\omega(\ell)}{\ell}\Bigr)
-  \;\le\; x \exp\bigl(-\kappa (L - O(\log B)) + O(B\log B)\bigr).
-\]
+x^{1/10 + o(1)}$, and the main term is
+$\ll x \exp(-\kappa (L - O(\log B)) + O(B\log B))$.
 
 \emph{Accounting.} Multiplying by the branch count,
 \[
-\begin{aligned}
   \#\{p \le x : R_{\min}(p) > B\}
-  \;&\le\; e^{O(B^2)}\, x\, \exp\bigl(-\kappa L + O(B \log B) +
-  O(\kappa \log B)\bigr) \\
-  &\le\; x\,\exp\bigl(-BL/10 + O(B^2)\bigr),
-\end{aligned}
+  \;\le\; e^{O(B^2)}\, x\, e^{-\kappa L + O(B \log B) +
+  O(\kappa \log B)}
+  \;\le\; x\,e^{-BL/10 + O(B^2)},
 \]
 and with $B = \varepsilon L$ the exponent is
 $-\varepsilon L^2/10 + O(\varepsilon^2 L^2) \le
 -\varepsilon L^2/20$ for $\varepsilon$ below an absolute threshold.
 \end{proof}
 
-\begin{remark}[the constant, and the range]\label{rem:Urange}
-The constant $c$ in Theorem~\ref{thm:U} is not innocuous. It
-inherits the branch factor $e^{\Theta(B^2)}$ against the sieve gain
-$e^{-BL/10}$, so the $\varepsilon$ below which the accounting closes
-is small, and $c \asymp \varepsilon$. The bound beats the trivial
-count $\asymp x/(32\log x)$ of hard primes only once
-$c(\log\log x)^2 - \log\log x > \log 32$, which for small $c$
-places the crossover at values of $x$ far beyond any computational
-range: at $c = 10^{-2}$ one needs $\log\log x \gtrsim 350$. The
-theorem is therefore asymptotic in the strict sense --- nontrivial
-for all large $x$, ineffectively so (Siegel--Walfisz), and of no
-numerical content in any accessible range. Its interest is
-structural, and the numerical picture at accessible heights is
-supplied instead by Section~\ref{sec:comp}.
+\begin{remark}[the constant, the range, and the
+ceiling]\label{rem:ceiling}
+The constant $c$ is not innocuous: it inherits the branch factor
+$e^{\Theta(B^2)}$ against the sieve gain $e^{-BL/10}$, so
+$c \asymp \varepsilon$ is small, and the bound beats the trivial count
+$\asymp x/(32\log x)$ of hard primes only once
+$c(\log\log x)^2 - \log\log x > \log 32$ --- at $c = 10^{-2}$, only
+for $\log\log x \gtrsim 350$. The theorem is asymptotic in the strict
+sense: nontrivial for all large $x$, ineffectively so
+(Siegel--Walfisz), and of no numerical content in any accessible
+range, where the picture is supplied instead by
+Section~\ref{sec:comp}. The same branch factor is the ceiling: it
+forces $B \ll L$ and hence $\exp(-cL^2)$, and an audit shows it is the
+\emph{only} binding wall --- the class modulus $\widetilde M = e^{O(B)}$
+never multiplies the main term (the classes partition the integers),
+and the Mertens/Siegel--Walfisz inputs remain valid for $B$ up to any
+fixed power of $\log x$ at the already-paid price of ineffectivity.
+Classifying the failing supports into polynomially many structured
+branches is therefore the one lever, and it is the subject of
+Section~\ref{sec:branch}. Vaughan's bound~\cite{Vaughan} remains
+stronger as a pure density statement at every tier of this family
+(Remark~\ref{rem:vaughan}).
 \end{remark}
 
-\begin{remark}[the ceiling, and the one lever]\label{rem:ceiling}
-Theorem~\ref{thm:U} sits at the boundary set by its \emph{branch
-factor}: $e^{\Theta(B^2)}$ from the crude all-subsets bound on
-failing supports, against the sieve gain $e^{-BL/10}$, forces
-$B \ll L$ and the ceiling $\exp(-cL^2)$. A closer audit
-(Section~\ref{sec:branch}) shows the branch factor is the
-\emph{only} binding wall: the class modulus
-$\widetilde M = e^{O(B)}$ never multiplies the main term (the
-classes partition the integers), and the Mertens/Siegel--Walfisz
-inputs remain valid for $B$ up to any fixed power of $\log x$ at the
-already-paid price of ineffectivity. Classifying the failing
-supports into polynomially many structured branches --- the subject
-of Section~\ref{sec:branch} --- would therefore raise
-Theorem~\ref{thm:U} to an exceptional set
-$x\exp(-(\log x)^{c_0})$ with $R_{\min} \le (\log x)^{c_0}$
-(Theorem~\ref{thm:Upay}), with the family ceiling strictly below
-exponent $\tfrac12$ (see the discussion there). Vaughan's bound
-$x\exp(-c(\log x)^{2/3})$~\cite{Vaughan}
-remains stronger as a pure density statement at every tier of this
-family; what
-Theorem~\ref{thm:U} adds is structural: an explicit certificate at a
-small residual for almost every hard prime, a
-statement mean-value methods do not address. The calibrations
-$J = (\log x)^{\theta}$ of Theorem~\ref{thm:L1} remain out of reach
-of every unconditional variant considered here.
-\end{remark}
-
-\subsection{The branch classification}\label{sec:branch}
+\subsection{What stands in the way}\label{sec:branch}
 
 Fix a prime residual $R$, $d = R - 1$, and work in the discrete-log
 model of Theorem~\ref{thm:S}(i): a \emph{support}
-$S \subseteq \mathbb{Z}/d \setminus \{0\}$ at exponent budget $2$
-per class has reach $M(S) = \sum_{v \in S} \{0, v, 2v\}$, and $S$
-\emph{fails} for a target $t$ if $t \notin M(S)$ (the $p$-budget is
-absorbed as one more summand). By
-Lemma~\ref{lem:mono} every failing configuration lives on a failing
-support, and every failing support extends to a \emph{maximal} one
-($S$ failing, $S \cup \{w\}$ succeeding for all $w$). Two facts
-calibrate the problem. First, maximality forces no size
-concentration: maximal failing supports exist at every size scale
-from
-$\Theta(\log d)$ (complete-partition constructions realizing
-$M(S) = \mathbb{Z}/d \setminus \{t\}$, a \emph{singleton miss}) up
-to the extremal $d/2 - 1$. Second, \emph{enumerating} them is
-hopeless:
+$S \subseteq \mathbb{Z}/d \setminus \{0\}$ has reach
+$M(S) = \sum_{v \in S} \{0, v, 2v\}$, and $S$ \emph{fails} for a target
+$t$ if $t \notin M(S)$. By Lemma~\ref{lem:mono} every failing
+configuration lives on a failing support, and every failing support
+extends to a maximal one. Two facts calibrate the problem.
 
-\begin{theorem}[branch count blow-up]\label{thm:Mcount}
-There is $c > 0$ such that for every large even $d$, the number of
-maximal failing supports for the target $t = -1$ in $\mathbb{Z}/d$
-is at least $2^{c\sqrt d}$: the supports
-$[1, r] \cup T' \cup \{X\}$, $T' \subseteq [r+1, 2r]$,
-$|T'| = \lceil r/2 \rceil$, $r = \lceil\sqrt{d/4}\,\rceil$, with $X$
-completing the sum to $d/2 - 1$, are pairwise distinct
-complete partitions (for $d$ large, $X > 2r$, so $X$ collides with
-no other part and $T'$ is recoverable from the support; the chain
-condition at the part $X$ reduces to $d/2 - 2 \le 3r(r+1)$, which
-holds since $r^2 \ge d/4$), and each
-has reach exactly
-$\mathbb{Z}/d \setminus \{-1\}$, hence is maximal failing.
-\end{theorem}
+First, enumeration is hopeless. Taking
+$S = [1, r] \cup T' \cup \{X\}$ with $T' \subseteq [r+1, 2r]$,
+$|T'| = \lceil r/2\rceil$, $r = \lceil\sqrt{d/4}\,\rceil$ and $X$
+completing the sum to $d/2 - 1$ gives, for large even $d$, at least
+$2^{c\sqrt d}$ pairwise distinct maximal failing supports for the
+target $t = -1$: each is a complete partition with reach exactly
+$\mathbb{Z}/d \setminus \{-1\}$. The exponential-in-$\sqrt d$ order is
+the classical complete-partition phenomenon --- such counts are
+$\exp(\Theta(\sqrt n))$ (Andrews--Beck--Hopkins~\cite{ABH}) --- and
+what matters here is only the consequence: a useful classification must
+produce \emph{containers}, polynomially many structured sets covering
+all failing supports, not a list.
 
-The exponential-in-$\sqrt d$ order is not a surprise: the objects
-constructed are complete partitions with distinct parts, whose total
-count is $\exp(\Theta(\sqrt n))$ classically
-(Andrews--Beck--Hopkins~\cite{ABH}). What
-Theorem~\ref{thm:Mcount} records is the version adapted to
-$\mathbb{Z}/d$ and to maximality, because that is what rules out
-enumeration. A useful classification must therefore produce
-\emph{containers} --- polynomially many structured sets covering all
-failing supports. The kernel (periodic) case is under complete
-control, by the standard stabilizer/quotient reduction that drives
-the critical-number literature
-(see~\cite[Ch.~6]{Grynkiewicz}); we state it in the form and with the
-size bookkeeping we need, and claim no novelty in the mechanism.
-
-\begin{theorem}[kernel branch; lossless reduction]\label{thm:Mkernel}
-Let $S$ fail for $t$ and $H = \mathrm{Stab}(M(S)) \ne \{0\}$, and
-write $\varphi_H \colon \mathbb{Z}/d \to \mathbb{Z}/\bar d$. Then
-$t \notin M(S) + H$, the projection
-$\bar T = \varphi_H(S \setminus H)$ is a failing support for
-$\bar t = \varphi_H(t) \ne 0$ at the same budget, and
-$S \subseteq (H \setminus \{0\}) \cup \varphi_H^{-1}(\bar T)$; if
-$S$ is maximal then moreover $H \setminus \{0\} \subseteq S$.
-Iterating: every failing support of $\mathbb{Z}/d$ is contained in
+Second, the periodic case is already under control, by the standard
+stabilizer/quotient reduction that drives the critical-number
+literature (see~\cite[Ch.~6]{Grynkiewicz}); we claim no novelty in the
+mechanism. If $S$ fails for $t$ and $H = \mathrm{Stab}(M(S)) \ne \{0\}$
+with quotient $\varphi_H \colon \mathbb{Z}/d \to \mathbb{Z}/\bar d$,
+then $\bar T = \varphi_H(S \setminus H)$ is a failing support for
+$\bar t = \varphi_H(t) \ne 0$ at the same budget,
+$S \subseteq (H \setminus \{0\}) \cup \varphi_H^{-1}(\bar T)$, and
+$H \setminus \{0\} \subseteq S$ when $S$ is maximal. Iterating,
+\emph{every} failing support of $\mathbb{Z}/d$ sits inside
 $\psi^{-1}(\{0\} \cup T') \setminus \{0\}$ for a composed quotient
-$\psi \colon \mathbb{Z}/d \to \mathbb{Z}/d'$ and an
-\emph{aperiodic maximal} failing support $T'$ downstairs, and this
-container has at most $\lfloor d/2 \rfloor - 1$ elements. (The
-support bound extends to odd moduli, as needed for the quotients:
-for odd $\bar d$ no summand is degenerate, so in the aperiodic case
-Kneser's bound gives
-$|T| \le (\bar d - 3)/2$; for nontrivial stabilizer of order $h$
-the count is $\le h + \bar d/h - 3 \le \bar d/3 \le (\bar d - 3)/2$
-for $\bar d \ge 9$, smaller odd $\bar d$ having no proper
-nontrivial subgroups.)
-\end{theorem}
+$\psi$ and an \emph{aperiodic} maximal failing support $T'$
+downstairs, a container of at most $\lfloor d/2 \rfloor - 1$ elements.
 
-\begin{proof}
-$M + H = M$ gives $H \subseteq M$ and $t \notin M + H$ (else
-$t \in M$), so $\bar t \ne 0$. The projection
-$\varphi_H(M(S)) = \sum_{v} \{0, \bar v, 2\bar v\}$ contains
-$M(\bar T)$ computed downstairs at budget $2$ (collisions only
-enlarge budgets; Lemma~\ref{lem:mono}), and $H$-saturation of
-$M(S)$ turns $t \notin M(S)$ into $\bar t \notin M(\bar T)$: $\bar
-T$ fails. The containment is definitional. For maximality: any
-$w \in H \setminus (S \cup \{0\})$ has $A_w \subseteq H$, so
-$M(S \cup \{w\}) = M(S) + A_w = M(S)$ still fails --- $w$ must
-already lie in $S$. Iterate on the quotient (strong induction on
-$d$, extending $\bar T$ to a maximal support downstairs first); the
-size bookkeeping per step is
-$(h - 1) + h\,|T'| \le h - 1 + h \lfloor (\bar d - 2)/2 \rfloor
-\le d/2 - 1$, exact at even $\bar d$, with strict inequality at odd
-$\bar d$.
-\end{proof}
-
-The open core is the aperiodic case. All the evidence points to one
-container shape --- a coset-progression \emph{window}: for
-$K \le \mathbb{Z}/d$, a unit direction and a circular window $W$ of
+So everything reduces to the aperiodic case, and all the evidence
+points to one container shape --- a coset-progression \emph{window}:
+for $K \le \mathbb{Z}/d$, a unit direction and a circular window $W$ of
 quotient classes, set
-$C(K, W) = \varphi_K^{-1}(\{0\} \cup W) \setminus \{0\}$. The
-family $\{C(K, W) : |C(K, W)| \le \lfloor d/2 \rfloor - 1\}$ has
-fewer than $d^3$ members (a container is determined by the kernel
-size $\kappa \mid d$, a unit direction, a window start, and a window
-length $\le \bar d/2$: at most
-$\sum_{\kappa \mid d} \bar d^{\,3}/2 \le \zeta(3)d^3/2$ choices).
+$C(K, W) = \varphi_K^{-1}(\{0\} \cup W) \setminus \{0\}$. The family of
+such containers of size $\le \lfloor d/2 \rfloor - 1$ has fewer than
+$d^3$ members.
 
 \begin{conjecture}[aperiodic branch classification]\label{conj:A}
 Every maximal failing support $S$ with
@@ -1865,516 +1564,219 @@ satisfies $S \subseteq C(K, W)$ for some window container with
 $|C(K, W)| \le \lfloor d/2 \rfloor - 1$.
 \end{conjecture}
 
-The evidence: exhaustive verification for \emph{all} moduli
+The evidence is extensive: exhaustive verification for all moduli
 $d \le 60$ and all targets ($24.25$ million orbit-weighted maximal
-supports; zero violations; the bound
-$\lfloor d/2 \rfloor - 1$ is attained, hence optimal); exhaustive
-verification at $d = 72$, the smallest \emph{non-Haj\'os} cyclic
-order --- the one place aperiodic factorization pathologies could
-first appear --- over all $11$ target orbits and $14.99$ million
-maximal supports, with extensive stratified sampling (including
-supports seeded from explicit aperiodic de~Bruijn factorizations of
-$\mathbb{Z}/72$) at every non-Haj\'os order up to $240$; independent
-verification in the residual model at
-$R = 19, 23, 31, 43, 47, 59$ ($495{,}782$ maximal supports at
-$R = 59$) and
-at the composite moduli $R = 15, 35, 39$ (entry point
-\texttt{erdos\_straus.branch\_enum}; archived); a proved
-subfamily (the signed complete partitions, windows with room to
-spare); and a rank-$2$ witness
-($S = \{11, 17, 19, 29\} \subseteq \mathbb{Z}/30$, a singleton miss
-contained in no short one-dimensional window but in a
-$K = \langle 10 \rangle$ window container of size $14$) showing the
-subgroup component of the shape is necessary. Combining
-Theorem~\ref{thm:Mkernel} with Conjecture~\ref{conj:A} in the
-quotients (windows pull back to windows along composed quotients):
+supports, zero violations, the bound attained hence optimal);
+exhaustive verification at $d = 72$, the smallest non-Haj\'os cyclic
+order --- where aperiodic factorization pathologies could first appear
+--- over all $11$ target orbits and $14.99$ million maximal supports,
+with stratified sampling at every non-Haj\'os order up to $240$;
+independent verification in the residual model at
+$R = 19, 23, 31, 43, 47, 59$ and at the composite moduli
+$R = 15, 35, 39$ (entry point \texttt{erdos\_straus.branch\_enum},
+archived); a proved subfamily; and a rank-$2$ witness
+($S = \{11, 17, 19, 29\} \subseteq \mathbb{Z}/30$) showing the subgroup
+component of the shape is necessary. Where the remaining difficulty
+lives is also localized: near-critical Kneser analysis is vacuous here
+(aperiodic failing supports with $|S| \ge 3$ are never Kneser-tight),
+and punctured critical deletion steps are impossible --- if the two
+new elements of a critical step at $v$ are isolated punctures of the
+complement then $F - v = F$ for the miss set $F$, forcing
+$v \in \mathrm{Stab}(M(S))$, so in the aperiodic case every critical
+step is of window type. What is open is the control of
+\emph{non-critical} steps.
 
-\begin{theorem}[container form; conditional on
-Conjecture~\textup{\ref{conj:A}}]\label{thm:Mcont}
-Every failing support for $(d, t)$ is contained in one of fewer
-than $d^3$ explicit window containers of size
-$\le \lfloor d/2 \rfloor - 1$; hence failure of residual $R$
-confines the factor classes of $(p+R)/4$ to one of $O(R^3)$
-branches, each forbidding at least half the nonzero classes ---
-sieve dimension $\tfrac12$ per residual, with the branch count
-reduced from $2^{\varphi(R)}$ to $O(R^3)$.
+\begin{theorem}[conditional polylog tier]\label{thm:Upay}
+Assume Conjecture~\ref{conj:A} for all moduli. Then every failing
+support for $(d, t)$ lies in one of fewer than $d^3$ explicit window
+containers of size $\le \lfloor d/2\rfloor - 1$, so failure at $R$
+confines the factor classes of $(p+R)/4$ to $O(R^3)$ branches rather
+than $2^{\varphi(R)}$; and rerunning the proof of Theorem~\ref{thm:U}
+with list length $B = (\log x)^{\theta}$, there is an absolute
+$c_0 > 0$ such that all but
+$O\bigl(x \exp(-(\log x)^{c_0})\bigr)$ hard primes $p \le x$ satisfy
+$R_{\min}(p) \le (\log x)^{c_0}$.
 \end{theorem}
 
-\begin{theorem}[conditional uniform chain, polylog
-tier]\label{thm:Upay}
-Assume Conjecture~\ref{conj:A} (for all moduli). Then there is an
-absolute $c_0 > 0$ such that all but
-$O\bigl(x \exp(-(\log x)^{c_0})\bigr)$ hard primes $p \le x$
-satisfy $R_{\min}(p) \le (\log x)^{c_0}$.
+The balance is a sieve gain $\delta(1-\theta)L$ against a
+branch-and-slop cost $(3 + c_M)\theta L$ with $\delta = \tfrac12$ and
+$c_M = O(1)$ collecting the Mertens-in-progressions constants, the
+discarded initial segment of sieving primes, and the
+$(\Omega)$-condition constant; this is admissible for
+$\theta < \delta/(3 + c_M + \delta)$, roughly $1/9$ with the constants
+proved here. The family ceiling sits strictly below $\tfrac12$: no
+container scheme of this shape has fewer than ${\sim}d$ members, so
+the count exponent is at least $1$ and $\theta$ is capped below
+$\tfrac13$ --- short of Vaughan's $2/3$. Conjecture~\ref{conj:A} is
+thus a single well-posed question of additive combinatorics, a
+container theorem of Kneser--Freiman type for bounded-exponent subset
+sums, standing between Theorem~\ref{thm:U} and its polylog tier.
+
+\subsection{Sharpness at the first link, and what lies past the
+ceiling}\label{sec:ladder}
+
+Two things remain to be said about the chain: that its first link is
+sharp, and that we know of exactly one route past the ceiling of
+Remark~\ref{rem:ceiling}.
+
+Sharpness comes from recognizing character failure as a
+\emph{norm-form} condition in disguise. For $r \equiv 3 \pmod 4$,
+quadratic reciprocity gives $\legendre{-r}{\ell} = \legendre{\ell}{r}$
+for odd primes $\ell \nmid r$, so
+\begin{equation}\label{eq:normform}
+  \text{every prime factor of $a$ has } \legendre{\cdot}{r} = +1
+  \iff -r \text{ is a square mod } 4a
+  \iff a \text{ is \emph{primitively} represented by a form of
+  discriminant } -r,
+\end{equation}
+the last step by the correspondence between representations and square
+roots of the discriminant (Cox~\cite[Lem.~2.5]{Cox}); for $r$
+composite the symbol is the Jacobi symbol throughout. For $r$ prime
+the discriminant has a single genus and the whole form class group
+participates; at $r = 15$ there are two genera and two classes, and
+the count is applied per form and summed. The counting theorem is
+Iwaniec's half-dimensional sieve~\cite{IwaniecHalfDim} in
+prime-indexed form: the number of primes $p \le N$ with
+$p = B\varphi(\xi,\eta) + A$ for a primitive form $\varphi$ is
+$\asymp N/(\log N)^{3/2}$~\cite{IwaniecPhiA}, unobstructed by parity
+since $\beta(\tfrac12) = 1$.
+
+\begin{theorem}[the first link is sharp]\label{thm:sharp}
+For $R \in \{3, 7, 15\}$ the number of hard primes $p \le x$ failing
+$R$ is $\asymp x/(\log x)^{3/2}$, and the same holds with $\ll$,
+$\gg$ separately at $R = 11$. In particular the chain of
+Theorem~\ref{thm:FG} is sharp at its first link, and no exponent
+better than $3/2$ is available from any single residual: by
+Theorem~\ref{thm:S} every failure-sufficient family has sieve
+dimension $\ge \tfrac12$, so $3/2$ is the ceiling of the method, not
+an artifact of the argument.
 \end{theorem}
 
 \begin{proof}[Proof sketch]
-Rerun the proof of Theorem~\ref{thm:U} with list length
-$B = (\log x)^{\theta}$. The branch factor over the list drops from
-$e^{\Theta(B^2)}$ to $\prod_{R \le B} O(R^3) =
-e^{(3+o(1)) \cdot \frac{B}{4}\log B}$; the class conditioning
-never multiplies the main term (the classes partition the sifted
-integers, so the per-class main terms resum); and Siegel--Walfisz
-covers the Mertens-in-progressions inputs for moduli up to any
-fixed power of $\log x$. The per-residual balance is then a sieve
-gain $\delta(1-\theta)L$ against a branch-and-slop cost
-$(3 + c_M)\theta L$, where $L = \log\log x$, $\delta = \tfrac12$,
-and $c_M$ collects the per-residual slop --- the
-Mertens-in-progressions constants, the discarded initial segment
-$\ell \le B$ of sieving primes, and the $(\Omega)$-condition
-constant, together of order $1$. This is
-admissible for every
-$\theta < \delta/(3 + c_M + \delta)$ --- with the constants proved
-here, any $\theta$ below roughly $1/9$. The family ceiling sits
-strictly below $\tfrac12$: no container scheme of this shape has
-fewer than ${\sim}d$ members (distinct progression directions
-already require distinct containers), so the count exponent is at
-least $1$ and the balance caps $\theta$ at
-$\delta/(1 + c_M + \delta) < \tfrac13$ --- consistent with, and
-sharper than, the $\exp(-(\log x)^{1/2+o(1)})$ outer ceiling of the
-wider method family, itself short of Vaughan's $2/3$. A
-quasi-polynomial classification ($d^{O(\log d)}$ containers) would
-still give exceptional sets
-$x\exp(-\exp(c\sqrt{\log\log x}))$, past every
-$\exp(-C(\log\log x)^A)$.
+At these residuals the exact criteria make failure equivalent to an
+all-residue condition on the factors of $a = (p+R)/4$, which by
+\eqref{eq:normform} is primitive representability by a form of
+discriminant $-r$, $r = 3, 7, 15$. The upper bound is the Fundamental
+Lemma as in Theorem~\ref{thm:FG}; the lower bound is
+\cite{IwaniecPhiA} per class of forms, with (H1)--(H3) absorbed into
+$A$ and $B$, and the passage from representability by \emph{some} form
+to \emph{primitive} representability is~\cite{FHRSS}. At $R = 11$ the
+budget failures of Theorem~\ref{thm:App}(b) are not of this shape,
+whence only the one-sided bounds. Sander~\cite{Sander94} proved a
+lower bound of this order for a related insolubility count by the same
+sieve; the accessible record of that paper states no matching upper
+bound, and the upper bound here is Fundamental-Lemma routine.
 \end{proof}
 
-Conjecture~\ref{conj:A} is thus a single well-posed question of
-additive combinatorics --- a container theorem of Kneser--Freiman
-type for bounded-exponent subset sums --- standing between
-Theorem~\ref{thm:U} and its polylog tier. Where its difficulty lives
-can now be pinned exactly. Near-critical Kneser analysis is
-\emph{vacuous} here (aperiodic failing supports with $|S| \ge 3$ are
-never Kneser-tight --- the governing mechanism is exact covering by
-complete sequences, not small doubling); the singleton-miss
-supports satisfy the symmetry $2\sum_{v \in S} v = 2t$, which pins
-their windows (and at \emph{odd} moduli singleton misses do not
-exist at all: the miss set always has even size, so the floor family
-there is $|F| = 2$, auto-maximal and window-shaped). The one
-mechanism previously feared --- chaining of \emph{punctured}
-(cofinite) intermediate reaches, where direction information
-degenerates and non-Hajós factorization pathologies could hide ---
-is provably empty:
+Past the ceiling, the one route we know abandons fixed lists for a
+\emph{$p$-adapted} one. Lemma~\ref{lem:Jcomp} below holds at composite
+residuals as well, and read backwards it selects a residual at which
+the all-residue failure mode is impossible by construction: for a hard
+prime $p$ with least Legendre non-residue $q = q(p)$ (necessarily
+$q \ge 11$ by Corollary~\ref{cor:J}), put $R_0 = (-p) \bmod 4q$, so
+that $R_0 \equiv 3 \pmod 4$, $q \mid (p+R_0)/4$, and
+$\legendre{q}{R_0} = \legendre{p}{q} = -1$; the same holds at every
+rung of the ladder $R_j = R_0 + 4qj$.
 
-\begin{proposition}[$\beta$-vacuity]\label{prop:betavac}
-Let $S$ fail for $t$ in $\mathbb{Z}/d$, let $v \in S$, and suppose
-the deletion step at $v$ is Kneser-critical
-($|M(S)| = |M(S \setminus \{v\})| + 2$) of punctured type: the two
-new elements are isolated punctures of the complement. Then
-$F - v = F$ for the miss set $F = \mathbb{Z}/d \setminus M(S)$, so
-$v \in \mathrm{Stab}(M(S))$. In particular, for an \emph{aperiodic}
-maximal failing support every critical deletion step is of window
-($\alpha$) type.
-\end{proposition}
-
-\begin{proof}
-Write $A = M(S \setminus \{v\})$ and
-$\mathbb{Z}/d \setminus A = F \sqcup \{x, y\}$ with $x, y$ the
-punctures. For $f \in F$: since
-$f \notin M(S) = A \cup (A + v) \cup (A + 2v)$, both $f - v$ and
-$f - 2v$ avoid $A$, so $f - v \in F \cup \{x, y\}$. If $f - v = x$,
-then $x - v = f - 2v \notin A$, contradicting the isolation of $x$
-($x - v \in A$; the $v = d/2$ two-cycle case is the same
-contradiction). Likewise for $y$. So $F - v \subseteq F$, hence
-$F - v = F$ by finiteness.
-\end{proof}
-
-What remains open in Conjecture~\ref{conj:A} is therefore only the
-control of \emph{non-critical} deletion steps --- slack-consuming
-extensions, a question about exact-covering efficiency that is
-indifferent to the Hajós/non-Hajós divide (consistent with the
-exhaustive verification at $d = 72$ above). And the payoff is robust
-to the conjecture's scope: by a Chen-type $P_3$ count there are
-$\gg B/(\log B)^2$ admissible residuals $R \le B$ whose modulus
-$d = R - 1$ is a Hajós order (equivalently $(R-1)/2$ is a prime
-power or has at most three prime factors), which is dense enough
-that assuming Conjecture~\ref{conj:A} \emph{only for Hajós orders}
---- where the group theory is tame --- yields
-Theorem~\ref{thm:Upay} with the same exponent up to $o(1)$.
-
-\subsection{A conditional program past the ceiling}\label{sec:ladder}
-
-Theorem~\ref{thm:S} closes the fixed-list axis and
-Theorem~\ref{thm:U} pushes the growing-list axis to its
-unconditional ceiling $\exp(-c(\log\log x)^2)$
-(Remark~\ref{rem:ceiling}); no list-based bound can reach emptiness
-(Remark~\ref{rem:emptiness}). We record here, in compressed form,
-the one program we know that opens past the ceiling: a
-\emph{$p$-adapted} family of residuals, selected through quadratic
-reciprocity, along which the all-residue failure mode is impossible
-by construction. Its measurements are archived
-(Appendix~\ref{app:verif}); the fuller development, including the
-per-rung census data, is in the accompanying repository.
-
-\begin{lemma}[composite reciprocity]\label{lem:Jcomp}
-Let $R \equiv 3 \pmod 4$ be any admissible residual and $q$ an odd
-prime with $q \mid (p+R)/4$ and $\gcd(q, R) = 1$. Then the Jacobi
-symbol satisfies $\legendre{q}{R} = \legendre{p}{q}$.
+\begin{lemma}[composite reciprocity and Jacobi
+necessity]\label{lem:Jcomp}
+Let $R \equiv 3 \pmod 4$ be admissible and $q$ an odd prime with
+$q \mid (p+R)/4$, $\gcd(q,R) = 1$. Then
+$\legendre{q}{R} = \legendre{p}{q}$ for the Jacobi symbol.
+Consequently, if no prime factor of $a = (p+R)/4$ has
+$\legendre{\cdot}{R} = -1$ then \eqref{eq:cert} fails at $R$.
 \end{lemma}
 
 \begin{proof}
-$q \mid p + R$ gives $R \equiv -p \pmod q$; Jacobi reciprocity with
+$q \mid p+R$ gives $R \equiv -p \pmod q$; Jacobi reciprocity with
 $R \equiv 3 \pmod 4$ gives
 $\legendre{q}{R} = (-1)^{\frac{q-1}{2}}\legendre{R}{q}
  = (-1)^{\frac{q-1}{2}}\legendre{-1}{q}\legendre{p}{q}
  = \legendre{p}{q}$ --- the proof of Theorem~\ref{thm:J} verbatim,
-which never used primality of $R$.
+which never used primality of $R$. For the second claim, all factors
+of $a$ Jacobi residues gives $\legendre{a}{R} = +1$, and by
+consistency \eqref{eq:star} also $\legendre{p}{R} = +1$; so every
+divisor $k \mid m^2$ has $\legendre{k}{R} = +1$ while the target has
+$\legendre{-m}{R} = \legendre{-1}{R} = -1$.
 \end{proof}
 
-\begin{lemma}[Jacobi necessity]\label{lem:N}
-For every admissible $R$: if no prime factor of $a = (p+R)/4$ has
-Jacobi symbol $\legendre{\cdot}{R} = -1$, then \eqref{eq:cert} fails
-at $R$.
-\end{lemma}
-
-\begin{proof}
-All factors of $a$ Jacobi residues gives $\legendre{a}{R} = +1$; by
-consistency \eqref{eq:star}, $\legendre{p}{R} = \legendre{4a}{R} =
-+1$ as well, so every prime factor of $m = pa$ has symbol $+1$, hence
-every divisor $k \mid m^2$ has $\legendre{k}{R} = +1$, while the
-target has $\legendre{-m}{R} = \legendre{-1}{R} = -1$.
-\end{proof}
-
-Call $R$ \emph{pure} (at hard primes) if the converse also holds: a
-Jacobi non-residue factor present implies success. Theorems~\ref{thm:A},
-\ref{thm:Ap} and~\ref{thm:R15} say exactly that $R = 3, 7, 15$ are
-pure; the census below shows they are the \emph{only} pure residuals
-up to $107$, with the conditional failure rate at the others ranging
-from $1.3\%$ ($R = 23$) to $73\%$ ($R = 67$).
-
-Now run Lemma~\ref{lem:Jcomp} backwards. For a hard prime $p$ let
-$q = q(p)$ be its least Legendre non-residue (hard primes are
-residues at $3, 5, 7$ by Corollary~\ref{cor:J}, so $q \ge 11$;
-Burgess bounds $q \ll p^{1/(4\sqrt e)+\varepsilon}$
-unconditionally~\cite{Burgess}
-and GRH gives $q \ll (\log p)^2$~\cite{Ankeny}; the observed maximum
-below
-$10^{11}$ is $83$), and let the \emph{selected residual} be
-$R_0 = (-p) \bmod 4q$, so that $R_0 \equiv 3 \pmod 4$ automatically
-and $q \mid (p+R_0)/4$. By Lemma~\ref{lem:Jcomp},
-$\legendre{q}{R_0} = \legendre{p}{q} = -1$: the all-residue failure
-mode of Lemma~\ref{lem:N} is impossible at $R_0$ \emph{by
-construction}. The \emph{$q$-ladder} is the progression
-$R_j = R_0 + 4qj$, along which the same holds at every rung.
-
-Computed over every one of the $1{,}587{,}581$ hard primes below
-$10^9$, with mask-free window samples of $10{,}000$ primes per
-half-decade beyond, and the complete $10^{11}$ deep tail
-(Appendix~\ref{app:verif}): the selected residual $R_0$ alone
-certifies $94.78\%$ of hard primes below $10^9$ and $95.0$--$95.8\%$
-in every sampled window up to $10^{11}$, with no drift; the ladder
-capped at $R_j \le 400$ certifies $100\%$ below $10^9$ (two primes
-requiring the ladder of the second-least non-residue) and $100\%$ in
-every window. On the adversarial $10^{11}$ deep tail
-($R_{\min} \ge 43$, the $0.016\%$ hardest), the first rung succeeds
-for $75.1\%$ and the capped ladder for $99.99\%$, with $100\%$ at
-$R \le 435$. Among all $82{,}808$ first-rung failures below $10^9$,
-$97.5\%$ are \emph{true budget} failures --- the subgroup generated
-by the factor classes contains the target and only the bounded
-exponents miss it --- $29\%$ miss exactly one unit class, and none has
-more than $5$ distinct non-identity factor classes, against the
-$(R-3)/2$ that Theorem~\ref{thm:S} would allow.
-
-\begin{theorem}[ladder chain]\label{thm:L0}
-Fix a prime $q \ge 11$ and $J \ge 1$. The number of hard primes
-$p \le x$ with $\legendre{p}{q} = -1$ failing every rung $R_j$,
-$0 \le j < J$, of their $q$-ladder is
-$O_{q,J}\!\left(x/(\log x)^{1+\kappa_J}\right)$, where
-$\kappa_J = \sum \delta_{R_j}$ over the rungs with at most two prime
-factors, with $\delta_R = \tfrac12$ for $R$ prime or composite
-$\le 107$ and $\delta_R = \tfrac12 - 1/\varphi(R)$ for larger
-composites.
-\end{theorem}
-
-\begin{proof}
-The shifted forms $(p+R_j)/4 = n + (R_0-3)/4 + qj$ are distinct
-integer shifts of $n = (p+3)/4$, and Theorem~\ref{thm:S} --- part
-(ii) at prime rungs, part (iii) at composite rungs with
-$\omega \le 2$ --- makes failure at each usable rung a sifting
-condition of dimension $\ge \delta_{R_j}$, exactly as in the proof of
-Theorem~\ref{thm:FG}, which applies verbatim to this $p$-adapted
-list.
-\end{proof}
-
-\begin{theorem}[first rung]\label{thm:B1}
-Fix a prime $q \ge 11$. Among hard primes $p \le x$ with least
-non-residue $q(p) = q$, the proportion failing the selected residual
-$R_0$ is $\ll_q (\log x)^{-\eta_q} \to 0$, where
-$\eta_q = \min 1/\varphi(R_0) > 1/(4q)$, the minimum over the
-finitely many selected residuals $R_0 < 4q$ that arise for $q$.
-\end{theorem}
-
-\begin{proof}
-The condition $q(p) = q$ is a union of residue classes modulo
-$M = 840\prod_{11 \le \ell \le q}\ell$; fix one, which fixes $R_0$.
-By Proposition~\ref{prop:succ}, any prime factor $u$ of $(p+R_0)/4$
-in the universal class $-4^{-1} \bmod R_0$ certifies success via
-$k = up^2$, so a failing $p$ has $(p+R_0)/4$ free of an entire
-congruence class of primes: a sifting condition of dimension
-$1 + 1/\varphi(R_0)$ (with primality), and the Fundamental Lemma
-bounds the failing count by $\ll x/(\log x)^{1+1/\varphi(R_0)}$
-against class size $\asymp x/\log x$ (Siegel--Walfisz). Summing over
-the classes, the proportion is governed by the worst class, giving
-$\eta_q$; and $\varphi(R_0) < R_0 < 4q$ gives $\eta_q > 1/(4q)$. The
-bound is uniform for $q \ll \log\log x$.
-\end{proof}
-
-Write $E_j(x)$ for the set of hard primes in a fixed class that fail
-every rung through $j$, and $\tilde E_j(x)$ for the larger set whose
-shifted values $(p+R_i)/4$, $i \le j$, all avoid prime factors in
-their universal classes. The same Fundamental Lemma argument bounds
-$\#\tilde E_J \ll_{q,J} x/(\log x)^{1+\kappa}$ with
-$\kappa = \sum_{j \le J} 1/\varphi(R_j)$, and for $\kappa$ below an
-absolute constant a beta-sieve in dimension $\kappa < 1$ at level
-$x^{1/2-\varepsilon}$ (Bombieri--Vinogradov) gives the matching lower
-bound: the \emph{avoidance} ladder provably decays by
-$(\log x)^{-1/\varphi(R_{j+1})}$ at every rung. What is not provable
-by present methods is that the true failure sets $E_j$ track their
-avoidance sets:
-
-\begin{hypothesis}[P; proportionality]\label{hyp:P}
-For each fixed $q$, class, and $J$ there are $c_P > 0$ and $x_0$,
-with $c_P$ bounded below uniformly in the rung $j \le J$
-\textup{(}uniformity in $q$ is part of the hypothesis\textup{)},
-such that $\#E_j(x) \ge c_P\, \#\tilde E_j(x)$ for all $j \le J$ and
-$x \ge x_0$.
-\end{hypothesis}
-
-Measured: $c_P \approx 0.097$--$0.12$ at rung $0$ and
-$0.13$--$0.16$ at rung $1$, flat across two decades to $10^{11}$
-(Appendix~\ref{app:verif}). Since $E_{j+1} \subseteq \tilde E_{j+1}$,
-Hypothesis~\ref{hyp:P} converts the avoidance decay into decay of the
-true failure counts at every \emph{fixed} rung, though not with
-uniformity in $j$ and $q$.
-
-The one place where the true failure count \emph{is} bounded below
-unconditionally is at the start of the chain, and the reason is that
-the character-failure condition is a \emph{norm-form} condition in
-disguise. For $r \equiv 3 \pmod 4$, quadratic reciprocity gives
-$\legendre{-r}{\ell} = \legendre{\ell}{r}$ for odd primes
-$\ell \nmid r$, so
-\begin{equation}\label{eq:normform}
-\begin{aligned}
-  \text{every prime factor $\ell$ of $a$ has }
-  \legendre{\ell}{r} = +1
-  \;&\iff\; -r \text{ is a square mod } 4a \\[-1pt]
-  \;&\iff\; a \text{ is \emph{primitively} represented by} \\
-  &\qquad\ \ \text{a binary quadratic form of discriminant } -r,
-\end{aligned}
-\end{equation}
-the last step by the classical correspondence between
-representations and square roots of the discriminant
-(Cox~\cite[Lem.~2.5]{Cox}); for $r$ composite,
-$\smash{\legendre{\cdot}{r}}$ is the Jacobi symbol throughout. When
-$r$ is prime the discriminant $-r$ has a single genus and the whole
-form class group participates; at $r = 15$ there are two genera and
-two classes, and the counting below is applied to each form
-separately and summed, which is all that is needed. The relevant
-counting theorem is Iwaniec's half-dimensional
-sieve~\cite{IwaniecHalfDim} in its \emph{prime-indexed} form: the
-number of primes $p \le N$ with $p = B\varphi(\xi,\eta) + A$ for a
-primitive form $\varphi$ is $\asymp N/(\log N)^{3/2}$
-\cite{IwaniecPhiA}. This is not obstructed by parity --- at
-dimension $\kappa = \tfrac12$ the lower-bound sieve function
-satisfies $\beta(\tfrac12) = 1$.
-
-\begin{theorem}[the first link is sharp]\label{thm:sharp}
-For $R \in \{3, 7, 15\}$,
-\[
-  \#\{\text{hard primes } p \le x \text{ failing } R\}
-  \;\asymp\; \frac{x}{(\log x)^{3/2}},
-\]
-and the same holds with $\ll$, $\gg$ separately at $R = 11$. In
-particular the chain of Theorem~\ref{thm:FG} is sharp at its first
-link, and no exponent better than $3/2$ is available from any
-single residual: by Theorem~\ref{thm:S} every failure-sufficient
-family has sieve dimension $\ge \tfrac12$, so $3/2$ is the ceiling
-of the method, not an artifact of the argument.
-\end{theorem}
-
-\begin{proof}[Proof sketch]
-At these residuals the exact criteria (Theorems~\ref{thm:A},
-\ref{thm:Ap}, \ref{thm:R15}) make failure equivalent to an
-all-residue condition on the factors of $a = (p+R)/4$, which by
-\eqref{eq:normform} is primitive representability by a form of
-discriminant $-r$ ($r = 3, 7, 15$ respectively). The upper bound is
-the Fundamental Lemma as in Theorem~\ref{thm:FG}; the lower bound is
-\cite{IwaniecPhiA} applied to each class of forms, with the
-congruence conditions (H1)--(H3) absorbed into $A$ and $B$. At
-$R = 11$ the case-(b) budget failures of Theorem~\ref{thm:App} are
-not of this shape, which is why only the one-sided bounds are
-asserted.
-\end{proof}
-
-A lower bound of the same order survives the passage to $p$-adapted
-residuals, but only on a sparse family of classes, and the reason is
-worth recording because it is the obstruction in miniature. Fix a
-class $c \bmod M$ ($M$ as in the proof of Theorem~\ref{thm:B1}) and
-suppose $R_0$ has a prime factor $r_1 \equiv 3 \pmod 4$ with
-$\smash{\legendre{\ell}{r_1}} = +1$ for \emph{every} prime
-$\ell \le q$ that the class forces to divide $a$. Then every $p$ in
-the class whose shifted value $(p+R_0)/4$ has all prime factors
-$\smash{\legendre{\cdot}{r_1}} = +1$ fails the first rung, by
-Proposition~\ref{prop:char} at $r_1$, and \eqref{eq:normform}
-with~\cite{IwaniecPhiA} counts those primes: $\gg x/(\log x)^{3/2}$
-on any such class. The upgrade from representability by \emph{some}
-form of the discriminant to \emph{primitive} representability is not
-automatic; it is the subject of
-Fuchs--Hsu--Rickards--Schindler--Stange~\cite{FHRSS}, and the cases
-used here fall under their Theorem~1.1 when $r_1 \equiv 3 \pmod 8$
-with $a$ odd, or $r_1 \equiv 7 \pmod 8$ with $a$ even.
-
-\begin{remark}[how sparse]\label{rem:P1scope}
-The forcing condition is restrictive in a way that is easy to miss:
-the class fixes $a$ modulo every prime $\le q$, so a single forced
-factor $\ell$ with $\smash{\legendre{\ell}{r_1}} = -1$ empties the
-family. For instance $q = 23$, $R_0 = 35$, $r_1 = 7$ passes the
-$\ell = q$ test, but $3 \mid a$ for every hard prime (as
-$p \equiv 1 \pmod 3$ and $35 \equiv 2 \pmod 3$) while
-$\legendre{3}{7} = -1$: the set is empty. Among the $39{,}391$ hard
-primes below $2 \times 10^7$, the classes passing the $\ell = q$ test
-alone account for $6.6\%$ of first rungs ($2{,}593$), those with a
-nonempty family for $0.023\%$ ($9$, in four distinct classes
-$(q, R_0, r_1)$), and $93.4\%$ admit no candidate $r_1$ whatever. One
-structural reason dominates: whenever $R_0$ is prime --- $65.2\%$ of
-first rungs in this range --- its only prime factor is $r_1 = R_0$,
-and Theorem~\ref{thm:J} forces
-$\legendre{q}{R_0} = \legendre{p}{q} = -1$, so no admissible $r_1$
-exists by construction. All figures are reproduced by
-\texttt{erdos\_straus.burgess\_scan admissibility} and archived.
-Consequently Hypothesis~\ref{hyp:P} is bracketed two-sidedly only on
-that sparse family at rung $0$, and one-sidedly elsewhere;
-Theorem~\ref{thm:sharp} is the unconditional lower-bound statement of
-real reach.
-\end{remark}
-
-\begin{hypothesis}[B; per-rung decay]\label{hyp:B}
-Fix a rung-count function $J(x) \to \infty$. There are $\delta > 0$
-and $x_0$ such that for $x \ge x_0$, all $q \le (\log x)^2$ and all
-$0 \le j < J(x)$:
-$\#E_{j+1}(x) \le (1-\delta)\,\#E_j(x) + O(\sqrt x)$.
-\end{hypothesis}
-
-The $j = 0$ case is Theorem~\ref{thm:B1}; every fixed rung follows
-from Hypothesis~\ref{hyp:P} (non-uniformly in $j$ and $q$); the
-measured survival factors $1 - \delta$ are $0.05$--$0.14$ per rung
---- $86$--$95\%$ of the surviving failures resolve at each rung ---
-with no drift in $p$.
-
-\begin{theorem}[conditional almost-all bound]\label{thm:L1}
-Assume Hypothesis~\ref{hyp:B}. Then all but
-$O\!\left(x\,e^{-\delta J(x)} + x\,2^{-\pi((\log x)^2)}\right)$
-hard primes $p \le x$ satisfy
-$R_{\min}(p) \le 4\,q(p)\,(J(x)+1) \le (\log x)^{2+o(1)} J(x)$.
-\end{theorem}
-
-\begin{proof}
-Hard primes with $q(p) > (\log x)^2$ are residues at every prime in
-$(7, (\log x)^2]$, a half-class condition per modulus, and the large
-sieve bounds their count by the second term. For the rest, iterate
-Hypothesis~\ref{hyp:B} $J(x)$ times; a survivor is the only way to
-lack a certificate on the ladder.
-\end{proof}
-
-\begin{remark}[scope]\label{rem:ladder-scope}
-With $J(x) = (\log\log x)^2$ the exceptional set would be
-$\ll x\exp(-\delta(\log\log x)^2)$ --- but that calibration is
-delivered \emph{unconditionally}, and with the stronger bound
-$R_{\min} \le \varepsilon\log\log x$, by Theorem~\ref{thm:U}. So
-Hypothesis~\ref{hyp:B}'s real content begins past the ceiling of
-Remark~\ref{rem:ceiling}: with $J(x) = (\log x)^{\theta}$,
-$\theta > 2/3$, Theorem~\ref{thm:L1} would pass Vaughan's bound. It
-is not unconditional, it is not a density record, and it is not a
-path to the full conjecture by itself: emptiness is beyond
-upper-bound methods (Remark~\ref{rem:emptiness}), and excluding the
-individual conspiratorial prime --- a super-record dodging $J(p)$
-rungs, of which the record prime of Section~\ref{sec:comp} is an
-empirical foreshadowing --- is a simultaneous-multiplicative-structure
-statement of prime-tuple difficulty. Two computations pin the walls
-down. \textup{(i)} Budget failure is not a character event: at
-$R = 11$ the configurations with class set $\{2, 7\}$ and
-multiplicities $(1,1)$ versus $(4,2)$ have the same class set and the
-same product mod $11$ --- hence identical values under every
-Dirichlet character mod $11$ --- yet the first fails the target and
-the second attains it, and $97.5\%$ of measured first-rung failures
-are of this budget type. \textup{(ii)} Weighted detection is
-equivalent to Hypothesis~\ref{hyp:P}: by
-Proposition~\ref{prop:succ} the certificate detector is already
-maximally relaxed, so almost-prime weakenings change nothing, and the
-first moment of any Bonferroni/Selberg weighting over $E_j$ is itself
-a failure count.
-\end{remark}
+The construction performs well: over all $1{,}587{,}581$ hard primes
+below $10^9$ and window samples to $10^{11}$, $R_0$ alone certifies
+$94.78\%$ and $95.0$--$95.8\%$ with no drift in $p$, and the ladder
+capped at $R_j \le 400$ certifies $100\%$ throughout; on the
+adversarial $10^{11}$ deep tail ($R_{\min} \ge 43$) the figures are
+$75.1\%$ and $99.99\%$. Theorem~\ref{thm:S} makes failure at each rung
+a sifting condition exactly as in Theorem~\ref{thm:FG}, and
+Proposition~\ref{prop:succ} gives an unconditional first-rung decay
+$\ll_q (\log x)^{-\eta_q}$, $\eta_q > 1/(4q)$. Turning the measured
+per-rung decay into a theorem, however, needs the hypothesis that the
+true failure sets are a positive proportion of the
+necessary-condition sets containing them --- and present methods bound
+that below only on a sparse family of classes ($0.023\%$ of first
+rungs below $2 \times 10^7$; when $R_0$ is prime, $65.2\%$ of the
+time, Theorem~\ref{thm:J} rules the mechanism out by construction).
+The gap is structural, not technical: budget failure is not a
+character event (at $R = 11$ the configurations with class set
+$\{2,7\}$ and multiplicities $(1,1)$ versus $(4,2)$ agree under every
+Dirichlet character mod $11$, yet the first misses the target and the
+second attains it, and $97.5\%$ of measured first-rung failures are of
+that type), and weighted detection buys nothing, since by
+Proposition~\ref{prop:succ} the detector is already maximally relaxed
+and the first moment of any Bonferroni/Selberg weighting over the
+failure set is itself a failure count. Even granting the hypothesis,
+the payoff arrives only past Remark~\ref{rem:ceiling}'s ceiling, at
+rung count $(\log x)^{\theta}$ with $\theta > 2/3$; at the rung count
+matching Theorem~\ref{thm:U} it gives nothing Theorem~\ref{thm:U} does
+not already give unconditionally, with a better threshold. The full
+development and archives are in the accompanying repository.
 
 \section{Open problems}\label{sec:open}
 
 \begin{enumerate}
-\item \textbf{Finite covering.} Prove that some finite admissible set $S$
-  covers all hard primes (Theorem~\ref{thm:D} gives density
-  $(\log x)^{-A}$ for every $A$; emptiness is beyond the sieve).
-\item \textbf{Beyond fixed lists.} The support bound is proved
-  unconditionally for every residual, prime and composite
-  (Theorem~\ref{thm:S}), Theorem~\ref{thm:U} carries list growth to
-  length $\varepsilon\log\log x$, and the branch classification
-  that governs everything further is now formulated in
-  Section~\ref{sec:branch}: the kernel case is proved
-  (Theorem~\ref{thm:Mkernel}), the count form refuted
-  (Theorem~\ref{thm:Mcount}), and what remains open is exactly
-  Conjecture~\ref{conj:A} --- the aperiodic window-container
-  statement, whose difficulty is now localized to the control of
-  non-critical deletion steps (the punctured-chain mechanism is
-  empty by Proposition~\ref{prop:betavac}); its resolution --- for
-  Hajós orders alone --- gives Theorem~\ref{thm:Upay}. The
-  fixed-list format itself cannot
-  reach emptiness (Remark~\ref{rem:emptiness}).
-  The proof of Theorem~\ref{thm:S} shows the extremal
-  failing supports are \emph{subgroup-trapped} (the stabilizer $H$ is
-  nontrivial and $S$ concentrates on $H$ up to at most $d/|H| - 2$
-  outliers); exploiting this structure \emph{uniformly in $R$} ---
-  fewer, $p$-independent branches --- is now a well-posed
-  additive-combinatorics question, and the structurally right target
-  remains a slowly growing bound on $R_{\min}(p)$.
-\item \textbf{The constant \boldmath$5.17$.} The joint $\{3,7\}$-exceptional
-  density is measured as $\approx 5.17/\log x$, stable to $1\%$ across
-  three decades. Conjecturally $5.17$ is a Selberg--Delange-type
-  constant: the count should satisfy
-  $E(x) \sim C\, x/(\log x)^2$ with
-  $C = c_0 \prod_q \delta_q$, the local factors $\delta_q$ recording,
-  for each prime $q$, the probability that $q$ divides neither form in a
-  forbidden class. Proving the asymptotic (not just the upper bound)
-  requires a two-form Selberg--Delange or shifted-convolution analysis
-  --- open, and a natural test problem for such methods (see also
-  Remark~\ref{rem:vaughan} for the density context).
-\item \textbf{Structural reformulations and complexity.} Theorem~\ref{thm:J}
-  invites a graph formulation: on the bipartite graph joining primes $q$
-  to residuals $R$ by $q \mid (p+R)/4$, the edge characters
-  $\smash{\legendre{q}{R}}$ collapse to vertex signs
-  $\smash{\legendre{p}{q}}$, and joint character-failure is an all-plus
-  vertex assignment --- a percolation-style object whose structure could
-  organize the growth law. Separately, the enumeration
-  complexity is unresolved: the DP state count grows empirically by
-  $\approx 2.8\times$ per successive prime residual ($271$ at $R = 19$ to
-  $1.95 \times 10^7$ at $R = 107$); is the equivalence-state complexity
-  genuinely exponential in $R$? (For the support-bound property itself
-  the question is settled: Theorem~\ref{thm:S} is a constant-size
-  certificate. The open version concerns the full exact criteria.)
-\item \textbf{The record and the covering hypothesis.}
-  Theorem~\ref{thm:J} explains the record prime quantitatively (see
-  Corollary~\ref{cor:J}) and yields a conditional resolution of the
-  covering question: under Dickson's prime-tuple conjecture, for every
-  $B$ there are infinitely many hard primes failing every residual
-  $\le B$ --- fix the forced smooth parts of the shifted values
-  (character-neutral by Corollary~\ref{cor:J}(i)), make the cofactors
-  prime in prescribed residue classes, and apply
-  Proposition~\ref{prop:char}. So no fixed finite list suffices,
-  conditionally, and the record grows without bound (at the pure-character
-  level, like $\log x/\log\log x$). Unconditional versions appear
-  out of reach: already ``infinitely many hard $p$ fail $R=3$''
-  contains a two-form prime-tuple statement. What remains open is an
-  unconditional upper bound on $R_{\min}(p)$ --- and this is not an
-  incremental item: by Proposition~\ref{prop:complete},
-  $R_{\min}(p) \le 2p$ is
-  \emph{equivalent} to the conjecture at $p$, so an unconditional bound
-  $R_{\min}(p) \le f(p)$ for any $f$ whatsoever is the full problem.
+\item \textbf{Finite covering.} Prove that some finite admissible set
+  $S$ covers all hard primes. Theorem~\ref{thm:D} gives density
+  $(\log x)^{-A}$ for every $A$; emptiness is beyond upper-bound
+  sieving (Remark~\ref{rem:emptiness}), and both the calibration and
+  item~4 below predict that any fixed list eventually fails.
+\item \textbf{Beyond fixed lists.} Theorem~\ref{thm:U} carries list
+  growth to length $\varepsilon\log\log x$, and what governs
+  everything further is Conjecture~\ref{conj:A}: the aperiodic
+  window-container statement, whose difficulty is localized to the
+  control of non-critical deletion steps and whose resolution gives
+  Theorem~\ref{thm:Upay}. The proof of Theorem~\ref{thm:S} shows the
+  extremal failing supports are \emph{subgroup-trapped}; exploiting
+  that structure uniformly in $R$ --- fewer, $p$-independent branches
+  --- is a well-posed additive-combinatorics question, and the
+  structurally right target remains a slowly growing bound on
+  $R_{\min}(p)$.
+\item \textbf{The constant \boldmath$5.17$.} The joint
+  $\{3,7\}$-exceptional density is measured as $\approx 5.17/\log x$,
+  stable to $1\%$ across three decades. Conjecturally
+  $E(x) \sim C x/(\log x)^2$ with $C = c_0 \prod_q \delta_q$, the
+  local factors recording, for each prime $q$, the probability that
+  $q$ divides neither form in a forbidden class. Proving the
+  asymptotic --- not just the upper bound --- needs a two-form
+  Selberg--Delange or shifted-convolution analysis, and is a natural
+  test problem for such methods.
+\item \textbf{The record, and its growth.} Theorem~\ref{thm:J}
+  describes the record prime quantitatively
+  (Corollary~\ref{cor:J}) and yields a conditional answer to item~1:
+  under Dickson's prime-tuple conjecture, for every $B$ there are
+  infinitely many hard primes failing every residual $\le B$ --- fix
+  the forced smooth parts of the shifted values (character-neutral by
+  Corollary~\ref{cor:J}(i)), make the cofactors prime in prescribed
+  classes, and apply Proposition~\ref{prop:char}. So no fixed finite
+  list suffices, conditionally, and the record grows without bound, at
+  the pure-character level like $\log x/\log\log x$ --- a rate the
+  census of Section~\ref{sec:comp} is consistent with but far from
+  resolving. Unconditional versions appear out of reach: already
+  ``infinitely many hard $p$ fail $R = 3$'' contains a two-form
+  prime-tuple statement. What remains open is an unconditional upper
+  bound on $R_{\min}(p)$ --- and this is not incremental: by
+  Proposition~\ref{prop:complete}, $R_{\min}(p) \le 2p$ is
+  \emph{equivalent} to the conjecture at $p$, so an unconditional
+  bound $R_{\min}(p) \le f(p)$ for any $f$ whatsoever is the full
+  problem.
 \end{enumerate}
 
 \appendix
@@ -2403,44 +1805,37 @@ support-bound check ($R = 107$: \mbox{$331$\,s}); the entry points
 named are in the module \texttt{erdos\_straus.theory}.
 
 \paragraph{Trusted computing base.} The certificate data does not rest
-on the solver: every certificate claim is re-checked by evaluating the
-integer identity $4abc = p(bc+ca+ab)$ directly, so the trusted base for
-the data is a bignum multiply-and-compare (the host language's built-in
-integers), not the search pipeline. The finite case analyses trust more
---- the enumeration code itself, roughly sixty lines per check. Four
-mitigations apply. First, the enumerated spaces are defined by
-statements proved in the text (Theorem~\ref{thm:meta},
+on the solver: every certificate claim is re-checked by evaluating
+$4abc = p(bc+ca+ab)$ directly, so the trusted base for the data is a
+bignum multiply-and-compare, not the search pipeline. The finite case
+analyses trust more --- the enumeration code itself, roughly sixty
+lines per check --- and four mitigations apply. The enumerated spaces
+are defined by statements proved in the text (Theorem~\ref{thm:meta},
 Lemma~\ref{lem:mono}), and the code mirrors those definitions
-one-to-one. Second, independent implementations agree where they
-overlap: the subset dynamic program and the direct binomial enumeration
-verify identical claims at $R = 19, 23$, and the exact criteria are
+one-to-one. Independent implementations agree where they overlap: the
+subset dynamic program and the direct binomial enumeration verify
+identical claims at $R = 19, 23$, and the exact criteria are
 cross-checked against ground-truth divisor search on up to
-$1{,}587{,}581$ primes with zero discrepancies. Third, every check is
-deterministic, uses exact integer arithmetic only (no floating point,
-randomness, or external libraries), and runs from the repository in
-seconds (the largest, the $R = 107$ dynamic program, in
-\mbox{$331$\,s}) --- an independent re-implementation is an
-afternoon's work, and we would welcome one.
+$1{,}587{,}581$ primes with zero discrepancies. Every check is
+deterministic, uses exact integer arithmetic only, and runs from the
+repository in seconds ($331$\,s for the largest) --- an independent
+re-implementation is an afternoon's work, and we would welcome one.
 
-Fourth, much of the development is formalized in the accompanying
-repository (\texttt{lean/}) in Lean~4~\cite{Lean4} with its
-mathematical library mathlib~\cite{mathlib}. For readers unfamiliar with proof assistants: Lean is a
-language in which theorem statements and proofs are written formally
-and every proof is checked by a small trusted \emph{kernel}, so a
-theorem accepted by the kernel is correct relative to its formal
-statement, independently of who --- or what --- wrote the proof. Two
-Lean-specific mechanisms matter below: \texttt{native\_decide}
-discharges a decidable proposition by running compiled code, which
-extends the trusted base from the kernel to Lean's compiler and
-evaluator; and \texttt{\#print axioms} reports, for any theorem,
-exactly which axioms (including any such evaluator appeal) its proof
-ultimately uses. The formalization comprises:
+Fourth, much of the development is formalized (\texttt{lean/}) in
+Lean~4~\cite{Lean4} with mathlib~\cite{mathlib}. Every Lean proof is
+checked by a small trusted kernel, so a theorem it accepts is correct
+relative to its formal statement. Two mechanisms matter below:
+\texttt{native\_decide} discharges a decidable proposition by running
+compiled code, extending the trusted base from the kernel to Lean's
+compiler and evaluator; \texttt{\#print axioms} reports exactly which
+axioms, including any such evaluator appeal, a proof uses. The
+formalization comprises:
 \begin{itemize}
 \item \emph{The elementary layer}, as ordinary kernel-checked proofs:
   certificate soundness and integrality, both directions of
   Theorem~\ref{thm:A}, both families of Proposition~\ref{prop:agg},
   Theorem~\ref{thm:J}, and the ladder's elementary layer ---
-  Lemmas~\ref{lem:Jcomp} and~\ref{lem:N} in full, and the
+  Lemma~\ref{lem:Jcomp} in full, and the
   selected-residual identity of Section~\ref{sec:ladder}
   (the formalization shows the coprimality hypothesis of
   Lemma~\ref{lem:Jcomp} is not needed: for $q \mid R$ both symbols
@@ -2458,30 +1853,25 @@ ultimately uses. The formalization comprises:
   Theorem~\ref{thm:R15} ($349{,}920$ configurations, via a
   product-index bridge for the non-cyclic unit group) are discharged
   by \texttt{native\_decide}.
-\item \emph{The coordinate bridges}: the larger enumerations are
-  \emph{evaluated} in discrete-log coordinates for speed, but the
+\item \emph{The bridges and the reduction}: the larger enumerations
+  are \emph{evaluated} in discrete-log coordinates for speed, but the
   translation to the multiplicative model is itself a proved theorem,
-  so the coordinates add nothing to the trusted base; the $R = 11,
-  19, 23$ statements hold in the multiplicative model, each
-  reporting exactly its enumeration's single evaluator axiom.
-\item \emph{The reduction of Theorem~\ref{thm:meta}}: membership of
-  the target class in the reachability model is proved equivalent to
-  the existence of a divisor $k \mid m^2$ in that class (via the
-  fundamental theorem of arithmetic), and produces the explicit
-  positive certificate $(k, b, c)$ solving \eqref{eq:es} --- closing
-  the loop between the abstract model the enumerations check and the
-  integer certificates the conjecture asks for.
+  so the coordinates add nothing to the trusted base. Separately,
+  membership of the target class in the reachability model is proved
+  equivalent to the existence of a divisor $k \mid m^2$ in that class,
+  and produces the explicit certificate $(k, b, c)$ solving
+  \eqref{eq:es} --- closing the loop between the abstract model the
+  enumerations check and the integer certificates the conjecture asks
+  for.
 \item \emph{Two capstones}: a composed corollary (if $(p+19)/4$ has
-  nine prime factors in pairwise-distinct unit classes other than
-  $1$ modulo $19$, an explicit solution of \eqref{eq:es} at $p$
-  exists, machine-checked end to end), and Lemma~\ref{lem:S} at
-  $R = 31$ by \emph{certified dynamic programming} --- the
-  $\binom{29}{15} = 77{,}558{,}760$ supports are never enumerated; a
-  machine-checked induction shows the dynamic program covers every
-  support, and the compiled evaluator runs the dynamic program itself
-  together with the final check that every state realized by $\ge 15$
-  classes hits all $30$ targets ($3{,}001$ states in the run) --- the
-  program's \emph{correctness} is proved; its evaluation is what
+  nine prime factors in pairwise-distinct unit classes other than $1$
+  modulo $19$, an explicit solution exists, machine-checked end to
+  end), and Lemma~\ref{lem:S} at $R = 31$ by \emph{certified dynamic
+  programming} --- the $\binom{29}{15} = 77{,}558{,}760$ supports are
+  never enumerated; a machine-checked induction shows the dynamic
+  program covers every support, and the compiled evaluator runs the
+  program and the final check ($3{,}001$ states). The program's
+  \emph{correctness} is proved; its evaluation is what
   \texttt{native\_decide} trusts.
 \end{itemize}
 Every main theorem is audited with \texttt{\#print axioms}, and
@@ -2500,11 +1890,11 @@ an \emph{arbitrary} finite abelian group with an explicit involution
 count --- part (iii)'s general form, from which parts (i) and the
 odd-order variant follow as instances. So too the
 branch-classification layer:
-Theorem~\ref{thm:Mkernel}'s single kernel step in all three parts,
+the single kernel step of \S\ref{sec:branch} in all three parts,
 with the quotient \emph{constructed} rather than assumed and the
 container size bound $\le d/2 - 1$ derived from the support bounds
-downstairs; Proposition~\ref{prop:betavac} in full; and
-Theorem~\ref{thm:Mcount} end to end --- the complete-partition
+downstairs; the puncture lemma in full; and the
+$2^{c\sqrt d}$ branch count end to end --- the complete-partition
 machinery, the maximality of the constructed supports, their
 injectivity, and an explicit $2^{c\sqrt d}$ lower bound. (Not
 formalized: the transfer of Theorem~\ref{thm:S}(ii) to the
@@ -2521,7 +1911,7 @@ same statements, agree. (The development notes and Lean sources use
 working letter names for several results; the repository's
 documentation includes the dictionary.)
 
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \small
 \begin{tabular}{>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{4.4cm}r>{\raggedright\arraybackslash}p{4.4cm}}
@@ -2569,27 +1959,21 @@ spaces and the entry points in \texttt{erdos\_straus.theory}.}
 \label{tab:components}
 \end{table}
 
-In addition (as sanity checks, not proof components), the criteria of
-Theorems~\ref{thm:A}, \ref{thm:Ap}, \ref{thm:App} and~\ref{thm:R15}
-were compared against ground-truth
-divisor search on the complete solvability data below $10^9$: agreement
-in $1{,}587{,}581/1{,}587{,}581$ cases for $R = 3$,
-$41{,}421/41{,}421$ sampled failure cases for $R = 7$ (all character failures, as
-Theorem~\ref{thm:Ap} requires), $158{,}759/158{,}759$ sampled cases
-for $R = 15$, and $79{,}380$ sampled cases for $R = 11$, with zero
-discrepancies; the
-general composite-$R$ engine (\texttt{solvable\_exact\_general})
-likewise agrees on $7{,}938$ sampled primes for every composite
-admissible residual, and the strong form of Theorem~\ref{thm:S}(ii) is
-confirmed numerically at every residual checked
-(\texttt{verify\_support\_bound\_strong}). One check named in this
-paragraph's vicinity is \emph{not} a sanity check:
-\texttt{kneser\_support\_general} is a proof component of the
-$R \le 107$ clause of Theorem~\ref{thm:S}(iii), and is listed as such
-in Table~\ref{tab:components}. The identity of
-Theorem~\ref{thm:J} and its forced-prime corollary were likewise
-checked on $135{,}588$ resp.\ $61{,}438$ instances from the same data,
-with zero violations (Corollary~\ref{cor:J}).
+As sanity checks (not proof components), the criteria of
+Theorems~\ref{thm:A}--\ref{thm:R15} were compared against
+ground-truth divisor search on the complete solvability data below
+$10^9$: $1{,}587{,}581/1{,}587{,}581$ cases at $R = 3$,
+$41{,}421/41{,}421$ sampled failures at $R = 7$ (all character
+failures, as Theorem~\ref{thm:Ap} requires),
+$158{,}759/158{,}759$ at $R = 15$ and $79{,}380$ at $R = 11$, with
+zero discrepancies; the general composite-$R$ engine agrees on
+$7{,}938$ sampled primes at every composite admissible residual;
+Theorem~\ref{thm:J} and Corollary~\ref{cor:J} were checked on
+$135{,}588$ resp.\ $61{,}438$ instances with zero violations. By
+contrast \texttt{kneser\_support\_general} is \emph{not} a sanity
+check but a proof component of the $R \le 107$ clause of
+Theorem~\ref{thm:S}(iii), listed as such in
+Table~\ref{tab:components}.
 
 \subsection{Certificate datasets}\label{app:datasets}
 
@@ -2606,88 +1990,73 @@ above. Generation of the
 full $10^{10}$ map takes about $11$ minutes on four cores; every other
 command runs in seconds to minutes.
 
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \small
-\begin{tabular}{>{\raggedright\arraybackslash}p{4.6cm}>{\raggedright\arraybackslash}p{8.4cm}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{4.3cm}>{\raggedright\arraybackslash}p{8.7cm}}
 \toprule
-claim & command \\ \midrule
-Thm.~\ref{thm:Ap} finite check &
-\texttt{python -c "from erdos\_straus.theory \textbackslash} \newline
-\texttt{\ \ import verify\_R7\_finite; \textbackslash} \newline
-\texttt{\ \ print(verify\_R7\_finite())"} \\ \addlinespace
+claim & entry point \\ \midrule
+Thms.~\ref{thm:Ap}, \ref{thm:R15} finite checks &
+\texttt{verify\_R7\_finite()}, \texttt{verify\_R15\_finite()} \\ \addlinespace
 Thm.~\ref{thm:App} enumeration &
-\texttt{finite\_criterion\_dp(11,} \newline
-\texttt{\ \ forced\_logs=[\_dlog\_table(11)[1][3]])} from
-\texttt{erdos\_straus.theory} (as in the test suite,
+\texttt{finite\_criterion\_dp(11, forced\_logs=[...])} (as in
 \texttt{tests/test\_solver.py}) \\ \addlinespace
 Lem.~\ref{lem:S} at $R = 19, 23$ &
-\texttt{verify\_support\_bound(19)}, \texttt{(23)} \\ \addlinespace
-Thm.~\ref{thm:R15} finite check &
-\texttt{python -c "from erdos\_straus.theory \textbackslash} \newline
-\texttt{\ \ import verify\_R15\_finite; \textbackslash} \newline
-\texttt{\ \ print(verify\_R15\_finite())"} \\ \addlinespace
-Thm.~\ref{thm:S} numerical confirmation &
+\texttt{verify\_support\_bound(19)}, \texttt{(23)}; larger $R$ via
+\texttt{verify\_support\_bound\_dp} \\ \addlinespace
+Thm.~\ref{thm:S} confirmations &
 \texttt{verify\_support\_bound\_strong(31)},
 \texttt{kneser\_support\_general(15)} \\ \addlinespace
 generate the $10^{10}$ map &
-\texttt{python -m erdos\_straus.bulk\_generate \textbackslash} \newline
-\texttt{\ \ --max 10000000000 --segmented --store rmap} \\ \addlinespace
-verify a dataset exhaustively &
+\texttt{python -m erdos\_straus.bulk\_generate --max 10000000000
+--segmented --store rmap} ($\approx 11$ min on four cores) \\ \addlinespace
+regenerate the $10^{12}$ census &
+\texttt{scripts/run\_1e12.sh} (see \texttt{scripts/RUN\_1E12.md}) \\ \addlinespace
+verify a dataset &
 \texttt{python -m erdos\_straus.verify data/<file>} \\ \addlinespace
 distribution / covering / taxonomy &
-\texttt{python -m erdos\_straus.analyze dist \textbackslash} \newline
-\texttt{\ \ --rmap data/hard\_primes\_1e9\_minimalR.json.gz} (also
-\texttt{cover}, \texttt{tail}); \texttt{python -m erdos\_straus.theory} \\ \addlinespace
-Lean formalization (elementary + enumeration layers) &
-\texttt{cd lean/ErdosStraus} \newline
-\texttt{lake exe cache get \&\& lake build} \\
+\texttt{python -m erdos\_straus.analyze dist|cover|tail --rmap
+data/hard\_primes\_1e9\_minimalR.json.gz};
+\texttt{python -m erdos\_straus.theory} \\ \addlinespace
+selected-residual census &
+\texttt{python -m erdos\_straus.burgess\_scan} (archives:
+\texttt{data/analysis/burgess\_*.json}) \\ \addlinespace
+Lean formalization &
+\texttt{cd lean/ErdosStraus \&\& lake exe cache get \&\& lake build} \\
 \bottomrule
 \end{tabular}
-\caption{Reproduction commands. Shell commands are given verbatim,
-with \textbackslash{} marking an explicit line continuation within a
-single command; the finite-check rows are Python calls from the
-module \texttt{erdos\_straus.theory}.}
+\caption{Reproduction entry points; the unqualified names are Python
+functions in the module \texttt{erdos\_straus.theory}.}
 \label{tab:repro}
 \end{table}
 
-The ladder census of Section~\ref{sec:ladder} is reproduced by
-\texttt{python -m erdos\_straus.burgess\_scan} (the $10^9$
-population) and by the scaled drivers in the same module for the
-window samples and the deep tail; the archives are the five
-\texttt{burgess\_*.json} files under \texttt{data/analysis/}.
-
-The full test suite (\texttt{python -m pytest}; $56$ tests) exercises the
+The full test suite (\texttt{python -m pytest}; $63$ tests) exercises the
 proof-component checks, the exact criteria against ground truth, and
 sampled dataset validation on every run.
 Table~\ref{tab:env} summarizes the computational environment.
 
-\begin{table}[ht]
+\begin{table}[htbp]
 \centering
 \small
-\begin{tabular}{>{\raggedright\arraybackslash}p{3.6cm}>{\raggedright\arraybackslash}p{9.2cm}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{3.0cm}>{\raggedright\arraybackslash}p{9.8cm}}
 \toprule
 implementation & Python~3, exact integer arithmetic only; no external
-libraries in any proof-component check (\texttt{sympy} appears only in
-the reference solver) \\ \addlinespace
-factorization & trial division by sieved primes up to $\sqrt{n}$
-(numpy-sieved prime tables for bulk generation) \\ \addlinespace
-wall-clock times & $10^{12}$ generation: $10.5$\,h on $32$ cores
-(AMD Ryzen AI Max+ 395), of which $53$\,min sieving;
-$10^{11}$: $2.85$\,h on 4 cores;
-$10^{10}$: $656$\,s; $10^9$: $49$\,s; largest proof-component check
-($R = 107$ dynamic program): $331$\,s \\ \addlinespace
+libraries in any proof-component check. Factorization by trial
+division against numpy-sieved prime tables \\ \addlinespace
+wall-clock & $10^{12}$ generation: $10.5$\,h on $32$ cores
+(AMD Ryzen AI Max+ 395), of which $53$\,min sieving; $10^{11}$:
+$2.85$\,h on $4$ cores; $10^{10}$: $656$\,s; $10^9$: $49$\,s; largest
+proof-component check ($R = 107$ dynamic program): $331$\,s \\ \addlinespace
 verification & every certificate re-checked via
 $4abc = p(bc{+}ca{+}ab)$; exhaustive below $10^9$; $2{,}350{,}431$
 samples plus all $118{,}210$ tail entries at $10^{12}$
 (Table~\ref{tab:datasets}) \\ \addlinespace
-integrity & datasets archived in the repository;
-prime arrays and $R$-sequences pinned by SHA-256 in the
-corresponding \texttt{meta.json} (at $10^{12}$, prefixes
-\texttt{ae1e4e76\ldots}, \texttt{7736d10b\ldots}); the $10^{12}$
-value array, $304$\,MB, is regenerated deterministically by
-\texttt{scripts/run\_1e12.sh} and checked against its stored
-digest \\ \addlinespace
+integrity & datasets archived in the repository; prime arrays and
+$R$-sequences pinned by SHA-256 in the corresponding
+\texttt{meta.json} (at $10^{12}$, prefixes \texttt{ae1e4e76\ldots},
+\texttt{7736d10b\ldots}); the $304$\,MB $10^{12}$ value array is
+regenerated deterministically by \texttt{scripts/run\_1e12.sh} and
+checked against its stored digest \\ \addlinespace
 formal layer & Lean 4.32.2 + mathlib (pinned toolchain); six
 \texttt{native\_decide} checks; Theorem~\ref{thm:S}(i) fully
 symbolic (vendored Kneser); every main theorem audited by
@@ -2704,8 +2073,6 @@ symbolic (vendored Kneser); every main theorem audited by
 All code, all datasets of Table~\ref{tab:datasets}, and the Lean
 development are openly available in the repository
 \url{https://github.com/jeffmhopkins/Erd-s-Straus-attack}.
-
-\clearpage
 
 \begin{thebibliography}{99}
 
@@ -2847,6 +2214,11 @@ S.~E.~Salez,
 \emph{The Erd\H{o}s--Straus conjecture: new modular equations and
 checking up to \mbox{$N = 10^{17}$}},
 preprint, arXiv:\href{https://arxiv.org/abs/1406.6307}{1406.6307} [math.NT], 2014.
+
+\bibitem{Sander94}
+J.~W.~Sander,
+\emph{On $4/n = 1/x + 1/y + 1/z$ and Iwaniec' half dimensional sieve},
+J.~Number Theory \textbf{46} (1994), 123--136.
 
 \bibitem{Sander}
 J.~W.~Sander,
