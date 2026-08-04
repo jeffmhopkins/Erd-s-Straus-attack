@@ -33,6 +33,13 @@ $R \in \{3, 7, 11, \dots, 111\}$ covers every hard prime examined so far
 (up to $10^{12}$); the shorter list ending at $107$ sufficed through
 $10^{11}$ but fails for three primes below $10^{12}$.
 
+> **Note (Aug 2026).** The first $10^{12}$ census overstated the minimal $R$
+> for 0.49 % of primes above $1.296\times10^{11}$, where the trial-division
+> table ran out; the error could only ever move $R$ *up*, so existence and the
+> record $R = 111$ were unaffected. Fixed (`factorize` now finishes the
+> cofactor with Miller–Rabin + Pollard-rho) and the census recomputed. See
+> **RESOLVED** in STATUS.md.
+
 ## Layout
 
 ```
@@ -57,10 +64,10 @@ data/
   hard_primes_1e12_minimalR.meta.json  R-sequence dataset for all
   hard_primes_1e12_minimalR.tail.json  1,175,215,396 hard primes < 10^12:
                                        distribution + sha256 pins, and the
-                                       118,210 explicit verified tail
+                                       114,930 explicit verified tail
                                        certificates (R >= 43, including the
                                        three with the record R = 111).
-                                       The third file of the set, the 304 MB
+                                       The third file of the set, the 310 MB
                                        value array
                                        hard_primes_1e12_minimalR.rvals.u8.gz,
                                        exceeds GitHub's 100 MB file limit and
@@ -111,9 +118,9 @@ data/
                                        non-Hajos order), sampled to 240;
                                        no violation; beta-vacuity
 tests/
-  test_solver.py       63 tests: units, certificates, theorem checks
+  test_solver.py       65 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (30 pp.), "Minimal
+  erdos_straus_residuals.tex/.pdf   the manuscript (31 pp.), "Minimal
                        residual certificates for the Erdos-Straus
                        conjecture: a verified census to 10^12" -- framed
                        as a computational paper: the census is Section 4,

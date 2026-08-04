@@ -1,5 +1,5 @@
 # Erdős–Straus Conjecture Attack — Current State
-**Date:** 2026-08-04 (current through PR #61. **See the ERRATUM below**: the $10^{12}$ minimal-$R$ values above $1.296\times10^{11}$ are being regenerated; existence and the record are unaffected)  
+**Date:** 2026-08-04 (current through PR #63 — the corrected $10^{12}$ census; see RESOLVED below)  
 **Focus:** Hard-class primes (Mordell exceptional residues mod 840)
 
 ## The Problem
@@ -46,7 +46,7 @@ at $10^{11}$ and $10^{12}$ scale).
 | $< 10^9$     | 1 587 581 | Yes | 107               | Minimal-$R$ map saved (gzip) |
 | $< 10^{10}$  | 14 215 707 | Yes | 107      | Minimal-$R$ map saved (gzip) |
 | $< 10^{11}$  | 128 671 219 | Yes | 107     | R-sequence format (gzip uint8 + explicit tail) |
-| $< 10^{12}$  | **1 175 215 396** | **Yes** | **111** | **Record broken** — first row since $10^7$ where the max is not 107; least $p = 119\,945\,383\,009$ (below the cliff, so exact — and the max is confirmed, see ERRATUM). The count of 3 primes at 111, and the per-$R$ distribution above $1.296\times10^{11}$, are **provisional pending the corrected rerun** |
+| $< 10^{12}$  | **1 175 215 396** | **Yes** | **111** | **Record broken** — first row since $10^7$ where the max is not 107; attained by 3 primes, least $p = 119\,945\,383\,009$. Corrected census (see RESOLVED); R-sequence format; current verified bound |
 
 *(Every row is "all solved" with a certificate at the stated maximal
 minimal residual; `num_unsolved = 0` at $10^{12}$ as at every earlier
@@ -384,71 +384,62 @@ All 1 803 722 certificates in the `es-verify` defaults pass exhaustively
 (exact integer arithmetic); the $10^{10}$ map is verified by sampling plus
 full tail minimality.
 
-## ERRATUM (2026-08-04): non-minimal R above ~1.296e11 in the $10^{12}$ census
+## RESOLVED (2026-08-04): the factorization cliff, and the corrected $10^{12}$ census
 
-**Found by the GPU/native reimplementation effort; independently
-reproduced and confirmed here.** The existence result is untouched;
-what is wrong is the *minimality* of the recorded $R$ for a fraction of
-primes above the cliff.
+**The bug.** `bulk_generate.factorize` trial-divided $a = (n+R)/4$ against a
+fixed prime table with default bound 180000. Trial division certifies the
+surviving cofactor prime only while $a < 180000^2 = 3.24\times10^{10}$, i.e.
+$n < 1.296\times10^{11}$ — as the code's own comment said. `run_1e12.sh` never
+raised the bound. Above that cliff a cofactor that is a product of two primes
+both $> 180000$ was recorded as prime, the divisor set of $m^2$ was incomplete,
+and `solve_residual` could miss a certificate that exists. Found by the
+native/GPU reimplementation effort; reproduced independently here.
 
-**The bug.** `bulk_generate.factorize` trial-divides $a = (n+R)/4$
-against a fixed prime table with default bound 180000. Trial division
-certifies the surviving cofactor prime only while $a < 180000^2 =
-3.24\times10^{10}$, i.e. $n < 1.296\times10^{11}$ — as the code's own
-comment said. `run_1e12.sh` never raised the bound. Above the cliff a
-cofactor that is a product of two primes both $> 180000$ was recorded
-as prime, so the divisor set of $m^2$ was incomplete and
-`solve_residual` could miss a certificate that exists.
+**Why the damage was boundable before the rerun existed.** Every divisor the
+routine finds is genuine and every certificate is exact-checked, so a residual
+it reports as working really does work — it can only fail to notice that a
+*smaller* one also works. Recorded $R_{\min} \ge$ true $R_{\min}$, always.
 
-**Direction, and why it bounds the damage.** Every divisor the routine
-finds is genuine and every certificate is exact-checked, so the error
-is one-directional: recorded $R_{\min}$ $\ge$ true $R_{\min}$, always.
-It never invents a smaller residual.
+**The corrected census** (native windowed divide-as-you-sieve, 1.5 h vs the
+original 10.5 h) confirms every prediction that followed from that:
 
-**Independently verified here** (this session, not taken on trust):
-
-- the four reported counterexamples reproduce exactly
-  (1000000268569: R=23 recorded vs 3 true; 1000000270081: 7 vs 3;
-  1000000334881: 11 vs 3; 1000000429801: 11 vs 7);
-- a fresh window census over $[10^{12}, 10^{12}+2\times10^6]$ finds
-  **31 of 2282 hard primes (1.36%)** with an overstated $R$ —
-  matching the reported ~1.4%;
-- the cliff arithmetic checks: $4\cdot180000^2 = 1.296\times10^{11}$;
-- `verify.py` shares the same factorization, so `VERIFICATION OK` was
-  never independent evidence of *minimality* above the cliff (it
-  remains valid evidence that every stored triple solves the equation).
-
-**What is affected**
-
-| Claim | Status |
+| Prediction | Outcome |
 |---|---|
-| every hard prime $<10^{12}$ has a verified certificate; `num_unsolved = 0` | **unaffected** |
-| $\max R_{\min} = 111$ | **confirmed exactly.** True max $\le$ recorded max $= 111$ (one-directional error), and it is attained at $p = 119\,945\,383\,009 = 1.199\times10^{11}$, *below* the cliff, where factorization is complete |
-| "111 attained by three primes" | **unconfirmed.** The other two ($654\,730\,707\,409$, $761\,403\,297\,769$) are above the cliff |
-| R-distribution (paper Table 3) | **provisional above the cliff** (86% of the range, order $10^7$ entries expected to move — always tail → head) |
-| deep tail $R \ge 87$: 73 primes, distributed 40,5,12,4,5,4,3 | **provisional.** 22 of the 73 are below the cliff and confirmed; the true count is in [22, 73] |
-| tail entries "checked with full minimality" | **not independent** above the cliff — same factorization |
-| everything at or below $10^{11}$ | **unaffected** (cliff is above $10^{11}$): the $10^9$ masks, the 5.17 calibration, the failure taxonomy, the Burgess/ladder census, the $10^{10}$ and $10^{11}$ datasets |
-| the model's band-filling prediction | **unaffected** — its primes lie in $(1.3\times10^{10}, 10^{11})$ |
-| the model's record-break prediction | **unaffected** — the break occurred at $1.199\times10^{11}$, below the cliff |
+| `num_hard_primes` unchanged | 1 175 215 396 ✓ |
+| `sha256_primes` unchanged (prime array identical) | `ae1e4e76…` ✓ |
+| `sha256_rvals` changes | `7736d10b…` → `1b6983b4…` ✓ |
+| existence untouched, `num_unsolved = 0` | ✓ in both runs |
+| $\max R_{\min} = 111$ at $p = 119\,945\,383\,009$ | ✓ unchanged — it was already determined, the prime being below the cliff |
+| corrections only ever move $R$ **down** | ✓ 5 748 517 primes (0.489 %) corrected, all downward; $R=3$ gained exactly what all larger $R$ lost |
+| cumulative $\#\{R_{\min} \le t\}$ rises at every threshold | ✓ verified at all 28 thresholds |
+| deep tail may shrink | ✓ but barely: 73 → **72** primes with $R \ge 87$; the sole casualty is $p = 565\,158\,121\,441$, recorded 107, actually **7** |
+| "3 primes at $R=111$" was unconfirmed | ✓ it was right — same three primes, and both of the two above the cliff verified |
 
-**The fix (this repo).** `factorize` no longer has a cliff: when the
-small-prime table is exhausted *before* $p^2 > n$, the surviving
-cofactor is completed by deterministic Miller–Rabin + Pollard-rho
-(`_is_prime`, `_pollard_rho`, `_factor_cofactor`). Cost is zero below
-the old cliff (the fallback never fires) and correctness no longer
-depends on the range. Regression tests:
-`test_factorize_past_small_prime_table` (the four exposing primes plus
-a two-large-prime cofactor) and
-`test_factorize_matches_reference_above_the_cliff`. `verify.py` picks
-the fix up automatically, so its minimality check is now genuinely
-complete.
+**Independently re-verified here** (not taken on trust): the uncompressed array
+is 1 175 215 396 bytes with sha256 matching `meta.json`; the distribution
+recomputed from the array matches `meta.json` exactly; all three $R=111$ and
+three $R=107$ primes recomputed from scratch with the fixed solver; 400 random
+tail entries and **all 72** deep-tail entries exact-checked
+($4abc = p(bc+ac+ab)$, $R = 4a-p$) with full minimality — zero violations; and
+no entry anywhere has new $R >$ old $R$.
 
-**Status.** The $10^{12}$ census is being regenerated with the native
-windowed sieve-and-divide tool. Paper Section 4 carries a
-`data revision in progress` remark and marks the provisional figures;
-Table 3, Figure 1 and the deep-tail counts are to be rebuilt from the
-corrected run.
+**The fix.** `factorize` no longer has a cliff: when the small-prime table is
+exhausted *before* $p^2 > n$, the cofactor is completed by deterministic
+Miller–Rabin + Pollard-rho (`_is_prime`, `_pollard_rho`, `_factor_cofactor`).
+Zero cost below the old cliff, and correctness no longer depends on the range,
+so the trap cannot reappear at $10^{13}$. `verify.py` inherits it, so its
+minimality check is now genuinely complete. Regression tests:
+`test_factorize_past_small_prime_table`,
+`test_factorize_matches_reference_above_the_cliff`.
+
+**Unaffected throughout** (the cliff sits above $10^{11}$): the $10^9$ masks,
+the 5.17 calibration, the failure taxonomy, the Burgess/ladder census, the
+$10^{10}$ and $10^{11}$ datasets, and both of the model's advance predictions —
+the band-filling primes lie in $(1.3\times10^{10}, 10^{11})$ and the record
+break occurred at $1.199\times10^{11}$.
+
+Paper Table 3, Figure 1, the deep-tail counts and the verification protocol are
+rebuilt from the corrected run; Remark 4.1 documents the episode.
 
 ## Comparison with Published Work
 - **Verification** (Swett $10^{14}$, Salez $10^{17}$, Mihnea–Bogdan $10^{18}$) rules out
