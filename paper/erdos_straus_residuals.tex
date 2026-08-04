@@ -911,51 +911,52 @@ are in the accompanying repository; the $10^{12}$ run is a single
 $10.5$\,h job on $32$ cores, reproduced by
 \texttt{scripts/run\_1e12.sh}.
 
-\begin{remark}[data revision in progress]\label{rem:erratum}
-A defect was found in the factorization routine used for the
-$10^{12}$ run \emph{after} the results below were first recorded, and
-this section is being revised against a corrected recomputation. The
-routine factors $a = (p+R)/4$ by trial division against a fixed table
-of primes below $180{,}000$; that certifies the surviving cofactor
-prime only while $a < 180{,}000^2$, i.e.\ while $p < 1.296 \times
-10^{11}$. Above that cliff a cofactor which is a product of two primes
-both beyond the table was recorded as prime, so the divisor set of
-$m^2$ came out incomplete.
+\begin{remark}[a corrected recomputation]\label{rem:erratum}
+The figures below come from a second, independent computation of the
+census. The first used a factorization routine that trial-divides
+$a = (p+R)/4$ against a fixed table of primes below $180{,}000$; that
+certifies the surviving cofactor prime only while $a < 180{,}000^2$,
+i.e.\ while $p < 1.296 \times 10^{11}$. Above that cliff a cofactor
+which is a product of two primes both beyond the table was recorded as
+prime, so the divisor set of $m^2$ came out incomplete.
 
-The error is \emph{one-directional}, and that bounds the damage
-exactly. Every divisor the routine does find is genuine and every
-certificate is exact-checked, so a residual it reports as working
-really does work; what it can do is fail to notice that a
-\emph{smaller} residual also works. Hence the recorded $R_{\min}$ is
-$\ge$ the true $R_{\min}$ at every prime, with equality guaranteed
-below the cliff. Three consequences.
-\textup{(i)}~Existence is untouched: every hard prime below $10^{12}$
-has an exhibited, exactly verified certificate, and
-$\mathrm{num\_unsolved} = 0$ stands.
-\textup{(ii)}~The record stands, and in fact is now
-\emph{confirmed}: the maximum of the true $R_{\min}$ is at most the
-maximum of the recorded values, which is $111$; and it is attained,
-because the prime realizing $111$ lies at
-$1.199 \times 10^{11}$, below the cliff, where the factorization is
-complete --- so $\max R_{\min} = 111$ exactly over hard primes below
-$10^{12}$. What is not yet confirmed is the \emph{number} of primes
-attaining it; the two others recorded at $111$ lie above the cliff.
-\textup{(iii)}~The distribution of Table~\ref{tab:dist} and the
-deep-tail counts are affected above the cliff, which is $86\%$ of the
-range: a window census at $10^{12}$ finds $31$ of $2{,}282$ hard
-primes ($1.4\%$) with an overstated residual, so of order $10^7$
-entries are expected to move --- always downward, from the tail toward
-the head. Everything at or below $10^{11}$ is unaffected, the cliff
-lying above it; that includes the $10^9$ solvability masks and hence
-the calibration of Section~\ref{sec:calib}, the failure taxonomy, and
-the band-filling test of the model, whose primes all lie in
-$(1.3 \times 10^{10}, 10^{11})$.
-The defect is fixed in the accompanying repository
-(\texttt{bulk\_generate.factorize} now completes the cofactor by
-Miller--Rabin and Pollard-rho, with a regression test on the primes
-that exposed it), and the $10^{12}$ census is being regenerated.
-Figures marked \emph{provisional} below are the ones awaiting that
-recomputation.
+The resulting error was \emph{one-directional}, which is what made the
+damage assessable before the recomputation existed. Every divisor the
+routine finds is genuine and every certificate was exact-checked, so a
+residual reported as working really does work; what the routine could
+do is fail to notice that a \emph{smaller} residual also works. Hence
+the first run's $R_{\min}$ was $\ge$ the true value at every prime,
+with equality guaranteed below the cliff. Three consequences, all
+since confirmed by the recomputation.
+\textup{(i)}~Existence was never in question: every hard prime below
+$10^{12}$ had an exhibited, exactly verified certificate, and
+$\mathrm{num\_unsolved} = 0$ in both runs.
+\textup{(ii)}~The record was already determined. The maximum of the
+true $R_{\min}$ is at most the maximum of the recorded values, which
+was $111$; and it is attained, because the prime realizing $111$ lies
+at $1.199 \times 10^{11}$, below the cliff, where the factorization is
+complete. So $\max R_{\min} = 111$ followed from the defective run
+alone, and the recomputation reproduces it at the same prime.
+\textup{(iii)}~The distribution moved, in the predicted direction and
+by the predicted mechanism: $5{,}748{,}517$ primes --- $0.49\%$ of the
+census --- had an overstated residual, every one of them corrected
+downward, with the count at $R = 3$ rising by exactly the total lost
+by all larger residuals, and the cumulative counts
+$\#\{R_{\min} \le t\}$ increasing at every threshold $t$, as
+one-directionality requires. The deep tail proved almost entirely
+real: of the $73$ primes recorded with $R_{\min} \ge 87$, $72$
+survive; the single casualty is $p = 565{,}158{,}121{,}441$, recorded
+at $R = 107$ and in fact at $R = 7$. The three primes attaining $111$
+are unchanged.
+
+Both runs are archived. The defect is fixed in the accompanying
+repository --- \texttt{factorize} now completes the cofactor by
+Miller--Rabin and Pollard-rho, so its correctness no longer depends on
+the range --- with a regression test on the primes that exposed it.
+The recomputation was performed by an independent implementation (a
+windowed divide-as-you-sieve factorization, complete by construction);
+the two agree byte-for-byte below the cliff, and the corrections above
+it are the difference.
 \end{remark}
 
 \subsection{Verification protocol}\label{sec:protocol}
@@ -1000,13 +1001,10 @@ byte-for-byte against the exhaustively verified $10^9$ map \\ \addlinespace
 $R$-sequence dataset, $p < 10^{12}$ &
 $1{,}175{,}215{,}396$ &
 $2{,}350{,}431$ systematically sampled entries reconstructed and
-checked; \emph{all} $118{,}210$ tail entries ($R \ge 43$) checked
-with full minimality --- but see Remark~\ref{rem:erratum}: above
-$1.296 \times 10^{11}$ the minimality re-check shared the defective
-factorization and so is not independent of it; it remains a valid
-check of the certificate itself. Included are the three entries at
-$R = 111$; zero unsolved; both arrays pinned by sha256; single
-$10.5$\,h run on $32$ cores, regenerated by
+checked; \emph{all} $114{,}930$ tail entries ($R \ge 43$) checked
+with full minimality, including the three attaining the record
+$R = 111$; zero unsolved; both arrays pinned by sha256; independently
+recomputed (Remark~\ref{rem:erratum}), regenerated by
 \texttt{scripts/run\_1e12.sh} \\
 \bottomrule
 \end{tabular}
@@ -1030,7 +1028,7 @@ re-checking of every entry below $10^9$; systematic samples
 ($143{,}000$, $257{,}343$ and $2{,}350{,}431$ entries) at $10^{10}$,
 $10^{11}$ and $10^{12}$,
 together with the \emph{complete} tails ($842$ entries with
-$R \ge 51$, $20{,}151$ and $118{,}210$ with $R \ge 43$) re-checked
+$R \ge 51$, $20{,}151$ and $114{,}930$ with $R \ge 43$) re-checked
 with full
 minimality --- Table~\ref{tab:datasets} gives the per-dataset detail.
 The minimal residuals distribute
@@ -1041,25 +1039,22 @@ as in Table~\ref{tab:dist} and Figure~\ref{fig:hist}.
 \begin{tabular}{rr@{\qquad}rr@{\qquad}rr}
 \toprule
 $R$ & count & $R$ & count & $R$ & count \\ \midrule
-3 & 657{,}645{,}152 & 43 & 43{,}558 & 83 & 78 \\
-7 & 286{,}441{,}544 & 47 & 50{,}190 & 87 & 40 \\
-11 & 167{,}419{,}973 & 51 & 8{,}756 & 91 & 5 \\
-15 & 33{,}222{,}834 & 55 & 7{,}441 & 95 & 12 \\
-19 & 19{,}307{,}426 & 59 & 4{,}863 & 99 & 4 \\
-23 & 7{,}996{,}742 & 63 & 1{,}439 & 103 & 5 \\
-27 & 1{,}376{,}271 & 67 & 488 & 107 & 4 \\
-31 & 1{,}318{,}258 & 71 & 970 & 111 & 3 \\
-35 & 208{,}713 & 75 & 146 &  &  \\
-39 & 160{,}273 & 79 & 208 &  &  \\
+3 & 663{,}393{,}669 & 43 & 42{,}461 & 83 & 76 \\
+7 & 284{,}317{,}352 & 47 & 48{,}679 & 87 & 40 \\
+11 & 164{,}898{,}255 & 51 & 8{,}571 & 91 & 5 \\
+15 & 32{,}783{,}167 & 55 & 7{,}208 & 95 & 12 \\
+19 & 18{,}905{,}009 & 59 & 4{,}705 & 99 & 4 \\
+23 & 7{,}807{,}383 & 63 & 1{,}398 & 103 & 5 \\
+27 & 1{,}351{,}293 & 67 & 476 & 107 & 3 \\
+31 & 1{,}284{,}828 & 71 & 938 & 111 & 3 \\
+35 & 203{,}486 & 75 & 143 &  &  \\
+39 & 156{,}024 & 79 & 203 &  &  \\
 \bottomrule
 \end{tabular}
 \caption{Distribution of the minimal residual $R_{\min}$ over the
 $1{,}175{,}215{,}396$ hard primes below $10^{12}$ (plotted in
 Figure~\ref{fig:hist}). The value $R = 111$ is new at this scale.
-\emph{Provisional above $p = 1.296 \times 10^{11}$}: see
-Remark~\ref{rem:erratum}. Counts there are upper bounds for the tail
-and lower bounds for the head; the totals and the maximum are
-unaffected.}
+These are the corrected counts of Remark~\ref{rem:erratum}.}
 \label{tab:dist}
 \end{table}
 
@@ -1082,9 +1077,7 @@ Three features of the distribution deserve comment.\nopagebreak
   --- the maximal minimal residual over hard primes $p \le x$ stood
   at $R = 107$, attained by the single prime
   $8{,}803{,}369 < 10^7$. At $10^{12}$ it is
-  $R_{\max} = 111$ --- confirmed exactly, by
-  Remark~\ref{rem:erratum}(ii) --- recorded as attained by three
-  primes (a count still to be confirmed), the least being
+  $R_{\max} = 111$, attained by three primes, the least being
   \[
     p \;=\; 119{,}945{,}383{,}009 \;\equiv\; 529 \!\!\pmod{840},
   \]
@@ -1132,13 +1125,9 @@ Three features of the distribution deserve comment.\nopagebreak
   the mass at or beyond $107$ was put at $6\%$ per deep-tail prime,
   which with the deep-tail growth rate places the first
   record-breaking prime in the decade $10^{11}$--$10^{12}$. It broke
-  there, at $R = 111$, at a prime below the cliff of
-  Remark~\ref{rem:erratum} and hence correctly computed. The deep
-  tail is recorded as holding $73$ primes with $R_{\min} \ge 87$
-  against $19$ a decade earlier, distributed $40, 5, 12, 4, 5, 4, 3$
-  over $87, \dots, 111$ --- \emph{provisional}: $22$ of the $73$ lie
-  below the cliff and are confirmed, the rest await recomputation and
-  can only move downward. A model fitted at
+  there, at $R = 111$. The deep tail now holds $72$ primes with
+  $R_{\min} \ge 87$ against $19$ a decade earlier, distributed
+  $40, 5, 12, 4, 5, 4, 3$ over $87, \dots, 111$. A model fitted at
   $10^9$ thus predicted, before the computation, both the filling of
   a band that was empty at the time and the decade in which the
   maximum would move for the first time in five orders of magnitude.
@@ -2123,13 +2112,14 @@ Table~\ref{tab:env} summarizes the computational environment.
 implementation & Python~3, exact integer arithmetic only; no external
 libraries in any proof-component check. Factorization by trial
 division against numpy-sieved prime tables \\ \addlinespace
-wall-clock & $10^{12}$ generation: $10.5$\,h on $32$ cores
-(AMD Ryzen AI Max+ 395), of which $53$\,min sieving; $10^{11}$:
+wall-clock & $10^{12}$ generation: $1.5$\,h for the corrected run
+(native windowed factorization); the first, defective run took
+$10.5$\,h on $32$ cores (AMD Ryzen AI Max+ 395); $10^{11}$:
 $2.85$\,h on $4$ cores; $10^{10}$: $656$\,s; $10^9$: $49$\,s; largest
 proof-component check ($R = 107$ dynamic program): $331$\,s \\ \addlinespace
 verification & every certificate re-checked via
 $4abc = p(bc{+}ca{+}ab)$; exhaustive below $10^9$; $2{,}350{,}431$
-samples plus all $118{,}210$ tail entries at $10^{12}$
+samples plus all $114{,}930$ tail entries at $10^{12}$
 (Table~\ref{tab:datasets}) \\ \addlinespace
 integrity & datasets archived in the repository; prime arrays and
 $R$-sequences pinned by SHA-256 in the corresponding
