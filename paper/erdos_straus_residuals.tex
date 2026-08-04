@@ -10,7 +10,7 @@
 \usepackage[hidelinks]{hyperref}
 \hypersetup{pdftitle={Residual certificates for the Erdos-Straus
   conjecture: exact solvability criteria, almost-all certificate
-  bounds, and computations to 10\textasciicircum 11},
+  bounds, and computations to 10\textasciicircum 12},
   pdfauthor={J. M. Hopkins}}
 % Break URLs only at slashes, never inside hyphenated path components.
 \def\UrlBreaks{\do\/}
@@ -35,7 +35,7 @@
 
 \title{Residual certificates for the Erd\H{o}s--Straus conjecture:\\
 exact solvability criteria, almost-all certificate bounds,\\
-and computations to $10^{11}$}
+and computations to $10^{12}$}
 
 \author{J.~M.\ Hopkins\thanks{Independent researcher.
 \texttt{jeff.m.hopkins@gmail.com}.
@@ -79,8 +79,10 @@ families as norm-form families makes the count at the chain's first
 link sharp, $\asymp x/(\log x)^{3/2}$. The elementary layer and
 the core finite enumerations are machine-checked in
 Lean~4/\mbox{mathlib}, and we exhibit certificates for all
-$128{,}671{,}219$
-hard primes below $10^{11}$; the record minimal residual is $107$.
+$1{,}175{,}215{,}396$
+hard primes below $10^{12}$, where a five-decade-old record breaks:
+the largest minimal residual is $111$, first attained at
+$p = 119{,}945{,}383{,}009$.
 \end{abstract}
 
 \medskip
@@ -131,7 +133,7 @@ Proposition~\ref{prop:complete} the conjecture at $p$ is precisely
 the assertion that the least admissible residual $R_{\min}(p)$ is
 finite --- indeed $\le 2p$ --- so $R_{\min}$, not the exceptional
 set, is the quantity the problem is about. The theorems here bound
-$R_{\min}$: for every hard prime through $10^{11}$ by explicit
+$R_{\min}$: for every hard prime through $10^{12}$ by explicit
 certificate, and for almost every hard prime by
 Theorem~\ref{thm:U}, at a residual of size $O(\log\log x)$. Density
 statements follow as corollaries, and are weaker than Vaughan's.
@@ -195,8 +197,10 @@ overtake.
 \paragraph*{Further contributions.}
 \begin{itemize}
 \item Computed and verified residual certificates for all
-  $128{,}671{,}219$ hard primes below $10^{11}$, with a calibrated model
-  whose deep-tail predictions were subsequently confirmed
+  $1{,}175{,}215{,}396$ hard primes below $10^{12}$, with a
+  calibrated model that predicted, in advance, both the filling of an
+  empty band and the decade in which the five-decade-old record
+  $R = 107$ would fall --- it fell at $R = 111$
   (Section~\ref{sec:comp}).
 \item The \emph{Burgess--reciprocity ladder}
   (Section~\ref{sec:ladder}): a $p$-adapted residual family on which
@@ -314,7 +318,7 @@ single bound governs all of them at once
 (Theorem~\ref{thm:S}). What that buys is quantitative: bounds on
 $R_{\min}(p)$ itself --- for almost every hard prime
 (Theorem~\ref{thm:U}), and by explicit certificate for every hard
-prime below $10^{11}$. Bradford's range gives $R_{\min}(p) \ll p$;
+prime below $10^{12}$. Bradford's range gives $R_{\min}(p) \ll p$;
 the point of what follows is to replace $p$ by something small.
 
 Two
@@ -667,7 +671,7 @@ program of Section~\ref{sec:ladder}, the only known frame whose
 measured inputs would pass the ceiling of Remark~\ref{rem:ceiling}.
 
 Computations (Section~\ref{sec:comp}) provide verified certificates for
-all hard primes below $10^{11}$ and calibrate the base-case constant and
+all hard primes below $10^{12}$ and calibrate the base-case constant and
 decay exponents of the chain.
 
 \section{The obstruction framework}\label{sec:obstruction}
@@ -1267,7 +1271,7 @@ density $O((\log x)^{-A})$ for every $A$, but not emptiness. The
 conjecture for hard primes would follow from a \emph{finite covering
 hypothesis}: some finite $S$ admits, for every hard prime, a residual
 $R \in S$ with \eqref{eq:cert} (the converse is not automatic --- the
-conjecture bounds $R_{\min}(p)$ by $2p$, not uniformly). The data to $10^{11}$ is covered by
+conjecture bounds $R_{\min}(p)$ by $2p$, not uniformly). The data to $10^{12}$ is covered by
 $S = \{3, 7, 11, \dots, 107\}$ --- yet both the calibration
 (Remark~\ref{rem:emptiness}) and the conditional construction of
 Section~\ref{sec:open} predict that any fixed list eventually fails.
@@ -2067,7 +2071,7 @@ Theorem~\ref{thm:P1} is therefore intrinsic to every relaxation of
 this type, not an artifact of the chosen detector.
 \end{remark}
 
-\section{Computations to \texorpdfstring{$10^{11}$}{10\textasciicircum 11}}\label{sec:comp}
+\section{Computations to \texorpdfstring{$10^{12}$}{10\textasciicircum 12}}\label{sec:comp}
 
 All code and data are in the accompanying repository. Certificates are
 found by direct integer factorization of $a$ (trial division; the
@@ -2077,13 +2081,15 @@ integer arithmetic, $4abc = p(bc + ac + ab)$.
 
 \subsection{Data}
 
-Every one of the $128{,}671{,}219$ hard primes $p < 10^{11}$ possesses a
-residual certificate with $R \le 107$. The verification behind this
+Every one of the $1{,}175{,}215{,}396$ hard primes $p < 10^{12}$ possesses a
+residual certificate with $R \le 111$. The verification behind this
 claim is graded by dataset: exhaustive reconstruction and exact
 re-checking of every entry below $10^9$; systematic samples
-($143{,}000$ resp.\ $257{,}343$ entries) at $10^{10}$ and $10^{11}$,
+($143{,}000$, $257{,}343$ and $2{,}350{,}431$ entries) at $10^{10}$,
+$10^{11}$ and $10^{12}$,
 together with the \emph{complete} tails ($842$ entries with
-$R \ge 51$ resp.\ $20{,}151$ with $R \ge 43$) re-checked with full
+$R \ge 51$, $20{,}151$ and $118{,}210$ with $R \ge 43$) re-checked
+with full
 minimality --- Table~\ref{tab:datasets} gives the per-dataset detail.
 The minimal residuals distribute
 as in Table~\ref{tab:dist} and Figure~\ref{fig:hist}.
@@ -2093,20 +2099,21 @@ as in Table~\ref{tab:dist} and Figure~\ref{fig:hist}.
 \begin{tabular}{rr@{\qquad}rr@{\qquad}rr}
 \toprule
 $R$ & count & $R$ & count & $R$ & count \\ \midrule
-3  & 69{,}951{,}190 & 39 & 25{,}258 & 75 & 29 \\
-7  & 31{,}335{,}473 & 43 & 6{,}850  & 79 & 50 \\
-11 & 19{,}439{,}771 & 47 & 8{,}811  & 83 & 23 \\
-15 & 3{,}974{,}286  & 51 & 1{,}450  & 87 & 8  \\
-19 & 2{,}441{,}687  & 55 & 1{,}369  & 91 & 3  \\
-23 & 1{,}070{,}808  & 59 & 954     & 95 & 5  \\
-27 & 187{,}963     & 63 & 283     & 99 & 1  \\
-31 & 193{,}848     & 67 & 104     & 103 & 1 \\
-35 & 30{,}784      & 71 & 209     & 107 & 1 \\
+3 & 657{,}645{,}152 & 43 & 43{,}558 & 83 & 78 \\
+7 & 286{,}441{,}544 & 47 & 50{,}190 & 87 & 40 \\
+11 & 167{,}419{,}973 & 51 & 8{,}756 & 91 & 5 \\
+15 & 33{,}222{,}834 & 55 & 7{,}441 & 95 & 12 \\
+19 & 19{,}307{,}426 & 59 & 4{,}863 & 99 & 4 \\
+23 & 7{,}996{,}742 & 63 & 1{,}439 & 103 & 5 \\
+27 & 1{,}376{,}271 & 67 & 488 & 107 & 4 \\
+31 & 1{,}318{,}258 & 71 & 970 & 111 & 3 \\
+35 & 208{,}713 & 75 & 146 &  &  \\
+39 & 160{,}273 & 79 & 208 &  &  \\
 \bottomrule
 \end{tabular}
 \caption{Distribution of the minimal residual $R_{\min}$ over the
-$128{,}671{,}219$ hard primes below $10^{11}$ (plotted in
-Figure~\ref{fig:hist}).}
+$1{,}175{,}215{,}396$ hard primes below $10^{12}$ (plotted in
+Figure~\ref{fig:hist}). The value $R = 111$ is new at this scale.}
 \label{tab:dist}
 \end{table}
 
@@ -2115,28 +2122,38 @@ Figure~\ref{fig:hist}).}
 \includegraphics[width=\linewidth]{fig_minR_hist}
 \caption{The data of Table~\ref{tab:dist} on a logarithmic count
 scale. The head is dominated by $R = 3, 7, 11$; the tail thins
-geometrically; the shaded band $87$--$103$ was empty below $10^{10}$
-and its late population matched the calibrated prediction (see the
-confirmed-prediction bullet below); the record $R = 107$ is
-attained by a single prime below $10^7$.}
+geometrically; the shaded band $87$--$111$ was empty below
+$10^{10}$, and its population at $10^{11}$ and $10^{12}$ followed the
+calibrated prediction (see the prediction bullet below), including
+the break of the five-decade record $R = 107$ at $R = 111$.}
 \label{fig:hist}
 \end{figure}
 
 Three features of the distribution deserve comment.\nopagebreak
 \begin{itemize}
-\item $R_{\max} = 107$, attained by the single prime $8{,}803{,}369 <
-  10^7$ and never exceeded through $10^{11}$. In the
-  language of Corollary~\ref{cor:J}: its $27$ shifted values contain
+\item \textbf{The record broke at $10^{12}$.} From $10^7$ to
+  $10^{11}$ the maximal minimal residual stood at $R = 107$,
+  attained by the single prime $8{,}803{,}369 < 10^7$ and unmoved
+  across five decades. At $10^{12}$ it is
+  $R_{\max} = 111$, attained by three primes, the least being
+  \[
+    p \;=\; 119{,}945{,}383{,}009 \;\equiv\; 529 \!\!\pmod{840},
+  \]
+  for which every admissible $R \le 107$ fails and $R = 111$
+  certifies with $a = (p+111)/4 = 29{,}986{,}345{,}780$. The old
+  record $107$ also ceased to be unique, acquiring three further
+  primes in the same decade. In the
+  language of Corollary~\ref{cor:J}, $8{,}803{,}369$'s $27$ shifted
+  values contain
   only $43$ distinct odd primes (typical: $45$--$52$), and $81\%$ of
   them satisfy $\smash{\legendre{p}{q}} = +1$ (typical: $44$--$60\%$)
   --- an extreme value of exactly the statistic
   Theorem~\ref{thm:J} identifies as governing joint failure. We
   attach no significance level to this: the prime was selected
-  \emph{because} it is the record, so its extremeness in a
-  correlated statistic is expected rather than surprising, and
-  among $10^8$ primes the corresponding order statistic would be a
-  large fluctuation with near certainty. The observation is
-  descriptive --- it says what the record prime looks like
+  \emph{because} it was the record, so its extremeness in a
+  correlated statistic is expected rather than surprising. The
+  observation is
+  descriptive --- it says what a record prime looks like
   mechanically, not that its existence is improbable.
 \item \textbf{A prediction, and what it was worth.} The \emph{calibrated
   independence model} treats the per-residual failure events as
@@ -2154,13 +2171,19 @@ Three features of the distribution deserve comment.\nopagebreak
   $10^{10}$ and $10^{11}$ the five values acquired $8, 3, 5, 1, 1$
   primes respectively (all in $(1.3 \times 10^{10}, 10^{11})$), and
   none passed
-  $103$. The observed conditional distribution over the $19$
-  deep-tail primes ($8, 3, 5, 1, 1, 1$ including the record) is
-  \emph{consistent} with the prediction ($\chi^2 \approx 1.3$), but
-  we claim no more than that: with $19$ points and several expected
-  cells below $5$ the comparison has little power to discriminate,
-  and its value is that the model was falsifiable in advance and was
-  not falsified.
+  $103$; that distribution was \emph{consistent} with the prediction
+  ($\chi^2 \approx 1.3$) but, on $19$ points with several expected
+  cells below $5$, had little power to discriminate. The model's
+  sharper commitment was about \emph{when the record would move}:
+  the mass at or beyond $107$ was put at $6\%$ per deep-tail prime,
+  which with the deep-tail growth rate places the first
+  record-breaking prime in the decade $10^{11}$--$10^{12}$. It broke
+  there, at $R = 111$. The deep tail now holds $73$ primes with
+  $R_{\min} \ge 87$ against $19$ a decade earlier, distributed
+  $40, 5, 12, 4, 5, 4, 3$ over $87, \dots, 111$. A model fitted at
+  $10^9$ thus predicted, before the computation, both the filling of
+  a band that was empty at the time and the decade in which a
+  five-decade-old record would fall.
 \item Among all $1{,}587{,}581$ hard primes below $10^9$, exactly
   \emph{four} admit a unique working residual $\le 107$
   ($8{,}803{,}369$ with $107$; $142{,}361{,}209$ with $59$;
@@ -2543,7 +2566,15 @@ $128{,}671{,}219$ &
 $257{,}343$ systematically sampled entries reconstructed and checked;
 \emph{all} $20{,}151$ tail entries ($R \ge 43$) checked with full
 minimality; prime array pinned by sha256; pipeline validated
-byte-for-byte against the exhaustively verified $10^9$ map \\
+byte-for-byte against the exhaustively verified $10^9$ map \\ \addlinespace
+$R$-sequence dataset, $p < 10^{12}$ &
+$1{,}175{,}215{,}396$ &
+$2{,}350{,}431$ systematically sampled entries reconstructed and
+checked; \emph{all} $118{,}210$ tail entries ($R \ge 43$) checked
+with full minimality, including the three attaining the record
+$R = 111$; zero unsolved; both arrays pinned by sha256; single
+$10.5$\,h run on $32$ cores, regenerated by
+\texttt{scripts/run\_1e12.sh} \\
 \bottomrule
 \end{tabular}
 \caption{Certificate datasets and the verification applied to each.}
@@ -2631,18 +2662,22 @@ libraries in any proof-component check (\texttt{sympy} appears only in
 the reference solver) \\ \addlinespace
 factorization & trial division by sieved primes up to $\sqrt{n}$
 (numpy-sieved prime tables for bulk generation) \\ \addlinespace
-wall-clock times & $10^{11}$ generation: $2.85$\,h on 4 cores;
+wall-clock times & $10^{12}$ generation: $10.5$\,h on $32$ cores
+(AMD Ryzen AI Max+ 395), of which $53$\,min sieving;
+$10^{11}$: $2.85$\,h on 4 cores;
 $10^{10}$: $656$\,s; $10^9$: $49$\,s; largest proof-component check
 ($R = 107$ dynamic program): $331$\,s \\ \addlinespace
 verification & every certificate re-checked via
-$4abc = p(bc{+}ca{+}ab)$; exhaustive below $10^9$; $257{,}343$
-samples plus all $20{,}151$ tail entries at $10^{11}$
+$4abc = p(bc{+}ca{+}ab)$; exhaustive below $10^9$; $2{,}350{,}431$
+samples plus all $118{,}210$ tail entries at $10^{12}$
 (Table~\ref{tab:datasets}) \\ \addlinespace
 integrity & datasets archived in the repository;
-the $10^{11}$ prime array and $R$-sequence are pinned by SHA-256 in
-\texttt{hard\_primes\_1e11\_minimalR.meta.json} (prefixes
-\texttt{53cf17c4\ldots},
-\texttt{2a69f3aa\ldots}) \\ \addlinespace
+prime arrays and $R$-sequences pinned by SHA-256 in the
+corresponding \texttt{meta.json} (at $10^{12}$, prefixes
+\texttt{ae1e4e76\ldots}, \texttt{7736d10b\ldots}); the $10^{12}$
+value array, $304$\,MB, is regenerated deterministically by
+\texttt{scripts/run\_1e12.sh} and checked against its stored
+digest \\ \addlinespace
 formal layer & Lean 4.32.2 + mathlib (pinned toolchain); six
 \texttt{native\_decide} checks; Theorem~\ref{thm:S}(i) fully
 symbolic (vendored Kneser); every main theorem audited by

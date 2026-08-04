@@ -44,3 +44,9 @@ htmlcov/
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+
+# 10^12 R-sequence array (304 MB, exceeds GitHub's 100 MB file limit).
+# Regenerate deterministically with scripts/run_1e12.sh; the SHA-256 is
+# pinned in data/hard_primes_1e12_minimalR.meta.json, and the archived
+# release carries the file itself.
+data/hard_primes_1e12_minimalR.rvals.u8.gz
