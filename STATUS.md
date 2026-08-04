@@ -220,7 +220,7 @@ log ends `VERIFICATION OK`.
   direct solver run and by exact evaluation of the identity). Three
   primes attain 111: 119 945 383 009, 654 730 707 409, 761 403 297 769.
 - **107 is no longer unique.** The old record, held by the single prime
-  $8\,803\,369 < 10^7$ from $10^7$ through $10^{11}$ — five decades —
+  $8\,803\,369 < 10^7$ from $10^7$ through $10^{11}$ — five successive orders of magnitude —
   picked up three further primes in this decade (170 230 867 921,
   269 646 744 481, 565 158 121 441) and now stands at four.
 - **Deep tail.** Primes with $R_{\min} \ge 87$ went from 19 at $10^{11}$
@@ -241,7 +241,7 @@ per deep-tail prime, which with the deep-tail growth rate places the
 *first record-breaking prime* in the decade $10^{11}$–$10^{12}$ — it
 broke there, at $R = 111$. So a heuristic fitted at $10^9$ named in
 advance both the band it would fill and the decade in which a
-five-decade-old record would fall. Two caveats keep this honest: the
+record would move for the first time in five orders of magnitude. Two caveats keep this honest: the
 model is a heuristic, not a theorem; and the band-fill comparison had
 little discriminating power ($\chi^2 \approx 1.3$ on 19 points with
 several expected cells below 5). The record-break call is the sharper
@@ -376,7 +376,7 @@ residuals $R \equiv 3 \pmod 4$, $R \le 107$ that yield a solution
 - `scripts/run_1e12.sh` (+ `scripts/RUN_1E12.md`) — the one-shot $10^{12}$ generation + verification + packaging run kit
 - `data/analysis/` — residual masks (27 × 1 587 581 solvability bits), distribution/CDF, covering-set results, tail reports, theory-validation archive
 - `tests/test_solver.py` — 63 tests: unit, certificate validation, theorem checks (A/A′/A″/A‴/J/meta incl. composite R), support-bound lemmas (DP + strong Kneser form, cyclic and general abelian), aggregate identities
-- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 39 pp. (title: "…exact solvability criteria, almost-all certificate bounds, and computations to $10^{12}$")
+- `paper/erdos_straus_residuals.tex` (+ compiled PDF) — the manuscript, 40 pp., restructured as a computational paper: "Minimal residual certificates for the Erdős–Straus conjecture: a verified census to $10^{12}$". §1 introduction and provenance, §2 obstruction framework, §3 exact criteria, **§4 the census** (verification protocol, data, record, calibrated model), §5 structural context (sieve chain → Theorem U → branch classification → the conditional ladder, compressed), §6 open problems, Appendix A verification details
 - `lean/ErdosStraus/` — Lean 4 + mathlib formalization, elementary layer + finite enumerations (`lake exe cache get && lake build`)
 - `THEORY.md` — full theoretical development; `STATUS.md` — this document
 
@@ -394,6 +394,64 @@ full tail minimality.
 - This project supplies the largest verified certificate dataset
   (to $10^{12}$), exact solvability criteria,
   and the reciprocity structure theory of joint failure.
+
+### Priority audit (August 2026) — what is *not* ours
+
+A literature survey plus four scoping searches settled the attribution
+of every headline claim. The findings are now carried in the paper
+(Remark 1.7 and the preamble to §5.1); recorded here so they are not
+re-discovered:
+
+- **Prop. 1.1 (residual formulation)** — Bradford (Integers 21 (2021)
+  #A24). Already credited. López (arXiv:2404.01508) states the
+  shift-indexed divisor condition in general form for one solution shape.
+- **Thm. 1.2 (R = 3) and Thm. 1.4 (R = 7)** — **Yamamoto (1965), §3**.
+  His coverings $\{-s/q\}$ in the system $\Sigma_1$ are exactly our
+  criteria: (19) gives R = 3, (20) gives R = 7, and his p. 45 remark
+  states the quadratic-residue form explicitly, on precisely the six hard
+  classes. Neither theorem covers a single prime he did not. Our earlier
+  characterisation of Yamamoto as "a necessary character condition, not a
+  solvability criterion" was **wrong** and has been corrected.
+- **Thm. 1.5 (R = 11)** — half-anticipated. Yamamoto's Table 3 has the
+  three singleton-sufficient classes $q \equiv 7, 8, 10$; the complement
+  (classes 2 and 6 outside the budget family) and the exactness are ours.
+  413 vs 628 primes certified below $4\cdot10^5$.
+- **Thm. 1.6 (R = 15)** — mostly survives. Yamamoto's rules (i)–(ii)
+  apply verbatim at s = 15 (he never wrote the case) and give three of the
+  four Jacobi classes; the fourth ($q \equiv 11$) and the exactness are
+  ours. 315 vs 355 primes.
+- **Thm. 1.11 (support theorem)** — as an additive statement this is the
+  **critical number** of $\mathbb{Z}/d$: Diderrich–Mann (1973), completed
+  for all finite abelian groups by Freeze–Gao–Geroldinger (2009). Our
+  contribution is the transport (bounded exponent budgets, single target)
+  — and, verified computationally here, the fact that the budget-2 form
+  has **no exceptions**, where the classical $\Sigma$-form fails at
+  $\mathbb{Z}/4, \mathbb{Z}/6, \mathbb{Z}/8, \mathbb{Z}/2\times\mathbb{Z}/4$
+  — i.e. exactly at the admissible residuals R = 7 and R = 15.
+- **Thm. 5.8 (branch count $2^{c\sqrt d}$)** — new as stated, classical in
+  content: complete-partition counts are $\exp(\Theta(\sqrt n))$
+  (Andrews–Beck–Hopkins 1998).
+- **Thm. 5.9 (kernel branch)** — the mechanism is the textbook Kneser
+  stabilizer/quotient reduction (Grynkiewicz, *Structural Additive
+  Theory*, Ch. 6). Now stated as such.
+- **Thm. 1.3 (finite reduction)** — no anticipation found, but it is
+  bookkeeping on Bradford's criterion and finite-generation statements
+  abound (Terzi 1971; Yamamoto §3; Salez). Demoted from "meta-theorem".
+- **Thm. 5.5 (uniform chain, R_min ≤ ε log log x)** — survives, but it is
+  **not the first almost-all bound on $R_{\min}$**. Vaughan's 1970
+  covering congruences are *constructive* and already give
+  $R_{\min} \le \exp(O((\log x)^{1/3}))$ outside
+  $x\exp(-c(\log x)^{2/3})$. Our content is the *threshold*: a constant
+  multiple of $\log\log x$ at comparable exceptional-set quality — an
+  exponential gain. The claim "no bound on $R_{\min}$ was previously
+  available by any method" was **false** and is gone.
+- **Thm. 5.19 (first link sharp)** — Sander (JNT 46 (1994) 123–136) has
+  the matching *lower* bound; the accessible evidence (zbMATH review,
+  Sander's own 1991 summary) says he states **no** upper bound. The upper
+  bound is Fundamental-Lemma folklore and is proved here.
+- **Conj. 5.10** — Vu, Combinatorica 30 (2010), does **not** apply: his
+  incompleteness structure theorem needs $|A| \ge (5/6+\delta)n/p_1$,
+  far above our $d/2 - 1$ regime.
 
 ## Theoretical Results (see THEORY.md)
 
@@ -489,7 +547,7 @@ full tail minimality.
 - The record's slow growth is *explained* (Theorem J): joint failure is a
   Legendre-coin large-deviation event; expected record growth
   $\asymp \log x/\log\log x$ at the pure-character-type level. The
-  five-decade plateau at $R = 107$ ended at $10^{12}$ with $R = 111$ —
+  plateau at $R = 107$, unbroken over five orders of magnitude, ended at $10^{12}$ with $R = 111$ —
   a move in the direction and roughly on the timescale the model and
   the growth law indicate, not a surprise to be explained away.
 - The fixed-finite-list reduction is conditionally **false** (Theorem K):
