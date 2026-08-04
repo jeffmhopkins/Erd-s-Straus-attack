@@ -113,7 +113,7 @@ data/
 tests/
   test_solver.py       63 tests: units, certificates, theorem checks
 paper/
-  erdos_straus_residuals.tex/.pdf   the manuscript (40 pp.), "Minimal
+  erdos_straus_residuals.tex/.pdf   the manuscript (30 pp.), "Minimal
                        residual certificates for the Erdos-Straus
                        conjecture: a verified census to 10^12" -- framed
                        as a computational paper: the census is Section 4,
